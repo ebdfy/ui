@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Spinner · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Spinner</h1>
+      <p>
+        <code>eb-spinner</code> is a 20 px ring that turns while something loads. It has no attributes. A screen reader
+        hears "Loading", or "লোড হচ্ছে" on a Bangla page, from the language of the nearest <code>lang</code>.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div class="row" id="examples" lang="en">
+        <eb-spinner></eb-spinner>
+        <eb-text data-en="Loading the order." data-bn="অর্ডার লোড হচ্ছে।">Loading the order.</eb-text>
+      </div>
+      <pre><code>&lt;eb-spinner&gt;&lt;/eb-spinner&gt;</code></pre>
+    </main>
+  </body>
+</html>

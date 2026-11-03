@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Stack · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Stack</h1>
+      <p>
+        <code>eb-stack</code> puts its children in a column with the standard gap. Set <code>direction="row"</code> to
+        put them side by side: they stay centred and wrap to a new line when the screen is narrow.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div class="stack" id="examples" lang="en">
+        <eb-stack>
+          <eb-text data-en="Two items, to be sent to Sylhet." data-bn="দুইটি পণ্য, সিলেটে পাঠাতে হবে।"
+            >Two items, to be sent to Sylhet.</eb-text
+          >
+          <eb-text data-en="One item, to be sent to Dhaka." data-bn="একটি পণ্য, ঢাকায় পাঠাতে হবে।"
+            >One item, to be sent to Dhaka.</eb-text
+          >
+        </eb-stack>
+        <eb-stack direction="row">
+          <eb-button data-en="Confirm" data-bn="কনফার্ম">Confirm</eb-button>
+          <eb-button variant="secondary" data-en="Book courier" data-bn="কুরিয়ার বুক">Book courier</eb-button>
+          <eb-button variant="ghost" data-en="Print labels" data-bn="লেবেল প্রিন্ট">Print labels</eb-button>
+        </eb-stack>
+      </div>
+      <pre><code>&lt;eb-stack&gt;
+  &lt;eb-text&gt;Two items, to be sent to Sylhet.&lt;/eb-text&gt;
+  &lt;eb-text&gt;One item, to be sent to Dhaka.&lt;/eb-text&gt;
+&lt;/eb-stack&gt;
+&lt;eb-stack direction="row"&gt;
+  &lt;eb-button&gt;Confirm&lt;/eb-button&gt;
+  &lt;eb-button variant="secondary"&gt;Book courier&lt;/eb-button&gt;
+&lt;/eb-stack&gt;</code></pre>
+    </main>
+  </body>
+</html>

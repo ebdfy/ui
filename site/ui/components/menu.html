@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Menu · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Menu</h1>
+      <p>
+        <code>eb-menu</code> opens a list of actions from the <code>eb-button</code> in its <code>trigger</code> slot.
+        Each action is an <code>eb-menu-item</code>. Set <code>tone="critical"</code> on a risky one, and
+        <code>shortcut</code> to show its keys at the end of the row. The arrow keys move between items, Enter picks one
+        and Escape closes the menu. The page shows Ctrl here and ⌘ on a Mac or iPhone.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div class="row" id="examples" lang="en">
+        <eb-menu label="More actions" data-label-en="More actions" data-label-bn="আরও অ্যাকশন">
+          <eb-button slot="trigger" variant="secondary" data-en="More actions" data-bn="আরও">More actions</eb-button>
+          <eb-menu-item shortcut="mod+d" data-en="Duplicate" data-bn="ডুপ্লিকেট">Duplicate</eb-menu-item>
+          <eb-menu-item shortcut="mod+p" data-en="Print invoice" data-bn="ইনভয়েস প্রিন্ট">Print invoice</eb-menu-item>
+          <eb-menu-item tone="critical" data-en="Cancel order" data-bn="অর্ডার বাতিল">Cancel order</eb-menu-item>
+        </eb-menu>
+      </div>
+      <pre><code>&lt;eb-menu label="More actions"&gt;
+  &lt;eb-button slot="trigger" variant="secondary"&gt;More actions&lt;/eb-button&gt;
+  &lt;eb-menu-item shortcut="mod+d"&gt;Duplicate&lt;/eb-menu-item&gt;
+  &lt;eb-menu-item shortcut="mod+p"&gt;Print invoice&lt;/eb-menu-item&gt;
+  &lt;eb-menu-item tone="critical"&gt;Cancel order&lt;/eb-menu-item&gt;
+&lt;/eb-menu&gt;</code></pre>
+    </main>
+  </body>
+</html>

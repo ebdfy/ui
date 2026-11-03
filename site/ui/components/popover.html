@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Popover · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Popover</h1>
+      <p>
+        <code>eb-popover</code> opens a panel of any content below the <code>eb-button</code> in its
+        <code>trigger</code> slot. Give it a <code>label</code> so a screen reader can name the panel. Escape or a press
+        outside closes it.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div class="row" id="examples" lang="en">
+        <eb-popover label="Delivery note" data-label-en="Delivery note" data-label-bn="ডেলিভারি নোট">
+          <eb-button slot="trigger" variant="secondary" data-en="Delivery note" data-bn="ডেলিভারি নোট"
+            >Delivery note</eb-button
+          >
+          <p
+            style="margin: 0; max-width: 240px"
+            data-en="Call before you arrive. Leave the parcel with the guard if nobody answers."
+            data-bn="পৌঁছানোর আগে ফোন করুন। কেউ না ধরলে পার্সেল গার্ডের কাছে রেখে যান।"
+          >
+            Call before you arrive. Leave the parcel with the guard if nobody answers.
+          </p>
+        </eb-popover>
+      </div>
+      <pre><code>&lt;eb-popover label="Delivery note"&gt;
+  &lt;eb-button slot="trigger" variant="secondary"&gt;Delivery note&lt;/eb-button&gt;
+  &lt;p&gt;Call before you arrive. Leave the parcel with the guard if nobody answers.&lt;/p&gt;
+&lt;/eb-popover&gt;</code></pre>
+    </main>
+  </body>
+</html>

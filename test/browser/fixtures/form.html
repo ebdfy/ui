@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="ebdfy-app" content="sample" />
+    <script type="module">
+      import '/src/v1.ts'
+      const form = document.querySelector('form')
+      const note = form.querySelector('eb-text-field')
+      form.addEventListener('submit', (event) => {
+        event.preventDefault()
+        ebdfy.title(`Saved: ${note.value}`)
+      })
+      ebdfy.title('Order')
+      for (const entries of new URLSearchParams(location.search).getAll('nav')) ebdfy.nav(JSON.parse(entries))
+      // An edit as a person typing makes it, once the host has the frame.
+      await note.updateComplete
+      note.value = 'Leave at the gate'
+      note.dispatchEvent(new Event('input', { bubbles: true, composed: true }))
+    </script>
+  </head>
+  <body>
+    <form data-save-bar novalidate>
+      <eb-text-field name="note" value="Call first"></eb-text-field>
+    </form>
+  </body>
+</html>

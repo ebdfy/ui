@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="ebdfy-app" content="sample" />
+    <script type="module">
+      import '/src/v1.ts'
+      ebdfy.title('Token')
+      // The test asks for a token or a query, and this page tells it what the bridge gave back.
+      const tell = (message) => parent.postMessage({ type: 'fixture', ...message }, location.ancestorOrigins[0])
+      async function run(ask) {
+        try {
+          if (ask === 'token') tell({ token: await ebdfy.idToken() })
+          else tell({ result: await ebdfy.fetch(ask) })
+        } catch (error) {
+          tell({ error: error.message })
+        }
+      }
+      window.addEventListener('message', (event) => {
+        if (event.source === parent && event.data?.ask) run(event.data.ask)
+      })
+    </script>
+  </head>
+  <body></body>
+</html>

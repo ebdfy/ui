@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Taka field · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Taka field</h1>
+      <p>
+        <code>eb-taka-field</code> takes an amount in taka. It shows ৳ before the number and groups it in lakhs, in the
+        digits of its language, and submits the plain number.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div class="stack" id="examples" lang="en">
+        <p class="caption" data-en="Default" data-bn="সাধারণ">Default</p>
+        <eb-taka-field data-state="default" label="Price" data-label-en="Price" data-label-bn="দাম"></eb-taka-field>
+        <p class="caption" data-en="Focused" data-bn="ফোকাসে">Focused</p>
+        <eb-taka-field
+          data-state="focus"
+          label="Advance by bKash"
+          data-label-en="Advance by bKash"
+          data-label-bn="বিকাশে অগ্রিম"
+        ></eb-taka-field>
+        <p class="caption" data-en="With an error" data-bn="ভুলসহ">With an error</p>
+        <eb-taka-field
+          data-state="error"
+          value="5000"
+          label="Discount"
+          data-label-en="Discount"
+          data-label-bn="ছাড়"
+          error="The discount is more than the order."
+          data-error-en="The discount is more than the order."
+          data-error-bn="ছাড় অর্ডারের চেয়ে বেশি।"
+        ></eb-taka-field>
+        <p class="caption" data-en="Disabled" data-bn="বন্ধ">Disabled</p>
+        <eb-taka-field
+          data-state="disabled"
+          value="120"
+          disabled
+          label="Delivery charge"
+          data-label-en="Delivery charge"
+          data-label-bn="ডেলিভারি চার্জ"
+        ></eb-taka-field>
+        <p class="caption" data-en="Filled" data-bn="পূরণ করা">Filled</p>
+        <eb-taka-field
+          data-state="filled"
+          value="125000"
+          label="Price"
+          data-label-en="Price"
+          data-label-bn="দাম"
+        ></eb-taka-field>
+      </div>
+      <pre><code>&lt;eb-taka-field name="price" label="Price" value="125000"&gt;&lt;/eb-taka-field&gt;</code></pre>
+    </main>
+  </body>
+</html>

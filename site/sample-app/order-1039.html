@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <meta name="ebdfy-app" content="sample" />
+    <title>Sample app · ebdfy</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      .languages {
+        display: flex;
+        gap: 8px;
+      }
+      #order,
+      .order-column {
+        display: flex;
+        flex-direction: column;
+        gap: var(--eb-space-gap);
+      }
+      .order-column {
+        gap: 4px;
+      }
+      .order-row {
+        display: flex;
+        align-items: center;
+        gap: var(--eb-space-gap);
+      }
+      .order-row > .order-column {
+        flex: 1;
+        min-width: 0;
+      }
+      eb-bottom-bar > .order-row,
+      eb-bottom-bar .order-row > eb-button {
+        flex: 1;
+      }
+    </style>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/nav.js"></script>
+    <script type="module">
+      import { orderActions, orderTitle, showOrder } from '/order-detail.js'
+
+      const content = document.querySelector('#order-content')
+      const bar = document.querySelector('eb-bottom-bar .order-row')
+
+      function draw() {
+        const lang = document.documentElement.lang
+        ebdfy.title(orderTitle(lang))
+        showOrder(content, lang)
+        bar.replaceChildren(...orderActions(lang))
+      }
+
+      for (const button of document.querySelectorAll('[data-lang]')) {
+        button.addEventListener('click', () => {
+          document.documentElement.lang = button.dataset.lang
+          draw()
+        })
+      }
+      draw()
+    </script>
+  </head>
+  <body>
+    <eb-page>
+      <div id="order">
+        <div class="languages">
+          <eb-button data-lang="bn">বাংলা</eb-button>
+          <eb-button data-lang="en">English</eb-button>
+        </div>
+        <div id="order-content"></div>
+      </div>
+    </eb-page>
+    <!-- Outside the page's padding, so the two actions share the screen's width. -->
+    <eb-bottom-bar><div class="order-row"></div></eb-bottom-bar>
+  </body>
+</html>

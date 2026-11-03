@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Button · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Button</h1>
+      <p>
+        <code>eb-button</code> runs an action. Use <code>variant="primary"</code> for the one main action of a card, and
+        the default secondary for the rest. A button is as wide as its label; <code>full-width</code> makes it fill its
+        row, as two equal actions in a bar do. A toggle, such as the current filter, sets <code>pressed</code> to
+        <code>true</code> or <code>false</code>, so a screen reader hears whether it is on.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <eb-card id="examples" lang="en">
+        <p data-en="A new order from the shop." data-bn="দোকান থেকে নতুন অর্ডার।">A new order from the shop.</p>
+        <p>
+          <span data-en="Total" data-bn="মোট">Total</span>: <span data-taka>৳1,25,000</span>
+          <br />
+          <span data-en="Phone" data-bn="ফোন">Phone</span>: <span data-phone>01707071591</span>
+        </p>
+        <h2 data-en="Variants" data-bn="ধরন">Variants</h2>
+        <div class="row">
+          <eb-button variant="primary" data-en="Add order" data-bn="অর্ডার যোগ করুন">Add order</eb-button>
+          <eb-button variant="secondary" data-en="Cancel" data-bn="বাতিল">Cancel</eb-button>
+          <eb-button variant="ghost" data-en="Skip" data-bn="এড়িয়ে যান">Skip</eb-button>
+          <eb-button variant="danger" data-en="Delete order" data-bn="অর্ডার মুছুন">Delete order</eb-button>
+        </div>
+        <h2 data-en="Sizes" data-bn="আকার">Sizes</h2>
+        <div class="row">
+          <eb-button variant="ghost" size="sm" data-en="Small" data-bn="ছোট">Small</eb-button>
+          <eb-button variant="ghost" size="md" data-en="Medium" data-bn="মাঝারি">Medium</eb-button>
+          <eb-button variant="ghost" size="lg" data-en="Large" data-bn="বড়">Large</eb-button>
+        </div>
+      </eb-card>
+      <pre><code>&lt;eb-button variant="primary"&gt;Add order&lt;/eb-button&gt;
+&lt;eb-button&gt;Cancel&lt;/eb-button&gt;
+&lt;eb-button variant="ghost"&gt;Skip&lt;/eb-button&gt;
+&lt;eb-button variant="danger"&gt;Delete order&lt;/eb-button&gt;
+&lt;eb-button size="lg"&gt;Large&lt;/eb-button&gt;
+&lt;eb-button full-width&gt;Ask for advance&lt;/eb-button&gt;
+&lt;eb-button pressed="true"&gt;All&lt;/eb-button&gt;</code></pre>
+    </main>
+    <script type="module" src="/components.js"></script>
+  </body>
+</html>

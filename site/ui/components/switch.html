@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Switch · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Switch</h1>
+      <p><code>eb-switch</code> turns a setting on or off. It joins its form like a checkbox.</p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div class="stack" id="examples" lang="en">
+        <p class="caption" data-en="Default" data-bn="সাধারণ">Default</p>
+        <eb-switch
+          data-state="default"
+          label="Order alerts"
+          data-label-en="Order alerts"
+          data-label-bn="অর্ডারের সতর্কবার্তা"
+        ></eb-switch>
+        <p class="caption" data-en="Focused" data-bn="ফোকাসে">Focused</p>
+        <eb-switch
+          data-state="focus"
+          label="Cash on delivery"
+          data-label-en="Cash on delivery"
+          data-label-bn="ক্যাশ অন ডেলিভারি"
+        ></eb-switch>
+        <p class="caption" data-en="With an error" data-bn="ভুলসহ">With an error</p>
+        <eb-switch
+          data-state="error"
+          required
+          label="Accept the courier terms"
+          data-label-en="Accept the courier terms"
+          data-label-bn="কুরিয়ারের শর্ত মেনে নিন"
+          error="Turn this on to book a courier."
+          data-error-en="Turn this on to book a courier."
+          data-error-bn="কুরিয়ার বুক করতে এটি চালু করুন।"
+        ></eb-switch>
+        <p class="caption" data-en="Disabled" data-bn="বন্ধ">Disabled</p>
+        <eb-switch
+          data-state="disabled"
+          checked
+          disabled
+          label="bKash payments"
+          data-label-en="bKash payments"
+          data-label-bn="বিকাশ পেমেন্ট"
+        ></eb-switch>
+        <p class="caption" data-en="Filled" data-bn="পূরণ করা">Filled</p>
+        <eb-switch
+          data-state="filled"
+          checked
+          label="Order alerts"
+          data-label-en="Order alerts"
+          data-label-bn="অর্ডারের সতর্কবার্তা"
+        ></eb-switch>
+      </div>
+      <pre><code>&lt;eb-switch name="alerts" label="Order alerts" checked&gt;&lt;/eb-switch&gt;</code></pre>
+    </main>
+  </body>
+</html>

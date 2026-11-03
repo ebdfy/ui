@@ -1,0 +1,45 @@
+{
+  "name": "@ebdfy/ui",
+  "version": "1.0.0",
+  "description": "The ebdfy design system: Lit web components, design tokens and the bridge for admin surfaces.",
+  "license": "MIT",
+  "files": [
+    "dist/site/cdn",
+    "dist/types",
+    "dist/custom-elements.json"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types/v1.d.ts",
+      "default": "./dist/site/cdn/ui/v1.js"
+    },
+    "./host": {
+      "types": "./dist/types/host.d.ts",
+      "default": "./dist/site/cdn/ui/host.js"
+    },
+    "./custom-elements.json": "./dist/custom-elements.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "node scripts/build.ts",
+    "dev": "node scripts/dev.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.types.json"
+  },
+  "dependencies": {
+    "lit": "catalog:"
+  },
+  "devDependencies": {
+    "@custom-elements-manifest/analyzer": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/browser-playwright": "catalog:",
+    "playwright": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  },
+  "customElements": "dist/custom-elements.json"
+}

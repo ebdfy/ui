@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Thumbnail · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Thumbnail</h1>
+      <p>
+        <code>eb-thumbnail</code> shows a product's picture in a small square. Set <code>src</code> and
+        <code>alt</code>, and <code>size</code> to <code>small</code>, <code>medium</code> or <code>large</code>. With
+        no <code>src</code>, or when the picture fails to load, it shows a plain picture icon.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div class="row" id="examples" lang="en">
+        <p data-en="Small, medium, large, and a picture." data-bn="ছোট, মাঝারি, বড়, আর একটি ছবি।">
+          Small, medium, large, and a picture.
+        </p>
+        <eb-thumbnail size="small"></eb-thumbnail>
+        <eb-thumbnail></eb-thumbnail>
+        <eb-thumbnail size="large"></eb-thumbnail>
+        <eb-thumbnail
+          alt="Blue square"
+          data-alt-en="Blue square"
+          data-alt-bn="নীল চৌকো"
+          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' fill='%233b5bdb'/%3E%3C/svg%3E"
+        ></eb-thumbnail>
+      </div>
+      <pre><code>&lt;eb-thumbnail size="small"&gt;&lt;/eb-thumbnail&gt;
+&lt;eb-thumbnail&gt;&lt;/eb-thumbnail&gt;
+&lt;eb-thumbnail size="large"&gt;&lt;/eb-thumbnail&gt;
+&lt;eb-thumbnail src="/photos/shirt.jpg" alt="Blue shirt"&gt;&lt;/eb-thumbnail&gt;</code></pre>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Button group · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Button group</h1>
+      <p>
+        <code>eb-button-group</code> keeps related buttons together in one row. <code>label</code> names the group for a
+        screen reader. When the row is too narrow, the buttons wrap to a new line instead of running off the screen.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div id="examples" lang="en">
+        <eb-button-group label="Order actions" data-label-en="Order actions" data-label-bn="অর্ডার অ্যাকশন">
+          <eb-button data-en="Confirm" data-bn="কনফার্ম">Confirm</eb-button>
+          <eb-button variant="secondary" data-en="Book courier" data-bn="কুরিয়ার বুক">Book courier</eb-button>
+          <eb-button variant="ghost" data-en="Print labels" data-bn="লেবেল প্রিন্ট">Print labels</eb-button>
+        </eb-button-group>
+      </div>
+      <pre><code>&lt;eb-button-group label="Order actions"&gt;
+  &lt;eb-button&gt;Confirm&lt;/eb-button&gt;
+  &lt;eb-button variant="secondary"&gt;Book courier&lt;/eb-button&gt;
+  &lt;eb-button variant="ghost"&gt;Print labels&lt;/eb-button&gt;
+&lt;/eb-button-group&gt;</code></pre>
+    </main>
+  </body>
+</html>

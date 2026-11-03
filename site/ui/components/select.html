@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Select · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Select</h1>
+      <p>
+        <code>eb-select</code> picks one of the <code>&lt;option&gt;</code> elements written inside it. With no
+        <code>value</code> it starts on the first.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div class="stack" id="examples" lang="en">
+        <p class="caption" data-en="Default" data-bn="সাধারণ">Default</p>
+        <eb-select data-state="default" label="Size" data-label-en="Size" data-label-bn="সাইজ"
+          ><option value="s" data-en="Small" data-bn="ছোট">Small</option>
+          <option value="m" data-en="Medium" data-bn="মাঝারি">Medium</option>
+          <option value="l" data-en="Large" data-bn="বড়">Large</option></eb-select
+        >
+        <p class="caption" data-en="Focused" data-bn="ফোকাসে">Focused</p>
+        <eb-select data-state="focus" label="Courier" data-label-en="Courier" data-label-bn="কুরিয়ার"
+          ><option value="pathao" data-en="Pathao" data-bn="পাঠাও">Pathao</option>
+          <option value="steadfast" data-en="Steadfast" data-bn="স্টেডফাস্ট">Steadfast</option>
+          <option value="redx" data-en="RedX" data-bn="রেডএক্স">RedX</option></eb-select
+        >
+        <p class="caption" data-en="With an error" data-bn="ভুলসহ">With an error</p>
+        <eb-select
+          data-state="error"
+          value=""
+          required
+          label="Size"
+          data-label-en="Size"
+          data-label-bn="সাইজ"
+          error="Choose a size."
+          data-error-en="Choose a size."
+          data-error-bn="একটি সাইজ বাছুন।"
+          ><option value="" data-en="Choose a size" data-bn="সাইজ বাছুন">Choose a size</option>
+          <option value="s" data-en="Small" data-bn="ছোট">Small</option>
+          <option value="m" data-en="Medium" data-bn="মাঝারি">Medium</option>
+          <option value="l" data-en="Large" data-bn="বড়">Large</option></eb-select
+        >
+        <p class="caption" data-en="Disabled" data-bn="বন্ধ">Disabled</p>
+        <eb-select data-state="disabled" value="m" disabled label="Size" data-label-en="Size" data-label-bn="সাইজ"
+          ><option value="s" data-en="Small" data-bn="ছোট">Small</option>
+          <option value="m" data-en="Medium" data-bn="মাঝারি">Medium</option>
+          <option value="l" data-en="Large" data-bn="বড়">Large</option></eb-select
+        >
+        <p class="caption" data-en="Filled" data-bn="পূরণ করা">Filled</p>
+        <eb-select data-state="filled" value="l" label="Size" data-label-en="Size" data-label-bn="সাইজ"
+          ><option value="s" data-en="Small" data-bn="ছোট">Small</option>
+          <option value="m" data-en="Medium" data-bn="মাঝারি">Medium</option>
+          <option value="l" data-en="Large" data-bn="বড়">Large</option></eb-select
+        >
+      </div>
+      <pre><code>&lt;eb-select name="size" label="Size"&gt;
+  &lt;option value="s"&gt;Small&lt;/option&gt;
+  &lt;option value="m"&gt;Medium&lt;/option&gt;
+  &lt;option value="l"&gt;Large&lt;/option&gt;
+&lt;/eb-select&gt;</code></pre>
+    </main>
+  </body>
+</html>

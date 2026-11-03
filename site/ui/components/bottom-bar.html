@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Bottom bar · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+    <style>
+      .frame {
+        overflow: hidden;
+        border: 1px solid var(--eb-color-divider);
+        border-radius: var(--eb-radius-lg);
+      }
+      .scroll {
+        height: 240px;
+        overflow: auto;
+      }
+      .scroll p {
+        margin: 0;
+        padding: 12px 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Bottom bar</h1>
+      <p>
+        <code>eb-bottom-bar</code> holds a page's buttons and stays at the bottom of the scrolling page while the
+        content moves under it. The frame below keeps the example from sticking to this page.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div id="examples" lang="en">
+        <div class="frame">
+          <div class="scroll">
+            <p
+              data-en="Order 1042: two items, to be sent to Sylhet."
+              data-bn="অর্ডার 1042: দুইটি পণ্য, সিলেটে পাঠাতে হবে।"
+            >
+              Order 1042: two items, to be sent to Sylhet.
+            </p>
+            <p
+              data-en="Order 1043: one item, to be sent to Dhaka."
+              data-bn="অর্ডার 1043: একটি পণ্য, ঢাকায় পাঠাতে হবে।"
+            >
+              Order 1043: one item, to be sent to Dhaka.
+            </p>
+            <p
+              data-en="Order 1044: three items, to be sent to Khulna."
+              data-bn="অর্ডার 1044: তিনটি পণ্য, খুলনায় পাঠাতে হবে।"
+            >
+              Order 1044: three items, to be sent to Khulna.
+            </p>
+            <p
+              data-en="Order 1045: one item, to be sent to Rajshahi."
+              data-bn="অর্ডার 1045: একটি পণ্য, রাজশাহীতে পাঠাতে হবে।"
+            >
+              Order 1045: one item, to be sent to Rajshahi.
+            </p>
+            <p
+              data-en="Order 1046: two items, to be sent to Barishal."
+              data-bn="অর্ডার 1046: দুইটি পণ্য, বরিশালে পাঠাতে হবে।"
+            >
+              Order 1046: two items, to be sent to Barishal.
+            </p>
+            <p
+              data-en="Order 1047: one item, to be sent to Rangpur."
+              data-bn="অর্ডার 1047: একটি পণ্য, রংপুরে পাঠাতে হবে।"
+            >
+              Order 1047: one item, to be sent to Rangpur.
+            </p>
+            <eb-bottom-bar>
+              <eb-button variant="secondary" data-en="Cancel" data-bn="বাতিল">Cancel</eb-button>
+              <eb-button variant="primary" data-en="Save" data-bn="সংরক্ষণ">Save</eb-button>
+            </eb-bottom-bar>
+          </div>
+        </div>
+      </div>
+      <pre><code>&lt;eb-bottom-bar&gt;
+  &lt;eb-button variant="secondary"&gt;Cancel&lt;/eb-button&gt;
+  &lt;eb-button variant="primary"&gt;Save&lt;/eb-button&gt;
+&lt;/eb-bottom-bar&gt;</code></pre>
+    </main>
+  </body>
+</html>

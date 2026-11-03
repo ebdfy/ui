@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Checkbox · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Checkbox</h1>
+      <p>
+        <code>eb-checkbox</code> is a yes or no a person ticks. It submits its value only while checked.
+        <code>indeterminate</code> shows a dash for a box that is partly checked, such as select all over some rows; the
+        next click ticks it.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div class="stack" id="examples" lang="en">
+        <p class="caption" data-en="Default" data-bn="সাধারণ">Default</p>
+        <eb-checkbox
+          data-state="default"
+          label="Gift wrap"
+          data-label-en="Gift wrap"
+          data-label-bn="গিফট র‍্যাপ"
+        ></eb-checkbox>
+        <p class="caption" data-en="Focused" data-bn="ফোকাসে">Focused</p>
+        <eb-checkbox
+          data-state="focus"
+          label="Send the customer an SMS"
+          data-label-en="Send the customer an SMS"
+          data-label-bn="ক্রেতাকে এসএমএস পাঠান"
+        ></eb-checkbox>
+        <p class="caption" data-en="With an error" data-bn="ভুলসহ">With an error</p>
+        <eb-checkbox
+          data-state="error"
+          required
+          label="I have checked the address"
+          data-label-en="I have checked the address"
+          data-label-bn="আমি ঠিকানা যাচাই করেছি"
+          error="Tick this to go on."
+          data-error-en="Tick this to go on."
+          data-error-bn="এগিয়ে যেতে এটি টিক দিন।"
+        ></eb-checkbox>
+        <p class="caption" data-en="Disabled" data-bn="বন্ধ">Disabled</p>
+        <eb-checkbox
+          data-state="disabled"
+          checked
+          disabled
+          label="Paid by bKash"
+          data-label-en="Paid by bKash"
+          data-label-bn="বিকাশে পরিশোধিত"
+        ></eb-checkbox>
+        <p class="caption" data-en="Filled" data-bn="পূরণ করা">Filled</p>
+        <eb-checkbox
+          data-state="filled"
+          checked
+          label="Gift wrap"
+          data-label-en="Gift wrap"
+          data-label-bn="গিফট র‍্যাপ"
+        ></eb-checkbox>
+        <p class="caption" data-en="Partly checked" data-bn="আংশিক টিক">Partly checked</p>
+        <eb-checkbox
+          indeterminate
+          label="All orders"
+          data-label-en="All orders"
+          data-label-bn="সব অর্ডার"
+        ></eb-checkbox>
+      </div>
+      <pre><code>&lt;eb-checkbox name="gift" label="Gift wrap"&gt;&lt;/eb-checkbox&gt;
+&lt;eb-checkbox label="All orders" indeterminate&gt;&lt;/eb-checkbox&gt;</code></pre>
+    </main>
+  </body>
+</html>

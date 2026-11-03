@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Modal · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="%EB_CDN%/ui/host.js"></script>
+    <script type="module" src="/components.js"></script>
+    <style>
+      .frame {
+        overflow: hidden;
+        border: 1px solid var(--eb-color-divider);
+        border-radius: var(--eb-radius-lg);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Modal</h1>
+      <p>
+        An app opens a modal with <code>ebdfy.modal</code>, and the Admin chrome draws it over the app. The page inside
+        is one of the app's own pages. In the frame below, press Book courier in the title bar.
+      </p>
+      <p>
+        On a desktop the sizes are small at 380 px, medium at 620 px and large at 980 px wide. On a phone the modal is a
+        bottom sheet with a grab handle. Escape, the close button or a tap on the backdrop closes it, and focus goes
+        back to what opened it. Only a path on the app's own origin opens.
+      </p>
+      <p>
+        The chrome's own words (such as Close) follow the page's <code>lang</code>, not the language row below. The row
+        changes only this page's own strings.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div id="examples" lang="en">
+        <div class="frame">
+          <eb-admin-chrome
+            style="height: 560px"
+            app-name="Sample app"
+            src="%EB_SAMPLE_APP%/order?store=demo"
+            token-url="/dev/id-token?app=sample"
+            api-url="/dev/graphql"
+            stores-url="/playground"
+          >
+            <a slot="nav" href="#examples" aria-current="page" data-en="Sample app" data-bn="স্যাম্পল অ্যাপ"
+              >Sample app</a
+            >
+          </eb-admin-chrome>
+        </div>
+      </div>
+      <pre><code>ebdfy.modal({ src: '/book-courier', size: 'medium', title: 'Book courier' })</code></pre>
+    </main>
+  </body>
+</html>

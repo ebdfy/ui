@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <meta name="ebdfy-app" content="sample" />
+    <title>Sample app · ebdfy</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      .languages {
+        display: flex;
+        gap: 8px;
+      }
+      /* The bulk bar floats over the foot of the list while rows are selected. */
+      .bulk {
+        position: sticky;
+        bottom: 16px;
+        display: flex;
+        justify-content: center;
+      }
+      .list,
+      .pane,
+      .order-column {
+        display: flex;
+        flex-direction: column;
+        gap: var(--eb-space-gap);
+      }
+      .order-column {
+        gap: 4px;
+      }
+      .order-row {
+        display: flex;
+        align-items: center;
+        gap: var(--eb-space-gap);
+      }
+      .order-row > .order-column {
+        flex: 1;
+        min-width: 0;
+      }
+      /* The filters and the search sit above the table; a phone, which lists cards, leaves them out. */
+      .toolbar {
+        display: none;
+      }
+      .toolbar eb-search-field {
+        width: 200px;
+      }
+      @media (min-width: 600px) {
+        .toolbar {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          gap: var(--eb-space-gap);
+        }
+      }
+      /* From 1040 px the open order shows beside the list, which keeps room for its six columns. */
+      .pane {
+        display: none;
+      }
+      @media (min-width: 1040px) {
+        .orders {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) 320px;
+          align-items: start;
+          gap: var(--eb-space-gap);
+        }
+        .pane {
+          display: flex;
+          position: sticky;
+          top: var(--eb-space-card);
+        }
+        .pane-actions > eb-button {
+          flex: 1;
+        }
+      }
+    </style>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/nav.js"></script>
+    <script type="module">
+      import { besidePane, confirmOrders, countOrders, listOrders, showOrders, statusOf } from '/orders.js'
+      import { orderActions, showOrder } from '/order-detail.js'
+
+      const copy = {
+        bn: {
+          title: 'অর্ডার',
+          text: 'আপনার স্টোরের অর্ডার, নতুনগুলো আগে।',
+          add: 'অর্ডার যোগ করুন',
+          show: 'দেখুন',
+          filters: { all: 'সব', new: 'নতুন', confirmed: 'কনফার্মড', courier: 'কুরিয়ারে', returned: 'ফেরত এসেছে' },
+          search: 'অর্ডার খুঁজুন',
+          actions: ['কনফার্ম', 'কুরিয়ার বুক', 'লেবেল প্রিন্ট'],
+          done: [
+            (n) => `${n}টি অর্ডার কনফার্ম হয়েছে`,
+            (n) => `${n}টি অর্ডারের কুরিয়ার বুক হয়েছে`,
+            (n) => `${n}টি লেবেল প্রিন্ট হচ্ছে`,
+          ],
+        },
+        en: {
+          title: 'Orders',
+          text: 'Your store’s orders, newest first.',
+          add: 'Add order',
+          show: 'Show',
+          filters: { all: 'All', new: 'New', confirmed: 'Confirmed', courier: 'With courier', returned: 'Returned' },
+          search: 'Search orders',
+          actions: ['Confirm', 'Book courier', 'Print labels'],
+          done: [
+            (n) => `Confirmed ${n} ${n === '1' ? 'order' : 'orders'}`,
+            (n) => `Booked a courier for ${n} ${n === '1' ? 'order' : 'orders'}`,
+            (n) => `Printing ${n} ${n === '1' ? 'label' : 'labels'}`,
+          ],
+        },
+      }
+      // The order shown beside the list, which the list marks open.
+      const open = 1039
+      ebdfy.title('Orders')
+
+      const card = document.querySelector('eb-card')
+      const table = document.querySelector('eb-table')
+      const pages = document.querySelector('eb-pagination')
+      const bar = document.querySelector('eb-bulk-bar')
+      const group = document.querySelector('.toolbar eb-button-group')
+      const search = document.querySelector('.toolbar eb-search-field')
+      const paneContent = document.querySelector('.pane .order-column')
+      const paneActions = document.querySelector('.pane-actions')
+      let result = { orders: [] }
+      let page = 1
+      let filter = 'all'
+      let query = ''
+      // Each load's number, so a slower answer to an older search never replaces a newer one.
+      let loads = 0
+
+      function draw() {
+        const lang = document.documentElement.lang
+        const t = copy[lang]
+        card.heading = t.title
+        card.querySelector('p').textContent = t.text
+        card.querySelector('eb-button[variant="primary"]').textContent = t.add
+        table.label = t.title
+        for (const [i, button] of [...bar.children].entries()) button.textContent = t.actions[i]
+        showOrders(table, result.orders, lang, open)
+        bar.count = 0
+        const counts = countOrders()
+        group.label = t.show
+        for (const button of group.children) {
+          const name = button.dataset.filter
+          button.textContent = `${t.filters[name]} ${ebdfy.format.digits(counts[name], lang)}`
+          button.variant = name === filter ? 'primary' : 'ghost'
+          button.pressed = name === filter ? 'true' : 'false'
+        }
+        search.label = t.search
+        showOrder(paneContent, lang, { pane: true, status: statusOf(open) })
+        paneActions.replaceChildren(
+          ...orderActions(lang, async () => {
+            confirmOrders([open])
+            result = await listOrders({ page, filter, query })
+            draw()
+          }),
+        )
+        // The pagination names its buttons in the page's language, so it redraws with it.
+        pages.requestUpdate()
+      }
+
+      table.addEventListener('eb-selection', () => {
+        bar.count = table.selected.length
+      })
+      function clearSelection() {
+        for (const row of table.selected) row.selected = false
+        bar.count = 0
+      }
+      bar.addEventListener('eb-clear', clearSelection)
+      for (const [i, button] of [...bar.children].entries()) {
+        button.addEventListener('click', async () => {
+          const lang = document.documentElement.lang
+          const numbers = table.selected.map((row) => Number(row.dataset.number))
+          ebdfy.toast(copy[lang].done[i](ebdfy.format.digits(numbers.length, lang)))
+          if (i === 0) {
+            confirmOrders(numbers)
+            result = await listOrders({ page, filter, query })
+            draw()
+          } else clearSelection()
+        })
+      }
+
+      async function load() {
+        const call = ++loads
+        table.loading = true
+        const next = await listOrders({ page, filter, query })
+        if (call !== loads) return
+        result = next
+        pages.hasPrevious = result.hasPrevious
+        pages.hasNext = result.hasNext
+        draw()
+        table.loading = false
+      }
+
+      for (const button of document.querySelectorAll('[data-lang]')) {
+        button.addEventListener('click', () => {
+          document.documentElement.lang = button.dataset.lang
+          draw()
+        })
+      }
+      // The columns' shares change as the pane comes and goes.
+      besidePane.addEventListener('change', draw)
+      group.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-filter]')
+        if (!button) return
+        filter = button.dataset.filter
+        page = 1
+        load()
+      })
+      search.addEventListener('input', () => {
+        query = search.value
+        page = 1
+        load()
+      })
+      pages.addEventListener('eb-previous', () => {
+        page -= 1
+        load()
+      })
+      pages.addEventListener('eb-next', () => {
+        page += 1
+        load()
+      })
+      load()
+    </script>
+  </head>
+  <body>
+    <eb-page>
+      <eb-stack>
+        <eb-text variant="meta" data-store-name></eb-text>
+        <div class="languages">
+          <eb-button data-lang="bn">বাংলা</eb-button>
+          <eb-button data-lang="en">English</eb-button>
+        </div>
+        <eb-card heading="Orders">
+          <p>Your store’s orders, newest first.</p>
+          <eb-button variant="primary">Add order</eb-button>
+        </eb-card>
+        <div class="orders">
+          <div class="list">
+            <div class="toolbar">
+              <eb-button-group label="Show">
+                <eb-button size="sm" variant="primary" pressed="true" data-filter="all">All</eb-button>
+                <eb-button size="sm" variant="ghost" pressed="false" data-filter="new">New</eb-button>
+                <eb-button size="sm" variant="ghost" pressed="false" data-filter="confirmed">Confirmed</eb-button>
+                <eb-button size="sm" variant="ghost" pressed="false" data-filter="courier">With courier</eb-button>
+                <eb-button size="sm" variant="ghost" pressed="false" data-filter="returned">Returned</eb-button>
+              </eb-button-group>
+              <eb-search-field label="Search orders"></eb-search-field>
+            </div>
+            <eb-table label="Orders" selectable loading>
+              <eb-column card="meta">Order</eb-column>
+              <eb-column card="title">Customer</eb-column>
+              <eb-column card="meta">Area</eb-column>
+              <eb-column card="status">Status</eb-column>
+              <eb-column card="meta">Payment</eb-column>
+              <eb-column card="end">Total</eb-column>
+            </eb-table>
+            <div class="bulk">
+              <eb-bulk-bar>
+                <eb-button variant="ghost" size="sm">Confirm</eb-button>
+                <eb-button variant="ghost" size="sm">Book courier</eb-button>
+                <eb-button variant="ghost" size="sm">Print labels</eb-button>
+              </eb-bulk-bar>
+            </div>
+            <eb-pagination></eb-pagination>
+          </div>
+          <aside class="pane">
+            <div class="order-column"></div>
+            <div class="order-row pane-actions"></div>
+          </aside>
+        </div>
+      </eb-stack>
+    </eb-page>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="data:," />
+    <script type="module">
+      import '/src/v1.ts'
+      // The page shows one button in the language and with the text the query asks for.
+      const asked = new URLSearchParams(location.search)
+      const button = document.createElement('eb-button')
+      button.lang = asked.get('lang')
+      button.textContent = asked.get('text')
+      document.body.append(button)
+    </script>
+  </head>
+  <body></body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Text field · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Text field</h1>
+      <p>
+        <code>eb-text-field</code> takes a line of text, such as a name or an email address. It joins its form like a
+        native input, and shows an <code>error</code> under the field with a red edge that keeps the focus ring.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div class="stack" id="examples" lang="en">
+        <p class="caption" data-en="Default" data-bn="সাধারণ">Default</p>
+        <eb-text-field
+          data-state="default"
+          label="Customer"
+          data-label-en="Customer"
+          data-label-bn="ক্রেতা"
+        ></eb-text-field>
+        <p class="caption" data-en="Focused" data-bn="ফোকাসে">Focused</p>
+        <eb-text-field
+          data-state="focus"
+          label="Note for the courier"
+          data-label-en="Note for the courier"
+          data-label-bn="কুরিয়ারের জন্য নোট"
+        ></eb-text-field>
+        <p class="caption" data-en="With an error" data-bn="ভুলসহ">With an error</p>
+        <eb-text-field
+          data-state="error"
+          type="email"
+          value="rahim@"
+          label="Email"
+          data-label-en="Email"
+          data-label-bn="ইমেইল"
+          error="Enter an email address like name@example.com."
+          data-error-en="Enter an email address like name@example.com."
+          data-error-bn="name@example.com এর মতো একটি ইমেইল ঠিকানা লিখুন।"
+        ></eb-text-field>
+        <p class="caption" data-en="Disabled" data-bn="বন্ধ">Disabled</p>
+        <eb-text-field
+          data-state="disabled"
+          value="1042"
+          disabled
+          label="Order number"
+          data-label-en="Order number"
+          data-label-bn="অর্ডার নম্বর"
+        ></eb-text-field>
+        <p class="caption" data-en="Filled" data-bn="পূরণ করা">Filled</p>
+        <eb-text-field
+          data-state="filled"
+          label="Customer"
+          data-label-en="Customer"
+          data-label-bn="ক্রেতা"
+          value="Rahim Uddin"
+          data-value-en="Rahim Uddin"
+          data-value-bn="রহিম উদ্দিন"
+        ></eb-text-field>
+      </div>
+      <pre><code>&lt;eb-text-field name="name" label="Customer"&gt;&lt;/eb-text-field&gt;
+&lt;eb-text-field name="email" type="email" label="Email" error="Enter an email address like name@example.com."&gt;&lt;/eb-text-field&gt;</code></pre>
+    </main>
+  </body>
+</html>

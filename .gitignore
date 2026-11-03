@@ -1,0 +1,3 @@
+# What failed Vitest runs leave behind.
+.vitest-attachments/
+__screenshots__/

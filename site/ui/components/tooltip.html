@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Tooltip · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Tooltip</h1>
+      <p>
+        <code>eb-tooltip</code> shows a short <code>text</code> above the element inside it, on hover or keyboard focus.
+        Escape closes it. When the element has no name of its own, such as an icon, the tooltip's text becomes its name
+        and the keyboard can reach it.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div class="row" id="examples" lang="en">
+        <p data-en="Hover or focus the flag." data-bn="পতাকায় হোভার বা ফোকাস করুন।">Hover or focus the flag.</p>
+        <eb-tooltip text="High return risk" data-text-en="High return risk" data-text-bn="ফেরতের ঝুঁকি বেশি">
+          <span role="img" style="color: var(--eb-color-danger-text); display: inline-flex">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+              <path d="M12 9v4" />
+              <path d="M12 17h.01" />
+            </svg>
+          </span>
+        </eb-tooltip>
+      </div>
+      <pre><code>&lt;eb-tooltip text="High return risk"&gt;
+  &lt;span role="img"&gt;&lt;svg aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/span&gt;
+&lt;/eb-tooltip&gt;</code></pre>
+    </main>
+  </body>
+</html>

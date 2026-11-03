@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Grid · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Grid</h1>
+      <p>
+        <code>eb-grid</code> lays its children out in equal columns. Set <code>columns</code> to the number you want, 2
+        by default. On a screen under 600 px wide it shows one column, whatever <code>columns</code> says.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div id="examples" lang="en">
+        <eb-grid columns="3">
+          <eb-card>
+            <eb-text data-en="New orders" data-bn="নতুন অর্ডার">New orders</eb-text>
+          </eb-card>
+          <eb-card>
+            <eb-text data-en="Sent to Sylhet" data-bn="সিলেটে পাঠানো">Sent to Sylhet</eb-text>
+          </eb-card>
+          <eb-card>
+            <eb-text data-en="Total" data-bn="মোট">Total</eb-text>
+          </eb-card>
+        </eb-grid>
+      </div>
+      <pre><code>&lt;eb-grid columns="3"&gt;
+  &lt;eb-card&gt;New orders&lt;/eb-card&gt;
+  &lt;eb-card&gt;Sent to Sylhet&lt;/eb-card&gt;
+  &lt;eb-card&gt;Total&lt;/eb-card&gt;
+&lt;/eb-grid&gt;</code></pre>
+    </main>
+  </body>
+</html>

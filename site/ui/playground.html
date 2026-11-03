@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Playground · ebdfy design system</title>
+    <style>
+      body {
+        margin: 0;
+        background: var(--eb-color-bg);
+      }
+    </style>
+    <script type="module" src="%EB_CDN%/ui/host.js"></script>
+  </head>
+  <body>
+    <eb-admin-chrome
+      app-name="Sample app"
+      src="%EB_SAMPLE_APP%/?store=demo"
+      token-url="/dev/id-token?app=sample"
+      api-url="/dev/graphql"
+      stores-url="/playground"
+    >
+      <a slot="nav" href="/playground" aria-current="page">Sample app</a>
+      <a slot="nav" href="/">Docs</a>
+      <a slot="nav" href="/playground?hang" id="hang">Hang the app</a>
+      <a slot="nav" href="/playground?ended" id="ended">End access</a>
+      <button slot="nav" type="button" id="theme">Dark theme</button>
+    </eb-admin-chrome>
+    <script>
+      // The theme switch flips the Admin between light and dark, starting from the device's theme.
+      const root = document.documentElement
+      const theme = document.querySelector('#theme')
+      const dark = () =>
+        root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
+      const label = () => (theme.textContent = dark() ? 'Light theme' : 'Dark theme')
+      label()
+      theme.addEventListener('click', () => {
+        root.dataset.theme = dark() ? 'light' : 'dark'
+        label()
+      })
+      // ?hang frames a sample page that never answers, so the chrome's notice shows after 15 s.
+      if (new URLSearchParams(location.search).has('hang')) {
+        document.querySelector('eb-admin-chrome').setAttribute('src', '%EB_SAMPLE_APP%/hang?store=demo')
+        const toggle = document.querySelector('#hang')
+        toggle.href = '/playground'
+        toggle.textContent = 'Stop hanging'
+      }
+      // ?ended plays a staff member whose access has ended: the next ID token is refused.
+      if (new URLSearchParams(location.search).has('ended')) {
+        document.querySelector('eb-admin-chrome').setAttribute('token-url', '/dev/id-token?app=sample&ended')
+        const toggle = document.querySelector('#ended')
+        toggle.href = '/playground'
+        toggle.textContent = 'Give access back'
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Badge · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Badge</h1>
+      <p>
+        <code>eb-badge</code> shows the status of an order as a dot and a word. The word carries the status; the
+        <code>tone</code> only repeats it.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div class="row" id="examples" lang="en">
+        <eb-badge tone="attention" data-en="New" data-bn="নতুন">New</eb-badge>
+        <eb-badge tone="critical" data-en="Returned" data-bn="ফেরত এসেছে">Returned</eb-badge>
+        <eb-badge tone="info" data-en="Confirmed" data-bn="কনফার্মড">Confirmed</eb-badge>
+        <eb-badge tone="shipped" data-en="Shipped" data-bn="পাঠানো হয়েছে">Shipped</eb-badge>
+        <eb-badge tone="success" data-en="Paid" data-bn="পরিশোধিত">Paid</eb-badge>
+      </div>
+      <pre><code>&lt;eb-badge tone="attention"&gt;New&lt;/eb-badge&gt;
+&lt;eb-badge tone="critical"&gt;Returned&lt;/eb-badge&gt;
+&lt;eb-badge tone="info"&gt;Confirmed&lt;/eb-badge&gt;
+&lt;eb-badge tone="shipped"&gt;Shipped&lt;/eb-badge&gt;
+&lt;eb-badge tone="success"&gt;Paid&lt;/eb-badge&gt;</code></pre>
+    </main>
+  </body>
+</html>

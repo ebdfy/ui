@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Admin chrome · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="%EB_CDN%/ui/host.js"></script>
+    <script type="module" src="/components.js"></script>
+    <style>
+      .frame {
+        overflow: hidden;
+        border: 1px solid var(--eb-color-divider);
+        border-radius: var(--eb-radius-lg);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Admin chrome</h1>
+      <p>
+        <code>eb-admin-chrome</code> frames an app in the Admin: the title bar, the navigation and the app itself. The
+        app sets its title and its own entries with <code>ebdfy.title</code> and <code>ebdfy.nav</code>. The frame below
+        shows the sample app's orders list.
+      </p>
+      <p>
+        In a window 600 px wide or more the navigation is a 236 px sidebar, with the app's own entries under its name
+        and the title bar beside it. In a narrower window the navigation is a tab bar along the bottom and the app's
+        entries are a strip under the title bar.
+      </p>
+      <p>Limits: a title up to 60 characters, 2 title actions, and up to 8 navigation entries of 24 characters each.</p>
+      <p>
+        The chrome's own words (Discard, Save, Dismiss, Close) follow the page's <code>lang</code>, not the language row
+        below. The row changes only the three links slotted into the chrome and this page's own strings.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div id="examples" lang="en">
+        <div class="frame">
+          <eb-admin-chrome
+            style="height: 560px"
+            app-name="Sample app"
+            src="%EB_SAMPLE_APP%/?store=demo"
+            token-url="/dev/id-token?app=sample"
+            api-url="/dev/graphql"
+            stores-url="/playground"
+          >
+            <a slot="nav" href="#examples" aria-current="page" data-en="Orders" data-bn="অর্ডার">Orders</a>
+            <a slot="nav" href="#examples" data-en="Products" data-bn="পণ্য">Products</a>
+            <a slot="nav" href="#examples" data-en="Customers" data-bn="কাস্টমার">Customers</a>
+          </eb-admin-chrome>
+        </div>
+      </div>
+      <h2>In the app</h2>
+      <pre><code>ebdfy.title('Order #1001', { actions: [{ label: 'Book courier', onAction: book }] })
+ebdfy.nav([
+  { label: 'Orders', path: '/' },
+  { label: 'Order #1001', path: '/order' },
+])</code></pre>
+      <h2>In the host page</h2>
+      <pre><code>&lt;eb-admin-chrome
+  app-name="Sample app"
+  src="https://sample.example.com/?store=demo"
+  token-url="/dev/id-token?app=sample"
+  api-url="/dev/graphql"
+  stores-url="/stores"
+&gt;
+  &lt;a slot="nav" href="/orders" aria-current="page"&gt;Orders&lt;/a&gt;
+  &lt;a slot="nav" href="/products"&gt;Products&lt;/a&gt;
+  &lt;a slot="nav" href="/customers"&gt;Customers&lt;/a&gt;
+&lt;/eb-admin-chrome&gt;</code></pre>
+    </main>
+  </body>
+</html>

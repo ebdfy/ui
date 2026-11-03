@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <meta name="ebdfy-app" content="sample" />
+    <title>Sample app · ebdfy</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      .toolbar {
+        display: flex;
+        justify-content: flex-end;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: var(--eb-space-gap);
+      }
+    </style>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/nav.js"></script>
+    <script type="module">
+      ebdfy.title('Order #1001', {
+        actions: [
+          {
+            label: 'Book courier',
+            onAction: () => ebdfy.modal({ size: 'medium', src: '/book-courier', title: 'Book courier' }),
+          },
+          { label: 'Print', onAction: () => ebdfy.toast('Sent to the printer') },
+        ],
+      })
+
+      // The demo staff member lacks write_orders, so the API refuses the cancel the app could make.
+      document.querySelector('#cancel-order').addEventListener('click', async () => {
+        const { errors } = await ebdfy.fetch('mutation { orderCancel(id: "ord_1001") { userErrors { message } } }')
+        if (errors?.length) ebdfy.toast(errors[0].message, { error: true })
+        else ebdfy.toast('Order cancelled')
+      })
+      // The draft is the app's to remove again, so the toast offers Undo.
+      function duplicate() {
+        ebdfy.toast('Copied to a new draft', {
+          action: { label: 'Undo', onAction: () => ebdfy.toast('Draft removed') },
+        })
+      }
+      document.querySelector('#duplicate').addEventListener('click', duplicate)
+      // The menu hints mod+D, so the key runs Duplicate too. v1 does not export its Apple test, so
+      // the same regex is repeated here.
+      const apple = /Mac|iPhone|iPad|iPod/.test(navigator.userAgent)
+      document.addEventListener('keydown', (event) => {
+        const mod = apple ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey
+        if (event.key.toLowerCase() !== 'd' || !mod || event.altKey || event.shiftKey) return
+        event.preventDefault()
+        duplicate()
+      })
+
+      // Stands in for the ebdfy API's order update, answering with the userErrors it gives.
+      async function updateOrder(input) {
+        await new Promise((resolve) => setTimeout(resolve, 300))
+        const userErrors = []
+        if (!/^01\d{9}$/.test(input.phone)) {
+          userErrors.push({
+            field: ['phone'],
+            code: 'INVALID_PHONE',
+            message: 'Enter an 11-digit phone starting with 01.',
+          })
+        }
+        if (!input.address.area.trim()) {
+          userErrors.push({ field: ['address', 'area'], code: 'INVALID', message: 'Name the area.' })
+        }
+        return { order: userErrors.length ? null : input, userErrors }
+      }
+
+      // address.area in the form is { address: { area } } in the API's input.
+      function inputOf(form) {
+        const input = {}
+        for (const [name, value] of new FormData(form)) {
+          const path = name.split('.')
+          let at = input
+          for (const key of path.slice(0, -1)) at = at[key] ??= {}
+          at[path.at(-1)] = value
+        }
+        return input
+      }
+
+      const form = document.querySelector('#order')
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault()
+        const { userErrors } = await updateOrder(inputOf(form))
+        ebdfy.showErrors(form, userErrors)
+        if (!userErrors.length) ebdfy.toast('Saved')
+      })
+    </script>
+  </head>
+  <body>
+    <eb-page>
+      <eb-text variant="meta" data-store-name></eb-text>
+      <eb-card heading="Order #1001">
+        <div class="toolbar">
+          <eb-menu label="More actions">
+            <eb-button slot="trigger">More</eb-button>
+            <eb-menu-item id="duplicate" shortcut="mod+d">Duplicate</eb-menu-item>
+            <eb-menu-item id="cancel-order" tone="critical">Cancel order</eb-menu-item>
+          </eb-menu>
+        </div>
+        <eb-banner tone="danger"
+          >3 of this number's 5 orders came back. Take the delivery charge in advance by bKash.</eb-banner
+        >
+        <p>Edit the order, then save or discard from the bar above.</p>
+        <form id="order" data-save-bar novalidate>
+          <eb-text-field name="name" label="Customer" value="Rahim Uddin"></eb-text-field>
+          <eb-phone-field name="phone" label="Phone" value="01707071591"></eb-phone-field>
+          <eb-district-picker name="address" district="Dhaka" area="Mirpur"></eb-district-picker>
+          <eb-text-area name="note" label="Note" value="Call before delivery."></eb-text-area>
+        </form>
+      </eb-card>
+    </eb-page>
+  </body>
+</html>

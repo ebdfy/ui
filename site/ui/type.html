@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Bangla type · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <style>
+      /* Each sample clips at its own line boxes, so a mark that rises above the first line or
+         falls below the last one shows as cut. */
+      [data-sample] {
+        overflow: hidden;
+        margin: 0;
+        background: var(--eb-color-surface);
+        box-shadow: 0 0 0 1px var(--eb-color-line);
+      }
+      [data-sample='body'] {
+        font-size: var(--eb-font-size-body);
+        line-height: var(--eb-line-height-body);
+      }
+      [data-sample='heading'] {
+        font-size: var(--eb-font-size-heading-1);
+        font-weight: var(--eb-font-weight-bold);
+        line-height: var(--eb-line-height-heading-1);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar" lang="en">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1 lang="en">Bangla type</h1>
+      <p lang="en">
+        Noto Sans Bengali at the body and largest heading sizes of the Ink scale. Bangla is never below 13 px or a 1.4
+        line height. Look for cut tops on ঊ, ঐ and রেফ, and cut bottoms on ু, ূ and ৃ.
+      </p>
+      <h2 lang="en">Body, 15/24 on a phone and 14/20 on a desktop</h2>
+      <p data-sample="body">ক্ষুদ্র ব্যবসায়ীদের স্বয়ংক্রিয় কুরিয়ার বুকিং</p>
+      <p data-sample="body">ঊর্ধ্বমুখী ঐতিহ্য, শ্রীমঙ্গলের চা, কৃষ্ণচূড়া</p>
+      <h2 lang="en">Heading, 30/42</h2>
+      <p data-sample="heading">ক্ষুদ্র ব্যবসায়ীদের স্বয়ংক্রিয় কুরিয়ার বুকিং</p>
+      <p data-sample="heading">ঊর্ধ্বমুখী ঐতিহ্য, শ্রীমঙ্গলের চা, কৃষ্ণচূড়া</p>
+    </main>
+  </body>
+</html>

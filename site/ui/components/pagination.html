@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Pagination · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Pagination</h1>
+      <p>
+        <code>eb-pagination</code> moves between pages of orders by cursor, so it knows only whether a page exists on
+        each side. Set <code>has-previous</code> and <code>has-next</code>; a button without its page is disabled. It
+        sends <code>eb-previous</code> and <code>eb-next</code> when a button is pressed.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div id="examples" lang="en">
+        <p data-en="Orders 21 to 40, with pages on both sides." data-bn="২১ থেকে ৪০ নম্বর অর্ডার, দুই পাশেই পাতা আছে।">
+          Orders 21 to 40, with pages on both sides.
+        </p>
+        <eb-pagination has-previous has-next></eb-pagination>
+      </div>
+      <pre><code>&lt;eb-pagination has-previous has-next&gt;&lt;/eb-pagination&gt;</code></pre>
+    </main>
+  </body>
+</html>

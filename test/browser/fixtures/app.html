@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="ebdfy-app" content="sample" />
+    <script type="module">
+      import '/src/v1.ts'
+      const asked = new URLSearchParams(location.search)
+      // Each title action counts its taps in a toast, or opens the sheet when the page asks.
+      const taps = {}
+      const action = (label) => ({
+        label,
+        onAction() {
+          taps[label] = (taps[label] ?? 0) + 1
+          if (asked.has('modal')) ebdfy.modal({ src: '/test/browser/fixtures/sheet.html', title: label })
+          else ebdfy.toast(`${label} ran ${taps[label]}`)
+        },
+      })
+      const actions = asked.has('actions') ? { actions: JSON.parse(asked.get('actions')).map(action) } : undefined
+      ebdfy.title(asked.get('title') ?? 'Orders', actions)
+      for (const entries of asked.getAll('nav')) ebdfy.nav(JSON.parse(entries))
+      if (asked.has('loading')) ebdfy.loading(true)
+      if (asked.get('loading') === 'done') setTimeout(() => ebdfy.loading(false), 300)
+      // With undo, each toast carries an Undo that shows in the title how often it ran.
+      let undone = 0
+      const undo = {
+        label: 'Undo',
+        onAction() {
+          undone += 1
+          ebdfy.title(`Undone ${undone}`)
+        },
+      }
+      // With theme, the title says the page's background token and how many theme messages came.
+      if (asked.has('theme')) {
+        let themes = 0
+        const report = () =>
+          ebdfy.title(
+            `${getComputedStyle(document.documentElement).getPropertyValue('--eb-color-bg').trim()} ${themes}`,
+          )
+        addEventListener('message', (event) => {
+          if (event.data?.type !== 'theme') return
+          themes += 1
+          setTimeout(report)
+        })
+        report()
+      }
+      for (const message of asked.getAll('toast')) {
+        ebdfy.toast(message, { error: asked.has('error'), action: asked.has('undo') ? undo : undefined })
+      }
+    </script>
+  </head>
+  <body></body>
+</html>

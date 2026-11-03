@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Heading · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+    <style>
+      .stack {
+        display: grid;
+        gap: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Heading</h1>
+      <p>
+        <code>eb-heading</code> sets a title at level 1, 2 or 3. Pick the level for the outline of the page, not for the
+        size you want.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div class="stack" id="examples" lang="en">
+        <eb-heading level="1" data-en="Orders" data-bn="অর্ডার">Orders</eb-heading>
+        <eb-heading level="2" data-en="New orders" data-bn="নতুন অর্ডার">New orders</eb-heading>
+        <eb-heading level="3" data-en="Sent to Sylhet" data-bn="সিলেটে পাঠানো">Sent to Sylhet</eb-heading>
+      </div>
+      <pre><code>&lt;eb-heading level="1"&gt;Orders&lt;/eb-heading&gt;
+&lt;eb-heading level="2"&gt;New orders&lt;/eb-heading&gt;
+&lt;eb-heading level="3"&gt;Sent to Sylhet&lt;/eb-heading&gt;</code></pre>
+    </main>
+  </body>
+</html>

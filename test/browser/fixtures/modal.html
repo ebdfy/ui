@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="ebdfy-app" content="sample" />
+    <script type="module">
+      import '/src/v1.ts'
+      const asked = new URLSearchParams(location.search)
+      ebdfy.title('Order')
+      if (asked.has('at-start')) ebdfy.modal({ src: '/test/browser/fixtures/sheet.html', title: 'Book courier' })
+      document.querySelector('#book').addEventListener('click', () => {
+        ebdfy.modal({
+          size: asked.get('size') ?? 'medium',
+          src: asked.get('src') ?? '/test/browser/fixtures/sheet.html',
+          title: 'Book courier',
+        })
+        // An app that moves on by itself while its modal is open.
+        if (asked.has('then-go'))
+          setTimeout(() => location.assign('/test/browser/fixtures/app.html?title=Next+page'), 300)
+      })
+      // The chrome cannot see into this frame, so the title says which button has focus.
+      document.addEventListener('focusin', (event) => ebdfy.title(`Focused: ${event.target.textContent}`))
+      window.addEventListener('blur', () => ebdfy.title('Focused: none'))
+    </script>
+  </head>
+  <body>
+    <button id="book" type="button">Book courier</button>
+  </body>
+</html>

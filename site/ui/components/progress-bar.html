@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Progress bar · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Progress bar</h1>
+      <p>
+        <code>eb-progress-bar</code> is a thin bar that fills the width of its row. <code>value</code> is 0 to 100 and
+        sets how much of the bar is filled. With no <code>value</code> the bar is indeterminate: a block slides along it
+        while the work goes on. <code>label</code> names the bar for a screen reader.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div class="stack" id="examples" lang="en">
+        <eb-text data-en="New orders" data-bn="নতুন অর্ডার">New orders</eb-text>
+        <eb-progress-bar value="40" label="New orders" data-label-en="New orders" data-label-bn="নতুন অর্ডার">
+        </eb-progress-bar>
+        <eb-text data-en="Loading the order." data-bn="অর্ডার লোড হচ্ছে।">Loading the order.</eb-text>
+        <eb-progress-bar
+          label="Loading the order."
+          data-label-en="Loading the order."
+          data-label-bn="অর্ডার লোড হচ্ছে।"
+        >
+        </eb-progress-bar>
+      </div>
+      <pre><code>&lt;eb-progress-bar value="40" label="New orders"&gt;&lt;/eb-progress-bar&gt;
+&lt;eb-progress-bar label="Loading the order."&gt;&lt;/eb-progress-bar&gt;</code></pre>
+    </main>
+  </body>
+</html>

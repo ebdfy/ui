@@ -1,0 +1,755 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Foundations · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <style>
+      main > section {
+        margin-top: 32px;
+      }
+      main > section > * + * {
+        margin-top: 12px;
+      }
+      code {
+        font-size: var(--eb-font-size-meta);
+        line-height: var(--eb-line-height-meta);
+      }
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .note {
+        margin: 0;
+        color: var(--eb-color-text-2);
+        font-size: var(--eb-font-size-meta);
+        line-height: var(--eb-line-height-meta);
+      }
+
+      /* Colour: two panels, each forcing one theme for its subtree. */
+      .panels {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+        gap: 16px;
+      }
+      .panel {
+        padding: 16px;
+        border-radius: var(--eb-radius-lg);
+        background: var(--eb-color-bg);
+        box-shadow: 0 0 0 1px var(--eb-color-edge);
+        color: var(--eb-color-text);
+      }
+      .panel h3 {
+        margin: 0 0 12px;
+        font-size: var(--eb-font-size-body);
+        line-height: var(--eb-line-height-body);
+        font-weight: 600;
+      }
+      .swatches {
+        display: grid;
+        gap: 8px;
+      }
+      .swatches li {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+      .chip {
+        flex: none;
+        width: 32px;
+        height: 32px;
+        border-radius: var(--eb-radius-sm);
+        background: var(--c);
+        box-shadow: 0 0 0 1px var(--eb-color-edge);
+      }
+      .name {
+        min-width: 0;
+        overflow-wrap: anywhere;
+        font-size: var(--eb-font-size-meta);
+        line-height: var(--eb-line-height-meta);
+      }
+
+      /* Type: one row per step, an English and a Bangla sample, then the weights. */
+      .step {
+        padding: 12px 0;
+        border-top: 1px solid var(--eb-color-divider);
+      }
+      .step > * + * {
+        margin-top: 4px;
+      }
+      .step > p {
+        margin: 0;
+      }
+      .step h3 {
+        margin: 0;
+        color: var(--eb-color-text-2);
+        font-size: var(--eb-font-size-meta);
+        line-height: var(--eb-line-height-meta);
+        font-weight: 500;
+      }
+      .step [data-sample] {
+        font-size: var(--size);
+        line-height: var(--line);
+      }
+      .step [data-sample='bn'] {
+        font-size: var(--bn-size, var(--size));
+        line-height: var(--bn-line, var(--line));
+      }
+      .weights {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 16px;
+        font-size: var(--size);
+        line-height: var(--line);
+      }
+      [data-step='caption'] {
+        --size: var(--eb-font-size-caption);
+        --line: var(--eb-line-height-caption);
+      }
+      [data-step='meta'] {
+        --size: var(--eb-font-size-meta);
+        --line: var(--eb-line-height-meta);
+      }
+      [data-step='body-desktop'] {
+        --size: 14px;
+        --line: 20px;
+      }
+      [data-step='body-phone'] {
+        --size: 15px;
+        --line: 24px;
+      }
+      [data-step='heading-3'] {
+        --size: var(--eb-font-size-heading-3);
+        --line: var(--eb-line-height-heading-3);
+      }
+      [data-step='heading-2'] {
+        --size: var(--eb-font-size-heading-2);
+        --line: var(--eb-line-height-heading-2);
+      }
+      [data-step='heading-1'] {
+        --size: var(--eb-font-size-heading-1);
+        --line: var(--eb-line-height-heading-1);
+      }
+      [data-step='heading-1'] [data-sample='bn'] {
+        line-height: 42px;
+      }
+
+      /* Layout scales. */
+      .boxes {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 16px;
+      }
+      .boxes figure {
+        display: grid;
+        justify-items: start;
+        gap: 4px;
+        margin: 0;
+        font-size: var(--eb-font-size-meta);
+        line-height: var(--eb-line-height-meta);
+      }
+      .space {
+        background: var(--eb-color-accent);
+      }
+      .radius {
+        width: 56px;
+        height: 56px;
+        background: var(--eb-color-surface-3);
+        box-shadow: 0 0 0 1px var(--eb-color-edge);
+      }
+      .depth {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+        gap: 24px;
+        padding: 24px;
+        border-radius: var(--eb-radius-lg);
+        background: var(--eb-color-bg);
+      }
+      .depth div {
+        padding: 16px;
+        border-radius: var(--eb-radius-lg);
+        background: var(--eb-color-surface);
+        font-size: var(--eb-font-size-meta);
+        line-height: var(--eb-line-height-meta);
+      }
+      .depth div[data-depth='1'] {
+        box-shadow: var(--eb-shadow-1);
+      }
+      .depth div[data-depth='2'] {
+        box-shadow: var(--eb-shadow-2);
+      }
+      .depth div[data-depth='3'] {
+        box-shadow: var(--eb-shadow-3);
+      }
+      .icons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      .icons figure {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 12px;
+        border-radius: var(--eb-radius-md);
+        background: var(--eb-color-surface);
+        box-shadow: 0 0 0 1px var(--eb-color-divider);
+        font-size: var(--eb-font-size-meta);
+        line-height: var(--eb-line-height-meta);
+      }
+      .icons .sizes {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .icons svg {
+        flex: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Foundations</h1>
+      <p>
+        The Ink tokens every component reads: colour, type, spacing, radii, depth and icons. Each one is a CSS custom
+        property on <code>:root</code>, and an element with <code>data-theme</code> takes that theme for its subtree.
+      </p>
+
+      <section id="colour">
+        <h2>Colour</h2>
+        <p class="note">Light and dark side by side, whatever theme the page is in.</p>
+        <div class="panels">
+          <div class="panel" data-theme="light" data-panel="light">
+            <h3>Light</h3>
+            <ul class="swatches">
+              <li data-token="--eb-color-bg" style="--c: var(--eb-color-bg)">
+                <span class="chip"></span><span class="name">--eb-color-bg</span>
+              </li>
+              <li data-token="--eb-color-surface" style="--c: var(--eb-color-surface)">
+                <span class="chip"></span><span class="name">--eb-color-surface</span>
+              </li>
+              <li data-token="--eb-color-surface-2" style="--c: var(--eb-color-surface-2)">
+                <span class="chip"></span><span class="name">--eb-color-surface-2</span>
+              </li>
+              <li data-token="--eb-color-surface-3" style="--c: var(--eb-color-surface-3)">
+                <span class="chip"></span><span class="name">--eb-color-surface-3</span>
+              </li>
+              <li data-token="--eb-color-divider" style="--c: var(--eb-color-divider)">
+                <span class="chip"></span><span class="name">--eb-color-divider</span>
+              </li>
+              <li data-token="--eb-color-edge" style="--c: var(--eb-color-edge)">
+                <span class="chip"></span><span class="name">--eb-color-edge</span>
+              </li>
+              <li data-token="--eb-color-control" style="--c: var(--eb-color-control)">
+                <span class="chip"></span><span class="name">--eb-color-control</span>
+              </li>
+              <li data-token="--eb-color-text" style="--c: var(--eb-color-text)">
+                <span class="chip"></span><span class="name">--eb-color-text</span>
+              </li>
+              <li data-token="--eb-color-text-2" style="--c: var(--eb-color-text-2)">
+                <span class="chip"></span><span class="name">--eb-color-text-2</span>
+              </li>
+              <li data-token="--eb-color-text-3" style="--c: var(--eb-color-text-3)">
+                <span class="chip"></span><span class="name">--eb-color-text-3</span>
+              </li>
+              <li data-token="--eb-color-primary" style="--c: var(--eb-color-primary)">
+                <span class="chip"></span><span class="name">--eb-color-primary</span>
+              </li>
+              <li data-token="--eb-color-primary-hi" style="--c: var(--eb-color-primary-hi)">
+                <span class="chip"></span><span class="name">--eb-color-primary-hi</span>
+              </li>
+              <li data-token="--eb-color-on-primary" style="--c: var(--eb-color-on-primary)">
+                <span class="chip"></span><span class="name">--eb-color-on-primary</span>
+              </li>
+              <li data-token="--eb-color-accent" style="--c: var(--eb-color-accent)">
+                <span class="chip"></span><span class="name">--eb-color-accent</span>
+              </li>
+              <li data-token="--eb-color-accent-soft" style="--c: var(--eb-color-accent-soft)">
+                <span class="chip"></span><span class="name">--eb-color-accent-soft</span>
+              </li>
+              <li data-token="--eb-color-focus" style="--c: var(--eb-color-focus)">
+                <span class="chip"></span><span class="name">--eb-color-focus</span>
+              </li>
+              <li data-token="--eb-color-new" style="--c: var(--eb-color-new)">
+                <span class="chip"></span><span class="name">--eb-color-new</span>
+              </li>
+              <li data-token="--eb-color-new-bg" style="--c: var(--eb-color-new-bg)">
+                <span class="chip"></span><span class="name">--eb-color-new-bg</span>
+              </li>
+              <li data-token="--eb-color-new-fg" style="--c: var(--eb-color-new-fg)">
+                <span class="chip"></span><span class="name">--eb-color-new-fg</span>
+              </li>
+              <li data-token="--eb-color-shipped" style="--c: var(--eb-color-shipped)">
+                <span class="chip"></span><span class="name">--eb-color-shipped</span>
+              </li>
+              <li data-token="--eb-color-paid" style="--c: var(--eb-color-paid)">
+                <span class="chip"></span><span class="name">--eb-color-paid</span>
+              </li>
+              <li data-token="--eb-color-danger" style="--c: var(--eb-color-danger)">
+                <span class="chip"></span><span class="name">--eb-color-danger</span>
+              </li>
+              <li data-token="--eb-color-on-danger" style="--c: var(--eb-color-on-danger)">
+                <span class="chip"></span><span class="name">--eb-color-on-danger</span>
+              </li>
+              <li data-token="--eb-color-danger-text" style="--c: var(--eb-color-danger-text)">
+                <span class="chip"></span><span class="name">--eb-color-danger-text</span>
+              </li>
+              <li data-token="--eb-color-danger-soft" style="--c: var(--eb-color-danger-soft)">
+                <span class="chip"></span><span class="name">--eb-color-danger-soft</span>
+              </li>
+              <li data-token="--eb-color-danger-edge" style="--c: var(--eb-color-danger-edge)">
+                <span class="chip"></span><span class="name">--eb-color-danger-edge</span>
+              </li>
+              <li data-token="--eb-color-scrim" style="--c: var(--eb-color-scrim)">
+                <span class="chip"></span><span class="name">--eb-color-scrim</span>
+              </li>
+              <li data-token="--eb-color-inverse" style="--c: var(--eb-color-inverse)">
+                <span class="chip"></span><span class="name">--eb-color-inverse</span>
+              </li>
+              <li data-token="--eb-color-on-inverse" style="--c: var(--eb-color-on-inverse)">
+                <span class="chip"></span><span class="name">--eb-color-on-inverse</span>
+              </li>
+              <li data-token="--eb-color-inverse-act" style="--c: var(--eb-color-inverse-act)">
+                <span class="chip"></span><span class="name">--eb-color-inverse-act</span>
+              </li>
+              <li data-token="--eb-color-inverse-edge" style="--c: var(--eb-color-inverse-edge)">
+                <span class="chip"></span><span class="name">--eb-color-inverse-edge</span>
+              </li>
+              <li data-token="--eb-color-knob" style="--c: var(--eb-color-knob)">
+                <span class="chip"></span><span class="name">--eb-color-knob</span>
+              </li>
+              <li data-token="--eb-color-chrome" style="--c: var(--eb-color-chrome)">
+                <span class="chip"></span><span class="name">--eb-color-chrome</span>
+              </li>
+              <li data-token="--eb-color-chrome-active" style="--c: var(--eb-color-chrome-active)">
+                <span class="chip"></span><span class="name">--eb-color-chrome-active</span>
+              </li>
+              <li data-token="--eb-color-overlay-edge" style="--c: var(--eb-color-overlay-edge)">
+                <span class="chip"></span><span class="name">--eb-color-overlay-edge</span>
+              </li>
+            </ul>
+          </div>
+          <div class="panel" data-theme="dark" data-panel="dark">
+            <h3>Dark</h3>
+            <ul class="swatches">
+              <li data-token="--eb-color-bg" style="--c: var(--eb-color-bg)">
+                <span class="chip"></span><span class="name">--eb-color-bg</span>
+              </li>
+              <li data-token="--eb-color-surface" style="--c: var(--eb-color-surface)">
+                <span class="chip"></span><span class="name">--eb-color-surface</span>
+              </li>
+              <li data-token="--eb-color-surface-2" style="--c: var(--eb-color-surface-2)">
+                <span class="chip"></span><span class="name">--eb-color-surface-2</span>
+              </li>
+              <li data-token="--eb-color-surface-3" style="--c: var(--eb-color-surface-3)">
+                <span class="chip"></span><span class="name">--eb-color-surface-3</span>
+              </li>
+              <li data-token="--eb-color-divider" style="--c: var(--eb-color-divider)">
+                <span class="chip"></span><span class="name">--eb-color-divider</span>
+              </li>
+              <li data-token="--eb-color-edge" style="--c: var(--eb-color-edge)">
+                <span class="chip"></span><span class="name">--eb-color-edge</span>
+              </li>
+              <li data-token="--eb-color-control" style="--c: var(--eb-color-control)">
+                <span class="chip"></span><span class="name">--eb-color-control</span>
+              </li>
+              <li data-token="--eb-color-text" style="--c: var(--eb-color-text)">
+                <span class="chip"></span><span class="name">--eb-color-text</span>
+              </li>
+              <li data-token="--eb-color-text-2" style="--c: var(--eb-color-text-2)">
+                <span class="chip"></span><span class="name">--eb-color-text-2</span>
+              </li>
+              <li data-token="--eb-color-text-3" style="--c: var(--eb-color-text-3)">
+                <span class="chip"></span><span class="name">--eb-color-text-3</span>
+              </li>
+              <li data-token="--eb-color-primary" style="--c: var(--eb-color-primary)">
+                <span class="chip"></span><span class="name">--eb-color-primary</span>
+              </li>
+              <li data-token="--eb-color-primary-hi" style="--c: var(--eb-color-primary-hi)">
+                <span class="chip"></span><span class="name">--eb-color-primary-hi</span>
+              </li>
+              <li data-token="--eb-color-on-primary" style="--c: var(--eb-color-on-primary)">
+                <span class="chip"></span><span class="name">--eb-color-on-primary</span>
+              </li>
+              <li data-token="--eb-color-accent" style="--c: var(--eb-color-accent)">
+                <span class="chip"></span><span class="name">--eb-color-accent</span>
+              </li>
+              <li data-token="--eb-color-accent-soft" style="--c: var(--eb-color-accent-soft)">
+                <span class="chip"></span><span class="name">--eb-color-accent-soft</span>
+              </li>
+              <li data-token="--eb-color-focus" style="--c: var(--eb-color-focus)">
+                <span class="chip"></span><span class="name">--eb-color-focus</span>
+              </li>
+              <li data-token="--eb-color-new" style="--c: var(--eb-color-new)">
+                <span class="chip"></span><span class="name">--eb-color-new</span>
+              </li>
+              <li data-token="--eb-color-new-bg" style="--c: var(--eb-color-new-bg)">
+                <span class="chip"></span><span class="name">--eb-color-new-bg</span>
+              </li>
+              <li data-token="--eb-color-new-fg" style="--c: var(--eb-color-new-fg)">
+                <span class="chip"></span><span class="name">--eb-color-new-fg</span>
+              </li>
+              <li data-token="--eb-color-shipped" style="--c: var(--eb-color-shipped)">
+                <span class="chip"></span><span class="name">--eb-color-shipped</span>
+              </li>
+              <li data-token="--eb-color-paid" style="--c: var(--eb-color-paid)">
+                <span class="chip"></span><span class="name">--eb-color-paid</span>
+              </li>
+              <li data-token="--eb-color-danger" style="--c: var(--eb-color-danger)">
+                <span class="chip"></span><span class="name">--eb-color-danger</span>
+              </li>
+              <li data-token="--eb-color-on-danger" style="--c: var(--eb-color-on-danger)">
+                <span class="chip"></span><span class="name">--eb-color-on-danger</span>
+              </li>
+              <li data-token="--eb-color-danger-text" style="--c: var(--eb-color-danger-text)">
+                <span class="chip"></span><span class="name">--eb-color-danger-text</span>
+              </li>
+              <li data-token="--eb-color-danger-soft" style="--c: var(--eb-color-danger-soft)">
+                <span class="chip"></span><span class="name">--eb-color-danger-soft</span>
+              </li>
+              <li data-token="--eb-color-danger-edge" style="--c: var(--eb-color-danger-edge)">
+                <span class="chip"></span><span class="name">--eb-color-danger-edge</span>
+              </li>
+              <li data-token="--eb-color-scrim" style="--c: var(--eb-color-scrim)">
+                <span class="chip"></span><span class="name">--eb-color-scrim</span>
+              </li>
+              <li data-token="--eb-color-inverse" style="--c: var(--eb-color-inverse)">
+                <span class="chip"></span><span class="name">--eb-color-inverse</span>
+              </li>
+              <li data-token="--eb-color-on-inverse" style="--c: var(--eb-color-on-inverse)">
+                <span class="chip"></span><span class="name">--eb-color-on-inverse</span>
+              </li>
+              <li data-token="--eb-color-inverse-act" style="--c: var(--eb-color-inverse-act)">
+                <span class="chip"></span><span class="name">--eb-color-inverse-act</span>
+              </li>
+              <li data-token="--eb-color-inverse-edge" style="--c: var(--eb-color-inverse-edge)">
+                <span class="chip"></span><span class="name">--eb-color-inverse-edge</span>
+              </li>
+              <li data-token="--eb-color-knob" style="--c: var(--eb-color-knob)">
+                <span class="chip"></span><span class="name">--eb-color-knob</span>
+              </li>
+              <li data-token="--eb-color-chrome" style="--c: var(--eb-color-chrome)">
+                <span class="chip"></span><span class="name">--eb-color-chrome</span>
+              </li>
+              <li data-token="--eb-color-chrome-active" style="--c: var(--eb-color-chrome-active)">
+                <span class="chip"></span><span class="name">--eb-color-chrome-active</span>
+              </li>
+              <li data-token="--eb-color-overlay-edge" style="--c: var(--eb-color-overlay-edge)">
+                <span class="chip"></span><span class="name">--eb-color-overlay-edge</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="type">
+        <h2>Type</h2>
+        <p class="note">
+          Size and line height per step, with an English and a Bangla sample. Weights are 400, 500, 600 and, from 22 px
+          up, 650. Bangla never goes below 13 px, so the caption has no Bangla sample.
+        </p>
+        <div class="step" data-step="caption">
+          <h3>Caption, 12/16 (Latin only)</h3>
+          <p data-sample="en">Order 1042 shipped from Dhaka</p>
+          <div class="weights">
+            <span data-weight style="font-weight: var(--eb-font-weight-regular)">400</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-medium)">500</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-semibold)">600</span>
+          </div>
+        </div>
+        <div class="step" data-step="meta">
+          <h3>Meta, 13/20</h3>
+          <p data-sample="en">Order 1042 shipped from Dhaka</p>
+          <p data-sample="bn" lang="bn">ঢাকা থেকে অর্ডার পাঠানো হয়েছে</p>
+          <div class="weights">
+            <span data-weight style="font-weight: var(--eb-font-weight-regular)">400</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-medium)">500</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-semibold)">600</span>
+          </div>
+        </div>
+        <div class="step" data-step="body-desktop">
+          <h3>Body on desktop, 14/20</h3>
+          <p data-sample="en">Order 1042 shipped from Dhaka</p>
+          <p data-sample="bn" lang="bn">ঢাকা থেকে অর্ডার পাঠানো হয়েছে</p>
+          <div class="weights">
+            <span data-weight style="font-weight: var(--eb-font-weight-regular)">400</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-medium)">500</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-semibold)">600</span>
+          </div>
+        </div>
+        <div class="step" data-step="body-phone">
+          <h3>Body on a phone, 15/24</h3>
+          <p data-sample="en">Order 1042 shipped from Dhaka</p>
+          <p data-sample="bn" lang="bn">ঢাকা থেকে অর্ডার পাঠানো হয়েছে</p>
+          <div class="weights">
+            <span data-weight style="font-weight: var(--eb-font-weight-regular)">400</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-medium)">500</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-semibold)">600</span>
+          </div>
+        </div>
+        <div class="step" data-step="heading-3">
+          <h3>Heading 3, 17/24</h3>
+          <p data-sample="en">Order 1042 shipped</p>
+          <p data-sample="bn" lang="bn">অর্ডার পাঠানো হয়েছে</p>
+          <div class="weights">
+            <span data-weight style="font-weight: var(--eb-font-weight-regular)">400</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-medium)">500</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-semibold)">600</span>
+          </div>
+        </div>
+        <div class="step" data-step="heading-2">
+          <h3>Heading 2, 22/32</h3>
+          <p data-sample="en">Order 1042 shipped</p>
+          <p data-sample="bn" lang="bn">অর্ডার পাঠানো হয়েছে</p>
+          <div class="weights">
+            <span data-weight style="font-weight: var(--eb-font-weight-regular)">400</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-medium)">500</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-semibold)">600</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-bold)">650</span>
+          </div>
+        </div>
+        <div class="step" data-step="heading-1">
+          <h3>Heading 1, 30/40 (30/42 in Bangla)</h3>
+          <p data-sample="en">Order 1042 shipped</p>
+          <p data-sample="bn" lang="bn">অর্ডার পাঠানো হয়েছে</p>
+          <div class="weights">
+            <span data-weight style="font-weight: var(--eb-font-weight-regular)">400</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-medium)">500</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-semibold)">600</span>
+            <span data-weight style="font-weight: var(--eb-font-weight-bold)">650</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="spacing">
+        <h2>Spacing</h2>
+        <p class="note">A 4 px grid. Boxes at 4, 8, 12, 16, 24 and 32 px.</p>
+        <div class="boxes">
+          <figure><span class="space" style="width: 4px; height: 4px"></span>4 px</figure>
+          <figure><span class="space" style="width: 8px; height: 8px"></span>8 px</figure>
+          <figure><span class="space" style="width: 12px; height: 12px"></span>12 px</figure>
+          <figure><span class="space" style="width: 16px; height: 16px"></span>16 px</figure>
+          <figure><span class="space" style="width: 24px; height: 24px"></span>24 px</figure>
+          <figure><span class="space" style="width: 32px; height: 32px"></span>32 px</figure>
+        </div>
+      </section>
+
+      <section id="radii">
+        <h2>Radii</h2>
+        <div class="boxes">
+          <figure><span class="radius" style="border-radius: var(--eb-radius-sm)"></span>6 px, sm</figure>
+          <figure><span class="radius" style="border-radius: var(--eb-radius-md)"></span>8 px, md</figure>
+          <figure><span class="radius" style="border-radius: var(--eb-radius-lg)"></span>12 px, lg</figure>
+          <figure>
+            <span class="radius" style="width: 96px; border-radius: var(--eb-radius-pill)"></span>
+            Pill
+          </figure>
+        </div>
+      </section>
+
+      <section id="depth">
+        <h2>Depth</h2>
+        <p class="note">Every level sits on the surface colour. Only the shadow steps.</p>
+        <div class="depth">
+          <div data-depth="1">Level 1, <code>--eb-shadow-1</code></div>
+          <div data-depth="2">Level 2, <code>--eb-shadow-2</code></div>
+          <div data-depth="3">Level 3, <code>--eb-shadow-3</code></div>
+        </div>
+      </section>
+
+      <section id="icons">
+        <h2>Icons</h2>
+        <p class="note">Lucide, drawn at 16 and 20 px with a 1.5 px stroke.</p>
+        <div class="icons">
+          <figure data-icon="chevronLeft">
+            <span class="sizes">
+              <svg
+                data-size="16"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m15 18-6-6 6-6" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+              </svg>
+              <svg
+                data-size="20"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m15 18-6-6 6-6" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+              </svg>
+            </span>
+            chevronLeft
+          </figure>
+          <figure data-icon="chevronRight">
+            <span class="sizes">
+              <svg
+                data-size="16"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m9 18 6-6-6-6" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+              </svg>
+              <svg
+                data-size="20"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m9 18 6-6-6-6" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+              </svg>
+            </span>
+            chevronRight
+          </figure>
+          <figure data-icon="image">
+            <span class="sizes">
+              <svg
+                data-size="16"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect
+                  width="18"
+                  height="18"
+                  x="3"
+                  y="3"
+                  rx="2"
+                  ry="2"
+                  stroke-width="1.5"
+                  vector-effect="non-scaling-stroke"
+                />
+                <circle cx="9" cy="9" r="2" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+                <path
+                  d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"
+                  stroke-width="1.5"
+                  vector-effect="non-scaling-stroke"
+                />
+              </svg>
+              <svg
+                data-size="20"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect
+                  width="18"
+                  height="18"
+                  x="3"
+                  y="3"
+                  rx="2"
+                  ry="2"
+                  stroke-width="1.5"
+                  vector-effect="non-scaling-stroke"
+                />
+                <circle cx="9" cy="9" r="2" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+                <path
+                  d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"
+                  stroke-width="1.5"
+                  vector-effect="non-scaling-stroke"
+                />
+              </svg>
+            </span>
+            image
+          </figure>
+          <figure data-icon="close">
+            <span class="sizes">
+              <svg
+                data-size="16"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M18 6 6 18" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+                <path d="m6 6 12 12" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+              </svg>
+              <svg
+                data-size="20"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M18 6 6 18" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+                <path d="m6 6 12 12" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+              </svg>
+            </span>
+            close
+          </figure>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <meta name="ebdfy-app" content="sample" />
+    <title>Book courier · Sample app · ebdfy</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100dvh;
+        margin: 0;
+      }
+      eb-page {
+        flex: 1;
+      }
+    </style>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module">
+      // Shown by the order page in the Admin's modal: a sheet on a phone, a dialog on a desktop.
+      const couriers = document.querySelector('eb-choice-list')
+      document.querySelector('#cancel').addEventListener('click', () => ebdfy.closeModal())
+      document.querySelector('#book').addEventListener('click', () => {
+        const name = couriers.querySelector(`option[value="${couriers.value}"]`).textContent
+        ebdfy.toast(`Order #1001 booked with ${name}`)
+        ebdfy.closeModal()
+      })
+    </script>
+  </head>
+  <body>
+    <eb-page>
+      <eb-stack>
+        <eb-text>Rahim Uddin, Mirpur, Dhaka. Cash on delivery ৳1,250.</eb-text>
+        <eb-choice-list name="courier" label="Courier" value="pathao">
+          <option value="pathao">Pathao</option>
+          <option value="steadfast">Steadfast</option>
+          <option value="redx">RedX</option>
+        </eb-choice-list>
+      </eb-stack>
+    </eb-page>
+    <eb-bottom-bar>
+      <eb-button-group label="Booking">
+        <eb-button id="cancel">Cancel</eb-button>
+        <eb-button id="book" variant="primary">Book</eb-button>
+      </eb-button-group>
+    </eb-bottom-bar>
+  </body>
+</html>

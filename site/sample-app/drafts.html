@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <meta name="ebdfy-app" content="sample" />
+    <title>Drafts · Sample app · ebdfy</title>
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/nav.js"></script>
+    <script type="module">
+      import { listOrders, showOrders } from '/orders.js'
+
+      ebdfy.title('Drafts')
+      const table = document.querySelector('eb-table')
+      const empty = document.querySelector('eb-empty-state')
+      const { orders } = await listOrders({ drafts: true })
+      showOrders(table, orders, document.documentElement.lang)
+      table.loading = false
+      if (!orders.length) {
+        table.replaceWith(empty)
+        empty.hidden = false
+      }
+    </script>
+  </head>
+  <body>
+    <eb-page>
+      <eb-table label="Drafts" loading>
+        <eb-column card="title">Order</eb-column>
+        <eb-column card="title">Customer</eb-column>
+        <eb-column card="end">Total</eb-column>
+        <eb-column card="meta">Status</eb-column>
+      </eb-table>
+      <eb-empty-state heading="No orders yet" hidden>
+        <p>An order you start in a chat waits here until you confirm it.</p>
+        <eb-button slot="action" variant="primary">Add order</eb-button>
+      </eb-empty-state>
+    </eb-page>
+  </body>
+</html>

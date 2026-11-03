@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <script>
+      // The page plays a browser by query: ?lang=bn sets the page language, ?template drops
+      // declarative shadow DOM, and ?agent claims an old Chrome while keeping it.
+      const asked = new URLSearchParams(location.search)
+      if (asked.has('lang')) document.documentElement.lang = asked.get('lang')
+      if (asked.has('template')) delete HTMLTemplateElement.prototype.shadowRootMode
+      if (asked.has('agent')) {
+        Object.defineProperty(navigator, 'userAgent', {
+          value:
+            'Mozilla/5.0 (Linux; Android 9; SM-J530F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36',
+        })
+      }
+    </script>
+    <script type="module" src="/src/v1.ts"></script>
+  </head>
+  <body>
+    <eb-card heading="Orders"><eb-button variant="primary">Add order</eb-button></eb-card>
+  </body>
+</html>

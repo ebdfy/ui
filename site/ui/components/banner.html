@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Banner · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/">ebdfy design system</a>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+    <main>
+      <h1>Banner</h1>
+      <p>
+        <code>eb-banner</code> puts a message in the page: <code>tone="info"</code>, the default, for a note, and
+        <code>tone="danger"</code> for a risk to act on, such as a customer whose orders keep coming back. Its icon
+        carries a name for screen readers; the banner does not interrupt them.
+      </p>
+      <div class="row" id="language">
+        <eb-button data-lang="en">English</eb-button>
+        <eb-button data-lang="bn">বাংলা</eb-button>
+      </div>
+      <div class="stack" id="examples" lang="en">
+        <eb-banner
+          data-en="Pathao picks up orders booked before 4 pm the same day."
+          data-bn="বিকেল ৪টার আগে বুক করা অর্ডার পাঠাও একই দিনে নিয়ে যায়।"
+          >Pathao picks up orders booked before 4 pm the same day.</eb-banner
+        >
+        <eb-banner
+          tone="danger"
+          data-en="3 of this number's 5 orders came back. Take the delivery charge in advance by bKash."
+          data-bn="এই নম্বরের ৫টি অর্ডারের ৩টি ফেরত এসেছে। ডেলিভারি চার্জ বিকাশে অগ্রিম নিন।"
+          >3 of this number's 5 orders came back. Take the delivery charge in advance by bKash.</eb-banner
+        >
+      </div>
+      <pre><code>&lt;eb-banner&gt;Pathao picks up orders booked before 4 pm the same day.&lt;/eb-banner&gt;
+&lt;eb-banner tone="danger"&gt;3 of this number's 5 orders came back.&lt;/eb-banner&gt;</code></pre>
+    </main>
+  </body>
+</html>
