@@ -1,12 +1,17 @@
 import { css, html } from 'lit'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import { live } from 'lit/directives/live.js'
 
 import { digits, phone as latin } from '../format.ts'
 import { Field } from './field.ts'
 
-// An amount in taka. It submits the plain number and shows it after a ৳ prefix, with lakh grouping in
-// the digits of its language. While it has focus its text is left as typed, so the caret and a selection hold,
-// and it is grouped again once the person leaves it.
+/**
+ * An amount in taka. It submits the plain number and shows it after a ৳ prefix, with lakh grouping in
+ * the digits of its language. While it has focus its text is left as typed, so the caret and a selection hold,
+ * and it is grouped again once the person leaves it.
+ *
+ * @csspart prefix - The ৳ before the number.
+ */
 export class EbTakaField extends Field {
   static override properties = {
     ...Field.properties,
@@ -64,7 +69,7 @@ export class EbTakaField extends Field {
         ?disabled=${this.disabled}
         ?required=${this.required}
         aria-invalid=${this.error ? 'true' : 'false'}
-        aria-describedby="error"
+        aria-describedby=${ifDefined(this.describedBy())}
         @focus=${() => (this.editing = true)}
         @blur=${() => (this.editing = false)}
         @input=${(event: Event) => (this.value = latin(this.textOf(event)).replace(/[^\d.]/g, ''))}

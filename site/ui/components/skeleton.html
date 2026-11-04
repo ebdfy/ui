@@ -11,14 +11,6 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Skeleton</h1>
       <p>
@@ -26,15 +18,11 @@
         to draw; the last of several is shorter. Screen readers skip it, and it stops pulsing when the person asks for
         less motion.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="Loading the order, three lines" caption-bn="অর্ডার লোড হচ্ছে, তিন লাইন" stack>
+          <eb-skeleton lines="3"></eb-skeleton>
+        </docs-example>
       </div>
-      <div id="examples" lang="en">
-        <p data-en="Loading the order." data-bn="অর্ডার লোড হচ্ছে।">Loading the order.</p>
-        <eb-skeleton lines="3"></eb-skeleton>
-      </div>
-      <pre><code>&lt;eb-skeleton lines="3"&gt;&lt;/eb-skeleton&gt;</code></pre>
     </main>
   </body>
 </html>

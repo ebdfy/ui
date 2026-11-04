@@ -11,134 +11,150 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Table</h1>
       <p>
-        <code>eb-table</code> lays out orders as a table on a screen 600 px wide or more and as a list of cards below
-        it. Write an <code>eb-column</code> for each heading, with <code>card</code> naming its place on a phone's card
-        (<code>title</code>, <code>end</code>, <code>meta</code> or <code>status</code>), and an
+        <code>eb-table</code> lays out orders as a table on a screen 600 px wide or more and as one list of rows split
+        by dividers below it. Write an <code>eb-column</code> for each heading, with <code>card</code> naming its place
+        on a phone's card (<code>title</code>, <code>end</code>, <code>meta</code> or <code>status</code>), and an
         <code>eb-row</code> whose children are its cells. A column with <code>grow="2"</code> takes twice the width of
-        one without, which takes 1 share; a phone's cards ignore it. Rows are 44 px, or 40 px with
-        <code>density="compact"</code>. A row with <code>open</code> carries the accent bar of the order on screen
-        beside the list; a <code>selectable</code> table leads with checkboxes, tints a <code>selected</code> row and
-        fires <code>eb-selection</code>. A row's child with <code>card="note"</code> shows under its card on a phone.
-        Rows carry no avatars.
+        one without, which takes 1 share; a phone's cards ignore it. A column with <code>align="end"</code>, such as a
+        total, ends its heading and cells on the right, and every cell draws even-width digits, so amounts line up. A
+        cell stays on one line and ends in an ellipsis when its column is too narrow, with its whole text as its title.
+        As the table narrows, a column with <code>priority="3"</code> steps aside below 900 px and one with
+        <code>priority="2"</code> below 720 px, so keep the order, customer, status and total at the default priority.
+        Rows are 44 px, or 40 px with <code>density="compact"</code>. A row with <code>href</code> opens that address:
+        its first cell is a link to it, a click elsewhere on the row follows it, and the row tints under the pointer. A
+        row with <code>open</code> carries the accent bar of the order on screen beside the list; a
+        <code>selectable</code> table leads with checkboxes, tints a <code>selected</code> row and fires
+        <code>eb-selection</code>. A row's child with <code>card="note"</code> shows under its card on a phone. Rows
+        carry no avatars.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example
+          caption="Selectable, with the open row and the risk note"
+          caption-bn="নির্বাচনযোগ্য, খোলা সারি ও ঝুঁকির নোটসহ"
+          stack
+        >
+          <eb-table selectable label="Orders" data-label-en="Orders" data-label-bn="অর্ডার">
+            <eb-column card="meta" data-en="Order" data-bn="অর্ডার">Order</eb-column>
+            <eb-column card="title" data-en="Customer" data-bn="কাস্টমার">Customer</eb-column>
+            <eb-column card="meta" priority="3" data-en="Area" data-bn="এলাকা">Area</eb-column>
+            <eb-column card="status" data-en="Status" data-bn="অবস্থা">Status</eb-column>
+            <eb-column card="meta" priority="2" data-en="Payment" data-bn="পেমেন্ট">Payment</eb-column>
+            <eb-column card="end" align="end" data-en="Total" data-bn="মোট">Total</eb-column>
+            <eb-row href="#examples">
+              <span>#1042</span>
+              <span><span data-en="Rahim Uddin" data-bn="রহিম উদ্দিন">Rahim Uddin</span></span>
+              <span data-en="Mirpur, Dhaka" data-bn="মিরপুর, ঢাকা">Mirpur, Dhaka</span>
+              <span><eb-badge tone="attention" data-en="New" data-bn="নতুন">New</eb-badge></span>
+              <span data-en="COD" data-bn="COD">COD</span>
+              <span data-en="৳1,250" data-bn="৳১,২৫০">৳1,250</span>
+            </eb-row>
+            <eb-row selected>
+              <span>#1041</span>
+              <span><span data-en="Sumaiya Akter" data-bn="সুমাইয়া আক্তার">Sumaiya Akter</span></span>
+              <span data-en="Agrabad, Chattogram" data-bn="আগ্রাবাদ, চট্টগ্রাম">Agrabad, Chattogram</span>
+              <span><eb-badge tone="info" data-en="Confirmed" data-bn="কনফার্মড">Confirmed</eb-badge></span>
+              <span data-en="bKash ৳120" data-bn="বিকাশ ৳১২০">bKash ৳120</span>
+              <span data-en="৳860" data-bn="৳৮৬০">৳860</span>
+            </eb-row>
+            <eb-row open>
+              <span>#1039</span>
+              <span
+                ><span data-en="Md. Hasan" data-bn="মো. হাসান">Md. Hasan</span>
+                <eb-tooltip text="High return risk" data-text-en="High return risk" data-text-bn="ফেরতের ঝুঁকি বেশি"
+                  ><span role="img" style="color: var(--eb-color-danger-text); display: inline-flex"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                      <path d="M12 9v4" />
+                      <path d="M12 17h.01" /></svg></span></eb-tooltip
+              ></span>
+              <span data-en="Savar, Dhaka" data-bn="সাভার, ঢাকা">Savar, Dhaka</span>
+              <span><eb-badge tone="attention" data-en="New" data-bn="নতুন">New</eb-badge></span>
+              <span data-en="COD" data-bn="COD">COD</span>
+              <span data-en="৳1,800" data-bn="৳১,৮০০">৳1,800</span>
+              <eb-banner
+                card="note"
+                tone="danger"
+                data-en="3 of this customer's 5 orders came back"
+                data-bn="৫টি অর্ডারের ৩টি ফেরত এসেছে"
+                >3 of this customer's 5 orders came back</eb-banner
+              >
+            </eb-row>
+            <eb-row>
+              <span>#1038</span>
+              <span><span data-en="Nasrin Sultana" data-bn="নাসরিন সুলতানা">Nasrin Sultana</span></span>
+              <span data-en="Khulna Sadar, Khulna" data-bn="খুলনা সদর, খুলনা">Khulna Sadar, Khulna</span>
+              <span><eb-courier-status status="RETURNED"></eb-courier-status></span>
+              <span data-en="COD" data-bn="COD">COD</span>
+              <span data-en="৳640" data-bn="৳৬৪০">৳640</span>
+            </eb-row>
+          </eb-table>
+        </docs-example>
+        <docs-example caption="Compact" caption-bn="ঘন সারি" stack>
+          <eb-table
+            density="compact"
+            label="Shipped orders"
+            data-label-en="Shipped orders"
+            data-label-bn="পাঠানো অর্ডার"
+          >
+            <eb-column card="meta" data-en="Order" data-bn="অর্ডার">Order</eb-column>
+            <eb-column card="title" data-en="Customer" data-bn="কাস্টমার">Customer</eb-column>
+            <eb-column card="meta" priority="3" data-en="Area" data-bn="এলাকা">Area</eb-column>
+            <eb-column card="status" data-en="Status" data-bn="অবস্থা">Status</eb-column>
+            <eb-column card="meta" priority="2" data-en="Payment" data-bn="পেমেন্ট">Payment</eb-column>
+            <eb-column card="end" align="end" data-en="Total" data-bn="মোট">Total</eb-column>
+            <eb-row>
+              <span>#1037</span>
+              <span><span data-en="Tanvir Ahmed" data-bn="তানভীর আহমেদ">Tanvir Ahmed</span></span>
+              <span data-en="Rajpara, Rajshahi" data-bn="রাজপাড়া, রাজশাহী">Rajpara, Rajshahi</span>
+              <span><eb-courier-status status="IN_TRANSIT"></eb-courier-status></span>
+              <span data-en="COD" data-bn="COD">COD</span>
+              <span data-en="৳990" data-bn="৳৯৯০">৳990</span>
+            </eb-row>
+            <eb-row>
+              <span>#1036</span>
+              <span><span data-en="Farhana Islam" data-bn="ফারহানা ইসলাম">Farhana Islam</span></span>
+              <span data-en="Uttara, Dhaka" data-bn="উত্তরা, ঢাকা">Uttara, Dhaka</span>
+              <span><eb-courier-status status="DELIVERED"></eb-courier-status></span>
+              <span data-en="COD" data-bn="COD">COD</span>
+              <span data-en="৳1,450" data-bn="৳১,৪৫০">৳1,450</span>
+            </eb-row>
+          </eb-table>
+        </docs-example>
+        <docs-example caption="Plain, with a wider customer column" caption-bn="সাধারণ, চওড়া কাস্টমার কলামসহ" stack>
+          <eb-table label="Orders" data-label-en="Orders" data-label-bn="অর্ডার">
+            <eb-column card="meta" data-en="Order" data-bn="অর্ডার">Order</eb-column>
+            <eb-column card="title" grow="2" data-en="Customer" data-bn="কাস্টমার">Customer</eb-column>
+            <eb-column card="status" data-en="Status" data-bn="অবস্থা">Status</eb-column>
+            <eb-column card="end" align="end" data-en="Total" data-bn="মোট">Total</eb-column>
+            <eb-row>
+              <span>#1035</span>
+              <span><span data-en="Md. Hasan" data-bn="মো. হাসান">Md. Hasan</span></span>
+              <span><eb-badge tone="attention" data-en="New" data-bn="নতুন">New</eb-badge></span>
+              <span data-en="৳1,800" data-bn="৳১,৮০০">৳1,800</span>
+            </eb-row>
+            <eb-row>
+              <span>#1034</span>
+              <span><span data-en="Rahim Uddin" data-bn="রহিম উদ্দিন">Rahim Uddin</span></span>
+              <span><eb-badge tone="info" data-en="Confirmed" data-bn="কনফার্মড">Confirmed</eb-badge></span>
+              <span data-en="৳1,250" data-bn="৳১,২৫০">৳1,250</span>
+            </eb-row>
+          </eb-table>
+        </docs-example>
       </div>
-      <div class="stack" id="examples" lang="en">
-        <eb-table selectable label="Orders" data-label-en="Orders" data-label-bn="অর্ডার">
-          <eb-column card="meta" data-en="Order" data-bn="অর্ডার">Order</eb-column>
-          <eb-column card="title" data-en="Customer" data-bn="কাস্টমার">Customer</eb-column>
-          <eb-column card="meta" data-en="Area" data-bn="এলাকা">Area</eb-column>
-          <eb-column card="status" data-en="Status" data-bn="অবস্থা">Status</eb-column>
-          <eb-column card="meta" data-en="Payment" data-bn="পেমেন্ট">Payment</eb-column>
-          <eb-column card="end" data-en="Total" data-bn="মোট">Total</eb-column>
-          <eb-row>
-            <span>#1042</span>
-            <span><span data-en="Rahim Uddin" data-bn="রহিম উদ্দিন">Rahim Uddin</span></span>
-            <span data-en="Mirpur, Dhaka" data-bn="মিরপুর, ঢাকা">Mirpur, Dhaka</span>
-            <span><eb-badge tone="attention" data-en="New" data-bn="নতুন">New</eb-badge></span>
-            <span data-en="COD" data-bn="COD">COD</span>
-            <span data-en="৳1,250" data-bn="৳১,২৫০">৳1,250</span>
-          </eb-row>
-          <eb-row selected>
-            <span>#1041</span>
-            <span><span data-en="Sumaiya Akter" data-bn="সুমাইয়া আক্তার">Sumaiya Akter</span></span>
-            <span data-en="Agrabad, Chattogram" data-bn="আগ্রাবাদ, চট্টগ্রাম">Agrabad, Chattogram</span>
-            <span><eb-badge tone="info" data-en="Confirmed" data-bn="কনফার্মড">Confirmed</eb-badge></span>
-            <span data-en="bKash ৳120" data-bn="বিকাশ ৳১২০">bKash ৳120</span>
-            <span data-en="৳860" data-bn="৳৮৬০">৳860</span>
-          </eb-row>
-          <eb-row open>
-            <span>#1039</span>
-            <span
-              ><span data-en="Md. Hasan" data-bn="মো. হাসান">Md. Hasan</span>
-              <eb-tooltip text="High return risk" data-text-en="High return risk" data-text-bn="ফেরতের ঝুঁকি বেশি"
-                ><span role="img" style="color: var(--eb-color-danger-text); display: inline-flex"
-                  ><svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
-                    <path d="M12 9v4" />
-                    <path d="M12 17h.01" /></svg></span></eb-tooltip
-            ></span>
-            <span data-en="Savar, Dhaka" data-bn="সাভার, ঢাকা">Savar, Dhaka</span>
-            <span><eb-badge tone="attention" data-en="New" data-bn="নতুন">New</eb-badge></span>
-            <span data-en="COD" data-bn="COD">COD</span>
-            <span data-en="৳1,800" data-bn="৳১,৮০০">৳1,800</span>
-            <eb-banner
-              card="note"
-              tone="danger"
-              data-en="3 of this customer's 5 orders came back"
-              data-bn="৫টি অর্ডারের ৩টি ফেরত এসেছে"
-              >3 of this customer's 5 orders came back</eb-banner
-            >
-          </eb-row>
-          <eb-row>
-            <span>#1038</span>
-            <span><span data-en="Nasrin Sultana" data-bn="নাসরিন সুলতানা">Nasrin Sultana</span></span>
-            <span data-en="Khulna Sadar, Khulna" data-bn="খুলনা সদর, খুলনা">Khulna Sadar, Khulna</span>
-            <span><eb-courier-status status="RETURNED"></eb-courier-status></span>
-            <span data-en="COD" data-bn="COD">COD</span>
-            <span data-en="৳640" data-bn="৳৬৪০">৳640</span>
-          </eb-row>
-        </eb-table>
-        <eb-table density="compact" label="Shipped orders" data-label-en="Shipped orders" data-label-bn="পাঠানো অর্ডার">
-          <eb-column card="meta" data-en="Order" data-bn="অর্ডার">Order</eb-column>
-          <eb-column card="title" data-en="Customer" data-bn="কাস্টমার">Customer</eb-column>
-          <eb-column card="meta" data-en="Area" data-bn="এলাকা">Area</eb-column>
-          <eb-column card="status" data-en="Status" data-bn="অবস্থা">Status</eb-column>
-          <eb-column card="meta" data-en="Payment" data-bn="পেমেন্ট">Payment</eb-column>
-          <eb-column card="end" data-en="Total" data-bn="মোট">Total</eb-column>
-          <eb-row>
-            <span>#1037</span>
-            <span><span data-en="Tanvir Ahmed" data-bn="তানভীর আহমেদ">Tanvir Ahmed</span></span>
-            <span data-en="Rajpara, Rajshahi" data-bn="রাজপাড়া, রাজশাহী">Rajpara, Rajshahi</span>
-            <span><eb-courier-status status="IN_TRANSIT"></eb-courier-status></span>
-            <span data-en="COD" data-bn="COD">COD</span>
-            <span data-en="৳990" data-bn="৳৯৯০">৳990</span>
-          </eb-row>
-          <eb-row>
-            <span>#1036</span>
-            <span><span data-en="Farhana Islam" data-bn="ফারহানা ইসলাম">Farhana Islam</span></span>
-            <span data-en="Uttara, Dhaka" data-bn="উত্তরা, ঢাকা">Uttara, Dhaka</span>
-            <span><eb-courier-status status="DELIVERED"></eb-courier-status></span>
-            <span data-en="COD" data-bn="COD">COD</span>
-            <span data-en="৳1,450" data-bn="৳১,৪৫০">৳1,450</span>
-          </eb-row>
-        </eb-table>
-      </div>
-      <pre><code>&lt;eb-table selectable label="Orders"&gt;
-  &lt;eb-column card="meta"&gt;Order&lt;/eb-column&gt;
-  &lt;eb-column card="title" grow="2"&gt;Customer&lt;/eb-column&gt;
-  &lt;eb-column card="status"&gt;Status&lt;/eb-column&gt;
-  &lt;eb-column card="end"&gt;Total&lt;/eb-column&gt;
-  &lt;eb-row open&gt;
-    &lt;span&gt;#1039&lt;/span&gt;&lt;span&gt;Md. Hasan&lt;/span&gt;
-    &lt;span&gt;&lt;eb-badge tone="attention"&gt;New&lt;/eb-badge&gt;&lt;/span&gt;&lt;span&gt;৳1,800&lt;/span&gt;
-    &lt;eb-banner card="note" tone="danger"&gt;3 of this customer's 5 orders came back&lt;/eb-banner&gt;
-  &lt;/eb-row&gt;
-&lt;/eb-table&gt;</code></pre>
     </main>
   </body>
 </html>

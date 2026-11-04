@@ -11,14 +11,6 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Popover</h1>
       <p>
@@ -26,28 +18,21 @@
         <code>trigger</code> slot. Give it a <code>label</code> so a screen reader can name the panel. Escape or a press
         outside closes it.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="A panel of text" caption-bn="লেখার প্যানেল">
+          <eb-popover label="Delivery note" data-label-en="Delivery note" data-label-bn="ডেলিভারি নোট">
+            <eb-button slot="trigger" variant="secondary" data-en="Delivery note" data-bn="ডেলিভারি নোট"
+              >Delivery note</eb-button
+            >
+            <p
+              data-en="Call before you arrive. Leave the parcel with the guard if nobody answers."
+              data-bn="পৌঁছানোর আগে ফোন করুন। কেউ না ধরলে পার্সেল গার্ডের কাছে রেখে যান।"
+            >
+              Call before you arrive. Leave the parcel with the guard if nobody answers.
+            </p>
+          </eb-popover>
+        </docs-example>
       </div>
-      <div class="row" id="examples" lang="en">
-        <eb-popover label="Delivery note" data-label-en="Delivery note" data-label-bn="ডেলিভারি নোট">
-          <eb-button slot="trigger" variant="secondary" data-en="Delivery note" data-bn="ডেলিভারি নোট"
-            >Delivery note</eb-button
-          >
-          <p
-            style="margin: 0; max-width: 240px"
-            data-en="Call before you arrive. Leave the parcel with the guard if nobody answers."
-            data-bn="পৌঁছানোর আগে ফোন করুন। কেউ না ধরলে পার্সেল গার্ডের কাছে রেখে যান।"
-          >
-            Call before you arrive. Leave the parcel with the guard if nobody answers.
-          </p>
-        </eb-popover>
-      </div>
-      <pre><code>&lt;eb-popover label="Delivery note"&gt;
-  &lt;eb-button slot="trigger" variant="secondary"&gt;Delivery note&lt;/eb-button&gt;
-  &lt;p&gt;Call before you arrive. Leave the parcel with the guard if nobody answers.&lt;/p&gt;
-&lt;/eb-popover&gt;</code></pre>
     </main>
   </body>
 </html>

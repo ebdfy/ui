@@ -1,11 +1,18 @@
 import { LitElement, css, html, nothing, type CSSResultGroup, type PropertyValues, type TemplateResult } from 'lit'
 
 import type { Lang } from '../format.ts'
+import { triangleAlert } from '../icons.ts'
 import { focusRing } from '../tokens.ts'
 
-// What every form field shares: it joins its form through ElementInternals, so FormData, reset,
-// disabled and validity work as they do for a native input. A subclass draws the control and keeps
-// `value` in step with it; the value attribute is the default a form reset goes back to.
+/**
+ * What every form field shares: it joins its form through ElementInternals, so FormData, reset,
+ * disabled and validity work as they do for a native input. A subclass draws the control and keeps
+ * `value` in step with it; the value attribute is the default a form reset goes back to.
+ *
+ * @csspart help - The help line under the control.
+ * @csspart error - The error line under the control, with a red icon.
+ * @fires change - The person changed the value. Bubbles, but is not composed.
+ */
 export abstract class Field extends LitElement {
   static formAssociated = true
 
@@ -20,6 +27,7 @@ export abstract class Field extends LitElement {
     disabled: { type: Boolean, reflect: true },
     required: { type: Boolean, reflect: true },
     error: { type: String },
+    help: { type: String },
   }
 
   static override styles: CSSResultGroup = [
@@ -31,9 +39,6 @@ export abstract class Field extends LitElement {
         font-family: var(--eb-font-family);
         font-size: var(--eb-font-size-body);
         line-height: var(--eb-line-height-body);
-      }
-      :host([disabled]) {
-        opacity: 0.6;
       }
       label {
         display: block;
@@ -53,29 +58,64 @@ export abstract class Field extends LitElement {
         color: inherit;
         font: inherit;
       }
+      .control:hover {
+        box-shadow: inset 0 0 0 1px var(--eb-color-text-3);
+      }
+      /* After the hover edge, so an invalid or disabled control keeps its own edge under the pointer. */
       .control[aria-invalid='true'] {
         box-shadow: inset 0 0 0 2px var(--eb-color-danger);
+      }
+      /* A locked surface rather than a fade. Chromium fades a disabled select to 0.7 on its own. */
+      .control:disabled {
+        background: var(--eb-color-surface-2);
+        box-shadow: inset 0 0 0 1px var(--eb-color-divider);
+        color: var(--eb-color-text-3);
+        opacity: 1;
       }
       @media (max-width: 640px) {
         .control {
           min-height: var(--eb-size-control-lg);
         }
       }
+      [part='help'],
       [part='error'] {
         margin: 4px 0 0;
-        color: var(--eb-color-danger-text);
         font-size: var(--eb-font-size-meta);
         line-height: var(--eb-line-height-meta);
+      }
+      [part='help'] {
+        color: var(--eb-color-text-2);
+      }
+      [part='error'] {
+        display: flex;
+        gap: 4px;
+        align-items: flex-start;
+        color: var(--eb-color-danger-text);
+      }
+      /* 16 px, centred on the first 20 px line. */
+      [part='error'] svg {
+        flex: none;
+        width: 16px;
+        height: 16px;
+        margin-top: 2px;
       }
     `,
   ]
 
+  /** The name the form submits the value under. Unset, the field submits nothing. */
   declare name: string | undefined
+  /** The current value. The value attribute is the default a form reset goes back to. */
   declare value: string
+  /** The words above the control. */
   declare label: string
+  /** Turns the field off: it cannot be edited or focused, and submits nothing. */
   declare disabled: boolean
+  /** The field has to be filled in before the form is valid. */
   declare required: boolean
+  /** Why the value is wrong. Shown under the control with a red edge. */
   declare error: string
+  /** A hint shown under the control. */
+  declare help: string
 
   protected readonly internals: ElementInternals
 
@@ -87,16 +127,20 @@ export abstract class Field extends LitElement {
     this.disabled = false
     this.required = false
     this.error = ''
+    this.help = ''
   }
 
+  /** The form the field belongs to, or null. */
   get form(): HTMLFormElement | null {
     return this.internals.form
   }
 
+  /** Whether the field's value passes its checks, as a native input's validity does. */
   get validity(): ValidityState {
     return this.internals.validity
   }
 
+  /** Why the value fails its checks, or empty when it passes. */
   get validationMessage(): string {
     return this.internals.validationMessage
   }
@@ -149,9 +193,22 @@ export abstract class Field extends LitElement {
     else this.internals.setValidity({})
   }
 
+  // The ids of the help and error lines the control shows, help first, or undefined with neither, so
+  // the control never names an element that is not there.
+  protected describedBy(): string | undefined {
+    const ids = [this.help && 'help', this.error && 'error'].filter(Boolean)
+    return ids.length ? ids.join(' ') : undefined
+  }
+
+  protected helpLine() {
+    return this.help ? html`<p part="help" id="help">${this.help}</p>` : nothing
+  }
+
+  protected errorLine(id: string, text: string) {
+    return text ? html`<p part="error" id=${id}>${triangleAlert}${text}</p>` : nothing
+  }
+
   override render() {
-    return html`${this.label ? html`<label for="control">${this.label}</label>` : nothing}${this.renderControl()}${
-      this.error ? html`<p part="error" id="error">${this.error}</p>` : nothing
-    }`
+    return html`${this.label ? html`<label for="control">${this.label}</label>` : nothing}${this.renderControl()}${this.helpLine()}${this.errorLine('error', this.error)}`
   }
 }

@@ -11,66 +11,59 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Date field</h1>
       <p><code>eb-date-field</code> picks a day and submits it as YYYY-MM-DD.</p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="Default" caption-bn="সাধারণ">
+          <eb-date-field
+            name="deliver_on"
+            data-state="default"
+            label="Delivery day"
+            data-label-en="Delivery day"
+            data-label-bn="ডেলিভারির দিন"
+          ></eb-date-field>
+        </docs-example>
+        <docs-example caption="Focused" caption-bn="ফোকাসে">
+          <eb-date-field
+            data-state="focus"
+            label="Pickup day"
+            data-label-en="Pickup day"
+            data-label-bn="পিকআপের দিন"
+          ></eb-date-field>
+        </docs-example>
+        <docs-example caption="With an error" caption-bn="ভুলসহ">
+          <eb-date-field
+            data-state="error"
+            value="2026-01-05"
+            label="Delivery day"
+            data-label-en="Delivery day"
+            data-label-bn="ডেলিভারির দিন"
+            error="Choose a day after today."
+            data-error-en="Choose a day after today."
+            data-error-bn="আজকের পরের একটি দিন বাছুন।"
+          ></eb-date-field>
+        </docs-example>
+        <docs-example caption="Disabled" caption-bn="বন্ধ">
+          <eb-date-field
+            data-state="disabled"
+            value="2026-11-02"
+            disabled
+            label="Order placed"
+            data-label-en="Order placed"
+            data-label-bn="অর্ডারের দিন"
+          ></eb-date-field>
+        </docs-example>
+        <docs-example caption="Filled" caption-bn="পূরণ করা">
+          <eb-date-field
+            data-state="filled"
+            value="2026-11-05"
+            label="Delivery day"
+            data-label-en="Delivery day"
+            data-label-bn="ডেলিভারির দিন"
+          ></eb-date-field>
+        </docs-example>
       </div>
-      <div class="stack" id="examples" lang="en">
-        <p class="caption" data-en="Default" data-bn="সাধারণ">Default</p>
-        <eb-date-field
-          data-state="default"
-          label="Delivery day"
-          data-label-en="Delivery day"
-          data-label-bn="ডেলিভারির দিন"
-        ></eb-date-field>
-        <p class="caption" data-en="Focused" data-bn="ফোকাসে">Focused</p>
-        <eb-date-field
-          data-state="focus"
-          label="Pickup day"
-          data-label-en="Pickup day"
-          data-label-bn="পিকআপের দিন"
-        ></eb-date-field>
-        <p class="caption" data-en="With an error" data-bn="ভুলসহ">With an error</p>
-        <eb-date-field
-          data-state="error"
-          value="2026-01-05"
-          label="Delivery day"
-          data-label-en="Delivery day"
-          data-label-bn="ডেলিভারির দিন"
-          error="Choose a day after today."
-          data-error-en="Choose a day after today."
-          data-error-bn="আজকের পরের একটি দিন বাছুন।"
-        ></eb-date-field>
-        <p class="caption" data-en="Disabled" data-bn="বন্ধ">Disabled</p>
-        <eb-date-field
-          data-state="disabled"
-          value="2026-11-02"
-          disabled
-          label="Order placed"
-          data-label-en="Order placed"
-          data-label-bn="অর্ডারের দিন"
-        ></eb-date-field>
-        <p class="caption" data-en="Filled" data-bn="পূরণ করা">Filled</p>
-        <eb-date-field
-          data-state="filled"
-          value="2026-11-05"
-          label="Delivery day"
-          data-label-en="Delivery day"
-          data-label-bn="ডেলিভারির দিন"
-        ></eb-date-field>
-      </div>
-      <pre><code>&lt;eb-date-field name="deliver_on" label="Delivery day"&gt;&lt;/eb-date-field&gt;</code></pre>
     </main>
   </body>
 </html>

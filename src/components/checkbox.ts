@@ -3,8 +3,10 @@ import { live } from 'lit/directives/live.js'
 
 import { Field } from './field.ts'
 
-// Submits its value, "on" unless it names one, only while checked. The checked attribute is the
-// default a form reset goes back to.
+/**
+ * A yes or no a person ticks. It submits its value, "on" unless it names one, only while checked.
+ * The checked attribute is the default a form reset goes back to.
+ */
 export class EbCheckbox extends Field {
   static override properties = {
     ...Field.properties,
@@ -16,6 +18,10 @@ export class EbCheckbox extends Field {
   static override styles = [
     Field.styles,
     css`
+      /* No text control to lock, so a disabled one fades. */
+      :host([disabled]) {
+        opacity: 0.6;
+      }
       .row {
         display: flex;
         align-items: center;
@@ -79,8 +85,11 @@ export class EbCheckbox extends Field {
     `,
   ]
 
+  /** Ticked. Also the default a form reset goes back to. */
   declare checked: boolean
+  /** Shows a dash for a box that is partly checked, such as select all over some rows. The next click ticks it. */
   declare indeterminate: boolean
+  /** Hides the label's words but keeps them as the accessible name. */
   declare hideLabel: boolean
 
   // The switch draws the same input with another role.
@@ -143,7 +152,7 @@ export class EbCheckbox extends Field {
   override render() {
     return html`<label class="row"
         >${this.renderControl()}<span class=${this.hideLabel ? 'hidden' : ''}>${this.label}</span></label
-      >${this.error ? html`<p part="error" id="error">${this.error}</p>` : nothing}`
+      >${this.errorLine('error', this.error)}`
   }
 }
 

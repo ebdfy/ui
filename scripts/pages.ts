@@ -7,19 +7,29 @@ import { fileURLToPath } from 'node:url'
 import type { Plugin } from 'vite'
 
 import { createPlaygroundApi } from '../src/playground-api.ts'
+import { framePage, pathOf } from './docs.ts'
 
 export interface Origins {
   cdn: string
   sampleApp: string
+  ui: string
 }
 
 export const production: Origins = {
   cdn: 'https://cdn.ebdfy.com',
   sampleApp: 'https://sample-app.ebdfy.com',
+  ui: 'https://ui.ebdfy.com',
 }
 
-export function fillPage(html: string, origins: Origins): string {
-  return html.replaceAll('%EB_CDN%', origins.cdn).replaceAll('%EB_SAMPLE_APP%', origins.sampleApp)
+const uiSite = fileURLToPath(new URL('../site/ui/', import.meta.url))
+
+// file is the page's path on disk; a docs page under site/ui also gets the docs frame.
+export function fillPage(html: string, origins: Origins, file = ''): string {
+  if (file.startsWith(uiSite)) html = framePage(html, pathOf(file.slice(uiSite.length)))
+  return html
+    .replaceAll('%EB_CDN%', origins.cdn)
+    .replaceAll('%EB_SAMPLE_APP%', origins.sampleApp)
+    .replaceAll('%EB_UI%', origins.ui)
 }
 
 // In development the pages load /ui/v1.js and /ui/host.js, which this serves from the source.
@@ -30,7 +40,7 @@ export function pagesPlugin(origins: Origins): Plugin {
       const entry = /^\/ui\/(v1|host)\.js$/.exec(id)?.[1]
       return entry ? fileURLToPath(new URL(`../src/${entry}.ts`, import.meta.url)) : undefined
     },
-    transformIndexHtml: (html) => fillPage(html, origins),
+    transformIndexHtml: (html, ctx) => fillPage(html, origins, ctx.filename),
   }
 }
 

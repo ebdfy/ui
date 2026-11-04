@@ -11,69 +11,68 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Choice list</h1>
       <p>
         <code>eb-choice-list</code> is one pick from the <code>&lt;option&gt;</code> elements written inside it, drawn
         as radio buttons.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="Default" caption-bn="সাধারণ">
+          <eb-choice-list
+            name="payment"
+            data-state="default"
+            label="Payment"
+            data-label-en="Payment"
+            data-label-bn="পেমেন্ট"
+            ><option value="cod" data-en="Cash on delivery" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</option>
+            <option value="bkash" data-en="bKash" data-bn="বিকাশ">bKash</option></eb-choice-list
+          >
+        </docs-example>
+        <docs-example caption="Focused" caption-bn="ফোকাসে">
+          <eb-choice-list data-state="focus" label="Delivery" data-label-en="Delivery" data-label-bn="ডেলিভারি"
+            ><option value="inside" data-en="Inside Dhaka" data-bn="ঢাকার ভেতরে">Inside Dhaka</option>
+            <option value="outside" data-en="Outside Dhaka" data-bn="ঢাকার বাইরে">Outside Dhaka</option></eb-choice-list
+          >
+        </docs-example>
+        <docs-example caption="With an error" caption-bn="ভুলসহ">
+          <eb-choice-list
+            data-state="error"
+            required
+            label="Payment"
+            data-label-en="Payment"
+            data-label-bn="পেমেন্ট"
+            error="Choose how the customer pays."
+            data-error-en="Choose how the customer pays."
+            data-error-bn="ক্রেতা কীভাবে পরিশোধ করবেন বাছুন।"
+            ><option value="cod" data-en="Cash on delivery" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</option>
+            <option value="bkash" data-en="bKash" data-bn="বিকাশ">bKash</option></eb-choice-list
+          >
+        </docs-example>
+        <docs-example caption="Disabled" caption-bn="বন্ধ">
+          <eb-choice-list
+            data-state="disabled"
+            value="bkash"
+            disabled
+            label="Payment"
+            data-label-en="Payment"
+            data-label-bn="পেমেন্ট"
+            ><option value="cod" data-en="Cash on delivery" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</option>
+            <option value="bkash" data-en="bKash" data-bn="বিকাশ">bKash</option></eb-choice-list
+          >
+        </docs-example>
+        <docs-example caption="Filled" caption-bn="পূরণ করা">
+          <eb-choice-list
+            data-state="filled"
+            value="cod"
+            label="Payment"
+            data-label-en="Payment"
+            data-label-bn="পেমেন্ট"
+            ><option value="cod" data-en="Cash on delivery" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</option>
+            <option value="bkash" data-en="bKash" data-bn="বিকাশ">bKash</option></eb-choice-list
+          >
+        </docs-example>
       </div>
-      <div class="stack" id="examples" lang="en">
-        <p class="caption" data-en="Default" data-bn="সাধারণ">Default</p>
-        <eb-choice-list data-state="default" label="Payment" data-label-en="Payment" data-label-bn="পেমেন্ট"
-          ><option value="cod" data-en="Cash on delivery" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</option>
-          <option value="bkash" data-en="bKash" data-bn="বিকাশ">bKash</option></eb-choice-list
-        >
-        <p class="caption" data-en="Focused" data-bn="ফোকাসে">Focused</p>
-        <eb-choice-list data-state="focus" label="Delivery" data-label-en="Delivery" data-label-bn="ডেলিভারি"
-          ><option value="inside" data-en="Inside Dhaka" data-bn="ঢাকার ভেতরে">Inside Dhaka</option>
-          <option value="outside" data-en="Outside Dhaka" data-bn="ঢাকার বাইরে">Outside Dhaka</option></eb-choice-list
-        >
-        <p class="caption" data-en="With an error" data-bn="ভুলসহ">With an error</p>
-        <eb-choice-list
-          data-state="error"
-          required
-          label="Payment"
-          data-label-en="Payment"
-          data-label-bn="পেমেন্ট"
-          error="Choose how the customer pays."
-          data-error-en="Choose how the customer pays."
-          data-error-bn="ক্রেতা কীভাবে পরিশোধ করবেন বাছুন।"
-          ><option value="cod" data-en="Cash on delivery" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</option>
-          <option value="bkash" data-en="bKash" data-bn="বিকাশ">bKash</option></eb-choice-list
-        >
-        <p class="caption" data-en="Disabled" data-bn="বন্ধ">Disabled</p>
-        <eb-choice-list
-          data-state="disabled"
-          value="bkash"
-          disabled
-          label="Payment"
-          data-label-en="Payment"
-          data-label-bn="পেমেন্ট"
-          ><option value="cod" data-en="Cash on delivery" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</option>
-          <option value="bkash" data-en="bKash" data-bn="বিকাশ">bKash</option></eb-choice-list
-        >
-        <p class="caption" data-en="Filled" data-bn="পূরণ করা">Filled</p>
-        <eb-choice-list data-state="filled" value="cod" label="Payment" data-label-en="Payment" data-label-bn="পেমেন্ট"
-          ><option value="cod" data-en="Cash on delivery" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</option>
-          <option value="bkash" data-en="bKash" data-bn="বিকাশ">bKash</option></eb-choice-list
-        >
-      </div>
-      <pre><code>&lt;eb-choice-list name="payment" label="Payment"&gt;
-  &lt;option value="cod"&gt;Cash on delivery&lt;/option&gt;
-  &lt;option value="bkash"&gt;bKash&lt;/option&gt;
-&lt;/eb-choice-list&gt;</code></pre>
     </main>
   </body>
 </html>

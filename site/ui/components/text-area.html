@@ -11,67 +11,65 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Text area</h1>
       <p>
         <code>eb-text-area</code> takes a few lines of text, such as a note on an order. A person can drag it taller.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="Default" caption-bn="সাধারণ">
+          <eb-text-area
+            name="note"
+            data-state="default"
+            label="Note"
+            data-label-en="Note"
+            data-label-bn="নোট"
+          ></eb-text-area>
+        </docs-example>
+        <docs-example caption="Focused" caption-bn="ফোকাসে">
+          <eb-text-area
+            data-state="focus"
+            label="Note for the courier"
+            data-label-en="Note for the courier"
+            data-label-bn="কুরিয়ারের জন্য নোট"
+          ></eb-text-area>
+        </docs-example>
+        <docs-example caption="With an error" caption-bn="ভুলসহ">
+          <eb-text-area
+            data-state="error"
+            required
+            label="Reason for the return"
+            data-label-en="Reason for the return"
+            data-label-bn="ফেরতের কারণ"
+            error="Say why the order came back."
+            data-error-en="Say why the order came back."
+            data-error-bn="অর্ডারটি কেন ফেরত এসেছে লিখুন।"
+          ></eb-text-area>
+        </docs-example>
+        <docs-example caption="Disabled" caption-bn="বন্ধ">
+          <eb-text-area
+            data-state="disabled"
+            disabled
+            label="Note from the shop"
+            data-label-en="Note from the shop"
+            data-label-bn="দোকানের নোট"
+            value="Gift wrap"
+            data-value-en="Gift wrap"
+            data-value-bn="গিফট র‍্যাপ"
+          ></eb-text-area>
+        </docs-example>
+        <docs-example caption="Filled" caption-bn="পূরণ করা">
+          <eb-text-area
+            data-state="filled"
+            label="Note"
+            data-label-en="Note"
+            data-label-bn="নোট"
+            value="Call before delivery."
+            data-value-en="Call before delivery."
+            data-value-bn="ডেলিভারির আগে ফোন করুন।"
+          ></eb-text-area>
+        </docs-example>
       </div>
-      <div class="stack" id="examples" lang="en">
-        <p class="caption" data-en="Default" data-bn="সাধারণ">Default</p>
-        <eb-text-area data-state="default" label="Note" data-label-en="Note" data-label-bn="নোট"></eb-text-area>
-        <p class="caption" data-en="Focused" data-bn="ফোকাসে">Focused</p>
-        <eb-text-area
-          data-state="focus"
-          label="Note for the courier"
-          data-label-en="Note for the courier"
-          data-label-bn="কুরিয়ারের জন্য নোট"
-        ></eb-text-area>
-        <p class="caption" data-en="With an error" data-bn="ভুলসহ">With an error</p>
-        <eb-text-area
-          data-state="error"
-          required
-          label="Reason for the return"
-          data-label-en="Reason for the return"
-          data-label-bn="ফেরতের কারণ"
-          error="Say why the order came back."
-          data-error-en="Say why the order came back."
-          data-error-bn="অর্ডারটি কেন ফেরত এসেছে লিখুন।"
-        ></eb-text-area>
-        <p class="caption" data-en="Disabled" data-bn="বন্ধ">Disabled</p>
-        <eb-text-area
-          data-state="disabled"
-          disabled
-          label="Note from the shop"
-          data-label-en="Note from the shop"
-          data-label-bn="দোকানের নোট"
-          value="Gift wrap"
-          data-value-en="Gift wrap"
-          data-value-bn="গিফট র‍্যাপ"
-        ></eb-text-area>
-        <p class="caption" data-en="Filled" data-bn="পূরণ করা">Filled</p>
-        <eb-text-area
-          data-state="filled"
-          label="Note"
-          data-label-en="Note"
-          data-label-bn="নোট"
-          value="Call before delivery."
-          data-value-en="Call before delivery."
-          data-value-bn="ডেলিভারির আগে ফোন করুন।"
-        ></eb-text-area>
-      </div>
-      <pre><code>&lt;eb-text-area name="note" label="Note"&gt;&lt;/eb-text-area&gt;</code></pre>
     </main>
   </body>
 </html>

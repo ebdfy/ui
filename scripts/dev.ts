@@ -25,12 +25,13 @@ async function serve(name: string, port: number, origins: Origins, plugins: Plug
 
 export async function startDev(ports = { ui: 5173, sampleApp: 5174 }) {
   const sampleAppUrl = `http://localhost:${ports.sampleApp}`
-  const sampleApp = await serve('sample-app', ports.sampleApp, { cdn: '', sampleApp: sampleAppUrl })
+  const origins = { cdn: '', sampleApp: sampleAppUrl, ui: `http://localhost:${ports.ui}` }
+  const sampleApp = await serve('sample-app', ports.sampleApp, origins)
   // Only the playground's origin serves /dev/, as only ui.ebdfy.com does in production. If its port
   // is taken, the sample app's server closes again rather than holding its port.
   let ui: ViteDevServer
   try {
-    ui = await serve('ui', ports.ui, { cdn: '', sampleApp: sampleAppUrl }, [playgroundApiPlugin()])
+    ui = await serve('ui', ports.ui, origins, [playgroundApiPlugin()])
   } catch (error) {
     await sampleApp.close()
     throw error

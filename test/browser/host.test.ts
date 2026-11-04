@@ -235,6 +235,41 @@ test('an error toast stays until it is dismissed', async () => {
   expect(part('toast')).toBeNull()
 })
 
+// The shared tones: danger is an error toast, stays and is announced as an alert; the others show
+// as a plain toast for 5 s.
+test('a danger toast is an error toast that stays until dismissed', async () => {
+  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+  try {
+    await openToasts('toast=Pathao+did+not+answer&tone=danger')
+    expect(part('toast')!.getAttribute('role')).toBe('alert')
+    expect(part('toast')!.classList.contains('error')).toBe(true)
+    vi.advanceTimersByTime(60_000)
+    await chrome().updateComplete
+    expect(toastText()).toBe('Pathao did not answer')
+  } finally {
+    vi.useRealTimers()
+  }
+})
+
+test.for(['neutral', 'info', 'success', 'warning'])('a %s toast is a plain toast that goes after 5 s', async (tone) => {
+  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+  try {
+    await openToasts(`toast=Saved&tone=${tone}`)
+    expect(part('toast')!.getAttribute('role')).toBe('status')
+    expect(part('toast')!.classList.contains('error')).toBe(false)
+    vi.advanceTimersByTime(5_000)
+    await chrome().updateComplete
+    expect(part('toast')).toBeNull()
+  } finally {
+    vi.useRealTimers()
+  }
+})
+
+test.for(['', '+++'])('a toast with nothing to say (%j) shows nothing', async (message) => {
+  await openToasts(`toast=${message}`)
+  expect(part('toast')).toBeNull()
+})
+
 test('a short navigation label is still a 44 px target', async () => {
   document.body.innerHTML = `<eb-admin-chrome src="${appUrl('Orders')}"><a slot="nav" href="#">Docs</a></eb-admin-chrome>`
   await chrome().updateComplete

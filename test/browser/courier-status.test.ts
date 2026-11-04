@@ -30,23 +30,26 @@ test('an IN_TRANSIT badge reads কুরিয়ারে in Bangla and With c
 
 test('each courier status has its own words and tone', async () => {
   const expected = {
-    PENDING: ['Awaiting pickup', 'info'],
-    PICKED_UP: ['Picked up', 'shipped'],
-    IN_TRANSIT: ['With courier', 'shipped'],
-    OUT_FOR_DELIVERY: ['Out for delivery', 'shipped'],
-    ON_HOLD: ['On hold', 'attention'],
-    ATTEMPT_FAILED: ['Delivery failed', 'attention'],
-    DELIVERED: ['Delivered', 'success'],
-    PARTIAL_DELIVERED: ['Partly delivered', 'attention'],
-    RETURNING: ['Returning', 'attention'],
-    RETURNED: ['Returned', 'critical'],
-    CANCELLED: ['Cancelled', 'critical'],
-    EXCEPTION: ['Problem', 'critical'],
-    UNKNOWN: ['Unknown', 'info'],
+    PENDING: ['Awaiting pickup', 'tone=neutral'],
+    PICKED_UP: ['Picked up', 'status=shipped'],
+    IN_TRANSIT: ['With courier', 'status=shipped'],
+    OUT_FOR_DELIVERY: ['Out for delivery', 'status=shipped'],
+    ON_HOLD: ['On hold', 'tone=warning'],
+    ATTEMPT_FAILED: ['Delivery failed', 'tone=warning'],
+    DELIVERED: ['Delivered', 'tone=success'],
+    PARTIAL_DELIVERED: ['Partly delivered', 'tone=warning'],
+    RETURNING: ['Returning', 'tone=warning'],
+    RETURNED: ['Returned', 'tone=danger'],
+    CANCELLED: ['Cancelled', 'tone=danger'],
+    EXCEPTION: ['Problem', 'tone=danger'],
+    UNKNOWN: ['Unknown', 'tone=neutral'],
   }
-  for (const [code, [words, tone]] of Object.entries(expected)) {
+  for (const [code, [words, look]] of Object.entries(expected)) {
     const el = await status(`<div lang="en"><eb-courier-status status="${code}"></eb-courier-status></div>`)
-    expect([el.shadowRoot!.textContent!.trim(), badge(el).getAttribute('tone')], code).toEqual([words, tone])
+    const shown = badge(el).hasAttribute('status')
+      ? `status=${badge(el).getAttribute('status')}`
+      : `tone=${badge(el).getAttribute('tone')}`
+    expect([el.shadowRoot!.textContent!.trim(), shown], code).toEqual([words, look])
   }
 })
 

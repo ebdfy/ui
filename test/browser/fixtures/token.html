@@ -6,6 +6,10 @@
     <script type="module">
       import '/src/v1.ts'
       ebdfy.title('Token')
+      // With bottom-bar the page shows a bar of actions, which hides the tab bar on a phone.
+      for (const entries of new URLSearchParams(location.search).getAll('nav')) ebdfy.nav(JSON.parse(entries))
+      if (new URLSearchParams(location.search).has('bottom-bar'))
+        document.body.append(document.createElement('eb-bottom-bar'))
       // The test asks for a token or a query, and this page tells it what the bridge gave back.
       const tell = (message) => parent.postMessage({ type: 'fixture', ...message }, location.ancestorOrigins[0])
       async function run(ask) {

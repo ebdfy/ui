@@ -17,6 +17,7 @@ import { EbDivider } from './components/divider.ts'
 import { EbEmptyState } from './components/empty-state.ts'
 import { EbGrid } from './components/grid.ts'
 import { EbHeading } from './components/heading.ts'
+import { EbIcon } from './components/icon.ts'
 import { EbKbd } from './components/kbd.ts'
 import { EbLink } from './components/link.ts'
 import { EbMenu, EbMenuItem } from './components/menu.ts'
@@ -32,6 +33,7 @@ import { EbSpinner } from './components/spinner.ts'
 import { EbStack } from './components/stack.ts'
 import { EbSwitch } from './components/switch.ts'
 import { EbList, EbRow, EbTable } from './components/table.ts'
+import { EbTab, EbTabs } from './components/tabs.ts'
 import { EbTakaField } from './components/taka-field.ts'
 import { EbTextArea } from './components/text-area.ts'
 import { EbTextField } from './components/text-field.ts'
@@ -91,6 +93,9 @@ if (!customElements.get('eb-menu-item')) customElements.define('eb-menu-item', E
 if (!customElements.get('eb-tooltip')) customElements.define('eb-tooltip', EbTooltip)
 if (!customElements.get('eb-bulk-bar')) customElements.define('eb-bulk-bar', EbBulkBar)
 if (!customElements.get('eb-kbd')) customElements.define('eb-kbd', EbKbd)
+if (!customElements.get('eb-icon')) customElements.define('eb-icon', EbIcon)
+if (!customElements.get('eb-tabs')) customElements.define('eb-tabs', EbTabs)
+if (!customElements.get('eb-tab')) customElements.define('eb-tab', EbTab)
 
 const ebdfy = { ...createBridge(), format: { digits, phone, taka }, showErrors }
 
@@ -120,6 +125,7 @@ export type {
   EbEmptyState,
   EbGrid,
   EbHeading,
+  EbIcon,
   EbKbd,
   EbLink,
   EbList,
@@ -137,7 +143,9 @@ export type {
   EbSpinner,
   EbStack,
   EbSwitch,
+  EbTab,
   EbTable,
+  EbTabs,
   EbTakaField,
   EbText,
   EbTextArea,

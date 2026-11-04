@@ -32,7 +32,7 @@ test('every element is named on a docs index card and shown in #examples of the 
   // tag -> the pages of the cards whose <code> names it
   const pages = new Map<string, string[]>()
   const index = readFileSync(new URL('index.html', site), 'utf8')
-  for (const card of index.match(/<eb-card>[\s\S]*?<\/eb-card>/g) ?? []) {
+  for (const card of index.match(/<article class="tile">[\s\S]*?<\/article>/g) ?? []) {
     const page = /href="\/components\/([^"]+)"/.exec(card)?.[1]
     if (!page) continue
     for (const [, tag] of card.matchAll(/<code>([^<]+)<\/code>/g)) {

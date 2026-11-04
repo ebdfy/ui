@@ -1,5 +1,12 @@
 import { LitElement, css, html, nothing } from 'lit'
 
+/**
+ * Tells a person why a list has nothing in it and what to do next.
+ *
+ * @slot - A paragraph that explains.
+ * @slot icon - An icon above the title.
+ * @slot action - The next step, such as a button.
+ */
 export class EbEmptyState extends LitElement {
   static override properties = {
     heading: { type: String },
@@ -25,6 +32,11 @@ export class EbEmptyState extends LitElement {
       font-weight: var(--eb-font-weight-semibold);
       line-height: var(--eb-line-height-heading-3);
     }
+    /* Block, so the icon takes no line box of its own and the auto margins centre it. */
+    ::slotted([slot='icon']) {
+      display: block;
+      margin: 0 auto var(--eb-space-gap);
+    }
     ::slotted(p) {
       margin: 0;
     }
@@ -33,6 +45,7 @@ export class EbEmptyState extends LitElement {
     }
   `
 
+  /** The title: what is missing. */
   declare heading: string
 
   constructor() {
@@ -41,7 +54,8 @@ export class EbEmptyState extends LitElement {
   }
 
   override render() {
-    return html`${this.heading ? html`<h2>${this.heading}</h2>` : nothing}<slot></slot><slot name="action"></slot>`
+    return html`<slot name="icon"></slot>${this.heading ? html`<h2>${this.heading}</h2>` : nothing}<slot></slot
+      ><slot name="action"></slot>`
   }
 }
 

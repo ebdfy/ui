@@ -11,40 +11,38 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Menu</h1>
       <p>
         <code>eb-menu</code> opens a list of actions from the <code>eb-button</code> in its <code>trigger</code> slot.
-        Each action is an <code>eb-menu-item</code>. Set <code>tone="critical"</code> on a risky one, and
-        <code>shortcut</code> to show its keys at the end of the row. The arrow keys move between items, Enter picks one
-        and Escape closes the menu. The page shows Ctrl here and ⌘ on a Mac or iPhone.
+        Each action is an <code>eb-menu-item</code>. Set <code>tone="danger"</code> on a risky one, an
+        <code>eb-icon</code> in <code>slot="icon"</code> before its words, and <code>shortcut</code> to show its keys,
+        one per chip, at the end of the row. Pick keys the browser does not use for itself: Ctrl+D, Ctrl+P and Ctrl+N
+        bookmark, print and open a window, so these samples use Alt+Shift. The arrow keys move between items, Enter
+        picks one and Escape closes the menu. The page shows Ctrl and Alt here and ⌘ and ⌥ on a Mac or iPhone.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example
+          caption="Actions with icons, a shortcut and a risky one"
+          caption-bn="আইকন, শর্টকাট ও ঝুঁকিপূর্ণ কাজসহ অ্যাকশন"
+        >
+          <eb-menu label="More actions" data-label-en="More actions" data-label-bn="আরও অ্যাকশন">
+            <eb-button slot="trigger" variant="secondary" data-en="More actions" data-bn="আরও">More actions</eb-button>
+            <eb-menu-item shortcut="alt+shift+d"
+              ><eb-icon slot="icon" name="copy"></eb-icon
+              ><span data-en="Duplicate" data-bn="ডুপ্লিকেট">Duplicate</span></eb-menu-item
+            >
+            <eb-menu-item shortcut="alt+shift+p"
+              ><eb-icon slot="icon" name="printer"></eb-icon
+              ><span data-en="Print invoice" data-bn="ইনভয়েস প্রিন্ট">Print invoice</span></eb-menu-item
+            >
+            <eb-menu-item tone="danger"
+              ><eb-icon slot="icon" name="x"></eb-icon
+              ><span data-en="Cancel order" data-bn="অর্ডার বাতিল">Cancel order</span></eb-menu-item
+            >
+          </eb-menu>
+        </docs-example>
       </div>
-      <div class="row" id="examples" lang="en">
-        <eb-menu label="More actions" data-label-en="More actions" data-label-bn="আরও অ্যাকশন">
-          <eb-button slot="trigger" variant="secondary" data-en="More actions" data-bn="আরও">More actions</eb-button>
-          <eb-menu-item shortcut="mod+d" data-en="Duplicate" data-bn="ডুপ্লিকেট">Duplicate</eb-menu-item>
-          <eb-menu-item shortcut="mod+p" data-en="Print invoice" data-bn="ইনভয়েস প্রিন্ট">Print invoice</eb-menu-item>
-          <eb-menu-item tone="critical" data-en="Cancel order" data-bn="অর্ডার বাতিল">Cancel order</eb-menu-item>
-        </eb-menu>
-      </div>
-      <pre><code>&lt;eb-menu label="More actions"&gt;
-  &lt;eb-button slot="trigger" variant="secondary"&gt;More actions&lt;/eb-button&gt;
-  &lt;eb-menu-item shortcut="mod+d"&gt;Duplicate&lt;/eb-menu-item&gt;
-  &lt;eb-menu-item shortcut="mod+p"&gt;Print invoice&lt;/eb-menu-item&gt;
-  &lt;eb-menu-item tone="critical"&gt;Cancel order&lt;/eb-menu-item&gt;
-&lt;/eb-menu&gt;</code></pre>
     </main>
   </body>
 </html>

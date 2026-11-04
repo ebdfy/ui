@@ -9,41 +9,25 @@
     <script src="/docs.js"></script>
     <script type="module" src="%EB_CDN%/ui/v1.js"></script>
     <script type="module" src="/components.js"></script>
-    <style>
-      .stack {
-        display: grid;
-        gap: 16px;
-      }
-    </style>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Text</h1>
       <p>
         <code>eb-text</code> sets a paragraph. Use <code>variant="meta"</code> for the smaller, quieter line under it.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="Body" caption-bn="মূল লেখা">
+          <eb-text data-en="A new order came in from the shop." data-bn="দোকান থেকে নতুন অর্ডার এসেছে।"
+            >A new order came in from the shop.</eb-text
+          >
+        </docs-example>
+        <docs-example caption="Meta" caption-bn="মেটা">
+          <eb-text variant="meta" data-en="Placed today at 10:30" data-bn="আজ সকাল ১০:৩০ এ দেওয়া হয়েছে"
+            >Placed today at 10:30</eb-text
+          >
+        </docs-example>
       </div>
-      <div class="stack" id="examples" lang="en">
-        <eb-text data-en="A new order came in from the shop." data-bn="দোকান থেকে নতুন অর্ডার এসেছে।">
-          A new order came in from the shop.
-        </eb-text>
-        <eb-text variant="meta" data-en="Placed today at 10:30" data-bn="আজ সকাল ১০:৩০ এ দেওয়া হয়েছে">
-          Placed today at 10:30
-        </eb-text>
-      </div>
-      <pre><code>&lt;eb-text&gt;A new order came in from the shop.&lt;/eb-text&gt;
-&lt;eb-text variant="meta"&gt;Placed today at 10:30&lt;/eb-text&gt;</code></pre>
     </main>
   </body>
 </html>

@@ -11,40 +11,28 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Empty state</h1>
       <p>
         <code>eb-empty-state</code> tells a person why a list has nothing in it and what to do next. Its
         <code>heading</code> is the title, a paragraph inside it explains, and an element with
-        <code>slot="action"</code> is the next step.
+        <code>slot="action"</code> is the next step. An <code>eb-icon</code> with <code>slot="icon"</code> sits above
+        the heading.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="An empty list, with its next step" caption-bn="খালি তালিকা, পরের ধাপসহ" stack>
+          <eb-empty-state heading="No drafts yet" data-heading-en="No drafts yet" data-heading-bn="এখনো কোনো খসড়া নেই">
+            <eb-icon slot="icon" name="package" size="20"></eb-icon>
+            <p
+              data-en="Orders you start but do not confirm are kept here."
+              data-bn="যে অর্ডার শুরু করে নিশ্চিত করেননি, তা এখানে থাকবে।"
+            >
+              Orders you start but do not confirm are kept here.
+            </p>
+            <eb-button slot="action" variant="primary" data-en="New order" data-bn="নতুন অর্ডার">New order</eb-button>
+          </eb-empty-state>
+        </docs-example>
       </div>
-      <div id="examples" lang="en">
-        <eb-empty-state heading="No drafts yet" data-heading-en="No drafts yet" data-heading-bn="এখনো কোনো খসড়া নেই">
-          <p
-            data-en="Orders you start but do not confirm are kept here."
-            data-bn="যে অর্ডার শুরু করে নিশ্চিত করেননি, তা এখানে থাকবে।"
-          >
-            Orders you start but do not confirm are kept here.
-          </p>
-          <eb-button slot="action" data-en="New order" data-bn="নতুন অর্ডার">New order</eb-button>
-        </eb-empty-state>
-      </div>
-      <pre><code>&lt;eb-empty-state heading="No drafts yet"&gt;
-  &lt;p&gt;Orders you start but do not confirm are kept here.&lt;/p&gt;
-  &lt;eb-button slot="action"&gt;New order&lt;/eb-button&gt;
-&lt;/eb-empty-state&gt;</code></pre>
     </main>
   </body>
 </html>

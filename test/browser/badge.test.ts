@@ -87,19 +87,19 @@ test('a badge is 13/20 text on one line where its words fit', async () => {
   expect(el.getBoundingClientRect().height).toBe(20)
 })
 
-// A table column narrower than the words, such as 88 px at a 600 px table, keeps the pill inside
-// it: the words wrap inside the pill rather than spill into the next column.
+// A status is one line however narrow its place: a table keeps it inside its column by letting
+// low-priority columns step aside, never by breaking the words.
 for (const [tone, words] of [
   ['shipped', 'With courier'],
   ['critical', 'ফেরত এসেছে'],
   ['attention', 'With courier'],
 ] as const) {
-  test(`a ${tone} badge in a column too narrow for "${words}" wraps its words inside itself`, async () => {
+  test(`a ${tone} badge in a column too narrow for "${words}" keeps its words on one line`, async () => {
     const el = await badge(`<div style="width: 64px"><eb-badge tone="${tone}">${words}</eb-badge></div>`)
-    const column = el.parentElement!.getBoundingClientRect()
-    const box = el.getBoundingClientRect()
-    expect(box.right).toBeLessThanOrEqual(column.right)
-    expect(box.height).toBeGreaterThan(24)
+    const range = document.createRange()
+    range.selectNodeContents(el)
+    expect(new Set([...range.getClientRects()].map((rect) => Math.round(rect.top))).size).toBe(1)
+    expect(el.getBoundingClientRect().height).toBeLessThanOrEqual(24)
   })
 }
 
@@ -137,3 +137,51 @@ for (const theme of ['light', 'dark'] as const) {
     })
   }
 }
+
+// One tone list for every component, and an order's status by name; the 1.0.0 tone names above
+// stay as aliases until 2.0, so each new name draws exactly what its old name draws.
+function look(el: HTMLElement) {
+  const { backgroundColor, color, borderRadius, padding, fontWeight } = getComputedStyle(el)
+  const dotBox = dot(el).getBoundingClientRect()
+  return {
+    backgroundColor,
+    color,
+    borderRadius,
+    padding,
+    fontWeight,
+    dot: getComputedStyle(dot(el)).backgroundColor,
+    dotWidth: dotBox.width,
+  }
+}
+
+const sameAs = [
+  ['tone="neutral"', 'tone="info"'],
+  ['tone="warning"', 'tone="attention"'],
+  ['tone="danger"', 'tone="critical"'],
+  ['status="new"', 'tone="attention"'],
+  ['status="confirmed"', 'tone="info"'],
+  ['status="shipped"', 'tone="shipped"'],
+  ['status="paid"', 'tone="success"'],
+  ['status="returned"', 'tone="critical"'],
+] as const
+
+for (const theme of ['light', 'dark'] as const) {
+  test.for(sameAs)(`in ${theme}, a badge with %s draws as one with %s`, async ([name, old]) => {
+    const run = async () => ({
+      now: look(await badge(`<eb-badge ${name}>Word</eb-badge>`)),
+      before: look(await badge(`<eb-badge ${old}>Word</eb-badge>`)),
+    })
+    const { now, before } = theme === 'dark' ? await inDark(run) : await run()
+    expect(now).toEqual(before)
+  })
+}
+
+test('a badge with no tone keeps the 1.0.0 default, info', async () => {
+  const el = await badge('<eb-badge>Confirmed</eb-badge>')
+  expect(el.getAttribute('tone')).toBe('info')
+})
+
+test('a status decides the look over a tone set beside it', async () => {
+  const paid = look(await badge('<eb-badge status="paid">Paid</eb-badge>'))
+  expect(look(await badge('<eb-badge tone="danger" status="paid">Paid</eb-badge>'))).toEqual(paid)
+})

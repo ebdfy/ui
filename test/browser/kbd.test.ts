@@ -73,6 +73,6 @@ test('the hint is 20px tall on surface-2 with an edge ring, light', async () => 
 test('the hint is 20px tall on surface-2 with an edge ring, dark', async () => {
   const { height, background, shadow } = await inDark(async () => look(await hint('mod+d', agents.linux)))
   expect(height).toBe('20px')
-  expect(background).toBe('oklch(0.23 0.004 85)')
+  expect(background).toBe('oklch(0.245 0.004 85)')
   expect(shadow).toContain('oklch(0.35 0.006 85)')
 })

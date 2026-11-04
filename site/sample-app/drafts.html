@@ -5,22 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
     <meta name="ebdfy-app" content="sample" />
+    <!-- Opened on its own, a page of the sample app goes to the playground with that page open. -->
+    <meta name="ebdfy-home" content="%EB_UI%/playground" />
     <title>Drafts · Sample app · ebdfy</title>
     <style>
       body {
         margin: 0;
       }
     </style>
+    <script src="/lang.js"></script>
     <script type="module" src="%EB_CDN%/ui/v1.js"></script>
     <script type="module" src="/nav.js"></script>
     <script type="module">
       import { listOrders, showOrders } from '/orders.js'
 
-      ebdfy.title('Drafts')
+      const copy = {
+        bn: {
+          title: 'খসড়া',
+          empty: 'এখনো কোনো খসড়া নেই',
+          text: 'চ্যাটে শুরু করা অর্ডার কনফার্ম না করা পর্যন্ত এখানে থাকে।',
+          add: 'অর্ডার যোগ করুন',
+        },
+        en: {
+          title: 'Drafts',
+          empty: 'No drafts yet',
+          text: 'An order you start in a chat waits here until you confirm it.',
+          add: 'Add order',
+        },
+      }
+      const lang = document.documentElement.lang
+      const t = copy[lang]
+      ebdfy.title(t.title)
       const table = document.querySelector('eb-table')
       const empty = document.querySelector('eb-empty-state')
+      table.label = t.title
+      empty.setAttribute('heading', t.empty)
+      empty.querySelector('p').textContent = t.text
+      empty.querySelector('eb-button').textContent = t.add
       const { orders } = await listOrders({ drafts: true })
-      showOrders(table, orders, document.documentElement.lang)
+      showOrders(table, orders, lang)
       table.loading = false
       if (!orders.length) {
         table.replaceWith(empty)
@@ -33,10 +56,10 @@
       <eb-table label="Drafts" loading>
         <eb-column card="title">Order</eb-column>
         <eb-column card="title">Customer</eb-column>
-        <eb-column card="end">Total</eb-column>
+        <eb-column card="end" align="end">Total</eb-column>
         <eb-column card="meta">Status</eb-column>
       </eb-table>
-      <eb-empty-state heading="No orders yet" hidden>
+      <eb-empty-state heading="No drafts yet" hidden>
         <p>An order you start in a chat waits here until you confirm it.</p>
         <eb-button slot="action" variant="primary">Add order</eb-button>
       </eb-empty-state>

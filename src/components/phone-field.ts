@@ -3,7 +3,7 @@ import { EbTextField } from './text-field.ts'
 
 const mobile = /^01\d{9}$/
 
-// A Bangladesh mobile number: 11 digits starting with 01, kept in Latin digits whatever was typed.
+/** Takes a Bangladesh mobile number: 11 digits starting with 01, kept in Latin digits whatever was typed. */
 export class EbPhoneField extends EbTextField {
   protected override readonly inputType = 'tel'
   protected override readonly keyboard = 'tel'

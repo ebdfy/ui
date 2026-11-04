@@ -18,7 +18,7 @@ test('the docs home lists the components and links to Button', async () => {
   for (const name of ['Button', 'Card', 'Page']) {
     expect(await page.getByRole('heading', { name, exact: true }).count(), name).toBe(1)
   }
-  await page.getByRole('link', { name: 'Button', exact: true }).click()
+  await page.locator('main').getByRole('link', { name: 'Button', exact: true }).click()
   await page.waitForURL(`${pages.ui}/components/button`)
   expect(errors).toEqual([])
 })
@@ -27,24 +27,24 @@ test('the Button page shows both buttons live and switches the examples to Bangl
   const { page, errors } = await pages.open(`${pages.ui}/components/button`)
   const examples = page.locator('#examples')
   await page.waitForFunction(() => customElements.get('eb-button') !== undefined)
-  expect(await examples.locator('eb-button[variant="primary"]').textContent()).toBe('Add order')
-  expect(await examples.locator('eb-button[variant="secondary"]').textContent()).toBe('Cancel')
+  expect(await examples.locator('eb-button[variant="primary"]').first().textContent()).toBe('Add order')
+  expect(await examples.locator('eb-button[variant="secondary"]').first().textContent()).toBe('Cancel')
   expect(await examples.locator('[data-taka]').textContent()).toBe('৳1,25,000')
 
   await page.locator('eb-button', { hasText: 'বাংলা' }).click()
   expect(await examples.getAttribute('lang')).toBe('bn')
-  expect(await examples.locator('eb-button[variant="primary"]').textContent()).toBe('অর্ডার যোগ করুন')
+  expect(await examples.locator('eb-button[variant="primary"]').first().textContent()).toBe('অর্ডার যোগ করুন')
   expect(await examples.locator('[data-taka]').textContent()).toBe('৳১,২৫,০০০')
   expect(await examples.locator('[data-phone]').textContent()).toBe('01707071591')
 
   await page.locator('eb-button', { hasText: 'English' }).click()
   expect(await examples.getAttribute('lang')).toBe('en')
-  expect(await examples.locator('eb-button[variant="primary"]').textContent()).toBe('Add order')
+  expect(await examples.locator('eb-button[variant="primary"]').first().textContent()).toBe('Add order')
   expect(errors).toEqual([])
 })
 
-test('the type page shows the board strings at the body and heading sizes, never below 1.4', async () => {
-  const { page } = await pages.open(`${pages.ui}/type`)
+test('the Bangla specimen on Foundations shows the board strings at the body and heading sizes, never below 1.4', async () => {
+  const { page } = await pages.open(`${pages.ui}/foundations`)
   const read = (selector: string) =>
     page.locator(selector).evaluateAll((els) =>
       els.map((el) => {
@@ -53,11 +53,22 @@ test('the type page shows the board strings at the body and heading sizes, never
       }),
     )
   const strings = ['ক্ষুদ্র ব্যবসায়ীদের স্বয়ংক্রিয় কুরিয়ার বুকিং', 'ঊর্ধ্বমুখী ঐতিহ্য, শ্রীমঙ্গলের চা, কৃষ্ণচূড়া']
-  expect(await read('[data-sample="body"]')).toEqual(strings.map((s) => [s, '15px', '24px']))
-  expect(await read('[data-sample="heading"]')).toEqual(strings.map((s) => [s, '30px', '42px']))
+  expect(await read('#type [data-specimen="body"]')).toEqual(strings.map((s) => [s, '15px', '24px']))
+  expect(await read('#type [data-specimen="heading"]')).toEqual(strings.map((s) => [s, '30px', '42px']))
+  // A specimen, not a test fixture: no ring or fill marks its lines.
+  const marks = await page
+    .locator('#type [data-specimen]')
+    .evaluateAll((els) => els.map((el) => [getComputedStyle(el).boxShadow, getComputedStyle(el).outlineStyle]))
+  for (const mark of marks) expect(mark).toEqual(['none', 'none'])
 })
 
-for (const path of ['/', '/components/button', '/type', '/playground']) {
+test('the docs home no longer lists the /type fixture', async () => {
+  const { page } = await pages.open(`${pages.ui}/`)
+  await page.locator('main a').first().waitFor()
+  expect(await page.locator('a[href="/type"]').count()).toBe(0)
+})
+
+for (const path of ['/', '/components/button', '/foundations', '/playground']) {
   test(`${path} has no horizontal scroll at 360 px, in English and in Bangla`, async () => {
     const { page } = await pages.open(`${pages.ui}${path}`)
     await page.waitForLoadState('networkidle')
@@ -79,7 +90,7 @@ const ink = {
   dark: {
     bg: 'oklch(0.16 0.004 85)',
     text: 'oklch(0.955 0.003 85)',
-    bar: 'oklch(0.23 0.004 85)',
+    bar: 'oklch(0.245 0.004 85)',
     focus: 'oklch(0.74 0.13 268)',
   },
 }
@@ -139,13 +150,15 @@ for (const scheme of ['light', 'dark'] as const) {
   test(`the switch buttons take Tab and show the 2 px focus ring in ${scheme}`, async () => {
     const { page } = await openDocs(scheme)
     const seen: string[] = []
-    for (let i = 0; i < 8 && seen.length < 3; i++) {
+    for (let i = 0; i < 12 && seen.length < 3; i++) {
       await page.keyboard.press('Tab')
       const state = await page.evaluate(() => {
-        const el = document.activeElement as HTMLElement
+        // The switch is a segmented group of eb-buttons, so the focus sits on a button in one's shadow root.
+        const host = document.activeElement as HTMLElement
+        const el = (host.shadowRoot?.activeElement ?? host) as HTMLElement
         const style = getComputedStyle(el)
         return {
-          name: el.closest('[aria-label="Theme"]') ? el.textContent : '',
+          name: host.closest('.theme-switch') ? (host.textContent ?? '').trim() : '',
           ring: `${style.outlineWidth} ${style.outlineStyle} ${style.outlineColor} ${style.outlineOffset}`,
         }
       })
@@ -188,7 +201,7 @@ test('the docs home links to Foundations and to every component page, and each l
   ]
   const hrefs = []
   for (const name of links) {
-    hrefs.push(await page.getByRole('link', { name, exact: true }).getAttribute('href'))
+    hrefs.push(await page.locator('main').getByRole('link', { name, exact: true }).getAttribute('href'))
   }
   for (const href of hrefs) {
     const response = await page.goto(`${pages.ui}${href}`)
@@ -209,8 +222,11 @@ test('every link on the docs home is a 44 px target on a phone', async () => {
   expect(short).toEqual([])
 })
 
-test('an English heading on the Bangla type page draws in Geist first', async () => {
-  const { page } = await pages.open(`${pages.ui}/type`)
-  const family = await page.locator('main h1[lang="en"]').evaluate((el) => getComputedStyle(el).fontFamily)
+test('an English heading inside the Bangla specimen draws in Geist first', async () => {
+  const { page } = await pages.open(`${pages.ui}/foundations`)
+  const family = await page
+    .locator('#type [lang="bn"] h3[lang="en"]')
+    .first()
+    .evaluate((el) => getComputedStyle(el).fontFamily)
   expect(family).toMatch(/^Geist,/)
 })

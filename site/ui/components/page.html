@@ -10,53 +10,42 @@
     <script type="module" src="%EB_CDN%/ui/v1.js"></script>
     <script type="module" src="/components.js"></script>
     <style>
-      .frame {
-        overflow: hidden;
-        border: 1px solid var(--eb-color-divider);
-        border-radius: var(--eb-radius-lg);
+      /* The example frame keeps the page from taking over this one: a short scrolling box. */
+      .demo {
+        display: block;
+        padding: 0;
+      }
+      eb-page {
+        min-height: 0;
+        height: 360px;
+        overflow: auto;
       }
     </style>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Page</h1>
       <p>
         <code>eb-page</code> is the screen of an app: the page background, a <code>heading</code> and a column for its
         cards. The frame below keeps the example from taking over this page.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
-      </div>
-      <div id="examples" lang="en">
-        <div class="frame">
-          <eb-page heading="Orders" style="min-height: 0; height: 360px; overflow: auto">
-            <eb-card heading="Order 1042">
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="A heading and cards" caption-bn="শিরোনাম ও কার্ড">
+          <eb-page heading="Orders" data-heading-en="Orders" data-heading-bn="অর্ডার">
+            <eb-card heading="Order 1042" data-heading-en="Order 1042" data-heading-bn="অর্ডার 1042">
               <p data-en="Two items, to be sent to Sylhet." data-bn="দুইটি পণ্য, সিলেটে পাঠাতে হবে।">
                 Two items, to be sent to Sylhet.
               </p>
             </eb-card>
-            <eb-card heading="Order 1043">
+            <eb-card heading="Order 1043" data-heading-en="Order 1043" data-heading-bn="অর্ডার 1043">
               <p data-en="One item, to be sent to Dhaka." data-bn="একটি পণ্য, ঢাকায় পাঠাতে হবে।">
                 One item, to be sent to Dhaka.
               </p>
               <eb-button data-en="Open" data-bn="খুলুন">Open</eb-button>
             </eb-card>
           </eb-page>
-        </div>
+        </docs-example>
       </div>
-      <pre><code>&lt;eb-page heading="Orders"&gt;
-  &lt;eb-card heading="Order 1042"&gt;Two items, to be sent to Sylhet.&lt;/eb-card&gt;
-  &lt;eb-card heading="Order 1043"&gt;One item, to be sent to Dhaka.&lt;/eb-card&gt;
-&lt;/eb-page&gt;</code></pre>
     </main>
   </body>
 </html>

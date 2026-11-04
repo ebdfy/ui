@@ -119,6 +119,52 @@ test('a click outside closes a menu', async () => {
   expect(panel('eb-menu').matches(':popover-open')).toBe(false)
 })
 
+// The Admin's chrome draws a menu inside its own shadow root, where document.activeElement is the
+// shadow host and not the focused item.
+async function renderInShadow(): Promise<ShadowRoot> {
+  document.body.innerHTML = '<div id="host"></div>'
+  const shadow = document.getElementById('host')!.attachShadow({ mode: 'open' })
+  shadow.innerHTML = menuHtml.replace(
+    '<eb-menu-item>Print',
+    '<eb-menu-item>Print</eb-menu-item><eb-menu-item>Duplicate',
+  )
+  for (const el of shadow.querySelectorAll('*')) {
+    if (el.localName.startsWith('eb-') && isUpdatable(el)) await el.updateComplete
+  }
+  return shadow
+}
+
+test('inside a shadow root the arrow keys move focus and Enter runs the focused item', async () => {
+  const shadow = await renderInShadow()
+  const items = [...shadow.querySelectorAll<HTMLElement>('eb-menu-item')]
+  const picked: string[] = []
+  for (const item of items) item.addEventListener('click', () => picked.push(item.textContent!))
+  shadow.querySelector<HTMLElement>('eb-button')!.click()
+  await frame()
+  expect(shadow.activeElement).toBe(items[0])
+  await userEvent.keyboard('{ArrowDown}')
+  expect(shadow.activeElement).toBe(items[1])
+  await userEvent.keyboard('{Enter}')
+  expect(picked).toEqual(['Duplicate'])
+})
+
+test('inside a shadow root focus goes back to the trigger after Escape and after a pick', async () => {
+  const shadow = await renderInShadow()
+  const trigger = shadow.querySelector<HTMLElement>('eb-button')!
+  trigger.click()
+  await frame()
+  await userEvent.keyboard('{Escape}')
+  await frame()
+  expect(trigger.getAttribute('aria-expanded')).toBe('false')
+  expect(shadow.activeElement).toBe(trigger)
+  trigger.click()
+  await frame()
+  await userEvent.click(shadow.querySelectorAll<HTMLElement>('eb-menu-item')[1]!)
+  await frame()
+  expect(trigger.getAttribute('aria-expanded')).toBe('false')
+  expect(shadow.activeElement).toBe(trigger)
+})
+
 async function openMenu(): Promise<HTMLElement[]> {
   await render(menuHtml)
   document.querySelector('eb-button')!.click()
@@ -187,7 +233,7 @@ test('menu and popover panels sit on surface with a 12 px radius, the edge ring 
     expect(light.radius).toBe('12px')
     expect(light.shadow).toContain('oklch(0.925 0.004 85) 0px 0px 0px 1px inset')
     const dark = await inDark(async () => readPanel(selector))
-    expect(dark.background).toBe('oklch(0.2 0.004 85)')
+    expect(dark.background).toBe('oklch(0.215 0.004 85)')
     expect(dark.radius).toBe('12px')
     expect(dark.shadow).toContain('oklch(0.35 0.006 85) 0px 0px 0px 1px inset')
   }
@@ -220,9 +266,9 @@ const macAgent =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15'
 
 test.each([
-  [windowsAgent, 'Ctrl+D', 'Control+D'],
-  [macAgent, '⌘D', 'Meta+D'],
-])('a menu item shows its shortcut hint at the end of the row (%#)', async (userAgent, text, keys) => {
+  [windowsAgent, ['Ctrl', 'D'], 'Control+D'],
+  [macAgent, ['⌘', 'D'], 'Meta+D'],
+])('a menu item shows its shortcut as one key per chip at the end of the row (%#)', async (userAgent, chips, keys) => {
   const original = Object.getOwnPropertyDescriptor(navigator, 'userAgent')
   try {
     Object.defineProperty(navigator, 'userAgent', { value: userAgent, configurable: true })
@@ -236,15 +282,16 @@ test.each([
     document.querySelector('eb-button')!.click()
     await frame()
     const [item, plain] = [...document.querySelectorAll<HTMLElement>('eb-menu-item')]
-    const kbd = item!.shadowRoot!.querySelector<HTMLElement>('eb-kbd')!
-    await (kbd as Updatable).updateComplete
-    expect(kbd.shadowRoot!.querySelector('kbd')!.textContent).toBe(text)
-    expect(kbd.getAttribute('aria-hidden')).toBe('true')
+    const kbds = [...item!.shadowRoot!.querySelectorAll<HTMLElement>('eb-kbd')]
+    for (const kbd of kbds) await (kbd as Updatable).updateComplete
+    expect(kbds.map((kbd) => kbd.shadowRoot!.querySelector('kbd')!.textContent)).toEqual(chips)
+    expect(item!.shadowRoot!.querySelector('[part="shortcut"]')!.getAttribute('aria-hidden')).toBe('true')
     expect(item!.getAttribute('aria-keyshortcuts')).toBe(keys)
     const row = item!.getBoundingClientRect()
-    const hint = kbd.getBoundingClientRect()
+    const hint = kbds.at(-1)!.getBoundingClientRect()
     expect(Math.abs(hint.right - (row.right - 8))).toBeLessThanOrEqual(1)
     expect(Math.abs(hint.top + hint.height / 2 - (row.top + row.height / 2))).toBeLessThanOrEqual(1)
+    expect(kbds[1]!.getBoundingClientRect().left - kbds[0]!.getBoundingClientRect().right).toBe(4)
     expect(plain!.shadowRoot!.querySelector('eb-kbd')).toBeNull()
     expect(plain!.hasAttribute('aria-keyshortcuts')).toBe(false)
     item!.removeAttribute('shortcut')
@@ -255,4 +302,83 @@ test.each([
     if (original) Object.defineProperty(navigator, 'userAgent', original)
     else delete (navigator as { userAgent?: string }).userAgent
   }
+})
+
+// The shared tone list: danger is the 1.0.0 critical, kept as its alias until 2.0, and the other
+// tones read as a plain item.
+test('a danger item draws as a critical one, and the other tones as a plain item, in light and dark', async () => {
+  await render(`<eb-menu-item>Print</eb-menu-item>
+    <eb-menu-item tone="critical">Cancel</eb-menu-item>
+    <eb-menu-item tone="danger">Cancel</eb-menu-item>
+    <eb-menu-item tone="neutral">Print</eb-menu-item>
+    <eb-menu-item tone="info">Print</eb-menu-item>
+    <eb-menu-item tone="success">Print</eb-menu-item>
+    <eb-menu-item tone="warning">Print</eb-menu-item>`)
+  const colours = () => [...document.querySelectorAll('eb-menu-item')].map((item) => getComputedStyle(item).color)
+  for (const [plain, critical, danger, ...rest] of [colours(), await inDark(async () => colours())]) {
+    expect(danger).toBe(critical)
+    expect(critical).not.toBe(plain)
+    expect(rest).toEqual([plain, plain, plain, plain])
+  }
+})
+
+test('an item with no tone keeps the 1.0.0 default', async () => {
+  await render('<eb-menu-item>Print</eb-menu-item>')
+  expect(document.querySelector('eb-menu-item')!.getAttribute('tone')).toBe('default')
+})
+
+test('a shortcut with Alt and Shift names each key, as ARIA names them', async () => {
+  const original = Object.getOwnPropertyDescriptor(navigator, 'userAgent')
+  try {
+    for (const [agent, chips] of [
+      [windowsAgent, ['Alt', 'Shift', 'D']],
+      [macAgent, ['⌥', '⇧', 'D']],
+    ] as const) {
+      Object.defineProperty(navigator, 'userAgent', { value: agent, configurable: true })
+      await render('<eb-menu-item shortcut="alt+shift+d">Duplicate</eb-menu-item>')
+      const item = document.querySelector<HTMLElement>('eb-menu-item')!
+      const kbds = [...item.shadowRoot!.querySelectorAll<HTMLElement>('eb-kbd')]
+      for (const kbd of kbds) await (kbd as Updatable).updateComplete
+      expect(kbds.map((kbd) => kbd.shadowRoot!.querySelector('kbd')!.textContent)).toEqual(chips)
+      expect(item.getAttribute('aria-keyshortcuts')).toBe('Alt+Shift+D')
+    }
+  } finally {
+    if (original) Object.defineProperty(navigator, 'userAgent', original)
+    else delete (navigator as { userAgent?: string }).userAgent
+  }
+})
+
+test('a menu item draws a slotted icon at 16 px before its label', async () => {
+  await render('<eb-menu-item style="width: 240px"><eb-icon slot="icon" name="copy"></eb-icon>Duplicate</eb-menu-item>')
+  const item = document.querySelector<HTMLElement>('eb-menu-item')!
+  const icon = item.querySelector('eb-icon')!.getBoundingClientRect()
+  const row = item.getBoundingClientRect()
+  expect([icon.width, icon.height]).toEqual([16, 16])
+  expect(icon.left - row.left).toBe(8)
+  const label = document.createRange()
+  label.selectNodeContents(item.lastChild!)
+  expect(label.getBoundingClientRect().left - icon.right).toBe(8)
+  expect(item.textContent).toBe('Duplicate')
+})
+
+// A menu longer than the room below and above its trigger fits the room below and scrolls, so
+// every item can be reached.
+test('a menu of 50 items under a trigger near the top fits the screen and scrolls to its last item', async () => {
+  const items = Array.from({ length: 50 }, (_, i) => `<eb-menu-item>Item ${i}</eb-menu-item>`).join('')
+  await render(
+    `<div style="padding-top: 60px"><eb-menu label="More"><eb-button slot="trigger">More</eb-button>${items}</eb-menu></div>`,
+  )
+  await userEvent.click(page.getByRole('button', { name: 'More' }))
+  const box = panel('eb-menu')
+  await expect.poll(() => box.matches(':popover-open')).toBe(true)
+  await frame()
+  const { top, bottom } = box.getBoundingClientRect()
+  expect(top).toBeGreaterThanOrEqual(60)
+  expect(bottom).toBeLessThanOrEqual(window.innerHeight - 8)
+  expect(box.scrollHeight).toBeGreaterThan(box.clientHeight)
+  const last = document.querySelectorAll('eb-menu-item')[49]!
+  last.scrollIntoView({ block: 'nearest' })
+  const item = last.getBoundingClientRect()
+  expect(item.bottom).toBeLessThanOrEqual(window.innerHeight - 8)
+  expect(item.top).toBeGreaterThanOrEqual(top)
 })

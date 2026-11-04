@@ -39,10 +39,16 @@ for (const name of names) {
         const found = await page.evaluate(() => {
           // eb-column is markup the table reads, not an element, and a row's note shows only on a
           // phone's card, so neither is held to being drawn. A closed menu's or popover's content is
-          // hidden by design; its trigger and the element itself are still held to it.
+          // hidden by design; its trigger and the element itself are still held to it. So are the
+          // bulk bar's actions it folds into its More actions menu on a phone.
+          const folded = (el: Element) => {
+            const action = el.closest('eb-bulk-bar > *')
+            return action !== null && getComputedStyle(action).display === 'none'
+          }
           const shown = [...document.querySelectorAll('#examples *')].filter(
             (el) =>
               el.localName !== 'eb-column' &&
+              !folded(el) &&
               !(el.getAttribute('card') === 'note' && el.parentElement?.localName === 'eb-row') &&
               !(
                 el.parentElement?.closest('eb-menu:not([open]), eb-popover:not([open])') &&
@@ -58,7 +64,9 @@ for (const name of names) {
               drawn: shown
                 .filter((el) => el.localName === tag)
                 .every((el) => {
-                  const box = el.getBoundingClientRect()
+                  // The bulk bar's host is a zero-height marker; the bar it floats is what shows.
+                  const drawn = el.localName === 'eb-bulk-bar' ? el.shadowRoot!.querySelector('[part="bar"]')! : el
+                  const box = drawn.getBoundingClientRect()
                   return box.width > 0 && box.height > 0
                 }),
             }))
@@ -96,7 +104,7 @@ for (const name of names) {
 
 for (const [scheme, surface] of [
   ['light', 'oklch(1 0 0)'],
-  ['dark', 'oklch(0.2 0.004 85)'],
+  ['dark', 'oklch(0.215 0.004 85)'],
 ] as const) {
   test(`a card in the examples computes the ${scheme} surface in a ${scheme} browser`, async () => {
     const { page } = await openDocs('card', 1280, scheme)
@@ -220,19 +228,23 @@ test('the Table page shows the open row, a selected row and the risk note, as a 
 // An eb-kbd draws its keys in its shadow root, which innerText on the host does not reach.
 const keyText = (kbd: Locator) => kbd.evaluate((el) => el.shadowRoot!.textContent)
 
-test('the Menu page opens from its trigger and shows Ctrl+D on Duplicate, in English and Bangla', async () => {
+// The keys of a menu item's shortcut, one chip each.
+const chips = (item: Locator) =>
+  item.locator('eb-kbd').evaluateAll((els) => els.map((el) => el.shadowRoot!.textContent))
+
+test('the Menu page opens from its trigger and shows Alt Shift D on Duplicate, in English and Bangla', async () => {
   const { page, errors } = await openDocs('menu', 1280, 'light')
   const items = page.locator('#examples eb-menu eb-menu-item')
   const trigger = page.locator('#examples eb-menu eb-button[slot="trigger"]')
   await trigger.click()
   await expect.poll(() => items.first().isVisible()).toBe(true)
-  expect(await keyText(items.first().locator('eb-kbd'))).toBe('Ctrl+D')
+  expect(await chips(items.first())).toEqual(['Alt', 'Shift', 'D'])
   await page.keyboard.press('Escape')
   await page.locator('#language eb-button', { hasText: 'বাংলা' }).click()
   await trigger.click()
   await expect.poll(() => items.first().isVisible()).toBe(true)
-  expect(await items.allTextContents()).toEqual(['ডুপ্লিকেট', 'ইনভয়েস প্রিন্ট', 'অর্ডার বাতিল'])
-  expect(await keyText(items.first().locator('eb-kbd'))).toBe('Ctrl+D')
+  expect((await items.allTextContents()).map((text) => text.trim())).toEqual(['ডুপ্লিকেট', 'ইনভয়েস প্রিন্ট', 'অর্ডার বাতিল'])
+  expect(await chips(items.first())).toEqual(['Alt', 'Shift', 'D'])
   expect(errors).toEqual([])
 })
 
@@ -300,9 +312,8 @@ test('the Modal page opens a 620 px modal from Book courier and Escape closes it
 
 test('the Toast page shows "Copied to a new draft" with an Undo action after More, Duplicate', async () => {
   const { page, errors } = await openDocs('toast', 1280, 'light')
-  const app = page.frameLocator('eb-admin-chrome iframe')
-  await app.getByRole('button', { name: 'More' }).click({ timeout: 15_000 })
-  await app.locator('eb-menu-item#duplicate:defined').click()
+  await page.locator('eb-admin-chrome [part="title-action"]', { hasText: 'More' }).click({ timeout: 15_000 })
+  await page.getByRole('menuitem', { name: 'Duplicate' }).click()
   await expect
     .poll(() => page.locator('eb-admin-chrome [part="toast"] span').textContent())
     .toBe('Copied to a new draft')
@@ -325,8 +336,40 @@ test("the Chrome page's slotted nav links keep the chrome's look, not the docs' 
     line: 'none',
     colour: 'oklch(0.47 0.008 85)',
   })
+  // The sample app shows its Orders page, which its own entry marks current, so the Admin's entry
+  // for it draws as the others do.
   expect(await look('eb-admin-chrome:defined > a[aria-current="page"]')).toEqual({
     line: 'none',
-    colour: 'oklch(0.21 0.006 85)',
+    colour: 'oklch(0.47 0.008 85)',
   })
+})
+
+test('on the Button page a held-down button fills a step deeper, in light and dark', async () => {
+  for (const [scheme, rest, held] of [
+    ['light', 'oklch(0.21 0.006 85)', 'oklch(0.15 0.005 85)'],
+    ['dark', 'oklch(0.955 0.003 85)', 'oklch(0.8 0.003 85)'],
+  ] as const) {
+    const { page } = await openDocs('button', 1280, scheme)
+    const inner = page.locator('#examples eb-button[variant="primary"]').first().locator('button')
+    const fill = () => inner.evaluate((el) => getComputedStyle(el).backgroundColor)
+    expect(await fill(), scheme).toBe(rest)
+    await inner.hover()
+    await page.mouse.down()
+    expect(await fill(), scheme).toBe(held)
+    await page.mouse.up()
+  }
+})
+
+test('the Thumbnail and Avatar pages show their sample photos, loaded', async () => {
+  for (const [name, tag, count] of [
+    ['thumbnail', 'eb-thumbnail', 3],
+    ['avatar', 'eb-avatar', 2],
+  ] as const) {
+    const { page } = await openDocs(name, 1280, 'light')
+    const photos = page.locator(`#examples ${tag}[src^="/samples/"]`)
+    expect(await photos.count(), name).toBe(count)
+    for (const img of await photos.locator('img').all()) {
+      await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true)
+    }
+  }
 })

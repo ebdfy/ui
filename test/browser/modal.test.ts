@@ -21,10 +21,12 @@ async function open(query = ''): Promise<void> {
   await expect.poll(barText, { timeout: 10_000 }).toBe('Order')
 }
 
-// Opens the modal the way a person does, with a tap on the app's own button.
+// Opens the modal the way a person does, with a tap on the app's own button, and waits until it shows:
+// it stays unseen until its page has said how tall it is.
 async function book(): Promise<HTMLDialogElement> {
   await app().getByRole('button', { name: 'Book courier' }).click()
   await expect.poll(() => modal()?.open, { timeout: 10_000 }).toBe(true)
+  await expect.poll(() => modal()!.checkVisibility({ visibilityProperty: true })).toBe(true)
   return modal()!
 }
 
@@ -38,6 +40,8 @@ test.for(phones)(
     await page.viewport(width, height)
     await open()
     const dialog = await book()
+    // The sheet slides up from below the screen, so it is measured once it has come to rest.
+    await Promise.all(dialog.getAnimations().map((animation) => animation.finished))
     const box = dialog.getBoundingClientRect()
     expect(box.left).toBe(0)
     expect(box.width).toBe(360)
@@ -127,9 +131,8 @@ test('the page in the modal can show a toast and close it', async () => {
 
 test('the page in the modal cannot change the title bar', async () => {
   await open()
-  const dialog = await book()
-  const sheet = dialog.querySelector('iframe')!
-  await new Promise((resolve) => sheet.addEventListener('load', resolve, { once: true }))
+  // The modal shows once its page has said how tall it is, by which time the page has run its title.
+  await book()
   await new Promise((resolve) => setTimeout(resolve, 300))
   expect(barText()).toBe('Focused: none')
 })

@@ -1,6 +1,11 @@
 import { LitElement, css, html } from 'lit'
 import type { PropertyValues } from 'lit'
 
+/**
+ * Lays its children out in equal columns, in one column on a screen under 600 px wide.
+ *
+ * @slot - The children to lay out.
+ */
 export class EbGrid extends LitElement {
   static override properties = {
     columns: { type: Number },
@@ -20,6 +25,7 @@ export class EbGrid extends LitElement {
     }
   `
 
+  /** How many equal columns. 2 when unset; under 600 px wide it shows one whatever this says. */
   declare columns: number
 
   constructor() {

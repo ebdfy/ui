@@ -1,6 +1,6 @@
 {
   "name": "@ebdfy/ui",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "The ebdfy design system: Lit web components, design tokens and the bridge for admin surfaces.",
   "license": "MIT",
   "files": [

@@ -150,3 +150,28 @@ test('a box that is both checked and indeterminate is checked after a click, not
   expect(el.indeterminate).toBe(false)
   expect(input(el).checked).toBe(true)
 })
+
+// A box, a switch and radios have no text control to lock, so a disabled one fades instead.
+test.for([
+  '<eb-checkbox label="Gift wrap" disabled></eb-checkbox>',
+  '<eb-switch label="Cash on delivery" disabled></eb-switch>',
+  '<eb-choice-list label="Courier" disabled><option value="a">Pathao</option></eb-choice-list>',
+])('a disabled %s fades to 0.6', async (markup) => {
+  const el = await mount(markup)
+  expect(getComputedStyle(el).opacity).toBe('0.6')
+})
+
+// The same error line as the text fields: a 16 px warning triangle before the words.
+test.for([
+  '<eb-checkbox label="I agree" error="Tick this to go on."></eb-checkbox>',
+  '<eb-switch label="Cash on delivery" error="Turn this on to go on."></eb-switch>',
+  '<eb-choice-list label="Courier" error="Choose a courier."><option value="a">Pathao</option></eb-choice-list>',
+])('the error line of %s starts with a 16 px warning icon', async (markup) => {
+  const el = await mount(markup)
+  const line = el.shadowRoot.querySelector('[part="error"]')!
+  const svg = line.firstElementChild!
+  expect(svg.localName).toBe('svg')
+  expect(svg.getAttribute('aria-hidden')).toBe('true')
+  const box = svg.getBoundingClientRect()
+  expect([box.width, box.height]).toEqual([16, 16])
+})

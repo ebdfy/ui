@@ -5,7 +5,12 @@ const edge = 4
 
 const focusable = 'a[href], button, input, select, textarea, summary, [tabindex], [contenteditable]'
 
-// A short text shown above its trigger, the element it wraps.
+/**
+ * A short text shown above its trigger, the element it wraps, on hover or keyboard focus.
+ *
+ * @slot - The trigger: the element the tooltip is for.
+ * @csspart tooltip - The bubble that holds the text.
+ */
 export class EbTooltip extends LitElement {
   static override properties = {
     text: { type: String },
@@ -40,8 +45,23 @@ export class EbTooltip extends LitElement {
         inset 0 0 0 1px var(--eb-color-inverse-edge),
         var(--eb-shadow-2);
     }
+    /* The bubble fades in and rises 4 px; with reduced motion it shows at once. */
+    @media (prefers-reduced-motion: no-preference) {
+      .bubble {
+        transition-property: opacity, transform;
+        transition-duration: var(--eb-duration-fast);
+        transition-timing-function: var(--eb-ease-out);
+      }
+      @starting-style {
+        .bubble {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+      }
+    }
   `
 
+  /** The short text the tooltip shows. */
   declare text: string
 
   #hovered = false

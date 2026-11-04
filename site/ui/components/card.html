@@ -9,50 +9,32 @@
     <script src="/docs.js"></script>
     <script type="module" src="%EB_CDN%/ui/v1.js"></script>
     <script type="module" src="/components.js"></script>
-    <style>
-      .stack {
-        display: grid;
-        gap: 16px;
-      }
-    </style>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Card</h1>
       <p><code>eb-card</code> groups what belongs together on a surface. Give it a <code>heading</code> to title it.</p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="Without a heading" caption-bn="শিরোনাম ছাড়া" stack>
+          <eb-card>
+            <p
+              data-en="A card without a heading holds text and actions."
+              data-bn="শিরোনামহীন কার্ডে লেখা ও কাজের বোতাম থাকে।"
+            >
+              A card without a heading holds text and actions.
+            </p>
+          </eb-card>
+        </docs-example>
+        <docs-example caption="With a heading and an action" caption-bn="শিরোনাম ও কাজসহ" stack>
+          <eb-card heading="Order 1042" data-heading-en="Order 1042" data-heading-bn="অর্ডার 1042">
+            <p data-en="Two items, to be sent to Sylhet." data-bn="দুইটি পণ্য, সিলেটে পাঠাতে হবে।">
+              Two items, to be sent to Sylhet.
+            </p>
+            <p><span data-en="Total" data-bn="মোট">Total</span>: <span data-taka>৳1,25,000</span></p>
+            <eb-button variant="primary" data-en="Add order" data-bn="অর্ডার যোগ করুন">Add order</eb-button>
+          </eb-card>
+        </docs-example>
       </div>
-      <div class="stack" id="examples" lang="en">
-        <eb-card>
-          <p
-            data-en="A card without a heading holds text and actions."
-            data-bn="শিরোনামহীন কার্ডে লেখা ও কাজের বোতাম থাকে।"
-          >
-            A card without a heading holds text and actions.
-          </p>
-        </eb-card>
-        <eb-card heading="Order 1042" data-heading-en="Order 1042" data-heading-bn="অর্ডার 1042">
-          <p data-en="Two items, to be sent to Sylhet." data-bn="দুইটি পণ্য, সিলেটে পাঠাতে হবে।">
-            Two items, to be sent to Sylhet.
-          </p>
-          <p><span data-en="Total" data-bn="মোট">Total</span>: <span data-taka>৳1,25,000</span></p>
-          <eb-button variant="primary" data-en="Add order" data-bn="অর্ডার যোগ করুন">Add order</eb-button>
-        </eb-card>
-      </div>
-      <pre><code>&lt;eb-card heading="Order 1042"&gt;
-  &lt;p&gt;Two items, to be sent to Sylhet.&lt;/p&gt;
-  &lt;eb-button variant="primary"&gt;Add order&lt;/eb-button&gt;
-&lt;/eb-card&gt;</code></pre>
     </main>
   </body>
 </html>

@@ -10,14 +10,6 @@
     <script type="module" src="%EB_CDN%/ui/v1.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Components</h1>
       <p>
@@ -25,188 +17,265 @@
         framework.
       </p>
       <pre><code>&lt;script type="module" src="https://cdn.ebdfy.com/ui/v1.js"&gt;&lt;/script&gt;</code></pre>
-      <eb-card>
-        <h2><a href="/foundations">Foundations</a></h2>
-        <p>The Ink colours in light and dark, the type scale in English and Bangla, spacing, radii, depth and icons.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/button">Button</a></h2>
-        <p>
-          <code>eb-button</code>: an action, primary, secondary, ghost or danger, at 28, 36 or 44 px, and 44 px on a
-          phone.
-        </p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/card">Card</a></h2>
-        <p><code>eb-card</code>: a surface with a fine ring that groups related content.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/page">Page</a></h2>
-        <p><code>eb-page</code>: the background and title of an app's page.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/heading">Heading</a></h2>
-        <p><code>eb-heading</code>: a page, section or card title at three levels.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/text">Text</a></h2>
-        <p><code>eb-text</code>: body text, and quieter meta text.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/badge">Badge</a></h2>
-        <p><code>eb-badge</code>: a status as a dot and a word.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/link">Link</a></h2>
-        <p><code>eb-link</code>: an underlined link inside a sentence.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/text-field">Text field</a></h2>
-        <p><code>eb-text-field</code>: a line of text, with its label and error.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/text-area">Text area</a></h2>
-        <p><code>eb-text-area</code>: a few lines of text, such as a note.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/select">Select</a></h2>
-        <p><code>eb-select</code>: one pick from a short list.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/search-field">Search field</a></h2>
-        <p><code>eb-search-field</code>: a search box the save bar never counts.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/date-field">Date field</a></h2>
-        <p><code>eb-date-field</code>: a day, as YYYY-MM-DD.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/phone-field">Phone field</a></h2>
-        <p><code>eb-phone-field</code>: a Bangladesh mobile number, kept in Latin digits.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/taka-field">Taka field</a></h2>
-        <p><code>eb-taka-field</code>: an amount in taka, grouped in lakhs.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/district-picker">District picker</a></h2>
-        <p><code>eb-district-picker</code>: one of the 64 districts and its area.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/checkbox">Checkbox</a></h2>
-        <p><code>eb-checkbox</code>: a yes or no, with a partly checked state.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/choice-list">Choice list</a></h2>
-        <p><code>eb-choice-list</code>: one pick, drawn as radio buttons.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/switch">Switch</a></h2>
-        <p><code>eb-switch</code>: a setting turned on or off.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/banner">Banner</a></h2>
-        <p><code>eb-banner</code>: a note or a risk, in the page.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/pagination">Pagination</a></h2>
-        <p><code>eb-pagination</code>: previous and next buttons for pages by cursor.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/empty-state">Empty state</a></h2>
-        <p><code>eb-empty-state</code>: why a list is empty, and what to do next.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/skeleton">Skeleton</a></h2>
-        <p><code>eb-skeleton</code>: grey lines that hold the place of text while it loads.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/thumbnail">Thumbnail</a></h2>
-        <p><code>eb-thumbnail</code>: a product picture in a small square, with an icon when it is missing.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/avatar">Avatar</a></h2>
-        <p><code>eb-avatar</code>: a person as a circle, with their initials when there is no picture.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/courier-status">Courier status</a></h2>
-        <p><code>eb-courier-status</code>: what a courier says happened to a parcel.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/bulk-bar">Bulk bar</a></h2>
-        <p><code>eb-bulk-bar</code>: the actions for the orders a person selected.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/tooltip">Tooltip</a></h2>
-        <p><code>eb-tooltip</code>: a short text above its trigger, on hover or focus.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/menu">Menu</a></h2>
-        <p>
-          <code>eb-menu</code> and <code>eb-menu-item</code>: a list of actions that opens from a button, with shortcut
-          hints.
-        </p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/popover">Popover</a></h2>
-        <p><code>eb-popover</code>: a panel of any content that opens below a button.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/kbd">Kbd</a></h2>
-        <p><code>eb-kbd</code>: a keyboard shortcut, Ctrl+D here and ⌘D on a Mac.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/bottom-bar">Bottom bar</a></h2>
-        <p><code>eb-bottom-bar</code>: buttons that stay at the bottom of the scrolling page.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/toast">Toast</a></h2>
-        <p>A short message the Admin chrome shows at the foot of the window, with an Undo action or as an error.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/modal">Modal</a></h2>
-        <p>An app's own page in a small, medium or large window over the Admin, a bottom sheet on a phone.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/chrome">Admin chrome</a></h2>
-        <p><code>eb-admin-chrome</code>: the title bar and navigation that frame an app.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/table">Table</a></h2>
-        <p>
-          <code>eb-table</code> and <code>eb-row</code>: orders as a table on a computer and cards on a phone, with an
-          open row and selection.
-        </p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/list">List</a></h2>
-        <p><code>eb-list</code>: a column of cards on any screen.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/stack">Stack</a></h2>
-        <p><code>eb-stack</code>: children in a column with the standard gap, or side by side in a row.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/grid">Grid</a></h2>
-        <p><code>eb-grid</code>: equal columns, and one column on a phone.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/divider">Divider</a></h2>
-        <p><code>eb-divider</code>: a 1 px line between two parts of a page.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/button-group">Button group</a></h2>
-        <p><code>eb-button-group</code>: related buttons in one labelled row that wraps.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/progress-bar">Progress bar</a></h2>
-        <p><code>eb-progress-bar</code>: how far some work has got, or a moving bar when that is not known.</p>
-      </eb-card>
-      <eb-card>
-        <h2><a href="/components/spinner">Spinner</a></h2>
-        <p><code>eb-spinner</code>: a small turning ring while something loads.</p>
-      </eb-card>
-      <p class="links"><a href="/type">Bangla type</a> · <a href="/playground">Playground</a></p>
+      <div class="tiles">
+        <article class="tile">
+          <div class="preview">
+            <eb-badge tone="attention">New</eb-badge><eb-badge tone="info">Confirmed</eb-badge
+            ><eb-icon name="truck" size="20"></eb-icon>
+          </div>
+          <h2><a href="/foundations">Foundations</a></h2>
+          <p>
+            The Ink colours in light and dark, the type scale in English and Bangla, spacing, radii, depth and icons.
+          </p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/button"></div>
+          <h2><a href="/components/button">Button</a></h2>
+          <p>
+            <code>eb-button</code>: an action, primary, secondary, ghost or danger, at 28, 36 or 44 px, and 44 px on a
+            phone.
+          </p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/card"></div>
+          <h2><a href="/components/card">Card</a></h2>
+          <p><code>eb-card</code>: a surface with a fine ring that groups related content.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/page"></div>
+          <h2><a href="/components/page">Page</a></h2>
+          <p><code>eb-page</code>: the background and title of an app's page.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/heading"></div>
+          <h2><a href="/components/heading">Heading</a></h2>
+          <p><code>eb-heading</code>: a page, section or card title at three levels.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/text"></div>
+          <h2><a href="/components/text">Text</a></h2>
+          <p><code>eb-text</code>: body text, and quieter meta text.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/badge"></div>
+          <h2><a href="/components/badge">Badge</a></h2>
+          <p><code>eb-badge</code>: a status as a dot and a word.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/icon"></div>
+          <h2><a href="/components/icon">Icon</a></h2>
+          <p><code>eb-icon</code>: a Lucide icon or an app's own svg at 16 or 20 px.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/link"></div>
+          <h2><a href="/components/link">Link</a></h2>
+          <p><code>eb-link</code>: an underlined link inside a sentence.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/text-field"></div>
+          <h2><a href="/components/text-field">Text field</a></h2>
+          <p><code>eb-text-field</code>: a line of text, with its label and error.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/text-area"></div>
+          <h2><a href="/components/text-area">Text area</a></h2>
+          <p><code>eb-text-area</code>: a few lines of text, such as a note.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/select"></div>
+          <h2><a href="/components/select">Select</a></h2>
+          <p><code>eb-select</code>: one pick from a short list.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/search-field"></div>
+          <h2><a href="/components/search-field">Search field</a></h2>
+          <p><code>eb-search-field</code>: a search box the save bar never counts.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/date-field"></div>
+          <h2><a href="/components/date-field">Date field</a></h2>
+          <p><code>eb-date-field</code>: a day, as YYYY-MM-DD.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/phone-field"></div>
+          <h2><a href="/components/phone-field">Phone field</a></h2>
+          <p><code>eb-phone-field</code>: a Bangladesh mobile number, kept in Latin digits.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/taka-field"></div>
+          <h2><a href="/components/taka-field">Taka field</a></h2>
+          <p><code>eb-taka-field</code>: an amount in taka, grouped in lakhs.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/district-picker"></div>
+          <h2><a href="/components/district-picker">District picker</a></h2>
+          <p><code>eb-district-picker</code>: one of the 64 districts and its area.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/checkbox"></div>
+          <h2><a href="/components/checkbox">Checkbox</a></h2>
+          <p><code>eb-checkbox</code>: a yes or no, with a partly checked state.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/choice-list"></div>
+          <h2><a href="/components/choice-list">Choice list</a></h2>
+          <p><code>eb-choice-list</code>: one pick, drawn as radio buttons.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/switch"></div>
+          <h2><a href="/components/switch">Switch</a></h2>
+          <p><code>eb-switch</code>: a setting turned on or off.</p>
+        </article>
+        <article class="tile">
+          <div class="preview">
+            <eb-banner heading="Pickup cut-off">Pathao picks up at 4 pm.</eb-banner>
+          </div>
+          <h2><a href="/components/banner">Banner</a></h2>
+          <p><code>eb-banner</code>: a note or a risk, in the page.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/pagination"></div>
+          <h2><a href="/components/pagination">Pagination</a></h2>
+          <p><code>eb-pagination</code>: previous and next buttons for pages by cursor.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/tabs"></div>
+          <h2><a href="/components/tabs">Tabs</a></h2>
+          <p><code>eb-tabs</code> and <code>eb-tab</code>: underline tabs that filter a list, with counts.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/empty-state"></div>
+          <h2><a href="/components/empty-state">Empty state</a></h2>
+          <p><code>eb-empty-state</code>: why a list is empty, and what to do next.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/skeleton"></div>
+          <h2><a href="/components/skeleton">Skeleton</a></h2>
+          <p><code>eb-skeleton</code>: grey lines that hold the place of text while it loads.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/thumbnail"></div>
+          <h2><a href="/components/thumbnail">Thumbnail</a></h2>
+          <p><code>eb-thumbnail</code>: a product picture in a small square, with an icon when it is missing.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/avatar"></div>
+          <h2><a href="/components/avatar">Avatar</a></h2>
+          <p><code>eb-avatar</code>: a person as a circle, with their initials when there is no picture.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/courier-status"></div>
+          <h2><a href="/components/courier-status">Courier status</a></h2>
+          <p><code>eb-courier-status</code>: what a courier says happened to a parcel.</p>
+        </article>
+        <article class="tile">
+          <div class="preview"><eb-text>2 selected</eb-text><eb-button size="sm">Confirm</eb-button></div>
+          <h2><a href="/components/bulk-bar">Bulk bar</a></h2>
+          <p><code>eb-bulk-bar</code>: the actions for the orders a person selected.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/tooltip"></div>
+          <h2><a href="/components/tooltip">Tooltip</a></h2>
+          <p><code>eb-tooltip</code>: a short text above its trigger, on hover or focus.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/menu"></div>
+          <h2><a href="/components/menu">Menu</a></h2>
+          <p>
+            <code>eb-menu</code> and <code>eb-menu-item</code>: a list of actions that opens from a button, with
+            shortcut hints.
+          </p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/popover"></div>
+          <h2><a href="/components/popover">Popover</a></h2>
+          <p><code>eb-popover</code>: a panel of any content that opens below a button.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/kbd"></div>
+          <h2><a href="/components/kbd">Kbd</a></h2>
+          <p><code>eb-kbd</code>: a keyboard shortcut, Ctrl+D here and ⌘D on a Mac.</p>
+        </article>
+        <article class="tile">
+          <div class="preview"><eb-button>Cancel</eb-button><eb-button variant="primary">Save</eb-button></div>
+          <h2><a href="/components/bottom-bar">Bottom bar</a></h2>
+          <p><code>eb-bottom-bar</code>: buttons that stay at the bottom of the scrolling page.</p>
+        </article>
+        <article class="tile">
+          <div class="preview">
+            <eb-icon name="circle-check" size="20"></eb-icon><eb-text>Copied to a new draft</eb-text>
+          </div>
+          <h2><a href="/components/toast">Toast</a></h2>
+          <p>A short message the Admin chrome shows at the foot of the window, with an Undo action or as an error.</p>
+        </article>
+        <article class="tile">
+          <div class="preview"><eb-button variant="primary">Book courier</eb-button></div>
+          <h2><a href="/components/modal">Modal</a></h2>
+          <p>An app's own page in a small, medium or large window over the Admin, a bottom sheet on a phone.</p>
+        </article>
+        <article class="tile">
+          <div class="preview">
+            <ul class="nav-preview">
+              <li aria-current="page"><eb-icon name="shopping-bag"></eb-icon>Orders</li>
+              <li><eb-icon name="tag"></eb-icon>Products</li>
+              <li><eb-icon name="users"></eb-icon>Customers</li>
+            </ul>
+          </div>
+          <h2><a href="/components/chrome">Admin chrome</a></h2>
+          <p><code>eb-admin-chrome</code>: the title bar and navigation that frame an app.</p>
+        </article>
+        <article class="tile">
+          <div class="preview">
+            <eb-table label="Orders">
+              <eb-column card="meta">Order</eb-column>
+              <eb-column card="title">Customer</eb-column>
+              <eb-column card="end" align="end">Total</eb-column>
+              <eb-row><span>#1042</span><span>Rahim</span><span>৳1,250</span></eb-row>
+            </eb-table>
+          </div>
+          <h2><a href="/components/table">Table</a></h2>
+          <p>
+            <code>eb-table</code> and <code>eb-row</code>: orders as a table on a computer and cards on a phone, with an
+            open row and selection.
+          </p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/list"></div>
+          <h2><a href="/components/list">List</a></h2>
+          <p><code>eb-list</code>: a column of cards on any screen.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/stack"></div>
+          <h2><a href="/components/stack">Stack</a></h2>
+          <p><code>eb-stack</code>: children in a column with the standard gap, or side by side in a row.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/grid"></div>
+          <h2><a href="/components/grid">Grid</a></h2>
+          <p><code>eb-grid</code>: equal columns, and one column on a phone.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/divider"></div>
+          <h2><a href="/components/divider">Divider</a></h2>
+          <p><code>eb-divider</code>: a 1 px line between two parts of a page.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/button-group"></div>
+          <h2><a href="/components/button-group">Button group</a></h2>
+          <p><code>eb-button-group</code>: related buttons in one labelled row that wraps.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/progress-bar"></div>
+          <h2><a href="/components/progress-bar">Progress bar</a></h2>
+          <p><code>eb-progress-bar</code>: how far some work has got, or a moving bar when that is not known.</p>
+        </article>
+        <article class="tile">
+          <div class="preview" data-from="/components/spinner"></div>
+          <h2><a href="/components/spinner">Spinner</a></h2>
+          <p><code>eb-spinner</code>: a small turning ring while something loads.</p>
+        </article>
+      </div>
+      <p class="links"><a href="/playground">Playground</a></p>
     </main>
   </body>
 </html>

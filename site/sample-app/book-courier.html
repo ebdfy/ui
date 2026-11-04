@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
     <meta name="ebdfy-app" content="sample" />
+    <!-- Opened on its own, a page of the sample app goes to the playground with that page open. -->
+    <meta name="ebdfy-home" content="%EB_UI%/playground" />
     <title>Book courier · Sample app · ebdfy</title>
     <style>
       body {
@@ -17,14 +19,39 @@
         flex: 1;
       }
     </style>
+    <script src="/lang.js"></script>
     <script type="module" src="%EB_CDN%/ui/v1.js"></script>
     <script type="module">
       // Shown by the order page in the Admin's modal: a sheet on a phone, a dialog on a desktop.
+      const copy = {
+        bn: {
+          order: 'রহিম উদ্দিন, মিরপুর, ঢাকা। ক্যাশ অন ডেলিভারি ৳১,২৫০।',
+          courier: 'কুরিয়ার',
+          booking: 'বুকিং',
+          cancel: 'বাতিল',
+          book: 'বুক করুন',
+          booked: (name) => `অর্ডার #1001 ${name}-এ বুক হয়েছে`,
+        },
+        en: {
+          order: 'Rahim Uddin, Mirpur, Dhaka. Cash on delivery ৳1,250.',
+          courier: 'Courier',
+          booking: 'Booking',
+          cancel: 'Cancel',
+          book: 'Book',
+          booked: (name) => `Order #1001 booked with ${name}`,
+        },
+      }
+      const t = copy[document.documentElement.lang]
       const couriers = document.querySelector('eb-choice-list')
+      document.querySelector('eb-text').textContent = t.order
+      couriers.setAttribute('label', t.courier)
+      document.querySelector('eb-bottom-bar eb-button-group').setAttribute('label', t.booking)
+      document.querySelector('#cancel').textContent = t.cancel
+      document.querySelector('#book').textContent = t.book
       document.querySelector('#cancel').addEventListener('click', () => ebdfy.closeModal())
       document.querySelector('#book').addEventListener('click', () => {
         const name = couriers.querySelector(`option[value="${couriers.value}"]`).textContent
-        ebdfy.toast(`Order #1001 booked with ${name}`)
+        ebdfy.toast(t.booked(name))
         ebdfy.closeModal()
       })
     </script>

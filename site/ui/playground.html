@@ -6,14 +6,89 @@
     <link rel="icon" href="data:," />
     <title>Playground · ebdfy design system</title>
     <style>
+      /* The playground's own controls sit in a toolbar above the Admin, which takes the rest of the screen. */
       body {
+        display: flex;
+        flex-direction: column;
+        height: 100dvh;
         margin: 0;
         background: var(--eb-color-bg);
+      }
+      eb-admin-chrome {
+        flex: 1;
+        min-height: 0;
+        height: auto;
+      }
+      [role='toolbar'] {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-bottom: 1px dashed var(--eb-color-edge);
+        background: var(--eb-color-surface-2);
+        font-family: var(--eb-font-family);
+        font-size: var(--eb-font-size-meta);
+        line-height: var(--eb-line-height-meta);
+      }
+      [role='toolbar'] > span {
+        margin-inline-end: auto;
+        padding-inline: 4px;
+        color: var(--eb-color-text-3);
+        font-weight: var(--eb-font-weight-semibold);
+      }
+      [role='toolbar'] > a,
+      [role='toolbar'] > button {
+        display: inline-flex;
+        align-items: center;
+        box-sizing: border-box;
+        height: var(--eb-size-control-sm);
+        padding: 0 8px;
+        border: 0;
+        border-radius: var(--eb-radius-md);
+        background: none;
+        color: var(--eb-color-text-2);
+        font: inherit;
+        font-weight: var(--eb-font-weight-medium);
+        text-decoration: none;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      [role='toolbar'] > a:hover,
+      [role='toolbar'] > button:hover {
+        background: var(--eb-color-surface-3);
+        color: var(--eb-color-text);
+      }
+      [role='toolbar'] > :focus-visible {
+        outline: 2px solid var(--eb-color-focus);
+        outline-offset: 2px;
+      }
+      /* On a phone the controls take a thumb's height and the toolbar's name steps aside for them. */
+      @media (max-width: 599.98px) {
+        [role='toolbar'] {
+          justify-content: space-between;
+          gap: 0;
+          padding: 0 4px;
+        }
+        [role='toolbar'] > span {
+          display: none;
+        }
+        [role='toolbar'] > a,
+        [role='toolbar'] > button {
+          height: var(--eb-size-target);
+          padding: 0 6px;
+        }
       }
     </style>
     <script type="module" src="%EB_CDN%/ui/host.js"></script>
   </head>
   <body>
+    <div role="toolbar" aria-label="Playground">
+      <span aria-hidden="true">Playground</span>
+      <a href="/">Docs</a>
+      <a href="/playground?hang" id="hang">Hang the app</a>
+      <a href="/playground?ended" id="ended">End access</a>
+      <button type="button" id="theme">Dark theme</button>
+    </div>
     <eb-admin-chrome
       app-name="Sample app"
       src="%EB_SAMPLE_APP%/?store=demo"
@@ -21,11 +96,11 @@
       api-url="/dev/graphql"
       stores-url="/playground"
     >
-      <a slot="nav" href="/playground" aria-current="page">Sample app</a>
-      <a slot="nav" href="/">Docs</a>
-      <a slot="nav" href="/playground?hang" id="hang">Hang the app</a>
-      <a slot="nav" href="/playground?ended" id="ended">End access</a>
-      <button slot="nav" type="button" id="theme">Dark theme</button>
+      <!-- A merchant's own Admin pages, which the playground does not have, all lead back to it. -->
+      <a slot="nav" href="/playground" data-icon="home">Home</a>
+      <a slot="nav" href="/playground" data-icon="shopping-bag">Orders</a>
+      <a slot="nav" href="/playground" data-icon="package">Products</a>
+      <a slot="nav" href="/playground" data-icon="users">Customers</a>
     </eb-admin-chrome>
     <script>
       // The theme switch flips the Admin between light and dark, starting from the device's theme.
@@ -39,6 +114,13 @@
         root.dataset.theme = dark() ? 'light' : 'dark'
         label()
       })
+      // ?page=/order-1039 opens that page of the sample app, as a tab opened on its own lands here.
+      const page = new URLSearchParams(location.search).get('page')
+      const opened = page?.startsWith('/') ? new URL(page, '%EB_SAMPLE_APP%') : null
+      if (opened?.origin === new URL('%EB_SAMPLE_APP%').origin) {
+        opened.searchParams.set('store', 'demo')
+        document.querySelector('eb-admin-chrome').setAttribute('src', opened.href)
+      }
       // ?hang frames a sample page that never answers, so the chrome's notice shows after 15 s.
       if (new URLSearchParams(location.search).has('hang')) {
         document.querySelector('eb-admin-chrome').setAttribute('src', '%EB_SAMPLE_APP%/hang?store=demo')

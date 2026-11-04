@@ -88,3 +88,46 @@ test('an area error shows under the area, apart from the district', async () => 
   expect(error.getBoundingClientRect().top).toBeGreaterThanOrEqual(area.getBoundingClientRect().bottom)
   expect(area.getAttribute('aria-invalid')).toBe('true')
 })
+
+test('the Area label sits 16 px under the district select, and 16 px under its error line', async () => {
+  const { picker, select } = await mount('<eb-district-picker></eb-district-picker>')
+  const areaLabel = () => picker.shadowRoot!.querySelector('label[for="area"]')!.getBoundingClientRect()
+  expect(areaLabel().top - select.getBoundingClientRect().bottom).toBe(16)
+  picker.error = 'Choose a district.'
+  await picker.updateComplete
+  const error = picker.shadowRoot!.querySelector('#error')!.getBoundingClientRect()
+  expect(areaLabel().top - error.bottom).toBe(16)
+})
+
+test('a known area shows in the page language and submits its English name, as the district does', async () => {
+  const { form, picker, area } = await mount(
+    '<eb-district-picker district="Dhaka" area="Mirpur"></eb-district-picker>',
+    'bn',
+  )
+  expect(area.value).toBe('মিরপুর')
+  expect(new FormData(form).get('area')).toBe('Mirpur')
+  document.documentElement.lang = 'en'
+  picker.requestUpdate()
+  await picker.updateComplete
+  expect(area.value).toBe('Mirpur')
+  await userEvent.fill(area, 'মিরপুর')
+  expect(new FormData(form).get('area')).toBe('Mirpur')
+  await userEvent.fill(area, 'House 12, Mirpur')
+  expect(new FormData(form).get('area')).toBe('House 12, Mirpur')
+})
+
+test('the area keeps what the person types while it has focus, and shows a known one in the page language after', async () => {
+  const { form, area } = await mount('<eb-district-picker district="Dhaka"></eb-district-picker>', 'bn')
+  await userEvent.click(area)
+  await userEvent.keyboard('Mirpur')
+  expect(area.value).toBe('Mirpur')
+  await userEvent.keyboard(' 10')
+  expect(area.value).toBe('Mirpur 10')
+  expect(new FormData(form).get('area')).toBe('Mirpur 10')
+  await userEvent.fill(area, 'Mirpur')
+  await userEvent.tab()
+  expect(area.value).toBe('মিরপুর')
+  expect(new FormData(form).get('area')).toBe('Mirpur')
+  await userEvent.click(area)
+  expect(area.value).toBe('মিরপুর')
+})

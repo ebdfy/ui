@@ -1,5 +1,10 @@
 import { LitElement, css, html, nothing } from 'lit'
 
+/**
+ * Groups what belongs together on a surface, with an optional title.
+ *
+ * @slot - The content of the card.
+ */
 export class EbCard extends LitElement {
   static override properties = {
     heading: { type: String },
@@ -29,6 +34,7 @@ export class EbCard extends LitElement {
     }
   `
 
+  /** The title above the content. Unset, the card has none. */
   declare heading: string
 
   constructor() {

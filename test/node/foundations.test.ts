@@ -14,11 +14,12 @@ beforeAll(async () => {
 afterAll(() => pages?.close())
 
 const tokensSource = readFileSync(fileURLToPath(new URL('../../src/tokens.ts', import.meta.url)), 'utf8')
-const lightBlock = tokensSource.slice(
-  tokensSource.indexOf('const light = css`'),
-  tokensSource.indexOf('const dark = css`'),
-)
-const colourTokens = [...lightBlock.matchAll(/(--eb-color-[\w-]+):/g)].map((match) => match[1]!)
+const block = (from: string, to: string) => tokensSource.slice(tokensSource.indexOf(from), tokensSource.indexOf(to))
+const valuesIn = (css: string) =>
+  Object.fromEntries([...css.matchAll(/(--eb-color-[\w-]+): ([^;]+);/g)].map((match) => [match[1]!, match[2]!]))
+const lightValues = valuesIn(block('const light = css`', 'const dark = css`'))
+const darkValues = valuesIn(block('const dark = css`', 'const aliases = css`'))
+const colourTokens = Object.keys(lightValues)
 
 for (const width of [360, 1280]) {
   test(`/foundations loads without errors or horizontal scroll at ${width} px`, async () => {
@@ -30,31 +31,46 @@ for (const width of [360, 1280]) {
   })
 }
 
-const swatchColour = (page: Awaited<ReturnType<typeof pages.open>>['page'], theme: string, token: string) =>
-  page
-    .locator(`[data-panel="${theme}"] [data-token="${token}"] .chip`)
-    .evaluate((el) => getComputedStyle(el).backgroundColor)
+type Row = { token: string; light: string; dark: string; contrast: string; use: string; chips: string[] }
+
+const readRows = (page: Awaited<ReturnType<typeof pages.open>>['page']) =>
+  page.locator('#colour tbody tr').evaluateAll((rows) =>
+    rows.map((row) => {
+      const text = (selector: string) => row.querySelector(selector)?.textContent?.trim() ?? ''
+      return {
+        token: text('[data-cell="token"]'),
+        light: text('[data-cell="light"]'),
+        dark: text('[data-cell="dark"]'),
+        contrast: text('[data-cell="contrast"]'),
+        use: text('[data-cell="use"]'),
+        chips: [...row.querySelectorAll('.chip')].map((chip) => getComputedStyle(chip).backgroundColor),
+      }
+    }),
+  )
 
 for (const scheme of ['light', 'dark'] as const) {
-  test(`the panels keep their own theme in a ${scheme} browser`, async () => {
-    const { page } = await pages.open('')
+  test(`in a ${scheme} browser the colour table shows each token's light and dark value, swatch, contrast and use`, async () => {
+    expect(colourTokens.length).toBeGreaterThan(20)
+    const { page } = await pages.open('', 1280)
     await page.emulateMedia({ colorScheme: scheme })
     await page.goto(`${pages.ui}/foundations`)
-    expect(await swatchColour(page, 'light', '--eb-color-bg')).toBe('oklch(0.985 0.002 85)')
-    expect(await swatchColour(page, 'dark', '--eb-color-bg')).toBe('oklch(0.16 0.004 85)')
+    await page.locator('#colour tbody tr [data-cell="contrast"]:not(:empty)').first().waitFor()
+    const rows: Row[] = await readRows(page)
+    expect(rows.map((row) => row.token)).toEqual(colourTokens)
+    for (const row of rows) {
+      expect(row.light, row.token).toBe(lightValues[row.token])
+      expect(row.dark, row.token).toBe(darkValues[row.token])
+      expect(row.use, row.token).not.toBe('')
+      expect(row.contrast, row.token).toMatch(/^\d+\.\d\d:1 · \d+\.\d\d:1$/)
+    }
+    const byToken = Object.fromEntries(rows.map((row) => [row.token, row]))
+    expect(byToken['--eb-color-bg']!.chips).toEqual(['oklch(0.985 0.002 85)', 'oklch(0.16 0.004 85)'])
+    expect(byToken['--eb-color-bg']!.contrast).toBe('1.00:1 · 1.00:1')
+    const [light, dark] = byToken['--eb-color-text']!.contrast.split(' · ').map((ratio) => Number.parseFloat(ratio))
+    expect(light).toBeGreaterThan(14)
+    expect(dark).toBeGreaterThan(14)
   })
 }
-
-test('both panels hold a swatch for every colour token', async () => {
-  expect(colourTokens.length).toBeGreaterThan(20)
-  const { page } = await pages.open(`${pages.ui}/foundations`)
-  for (const theme of ['light', 'dark']) {
-    const shown = await page
-      .locator(`[data-panel="${theme}"] [data-token]`)
-      .evaluateAll((els) => els.map((el) => el.getAttribute('data-token')))
-    expect(shown, theme).toEqual(colourTokens)
-  }
-})
 
 const steps = [
   { step: 'caption', size: '12px', line: '16px' },
@@ -99,7 +115,7 @@ test('the 650 weight shows only at 22 px and up', async () => {
   expect(await weights('heading-1')).toEqual(['400', '500', '600', '650'])
 })
 
-test('the depth cards take the three shadows and the icons draw at 16 and 20 px', async () => {
+test('the depth cards take the three shadows', async () => {
   const { page } = await pages.open(`${pages.ui}/foundations`, 1280)
   await page.emulateMedia({ colorScheme: 'light' })
   const [one, two, three] = await page
@@ -111,16 +127,78 @@ test('the depth cards take the three shadows and the icons draw at 16 and 20 px'
   expect(
     await page.locator('[data-depth]').evaluateAll((els) => els.map((el) => getComputedStyle(el).backgroundColor)),
   ).toEqual(['oklch(1 0 0)', 'oklch(1 0 0)', 'oklch(1 0 0)'])
+})
 
-  for (const size of [16, 20]) {
-    const widths = await page
-      .locator(`[data-icon] svg[data-size="${size}"]`)
-      .evaluateAll((els) => els.map((el) => el.getBoundingClientRect().width))
-    expect(widths, `${size}`).toEqual([size, size, size, size])
-  }
-  expect(await page.locator('[data-icon]').evaluateAll((els) => els.map((el) => el.getAttribute('data-icon')))).toEqual(
-    ['chevronLeft', 'chevronRight', 'image', 'close'],
+const iconsSource = readFileSync(fileURLToPath(new URL('../../src/icons.ts', import.meta.url)), 'utf8')
+// The keys of the icons record: a name and a colon, or a name on its own (image, info).
+const iconNames = [
+  ...iconsSource.slice(iconsSource.indexOf('export const icons = {')).matchAll(/^ {2}'?([\w-]+)'?(?::|,$)/gm),
+].map((match) => match[1]!)
+
+test('the icon section shows every eb-icon at 16 and 20 px, by name', async () => {
+  expect(iconNames.length).toBeGreaterThanOrEqual(40)
+  const { page } = await pages.open(`${pages.ui}/foundations`, 1280)
+  await page.locator('#icons eb-icon:defined').first().waitFor()
+  const shown = await page.locator('#icons [data-icon]').evaluateAll((figures) =>
+    figures.map((figure) => ({
+      name: figure.getAttribute('data-icon'),
+      widths: [...figure.querySelectorAll('eb-icon')].map(
+        (el) => el.shadowRoot!.querySelector('svg')?.getBoundingClientRect().width,
+      ),
+      caption: figure.querySelector('code')?.textContent,
+    })),
   )
+  expect(shown.map((icon) => icon.name)).toEqual(iconNames)
+  for (const icon of shown) expect(icon, icon.name!).toEqual({ name: icon.name, widths: [16, 20], caption: icon.name })
+})
+
+test('the tone section lists the five tones, the order statuses and the 1.0.0 names', async () => {
+  const { page } = await pages.open(`${pages.ui}/foundations`, 1280)
+  await page.locator('#tones eb-badge:defined').first().waitFor()
+  const tones = await page
+    .locator('#tones [data-tone]')
+    .evaluateAll((rows) =>
+      rows.map((row) => [row.getAttribute('data-tone'), row.querySelector('eb-badge')?.getAttribute('tone')]),
+    )
+  expect(tones).toEqual([
+    ['neutral', 'neutral'],
+    ['info', 'info'],
+    ['success', 'success'],
+    ['warning', 'warning'],
+    ['danger', 'danger'],
+  ])
+  const statuses = await page
+    .locator('#tones [data-status]')
+    .evaluateAll((rows) =>
+      rows.map((row) => [row.getAttribute('data-status'), row.querySelector('eb-badge')?.getAttribute('status')]),
+    )
+  expect(statuses).toEqual([
+    ['new', 'new'],
+    ['confirmed', 'confirmed'],
+    ['shipped', 'shipped'],
+    ['paid', 'paid'],
+    ['returned', 'returned'],
+  ])
+  const text = await page.locator('#tones').innerText()
+  for (const name of ['attention', 'critical', 'shipped', 'default']) expect(text).toContain(name)
+})
+
+test('the motion section shows each motion token with its value', async () => {
+  const { page } = await pages.open(`${pages.ui}/foundations`, 1280)
+  await page.locator('#motion [data-cell="value"]:not(:empty)').first().waitFor()
+  const rows = await page
+    .locator('#motion [data-token]')
+    .evaluateAll((rows) =>
+      rows.map((row) => [
+        row.getAttribute('data-token'),
+        row.querySelector('[data-cell="value"]')?.textContent?.trim(),
+      ]),
+    )
+  expect(rows).toEqual([
+    ['--eb-duration-fast', '120ms'],
+    ['--eb-duration-base', '200ms'],
+    ['--eb-ease-out', 'cubic-bezier(0.2, 0.8, 0.2, 1)'],
+  ])
 })
 
 test('the page sets no colour literal of its own', () => {

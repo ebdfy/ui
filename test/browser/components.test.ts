@@ -83,9 +83,15 @@ test('in dark, the page and the card turn dark with the text', async () => {
     const card = getComputedStyle(document.querySelector('eb-card')!)
     expect(page.backgroundColor).toBe('oklch(0.16 0.004 85)')
     expect(page.color).toBe('oklch(0.955 0.003 85)')
-    expect(card.backgroundColor).toBe('oklch(0.2 0.004 85)')
+    expect(card.backgroundColor).toBe('oklch(0.215 0.004 85)')
     expect(card.color).toBe('oklch(0.955 0.003 85)')
-    expect(card.boxShadow).toBe('oklch(0.285 0.005 85) 0px 0px 0px 1px inset, oklch(0 0 0 / 0.45) 0px 1px 2px 0px')
+    // A card lifts off the page by its lightness and a faint top highlight, since a shadow barely
+    // shows on near-black.
+    const lightness = (colour: string) => Number.parseFloat(colour.slice('oklch('.length))
+    expect(lightness(card.backgroundColor) - lightness(page.backgroundColor)).toBeGreaterThanOrEqual(0.05)
+    expect(card.boxShadow).toBe(
+      'oklch(0.285 0.005 85) 0px 0px 0px 1px inset, oklch(1 0 0 / 0.04) 0px 1px 0px 0px inset, oklch(0 0 0 / 0.5) 0px 1px 2px 0px',
+    )
   } finally {
     delete document.documentElement.dataset.theme
   }

@@ -132,3 +132,73 @@ for (const name of forms) {
     slow,
   )
 }
+
+// The ring the focused example draws, read on the element that holds the focus inside it.
+function focusRing() {
+  let el = document.activeElement
+  while (el?.shadowRoot?.activeElement) el = el.shadowRoot.activeElement
+  if (!el) return 'nothing focused'
+  const style = getComputedStyle(el)
+  const host = el.getRootNode() instanceof ShadowRoot ? (el.getRootNode() as ShadowRoot).host : el
+  const state = host.closest('[data-state]')?.getAttribute('data-state') ?? 'outside the examples'
+  return `${state}: ${style.outlineWidth} ${style.outlineStyle}`
+}
+
+for (const name of forms) {
+  test(
+    `on the ${name} page the Focused example still shows its ring after a switch to Bangla and back`,
+    async () => {
+      const { page } = await open(name, 1280)
+      await expect.poll(() => page.evaluate(focusRing)).toBe('focus: 2px solid')
+      for (const lang of ['বাংলা', 'English']) {
+        await page.locator('#language eb-button', { hasText: lang }).click()
+        await expect.poll(() => page.evaluate(focusRing), { message: lang }).toBe('focus: 2px solid')
+      }
+    },
+    slow,
+  )
+
+  test(
+    `on the ${name} page the reader's first Tab goes to "Skip to content", not on from the Focused example`,
+    async () => {
+      const { page } = await open(name, 1280)
+      await expect.poll(() => page.evaluate(focusRing)).toBe('focus: 2px solid')
+      expect(await page.evaluate(() => scrollY)).toBe(0)
+      await page.keyboard.press('Tab')
+      expect(await page.evaluate(() => document.activeElement?.textContent)).toBe('Skip to content')
+    },
+    slow,
+  )
+}
+
+for (const name of forms) {
+  test(
+    `on the ${name} page at 1280 px no example field is wider than 400 px`,
+    async () => {
+      const { page } = await open(name, 1280)
+      const wide = await page.evaluate(() =>
+        [...document.querySelectorAll<HTMLElement>('#examples [data-state]')]
+          .map((el) => ({ state: el.dataset.state, width: el.getBoundingClientRect().width }))
+          .filter((field) => field.width > 400),
+      )
+      expect(wide).toEqual([])
+    },
+    slow,
+  )
+}
+
+test(
+  'a keyboard reader who switches language stays on the switch, and a pointer press on Dark keeps the Focused ring',
+  async () => {
+    const { page } = await open('text-field', 1280)
+    await expect.poll(() => page.evaluate(focusRing)).toBe('focus: 2px solid')
+    const bangla = page.locator('#language eb-button', { hasText: 'বাংলা' })
+    await bangla.locator('button').focus()
+    await page.keyboard.press('Enter')
+    await expect.poll(() => page.locator('#examples').getAttribute('lang')).toBe('bn')
+    expect(await bangla.evaluate((el) => el.matches(':focus-within'))).toBe(true)
+    await page.locator('.theme-switch eb-button', { hasText: 'Dark' }).click()
+    await expect.poll(() => page.evaluate(focusRing)).toBe('focus: 2px solid')
+  },
+  slow,
+)

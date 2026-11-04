@@ -16,9 +16,22 @@
           else ebdfy.toast(`${label} ran ${taps[label]}`)
         },
       })
-      const actions = asked.has('actions') ? { actions: JSON.parse(asked.get('actions')).map(action) } : undefined
-      ebdfy.title(asked.get('title') ?? 'Orders', actions)
+      // An action given as { label, items } opens a menu whose items count their taps the same way.
+      const entry = (given) =>
+        typeof given === 'string'
+          ? action(given)
+          : { label: given.label, items: given.items.map((item) => ({ ...action(item.label), tone: item.tone })) }
+      const options = asked.has('actions') ? { actions: JSON.parse(asked.get('actions')).map(entry) } : {}
+      if (asked.has('back')) options.back = asked.get('back')
+      ebdfy.title(asked.get('title') ?? 'Orders', options)
       for (const entries of asked.getAll('nav')) ebdfy.nav(JSON.parse(entries))
+      // With bottom-bar, the page shows an eb-bottom-bar of its own, gone after 300 ms with bottom-bar=gone.
+      if (asked.has('bottom-bar')) {
+        const bar = document.createElement('eb-bottom-bar')
+        bar.innerHTML = '<button type="button">Confirm</button>'
+        document.body.append(bar)
+        if (asked.get('bottom-bar') === 'gone') setTimeout(() => bar.remove(), 300)
+      }
       if (asked.has('loading')) ebdfy.loading(true)
       if (asked.get('loading') === 'done') setTimeout(() => ebdfy.loading(false), 300)
       // With undo, each toast carries an Undo that shows in the title how often it ran.
@@ -45,7 +58,11 @@
         report()
       }
       for (const message of asked.getAll('toast')) {
-        ebdfy.toast(message, { error: asked.has('error'), action: asked.has('undo') ? undo : undefined })
+        ebdfy.toast(message, {
+          error: asked.has('error'),
+          tone: asked.get('tone') ?? undefined,
+          action: asked.has('undo') ? undo : undefined,
+        })
       }
     </script>
   </head>

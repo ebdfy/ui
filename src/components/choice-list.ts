@@ -3,11 +3,19 @@ import { live } from 'lit/directives/live.js'
 
 import { Field } from './field.ts'
 
-// One pick from the <option> elements written inside it, drawn as radio buttons.
+/**
+ * One pick from the option elements written inside it, drawn as radio buttons.
+ *
+ * @slot - The option elements to pick from.
+ */
 export class EbChoiceList extends Field {
   static override styles = [
     Field.styles,
     css`
+      /* No text control to lock, so a disabled one fades. */
+      :host([disabled]) {
+        opacity: 0.6;
+      }
       fieldset {
         margin: 0;
         padding: 0;
@@ -85,7 +93,7 @@ export class EbChoiceList extends Field {
     return html`<fieldset aria-describedby="error" aria-invalid=${this.error ? 'true' : 'false'}>
         ${this.label ? html`<legend>${this.label}</legend>` : nothing}${this.renderControl()}
       </fieldset>
-      ${this.error ? html`<p part="error" id="error">${this.error}</p>` : nothing}`
+      ${this.errorLine('error', this.error)}`
   }
 }
 

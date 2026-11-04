@@ -25,6 +25,10 @@ export default defineConfig({
           environment: 'node',
           testTimeout: 30_000,
           hookTimeout: 30_000,
+          // The browser project runs first and alone: beside this project's Chromiums and dev
+          // servers, its tests that load a page into the modal sheet timed out at 15 s, one or more
+          // a run, though they pass alone.
+          sequence: { groupOrder: 1 },
         },
       },
       {
@@ -34,7 +38,7 @@ export default defineConfig({
           name: 'package',
           include: ['test/package/**/*.test.ts'],
           environment: 'node',
-          sequence: { groupOrder: 1 },
+          sequence: { groupOrder: 2 },
         },
       },
       {
@@ -51,7 +55,10 @@ export default defineConfig({
             headless: true,
             // The page is served on 127.0.0.1, so a frame loaded from localhost is a second origin.
             api: { host: '127.0.0.1' },
-            provider: playwright(),
+            // Overlays ease in, and a click on a sliding sheet waits for it to stand still; beside
+            // the node project's Chromium that wait outran the test. These tests assert end
+            // states, so they run with reduced motion; test/node/motion.test.ts asserts the motion.
+            provider: playwright({ contextOptions: { reducedMotion: 'reduce' } }),
             instances: [{ browser: 'chromium', viewport: { width: 360, height: 800 } }],
           },
         },

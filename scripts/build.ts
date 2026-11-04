@@ -41,7 +41,7 @@ async function buildAll(): Promise<void> {
       const from = `${entry.parentPath}/${entry.name}`
       const out = from.replace(`${root}site/`, `${root}dist/site/`)
       await mkdir(dirname(out), { recursive: true })
-      if (entry.name.endsWith('.html')) await writeFile(out, fillPage(await readFile(from, 'utf8'), production))
+      if (entry.name.endsWith('.html')) await writeFile(out, fillPage(await readFile(from, 'utf8'), production, from))
       else await cp(from, out)
     }
   }

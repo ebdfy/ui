@@ -1,12 +1,23 @@
 import { LitElement, css, html } from 'lit'
 
-export type Tone = 'attention' | 'info' | 'success' | 'shipped' | 'critical'
+// The tone every component shares; attention, critical and shipped are the 1.0.0 names, kept until
+// 2.0 and drawn as warning, danger and the shipped status.
+export type Tone = 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'attention' | 'critical' | 'shipped'
 
-// A status as a dot and a word. The words carry the status; the tone only repeats it: New is a
-// soft amber pill, Returned a filled red one, the rest a coloured dot.
+// An order's state, drawn in its Ink status colour.
+export type Status = 'new' | 'confirmed' | 'shipped' | 'paid' | 'returned'
+
+/**
+ * A status as a dot and a word. The words carry the status; the tone only repeats it: New is a
+ * soft amber pill, Returned a filled red one, the rest a coloured dot. A status, when set, decides
+ * the look over a tone beside it.
+ *
+ * @slot - The word of the status.
+ */
 export class EbBadge extends LitElement {
   static override properties = {
     tone: { type: String, reflect: true },
+    status: { type: String, reflect: true },
   }
 
   static override styles = css`
@@ -20,10 +31,7 @@ export class EbBadge extends LitElement {
       font-size: var(--eb-font-size-meta);
       font-weight: var(--eb-font-weight-medium);
       line-height: var(--eb-line-height-meta);
-      /* As wide as its words, but never wider than its place: in a column too narrow for them,
-         such as a 600 px table's, the words wrap inside the pill rather than spill out. */
-      box-sizing: border-box;
-      max-width: 100%;
+      white-space: nowrap;
     }
     .dot {
       flex: none;
@@ -32,34 +40,68 @@ export class EbBadge extends LitElement {
       border-radius: 50%;
       background: var(--dot);
     }
-    :host([tone='success']) {
+    :host([tone='success']:not([status])),
+    :host([status='paid']) {
       --dot: var(--eb-color-paid);
     }
-    :host([tone='shipped']) {
+    :host([tone='shipped']:not([status])),
+    :host([status='shipped']) {
       --dot: var(--eb-color-shipped);
     }
-    :host([tone='attention']),
-    :host([tone='critical']) {
+    :host([tone='attention']:not([status])),
+    :host([tone='warning']:not([status])),
+    :host([status='new']),
+    :host([tone='critical']:not([status])),
+    :host([tone='danger']:not([status])),
+    :host([status='returned']) {
       padding: 2px 8px;
       border-radius: var(--eb-radius-pill);
       font-weight: var(--eb-font-weight-semibold);
     }
-    :host([tone='attention']) {
+    /* Noto Sans Bengali leaves more room above its letters than below, so Bangla words sat 1.5 to
+       2.5 px low in a pill; they move up 2 px to sit in its middle, and the dot stays there too. */
+    :host(:lang(bn)[tone='attention']:not([status])),
+    :host(:lang(bn)[tone='warning']:not([status])),
+    :host(:lang(bn)[status='new']),
+    :host(:lang(bn)[tone='critical']:not([status])),
+    :host(:lang(bn)[tone='danger']:not([status])),
+    :host(:lang(bn)[status='returned']) {
+      padding-block: 0 4px;
+    }
+    :host(:lang(bn)[tone='attention']:not([status])) .dot,
+    :host(:lang(bn)[tone='warning']:not([status])) .dot,
+    :host(:lang(bn)[status='new']) .dot {
+      position: relative;
+      top: 2px;
+    }
+    :host([tone='attention']:not([status])),
+    :host([tone='warning']:not([status])),
+    :host([status='new']) {
       --dot: var(--eb-color-new);
       background: var(--eb-color-new-bg);
       color: var(--eb-color-new-fg);
     }
-    :host([tone='critical']) {
+    :host([tone='critical']:not([status])),
+    :host([tone='danger']:not([status])),
+    :host([status='returned']) {
       background: var(--eb-color-danger);
       color: var(--eb-color-on-danger);
     }
-    :host([tone='critical']) .dot {
+    :host([tone='critical']:not([status])) .dot,
+    :host([tone='danger']:not([status])) .dot,
+    :host([status='returned']) .dot {
       display: none;
     }
   `
 
-  // Written out, not as Tone, so the manifest names the values.
-  declare tone: 'attention' | 'info' | 'success' | 'shipped' | 'critical'
+  // Written out, not as Tone and Status, so the manifest names the values.
+  /**
+   * The tone every component shares: neutral, info, success, warning or danger. Deprecated until
+   * 2.0: attention (use warning), critical (use danger) and shipped (use status="shipped").
+   */
+  declare tone: 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'attention' | 'critical' | 'shipped'
+  /** An order's state, drawn in its status colour; it decides the look over a tone. */
+  declare status: 'new' | 'confirmed' | 'shipped' | 'paid' | 'returned' | undefined
 
   constructor() {
     super()

@@ -11,39 +11,37 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Avatar</h1>
       <p>
         <code>eb-avatar</code> shows a person as a circle. Set <code>name</code> and, if there is one, <code>src</code>.
-        With no picture it shows the first letter of the first and last word of the name, in English or Bangla. Avatars
-        do not go in table rows.
+        With no picture, or when the picture fails to load, it shows initials: the first letter of the first and last
+        word of an English name, and one letter of a Bangla name, the first of the given name after an honorific such as
+        মো., so মো. হাসান shows হ. Avatars do not go in table rows.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="Initials" caption-bn="নামের আদ্যক্ষর">
+          <eb-avatar name="Rahim Uddin" data-name-en="Rahim Uddin" data-name-bn="রহিম উদ্দিন"></eb-avatar>
+          <eb-avatar name="Nusrat Jahan" data-name-en="Nusrat Jahan" data-name-bn="নুসরাত জাহান"></eb-avatar>
+        </docs-example>
+        <docs-example caption="Photo" caption-bn="ছবি">
+          <eb-avatar
+            name="Begum Rokeya"
+            data-name-en="Begum Rokeya"
+            data-name-bn="বেগম রোকেয়া"
+            src="/samples/rokeya.jpg"
+          ></eb-avatar>
+          <eb-avatar
+            name="Rabindranath Tagore"
+            data-name-en="Rabindranath Tagore"
+            data-name-bn="রবীন্দ্রনাথ ঠাকুর"
+            src="/samples/tagore.jpg"
+          ></eb-avatar>
+        </docs-example>
+        <docs-example caption="After an honorific" caption-bn="সম্মানসূচক শব্দের পরে">
+          <eb-avatar name="Md. Hasan" data-name-en="Md. Hasan" data-name-bn="মো. হাসান"></eb-avatar>
+        </docs-example>
       </div>
-      <div class="row" id="examples" lang="en">
-        <p data-en="Customers, by their initials." data-bn="গ্রাহক, নামের আদ্যক্ষরে।">Customers, by their initials.</p>
-        <eb-avatar name="Rahim Uddin" data-name-en="Rahim Uddin" data-name-bn="রহিম উদ্দিন"></eb-avatar>
-        <eb-avatar name="Nusrat Jahan" data-name-en="Nusrat Jahan" data-name-bn="নুসরাত জাহান"></eb-avatar>
-        <eb-avatar
-          name="Blue circle"
-          data-name-en="Blue circle"
-          data-name-bn="নীল বৃত্ত"
-          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' fill='%233b5bdb'/%3E%3C/svg%3E"
-        ></eb-avatar>
-      </div>
-      <pre><code>&lt;eb-avatar name="Rahim Uddin"&gt;&lt;/eb-avatar&gt;
-&lt;eb-avatar name="রহিম উদ্দিন"&gt;&lt;/eb-avatar&gt;
-&lt;eb-avatar name="Nusrat Jahan" src="/photos/nusrat.jpg"&gt;&lt;/eb-avatar&gt;</code></pre>
     </main>
   </body>
 </html>

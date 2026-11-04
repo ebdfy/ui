@@ -11,22 +11,15 @@
     <script type="module" src="%EB_CDN%/ui/host.js"></script>
     <script type="module" src="/components.js"></script>
     <style>
-      .frame {
-        overflow: hidden;
-        border: 1px solid var(--eb-color-divider);
-        border-radius: var(--eb-radius-lg);
+      .demo {
+        padding: 0;
+      }
+      eb-admin-chrome {
+        height: 560px;
       }
     </style>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Toast</h1>
       <p>
@@ -35,21 +28,20 @@
       </p>
       <p>
         A message is up to 120 letters. It stays for 5 s, and only one shows at a time. An error stays until it is
-        dismissed. A toast carries one action at most.
+        dismissed, and it leads with a warning icon. A toast carries one action at most.
       </p>
       <p>The toast is fixed to the foot of the window, so it shows at the bottom of this page, not inside the frame.</p>
       <p>
         The chrome's own words (such as Dismiss) follow the page's <code>lang</code>, not the language row below. The
         row changes only this page's own strings.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
-      </div>
-      <div id="examples" lang="en">
-        <div class="frame">
+      <div id="examples" class="examples" lang="en">
+        <docs-example
+          caption="More, Duplicate shows a toast with Undo"
+          caption-bn="আরও, ডুপ্লিকেট আনডুসহ টোস্ট দেখায়"
+          stack
+        >
           <eb-admin-chrome
-            style="height: 560px"
             app-name="Sample app"
             src="%EB_SAMPLE_APP%/order?store=demo"
             token-url="/dev/id-token?app=sample"
@@ -60,8 +52,9 @@
               >Sample app</a
             >
           </eb-admin-chrome>
-        </div>
+        </docs-example>
       </div>
+      <p>The app shows a toast from script.</p>
       <pre><code>ebdfy.toast('Copied to a new draft', { action: { label: 'Undo', onAction: undo } })
 ebdfy.toast('Could not cancel the order', { error: true })</code></pre>
     </main>

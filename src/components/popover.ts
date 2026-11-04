@@ -5,15 +5,19 @@ const gap = 4
 const edge = 8
 
 // Puts a shown panel below its trigger, start edges aligned, then nudges it to stay `edge` px inside
-// the window. It goes above the trigger only when there is no room below. Plain JS on purpose: CSS
-// anchor positioning is missing in Safari and older Chrome.
+// the window. It goes above the trigger only when there is no room below. A panel with room on
+// neither side stays below and takes the room left there, scrolling for the rest. Plain JS on
+// purpose: CSS anchor positioning is missing in Safari and older Chrome.
 export function placePanel(trigger: Element, panel: HTMLElement): void {
+  panel.style.maxHeight = ''
   const anchor = trigger.getBoundingClientRect()
   const size = panel.getBoundingClientRect()
   const left = Math.max(edge, Math.min(anchor.left, window.innerWidth - edge - size.width))
   let top = anchor.bottom + gap
   const above = anchor.top - gap - size.height
-  if (top + size.height > window.innerHeight - edge && above >= edge) top = above
+  const room = window.innerHeight - edge - top
+  if (size.height > room && above >= edge) top = above
+  else if (size.height > room) panel.style.maxHeight = `${room}px`
   panel.style.left = `${left}px`
   panel.style.top = `${top}px`
 }
@@ -24,6 +28,19 @@ function focusTrigger(trigger: HTMLElement): void {
   ;(inner ?? trigger).focus()
 }
 
+// The focused element in the tree that holds `el`. Inside a shadow root, document.activeElement is
+// the shadow host, so the root's own activeElement is read instead.
+export function focusedNear(el: Element): Element | null {
+  const root = el.getRootNode()
+  return root instanceof ShadowRoot || root instanceof Document ? root.activeElement : null
+}
+
+/**
+ * Opens a panel of any content below its trigger. Escape or a press outside closes it.
+ *
+ * @slot - The content of the panel.
+ * @slot trigger - The eb-button that opens the panel.
+ */
 export class EbPopover extends LitElement {
   static override properties = {
     open: { type: Boolean, reflect: true },
@@ -55,9 +72,25 @@ export class EbPopover extends LitElement {
         inset 0 0 0 1px var(--eb-color-overlay-edge),
         var(--eb-shadow-3);
     }
+    /* The panel fades in and rises 4 px; with reduced motion it opens at once. */
+    @media (prefers-reduced-motion: no-preference) {
+      .panel {
+        transition-property: opacity, transform;
+        transition-duration: var(--eb-duration-fast);
+        transition-timing-function: var(--eb-ease-out);
+      }
+      @starting-style {
+        .panel {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+      }
+    }
   `
 
+  /** The panel is showing. */
   declare open: boolean
+  /** Names the panel for a screen reader. */
   declare label: string
 
   // Whether the panel was open when the pointer went down on the trigger: a press outside the panel
@@ -133,8 +166,8 @@ export class EbPopover extends LitElement {
   #beforeToggle = (event: ToggleEvent): void => {
     if (event.newState !== 'closed') return
     // Keep focus where the person put it when they dismissed by pressing another control.
-    const active = document.activeElement
-    this.#refocus = active === document.body || (active !== null && this.contains(active))
+    const active = focusedNear(this)
+    this.#refocus = document.activeElement === document.body || (active !== null && this.contains(active))
   }
 
   #toggle = (event: ToggleEvent): void => {

@@ -56,3 +56,32 @@ test.for(phones)(
     expect(document.querySelector('eb-button')!.getBoundingClientRect().height).toBeGreaterThanOrEqual(44)
   },
 )
+
+// The visible button inside an eb-button, which is what a finger meets.
+const face = (button: Element) => button.shadowRoot!.querySelector('button')!.getBoundingClientRect()
+
+test("under 640 px a bottom bar's two buttons share its row in equal halves", async () => {
+  await page.viewport(360, 800)
+  await render(`<eb-bottom-bar><eb-button-group label="Booking">
+    <eb-button>Cancel</eb-button><eb-button variant="primary">Book</eb-button>
+  </eb-button-group></eb-bottom-bar>`)
+  const bar = document.querySelector('eb-bottom-bar')!.getBoundingClientRect()
+  const [cancel, book] = [...document.querySelectorAll('eb-button')].map(face)
+  expect(cancel!.left).toBe(bar.left + 16)
+  expect(book!.right).toBe(bar.right - 16)
+  expect(cancel!.width).toBe(book!.width)
+  expect(book!.left - cancel!.right).toBe(8)
+  expect(cancel!.height).toBe(44)
+})
+
+test('from 641 px a bottom bar keeps its buttons at their own width, at the right', async () => {
+  await page.viewport(1280, 800)
+  await render(`<eb-bottom-bar><eb-button-group label="Booking">
+    <eb-button>Cancel</eb-button><eb-button variant="primary">Book</eb-button>
+  </eb-button-group></eb-bottom-bar>`)
+  const bar = document.querySelector('eb-bottom-bar')!.getBoundingClientRect()
+  const [cancel, book] = [...document.querySelectorAll('eb-button')].map(face)
+  expect(book!.right).toBe(bar.right - 16)
+  expect(cancel!.width).toBeLessThan(100)
+  expect(cancel!.height).toBe(36)
+})

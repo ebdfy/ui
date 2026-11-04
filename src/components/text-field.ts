@@ -7,6 +7,7 @@ import { Field } from './field.ts'
 // The native inputs that take typed text, which block Enter from submitting a form with several.
 const TYPED = new Set(['text', 'email', 'password', 'search', 'tel', 'url', 'number', 'date'])
 
+/** Takes a line of text, such as a name or an email address. It joins its form like a native input. */
 export class EbTextField extends Field {
   static override properties = {
     ...Field.properties,
@@ -18,7 +19,9 @@ export class EbTextField extends Field {
   protected readonly inputType: string = 'text'
   protected readonly keyboard: string = 'text'
 
+  /** The kind of text: text, email or password. Text when unset. */
   declare type: 'text' | 'email' | 'password'
+  /** What a browser may fill in, as the autocomplete attribute of a native input says. */
   declare autocomplete: string | undefined
 
   constructor() {
@@ -63,7 +66,7 @@ export class EbTextField extends Field {
       ?disabled=${this.disabled}
       ?required=${this.required}
       aria-invalid=${this.error ? 'true' : 'false'}
-      aria-describedby="error"
+      aria-describedby=${ifDefined(this.describedBy())}
       @input=${(event: Event) => (this.value = this.parse(this.textOf(event)))}
       @change=${this.changed}
       @keydown=${this.submitOnEnter}

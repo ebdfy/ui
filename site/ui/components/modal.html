@@ -11,22 +11,15 @@
     <script type="module" src="%EB_CDN%/ui/host.js"></script>
     <script type="module" src="/components.js"></script>
     <style>
-      .frame {
-        overflow: hidden;
-        border: 1px solid var(--eb-color-divider);
-        border-radius: var(--eb-radius-lg);
+      .demo {
+        padding: 0;
+      }
+      eb-admin-chrome {
+        height: 560px;
       }
     </style>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Modal</h1>
       <p>
@@ -42,14 +35,13 @@
         The chrome's own words (such as Close) follow the page's <code>lang</code>, not the language row below. The row
         changes only this page's own strings.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
-      </div>
-      <div id="examples" lang="en">
-        <div class="frame">
+      <div id="examples" class="examples" lang="en">
+        <docs-example
+          caption="Book courier opens a modal over the app"
+          caption-bn="কুরিয়ার বুক অ্যাপের ওপর মোডাল খোলে"
+          stack
+        >
           <eb-admin-chrome
-            style="height: 560px"
             app-name="Sample app"
             src="%EB_SAMPLE_APP%/order?store=demo"
             token-url="/dev/id-token?app=sample"
@@ -60,8 +52,9 @@
               >Sample app</a
             >
           </eb-admin-chrome>
-        </div>
+        </docs-example>
       </div>
+      <p>The app opens the modal from script.</p>
       <pre><code>ebdfy.modal({ src: '/book-courier', size: 'medium', title: 'Book courier' })</code></pre>
     </main>
   </body>

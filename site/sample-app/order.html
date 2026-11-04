@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
     <meta name="ebdfy-app" content="sample" />
+    <!-- Opened on its own, a page of the sample app goes to the playground with that page open. -->
+    <meta name="ebdfy-home" content="%EB_UI%/playground" />
     <title>Sample app · ebdfy</title>
     <style>
       body {
         margin: 0;
-      }
-      .toolbar {
-        display: flex;
-        justify-content: flex-end;
       }
       form {
         display: flex;
@@ -20,38 +18,84 @@
         gap: var(--eb-space-gap);
       }
     </style>
+    <script src="/lang.js"></script>
     <script type="module" src="%EB_CDN%/ui/v1.js"></script>
     <script type="module" src="/nav.js"></script>
     <script type="module">
-      ebdfy.title('Order #1001', {
-        actions: [
-          {
-            label: 'Book courier',
-            onAction: () => ebdfy.modal({ size: 'medium', src: '/book-courier', title: 'Book courier' }),
-          },
-          { label: 'Print', onAction: () => ebdfy.toast('Sent to the printer') },
-        ],
-      })
+      const copy = {
+        bn: {
+          title: 'অর্ডার #1001',
+          book: 'কুরিয়ার বুক করুন',
+          more: 'আরও',
+          print: 'প্রিন্ট',
+          duplicate: 'ডুপ্লিকেট করুন',
+          cancel: 'অর্ডার বাতিল করুন',
+          printed: 'প্রিন্টারে পাঠানো হয়েছে',
+          copied: 'নতুন খসড়ায় কপি হয়েছে',
+          undo: 'ফিরিয়ে নিন',
+          removed: 'খসড়া মুছে ফেলা হয়েছে',
+          cancelled: 'অর্ডার বাতিল হয়েছে',
+          refused: 'আপনি অর্ডার বাতিল করতে পারবেন না। স্টোরের মালিককে অনুমতি দিতে বলুন।',
+          risk: 'এই নম্বরের ৫টি অর্ডারের ৩টি ফেরত এসেছে। ডেলিভারি চার্জ বিকাশে আগে নিন।',
+          intro: 'অর্ডারটি বদলান, তারপর ওপরের বার থেকে সেভ বা বাতিল করুন।',
+          saved: 'সেভ হয়েছে',
+          badPhone: '০১ দিয়ে শুরু হওয়া ১১ অঙ্কের ফোন নম্বর দিন।',
+          noArea: 'এলাকার নাম দিন।',
+        },
+        en: {
+          title: 'Order #1001',
+          book: 'Book courier',
+          more: 'More',
+          print: 'Print',
+          duplicate: 'Duplicate',
+          cancel: 'Cancel order',
+          printed: 'Sent to the printer',
+          copied: 'Copied to a new draft',
+          undo: 'Undo',
+          removed: 'Draft removed',
+          cancelled: 'Order cancelled',
+          refused: "You can't cancel orders. Ask the store owner to give you access.",
+          risk: "3 of this number's 5 orders came back. Take the delivery charge in advance by bKash.",
+          intro: 'Edit the order, then save or discard from the bar above.',
+          saved: 'Saved',
+          badPhone: 'Enter an 11-digit phone starting with 01.',
+          noArea: 'Name the area.',
+        },
+      }
+      const t = copy[document.documentElement.lang]
 
-      // The demo staff member lacks write_orders, so the API refuses the cancel the app could make.
-      document.querySelector('#cancel-order').addEventListener('click', async () => {
+      document.querySelector('eb-banner').textContent = t.risk
+      document.querySelector('#intro').textContent = t.intro
+
+      // The demo staff member lacks write_orders, so the API refuses the cancel the app could make,
+      // and the app says so in words a merchant can act on.
+      async function cancelOrder() {
         const { errors } = await ebdfy.fetch('mutation { orderCancel(id: "ord_1001") { userErrors { message } } }')
-        if (errors?.length) ebdfy.toast(errors[0].message, { error: true })
-        else ebdfy.toast('Order cancelled')
-      })
+        if (errors?.length) ebdfy.toast(t.refused, { error: true })
+        else ebdfy.toast(t.cancelled)
+      }
       // The draft is the app's to remove again, so the toast offers Undo.
       function duplicate() {
-        ebdfy.toast('Copied to a new draft', {
-          action: { label: 'Undo', onAction: () => ebdfy.toast('Draft removed') },
-        })
+        ebdfy.toast(t.copied, { action: { label: t.undo, onAction: () => ebdfy.toast(t.removed) } })
       }
-      document.querySelector('#duplicate').addEventListener('click', duplicate)
-      // The menu hints mod+D, so the key runs Duplicate too. v1 does not export its Apple test, so
-      // the same regex is repeated here.
-      const apple = /Mac|iPhone|iPad|iPod/.test(navigator.userAgent)
+      ebdfy.title(t.title, {
+        back: '/',
+        actions: [
+          { label: t.book, onAction: () => ebdfy.modal({ size: 'medium', src: '/book-courier', title: t.book }) },
+          {
+            label: t.more,
+            items: [
+              { label: t.print, onAction: () => ebdfy.toast(t.printed) },
+              { label: t.duplicate, onAction: duplicate },
+              { label: t.cancel, tone: 'critical', onAction: cancelOrder },
+            ],
+          },
+        ],
+      })
+      // Alt+Shift+D runs Duplicate too; Ctrl+D is the browser's bookmark key. The key's code, since
+      // Option on a Mac changes the letter it types.
       document.addEventListener('keydown', (event) => {
-        const mod = apple ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey
-        if (event.key.toLowerCase() !== 'd' || !mod || event.altKey || event.shiftKey) return
+        if (event.code !== 'KeyD' || !event.altKey || !event.shiftKey || event.ctrlKey || event.metaKey) return
         event.preventDefault()
         duplicate()
       })
@@ -64,11 +108,11 @@
           userErrors.push({
             field: ['phone'],
             code: 'INVALID_PHONE',
-            message: 'Enter an 11-digit phone starting with 01.',
+            message: t.badPhone,
           })
         }
         if (!input.address.area.trim()) {
-          userErrors.push({ field: ['address', 'area'], code: 'INVALID', message: 'Name the area.' })
+          userErrors.push({ field: ['address', 'area'], code: 'INVALID', message: t.noArea })
         }
         return { order: userErrors.length ? null : input, userErrors }
       }
@@ -90,31 +134,40 @@
         event.preventDefault()
         const { userErrors } = await updateOrder(inputOf(form))
         ebdfy.showErrors(form, userErrors)
-        if (!userErrors.length) ebdfy.toast('Saved')
+        if (!userErrors.length) ebdfy.toast(t.saved)
       })
     </script>
   </head>
   <body>
     <eb-page>
       <eb-text variant="meta" data-store-name></eb-text>
-      <eb-card heading="Order #1001">
-        <div class="toolbar">
-          <eb-menu label="More actions">
-            <eb-button slot="trigger">More</eb-button>
-            <eb-menu-item id="duplicate" shortcut="mod+d">Duplicate</eb-menu-item>
-            <eb-menu-item id="cancel-order" tone="critical">Cancel order</eb-menu-item>
-          </eb-menu>
-        </div>
+      <eb-card>
         <eb-banner tone="danger"
           >3 of this number's 5 orders came back. Take the delivery charge in advance by bKash.</eb-banner
         >
-        <p>Edit the order, then save or discard from the bar above.</p>
+        <p id="intro">Edit the order, then save or discard from the bar above.</p>
         <form id="order" data-save-bar novalidate>
           <eb-text-field name="name" label="Customer" value="Rahim Uddin"></eb-text-field>
           <eb-phone-field name="phone" label="Phone" value="01707071591"></eb-phone-field>
           <eb-district-picker name="address" district="Dhaka" area="Mirpur"></eb-district-picker>
           <eb-text-area name="note" label="Note" value="Call before delivery."></eb-text-area>
         </form>
+        <!-- A plain script, so the form has its words before v1.js, a module, upgrades it and the save
+             bar records the values it opened with. -->
+        <script>
+          if (document.documentElement.lang === 'bn') {
+            const fields = {
+              name: ['কাস্টমার', 'রহিম উদ্দিন'],
+              phone: ['ফোন'],
+              note: ['নোট', 'ডেলিভারির আগে ফোন করুন।'],
+            }
+            for (const [name, [label, value]] of Object.entries(fields)) {
+              const field = document.querySelector(`[name="${name}"]`)
+              field.setAttribute('label', label)
+              if (value) field.setAttribute('value', value)
+            }
+          }
+        </script>
       </eb-card>
     </eb-page>
   </body>

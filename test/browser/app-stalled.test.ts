@@ -29,7 +29,7 @@ test('an app silent for 15 s gets the notice with Reload, inside the chrome', as
   await open('silent.html')
   await wait(14_999)
   expect(part('notice')).toBeNull()
-  expect(part('loading-bar')).not.toBeNull()
+  expect(part('skeleton')).not.toBeNull()
   await wait(1)
   const notice = part('notice')!
   expect(notice.getAttribute('role')).toBe('alert')
@@ -37,7 +37,7 @@ test('an app silent for 15 s gets the notice with Reload, inside the chrome', as
   const reload = part('reload')!
   expect(reload.textContent!.trim()).toBe('Reload')
   expect(reload.getBoundingClientRect().height).toBeGreaterThanOrEqual(44)
-  expect(part('loading-bar')).toBeNull()
+  expect(part('skeleton')).toBeNull()
   expect(chrome().shadowRoot!.querySelector('header')!.getBoundingClientRect().height).toBeGreaterThan(0)
   expect(document.querySelector('a[slot="nav"]')!.getBoundingClientRect().height).toBeGreaterThan(0)
 })
@@ -53,7 +53,7 @@ test('pressing Reload loads the frame again and gives it another 15 s', async ()
   part('reload')!.click()
   await chrome().updateComplete
   expect(part('notice')).toBeNull()
-  expect(part('loading-bar')).not.toBeNull()
+  expect(part('skeleton')).not.toBeNull()
   await reloaded
   await wait(14_999)
   expect(part('notice')).toBeNull()

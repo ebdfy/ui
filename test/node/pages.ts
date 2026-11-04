@@ -1,7 +1,7 @@
 // Starts the dev servers on free ports and opens pages in Chromium at phone size.
 import { createServer } from 'node:net'
 
-import { type Browser, chromium } from 'playwright'
+import { type Browser, type BrowserContextOptions, chromium } from 'playwright'
 import { onTestFinished } from 'vitest'
 
 import { startDev } from '../../scripts/dev.ts'
@@ -31,8 +31,8 @@ export async function startPages() {
   const browser: Browser = await chromium.launch()
   return {
     ...dev,
-    async open(url: string, width = 360) {
-      const context = await browser.newContext({ viewport: { width, height: 800 } })
+    async open(url: string, width = 360, options: BrowserContextOptions = {}) {
+      const context = await browser.newContext({ viewport: { width, height: 800 }, ...options })
       // The page goes with its test, so a file's pages never pile up in its one Chromium.
       onTestFinished(() => context.close())
       const page = await context.newPage()

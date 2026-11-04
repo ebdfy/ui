@@ -11,14 +11,6 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Courier status</h1>
       <p>
@@ -26,25 +18,15 @@
         courier's code, such as <code>IN_TRANSIT</code>; the element writes the words in the page's language and picks
         the badge tone itself. A code it does not know reads as unknown.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="The courier's status codes" caption-bn="কুরিয়ারের স্ট্যাটাস কোড">
+          <eb-courier-status status="PENDING"></eb-courier-status>
+          <eb-courier-status status="IN_TRANSIT"></eb-courier-status>
+          <eb-courier-status status="OUT_FOR_DELIVERY"></eb-courier-status>
+          <eb-courier-status status="DELIVERED"></eb-courier-status>
+          <eb-courier-status status="RETURNED"></eb-courier-status>
+        </docs-example>
       </div>
-      <div class="row" id="examples" lang="en">
-        <p data-en="Five orders, each with its courier status." data-bn="পাঁচটি অর্ডার, প্রতিটির কুরিয়ার স্ট্যাটাসসহ।">
-          Five orders, each with its courier status.
-        </p>
-        <eb-courier-status status="PENDING"></eb-courier-status>
-        <eb-courier-status status="IN_TRANSIT"></eb-courier-status>
-        <eb-courier-status status="OUT_FOR_DELIVERY"></eb-courier-status>
-        <eb-courier-status status="DELIVERED"></eb-courier-status>
-        <eb-courier-status status="RETURNED"></eb-courier-status>
-      </div>
-      <pre><code>&lt;eb-courier-status status="PENDING"&gt;&lt;/eb-courier-status&gt;
-&lt;eb-courier-status status="IN_TRANSIT"&gt;&lt;/eb-courier-status&gt;
-&lt;eb-courier-status status="OUT_FOR_DELIVERY"&gt;&lt;/eb-courier-status&gt;
-&lt;eb-courier-status status="DELIVERED"&gt;&lt;/eb-courier-status&gt;
-&lt;eb-courier-status status="RETURNED"&gt;&lt;/eb-courier-status&gt;</code></pre>
     </main>
   </body>
 </html>

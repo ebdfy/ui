@@ -100,3 +100,24 @@ test('a toast from a page in the modal that then closes keeps its words but drop
   await expect.poll(toastText).toBe('Kept')
   expect(part('toast-action')).toBeNull()
 })
+
+test('an error toast leads with a 16 px triangle-alert icon, hidden from readers; a plain toast has none', async () => {
+  await open('toast=Pathao+did+not+answer&error', () => part('dismiss') !== null)
+  const words = part('toast')!.querySelector('span')!
+  const icon = part('toast')!.querySelector<SVGElement>('svg')!
+  const box = icon.getBoundingClientRect()
+  const text = words.getBoundingClientRect()
+  expect([box.width, box.height]).toEqual([16, 16])
+  expect(icon.getAttribute('aria-hidden')).toBe('true')
+  expect(icon.querySelector('path')!.getAttribute('d')).toBe(
+    'm21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3',
+  )
+  const wordsRange = document.createRange()
+  wordsRange.selectNodeContents(words.lastChild!)
+  expect(box.right).toBeLessThanOrEqual(wordsRange.getBoundingClientRect().left)
+  expect(words.textContent!.trim()).toBe('Pathao did not answer')
+  // Centred on the first line of the words.
+  expect(box.top - text.top).toBeCloseTo((Number.parseFloat(getComputedStyle(words).lineHeight) - 16) / 2)
+  await open('toast=Saved')
+  expect(part('toast')!.querySelector('svg')).toBeNull()
+})

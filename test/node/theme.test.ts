@@ -49,7 +49,7 @@ test('the playground turns the sample app dark with its theme switch, and light 
   const { page, errors } = await pages.open(`${pages.ui}/playground`, 1280)
   await expect.poll(() => page.locator('[part="title"]').textContent(), { timeout: 15_000 }).toBe('Orders')
   expect(await appBackground(page)).toBe(light)
-  const toggle = page.locator('eb-admin-chrome #theme')
+  const toggle = page.getByRole('toolbar', { name: 'Playground' }).locator('#theme')
   await toggle.click()
   await expect.poll(() => appBackground(page)).toBe(dark)
   expect(await toggle.textContent()).toBe('Light theme')
@@ -65,7 +65,7 @@ test('the sample app in a dark playground on a dark device is dark from its firs
   await page.goto(`${pages.ui}/playground`)
   await expect.poll(() => page.locator('[part="title"]').textContent(), { timeout: 15_000 }).toBe('Orders')
   expect(await appBackground(page)).toBe(dark)
-  expect(await page.locator('eb-admin-chrome #theme').textContent()).toBe('Light theme')
+  expect(await page.getByRole('toolbar', { name: 'Playground' }).locator('#theme').textContent()).toBe('Light theme')
 })
 
 test('the sample app opened in a bare tab follows the device setting', async () => {

@@ -53,7 +53,7 @@ test('at 1280 px the modal is a centred surface with a 12 px radius, shadow 3 an
   expect(light.shadow).toContain(ring.light)
   expect(light.shadow).toContain(shadow3.light)
   const dark = await inDark(async () => look(dialog))
-  expect(dark.background).toBe('oklch(0.2 0.004 85)')
+  expect(dark.background).toBe('oklch(0.215 0.004 85)')
   expect(dark.shadow).toContain(ring.dark)
   expect(dark.shadow).toContain(shadow3.dark)
 })

@@ -141,3 +141,54 @@ test('the Tab key reaches every chrome control in turn and each shows the focus 
     expect(`${style.outlineWidth} ${style.outlineStyle} ${style.outlineColor} ${style.outlineOffset}`).toBe(ring)
   }
 })
+
+test('an app entry draws its icon at 16 px before its label and its count in text-3 even digits', async () => {
+  const counted = encodeURIComponent(
+    JSON.stringify([
+      { ...entry('Orders'), icon: 'package', count: 12 },
+      { ...entry('Drafts'), icon: 'nope' },
+    ]),
+  )
+  document.body.innerHTML = `<eb-admin-chrome app-name="Sample app" src="${fixture}/app.html?title=Orders&nav=${counted}">
+    <a slot="nav" href="#sample" aria-current="page">Sample app</a>
+  </eb-admin-chrome>`
+  await expect.poll(() => appLinks().length, { timeout: 10_000 }).toBe(2)
+  const [orders, drafts] = appLinks()
+  const icon = orders!.querySelector('svg')!
+  const label = [...orders!.querySelectorAll('span')].find((span) => span.textContent === 'Orders')!
+  expect([icon.getBoundingClientRect().width, icon.getBoundingClientRect().height]).toEqual([16, 16])
+  expect(icon.getBoundingClientRect().right).toBeLessThanOrEqual(label.getBoundingClientRect().left)
+  const count = orders!.querySelector<HTMLElement>('[part="nav-count"]')!
+  expect(count.textContent).toBe('12')
+  const style = getComputedStyle(count)
+  expect([style.color, style.fontVariantNumeric]).toEqual(['oklch(0.54 0.008 85)', 'tabular-nums'])
+  expect(count.getBoundingClientRect().right).toBe(orders!.getBoundingClientRect().right - 8)
+  // An icon the chrome does not know draws nothing, and no count draws no number.
+  expect(drafts!.querySelector('svg')).toBeNull()
+  expect(drafts!.querySelector('[part="nav-count"]')).toBeNull()
+  expect(orders!.getBoundingClientRect().height).toBe(36)
+})
+
+test("while an app entry is current, the Admin's entry for the app no longer looks current", async () => {
+  await open()
+  const admin = document.querySelector('a[aria-current="page"]')!
+  const [, drafts] = appLinks()
+  await userEvent.click(drafts!)
+  await expect.poll(() => drafts!.getAttribute('aria-current')).toBe('page')
+  expect(look(admin)).toEqual({ background: 'rgba(0, 0, 0, 0)', colour: 'oklch(0.47 0.008 85)', weight: '500' })
+  const rows = [...document.querySelectorAll('[slot="nav"]'), ...appLinks()]
+  expect(rows.filter((row) => look(row).background === activeColour.light)).toEqual([drafts])
+})
+
+test("an Admin link's data-icon draws at 16 px before its label in the sidebar, 8 px clear", async () => {
+  await open()
+  const docs = document.querySelector<HTMLElement>('a[href="#docs"]')!
+  docs.dataset.icon = 'search'
+  const icon = getComputedStyle(docs, '::before')
+  expect([icon.width, icon.height, icon.display]).toEqual(['16px', '16px', 'block'])
+  expect(icon.maskImage).toContain('data:image/svg+xml')
+  const range = document.createRange()
+  range.selectNodeContents(docs)
+  expect(range.getBoundingClientRect().left).toBe(docs.getBoundingClientRect().left + 8 + 16 + 8)
+  expect(docs.getBoundingClientRect().height).toBe(36)
+})

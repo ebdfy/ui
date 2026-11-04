@@ -2,6 +2,7 @@ import { LitElement, css, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { styleMap } from 'lit/directives/style-map.js'
 
+/** A thin bar that fills the width of its row, filled to a value or sliding while the work goes on. */
 export class EbProgressBar extends LitElement {
   static override properties = {
     value: { type: Number },
@@ -16,7 +17,7 @@ export class EbProgressBar extends LitElement {
       height: 4px;
       overflow: hidden;
       border-radius: 2px;
-      background: var(--eb-color-line);
+      background: var(--eb-color-divider);
     }
     .fill {
       height: 100%;
@@ -36,7 +37,9 @@ export class EbProgressBar extends LitElement {
     }
   `
 
+  /** How much of the bar is filled, 0 to 100. Unset, the bar is indeterminate. */
   declare value: number | undefined
+  /** Names the bar for a screen reader. */
   declare label: string | undefined
 
   override render() {

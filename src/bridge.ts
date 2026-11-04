@@ -5,16 +5,25 @@ import { watchSaveBars, type SaveBarAction } from './save-bar.ts'
 
 // What an app posts to the Admin.
 export type BridgeMessage =
-  | { type: 'title'; payload: { title: string; actions: string[]; call: number } }
+  | {
+      type: 'title'
+      // menus lines up with actions: an action's menu items, or null for a plain button.
+      payload: { title: string; actions: string[]; menus?: (TitleMenuItem[] | null)[]; call: number; back?: string }
+    }
   | { type: 'saveBar'; payload: { visible: boolean } }
   | { type: 'toast'; payload: { message: string; error: boolean; action?: string; call: number } }
   | { type: 'nav'; payload: { entries: NavEntry[] } }
   | { type: 'loading'; payload: { visible: boolean } }
+  // Whether the page shows an eb-bottom-bar, whose actions stand in for the Admin's tab bar on a phone.
+  | { type: 'bottomBar'; payload: { visible: boolean } }
   | { type: 'modal'; payload: ModalOptions }
   | { type: 'modalClose' }
+  // How tall a page shown in the Admin's modal stands, which the modal takes.
+  | { type: 'modalHeight'; payload: { height: number } }
   | { type: 'idToken'; payload: { id: number } }
-  // Sent once the page listens, so the Admin can tell it its theme.
-  | { type: 'ready' }
+  // Sent once the page listens, so the Admin can tell it its theme. It names the page, which the
+  // Admin marks current in its nav even when the app moved there by itself.
+  | { type: 'ready'; payload?: { page: string } }
 
 // A page of the app's own, shown by the Admin in a modal: a sheet on phones, a dialog on desktops.
 export interface ModalOptions {
@@ -23,18 +32,29 @@ export interface ModalOptions {
   title?: string
 }
 
-// One of an app's pages in the Admin nav: its label and its path on the app's origin.
+// One of an app's pages in the Admin nav: its label and its path on the app's origin, and
+// optionally an icon by its eb-icon name and a count, such as the orders waiting.
 export interface NavEntry {
   label: string
   path: string
+  icon?: string
+  count?: number
 }
 
 export const navLimit = 8
 
 // A button in the Admin's title bar. Its handler stays in the app; only the label crosses.
+// With items it opens a menu of them instead, and a pick runs that item's handler.
 export interface TitleAction {
   label: string
   onAction?: () => void
+  items?: { label: string; onAction?: () => void; tone?: 'critical' }[]
+}
+
+// One item of a title action's menu, as it crosses to the Admin.
+export interface TitleMenuItem {
+  label: string
+  tone?: 'critical'
 }
 
 export const titleActionLimit = 2
@@ -49,7 +69,8 @@ export interface ToastAction {
 export type HostMessage =
   | { type: 'saveBar'; payload: { action: SaveBarAction } }
   | { type: 'modalClosed' }
-  | { type: 'titleAction'; payload: { call: number; index: number } }
+  // item names the menu item picked, for an action that opens a menu.
+  | { type: 'titleAction'; payload: { call: number; index: number; item?: number } }
   | { type: 'toastAction'; payload: { call: number } }
   | { type: 'idToken'; payload: IdTokenAnswer }
   | { type: 'theme'; payload: { theme: 'light' | 'dark' } }
@@ -88,9 +109,22 @@ export function parentOrigin(win: Window, dev: boolean = import.meta.env.DEV): s
   return allowedParent(origin, dev) ? origin : null
 }
 
+// The page an app names as its home, or none when it names none or no URL.
+function homeOf(doc: Document): URL | null {
+  const content = doc.querySelector<HTMLMetaElement>('meta[name="ebdfy-home"]')?.content
+  if (!content) return null
+  try {
+    return new URL(content)
+  } catch {
+    return null
+  }
+}
+
 // A tab opened at <app URL>?store=<handle> belongs inside the Admin. The app names itself in
-// <meta name="ebdfy-app">.
-export function adminRedirect(win: Window): string | null {
+// <meta name="ebdfy-app">. An app shown elsewhere, as the sample app is in the playground, names
+// that page in <meta name="ebdfy-home">, and the tab goes there with its own page open. Only a home
+// on a host the bridge talks to counts.
+export function adminRedirect(win: Window, dev: boolean = import.meta.env.DEV): string | null {
   if (win.top !== win) return null
   const store = new URLSearchParams(win.location.search).get('store')
   if (!store) return null
@@ -99,7 +133,42 @@ export function adminRedirect(win: Window): string | null {
     console.warn('ebdfy: add <meta name="ebdfy-app" content="<app handle>"> so a ?store link opens in the Admin')
     return null
   }
+  const home = homeOf(win.document)
+  if (home && allowedParent(home.origin, dev)) {
+    const query = new URLSearchParams(win.location.search)
+    query.delete('store')
+    home.searchParams.set('page', query.size ? `${win.location.pathname}?${query}` : win.location.pathname)
+    return home.href
+  }
   return `https://admin.ebdfy.com/store/${encodeURIComponent(store)}/apps/${encodeURIComponent(app)}`
+}
+
+// The Admin names the frame of its modal ebdfy-dialog on a desktop and ebdfy-sheet on a phone, so a
+// page shown there knows before it first draws. It sits on the modal's surface, and its eb-page
+// stands as tall as its content rather than the frame, so the modal can fit it.
+const modalKinds = new Map([
+  ['ebdfy-dialog', 'dialog'],
+  ['ebdfy-sheet', 'sheet'],
+])
+// The page stands as tall as its content, never the frame's height, which the modal takes from it:
+// a page laid out at 100% or 100dvh would otherwise measure the frame, or nothing. A desktop dialog
+// is narrow but used with a pointer, so its controls are md and a bottom bar keeps its buttons at
+// their own width.
+const fitContent = `html, body { height: auto !important; min-height: 0 !important; }
+  eb-page { min-height: auto; background: var(--eb-color-surface); }`
+const inModal = {
+  sheet: fitContent,
+  dialog: `${fitContent}
+    :root { --eb-size-target: var(--eb-size-control-md); }
+    eb-bottom-bar { --eb-bar-fill: initial; }`,
+}
+
+function fitModal(win: Window, sheet: CSSStyleSheet): void {
+  const kind = modalKinds.get(win.name)
+  const root = win.document.documentElement
+  if (kind) root.dataset.ebModal = kind
+  else delete root.dataset.ebModal
+  sheet.replaceSync(kind === 'dialog' || kind === 'sheet' ? inModal[kind] : '')
 }
 
 // The element with focus, inside any shadow roots, which a focus() on its host would not reach.
@@ -144,6 +213,29 @@ export function createBridge(win: Window = window) {
     post({ type: 'saveBar', payload: { visible: false } })
     // Nor does it want the loading bar an earlier page may have asked for.
     post({ type: 'loading', payload: { visible: false } })
+    // The Admin hides its tab bar on a phone while the page shows a bottom bar, so it hears when one
+    // comes and goes. A new page starts with none, which brings back a tab bar an earlier page hid.
+    let bottomBar = false
+    post({ type: 'bottomBar', payload: { visible: false } })
+    const watchBottomBar = () => {
+      const now = win.document.querySelector('eb-bottom-bar') !== null
+      if (now !== bottomBar) post({ type: 'bottomBar', payload: { visible: (bottomBar = now) } })
+    }
+    new MutationObserver(watchBottomBar).observe(win.document, { childList: true, subtree: true })
+    watchBottomBar()
+    // The modal's frame is renamed when the window crosses from a desktop to a phone, which resizes it.
+    const modalSheet = new CSSStyleSheet()
+    win.document.adoptedStyleSheets = [...win.document.adoptedStyleSheets, modalSheet]
+    fitModal(win, modalSheet)
+    win.addEventListener('resize', () => fitModal(win, modalSheet))
+    // A page in the modal says how tall it stands, and again whenever that changes.
+    let height = -1
+    const measure = new ResizeObserver(() => {
+      const root = win.document.documentElement
+      const now = Math.ceil(root.getBoundingClientRect().height)
+      if (root.dataset.ebModal && now !== height) post({ type: 'modalHeight', payload: { height: (height = now) } })
+    })
+    measure.observe(win.document.documentElement)
     // Escape pressed in a page shown in the Admin's modal never reaches the modal, which is in the
     // Admin's document, so the bridge passes it on. With no modal open the Admin ignores it.
     win.addEventListener('keydown', (event) => {
@@ -153,8 +245,10 @@ export function createBridge(win: Window = window) {
     win.addEventListener('message', (event: MessageEvent<HostMessage>) => {
       if (event.source !== win.parent || event.origin !== origin) return
       if (event.data?.type === 'titleAction') {
-        const { call, index } = event.data.payload ?? {}
-        if (call === titleCall) titleActions[Number(index)]?.onAction?.()
+        const { call, index, item } = event.data.payload ?? {}
+        const action = call === titleCall ? titleActions[Number(index)] : undefined
+        if (item === undefined) action?.onAction?.()
+        else action?.items?.[Number(item)]?.onAction?.()
       }
       if (event.data?.type === 'toastAction' && event.data.payload?.call === toastCall) {
         const run = toastAction
@@ -176,26 +270,50 @@ export function createBridge(win: Window = window) {
       const action = event.data?.type === 'saveBar' ? event.data.payload?.action : undefined
       if (action === 'save' || action === 'discard') bar.act(action)
     })
-    post({ type: 'ready' })
+    post({ type: 'ready', payload: { page: win.location.href } })
   }
   return {
-    // A short message the Admin shows for 5 s, or until dismissed for an error.
-    toast(message: string, options: { error?: boolean; action?: ToastAction } = {}): void {
+    // A short message the Admin shows for 5 s, or until dismissed for an error. The tone is the one
+    // every component shares: danger is an error, which error: true still asks for as in 1.0.0, and
+    // the other tones show as a plain toast.
+    toast(
+      message: string,
+      options: {
+        tone?: 'neutral' | 'info' | 'success' | 'warning' | 'danger'
+        error?: boolean
+        action?: ToastAction
+      } = {},
+    ): void {
       toastAction = options.action
       toastCall += 1
       const action = options.action ? String(options.action.label) : undefined
-      post({
-        type: 'toast',
-        payload: { message: String(message), error: options.error === true, action, call: toastCall },
-      })
+      const error = options.error === true || options.tone === 'danger'
+      post({ type: 'toast', payload: { message: String(message), error, action, call: toastCall } })
     },
-    title(title: string, options: { actions?: TitleAction[] } = {}): void {
+    // back names the page, a path on the app's origin, that the Admin's back button before the title
+    // opens, as a detail screen's way back to its list.
+    title(title: string, options: { actions?: TitleAction[]; back?: string } = {}): void {
       const actions = options.actions ?? []
       if (actions.length > titleActionLimit) console.warn(`ebdfy: at most ${titleActionLimit} title actions`)
       titleActions = actions.slice(0, titleActionLimit)
       titleCall += 1
       const labels = titleActions.map((action) => String(action.label))
-      post({ type: 'title', payload: { title: String(title), actions: labels, call: titleCall } })
+      const payload: Extract<BridgeMessage, { type: 'title' }>['payload'] = {
+        title: String(title),
+        actions: labels,
+        call: titleCall,
+      }
+      // Only a title with a menu sends menus, so a 1.0.0 Admin and its title stay as they were.
+      if (titleActions.some((action) => action.items)) {
+        payload.menus = titleActions.map(
+          (action) =>
+            action.items?.map((item) =>
+              item.tone === 'critical' ? { label: String(item.label), tone: item.tone } : { label: String(item.label) },
+            ) ?? null,
+        )
+      }
+      if (options.back !== undefined) payload.back = String(options.back)
+      post({ type: 'title', payload })
     },
     // The Admin's loading bar, for work the app does after its page has loaded.
     loading(visible: boolean): void {
@@ -232,7 +350,12 @@ export function createBridge(win: Window = window) {
     // The app's pages in the Admin nav, in place of any it sent before.
     nav(entries: NavEntry[]): void {
       if (entries.length > navLimit) console.warn(`ebdfy: at most ${navLimit} nav entries`)
-      const kept = entries.slice(0, navLimit).map(({ label, path }) => ({ label: String(label), path: String(path) }))
+      const kept = entries.slice(0, navLimit).map(({ label, path, icon, count }) => {
+        const entry: NavEntry = { label: String(label), path: String(path) }
+        if (icon !== undefined) entry.icon = String(icon)
+        if (count !== undefined) entry.count = Number(count)
+        return entry
+      })
       post({ type: 'nav', payload: { entries: kept } })
     },
   }

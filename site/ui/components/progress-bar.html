@@ -11,14 +11,6 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Progress bar</h1>
       <p>
@@ -26,24 +18,20 @@
         sets how much of the bar is filled. With no <code>value</code> the bar is indeterminate: a block slides along it
         while the work goes on. <code>label</code> names the bar for a screen reader.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="Determinate, 40 of 100" caption-bn="নির্দিষ্ট মাত্রা, ১০০-র মধ্যে ৪০" stack>
+          <eb-progress-bar value="40" label="New orders" data-label-en="New orders" data-label-bn="নতুন অর্ডার">
+          </eb-progress-bar>
+        </docs-example>
+        <docs-example caption="Indeterminate" caption-bn="অনির্দিষ্ট মাত্রা" stack>
+          <eb-progress-bar
+            label="Loading the order."
+            data-label-en="Loading the order."
+            data-label-bn="অর্ডার লোড হচ্ছে।"
+          >
+          </eb-progress-bar>
+        </docs-example>
       </div>
-      <div class="stack" id="examples" lang="en">
-        <eb-text data-en="New orders" data-bn="নতুন অর্ডার">New orders</eb-text>
-        <eb-progress-bar value="40" label="New orders" data-label-en="New orders" data-label-bn="নতুন অর্ডার">
-        </eb-progress-bar>
-        <eb-text data-en="Loading the order." data-bn="অর্ডার লোড হচ্ছে।">Loading the order.</eb-text>
-        <eb-progress-bar
-          label="Loading the order."
-          data-label-en="Loading the order."
-          data-label-bn="অর্ডার লোড হচ্ছে।"
-        >
-        </eb-progress-bar>
-      </div>
-      <pre><code>&lt;eb-progress-bar value="40" label="New orders"&gt;&lt;/eb-progress-bar&gt;
-&lt;eb-progress-bar label="Loading the order."&gt;&lt;/eb-progress-bar&gt;</code></pre>
     </main>
   </body>
 </html>

@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest'
 
 import '../../src/v1.ts'
+import { contrast, inDark } from './colour.ts'
 
 type Updatable = HTMLElement & { updateComplete: Promise<unknown> }
 
@@ -60,6 +61,20 @@ test('a skeleton of three lines draws three bars and the last is narrower', asyn
   expect(getComputedStyle(bars[0]!).backgroundColor).toBe('oklch(0.925 0.004 85)')
   expect(getComputedStyle(bars[0]!).borderRadius).toBe('6px')
   expect(el.getBoundingClientRect().height).toBe(72)
+})
+
+// A bar on the page has to show: divider, not the surface-3 that all but vanished on bg.
+test('a skeleton bar is the divider colour, at 1.15:1 or more on bg in light and dark', async () => {
+  await render('<eb-skeleton></eb-skeleton>')
+  const read = async () => ({
+    bar: getComputedStyle(root('eb-skeleton').querySelector('.bar')!).backgroundColor,
+    bg: getComputedStyle(document.documentElement).getPropertyValue('--eb-color-bg').trim(),
+    divider: getComputedStyle(document.documentElement).getPropertyValue('--eb-color-divider').trim(),
+  })
+  for (const { bar, bg, divider } of [await read(), await inDark(read)]) {
+    expect(bar).toBe(divider)
+    expect(contrast(bar, bg)).toBeGreaterThanOrEqual(1.15)
+  }
 })
 
 test('a skeleton with no lines draws one full width bar', async () => {

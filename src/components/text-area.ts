@@ -1,8 +1,10 @@
 import { css, html } from 'lit'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import { live } from 'lit/directives/live.js'
 
 import { Field } from './field.ts'
 
+/** Takes a few lines of text, such as a note on an order. A person can drag it taller. */
 export class EbTextArea extends Field {
   static override styles = [
     Field.styles,
@@ -29,7 +31,7 @@ export class EbTextArea extends Field {
       ?disabled=${this.disabled}
       ?required=${this.required}
       aria-invalid=${this.error ? 'true' : 'false'}
-      aria-describedby="error"
+      aria-describedby=${ifDefined(this.describedBy())}
       @input=${(event: Event) => (this.value = this.textOf(event))}
       @change=${this.changed}
     ></textarea>`

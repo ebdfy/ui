@@ -1,11 +1,17 @@
 import { render } from 'lit'
 import { expect, test } from 'vitest'
 
-import * as icons from '../../src/icons.ts'
+import * as named from '../../src/icons.ts'
 
 // Ink draws Lucide at 16 and 20 px with a fixed 1.5 px stroke, so the stroke does not scale with
-// the icon's size.
-for (const [name, icon] of Object.entries(icons)) {
+// the icon's size. Every named export and every icon in eb-icon's set is held to it.
+const { icons, ...exports } = named
+const all = [
+  ...Object.entries(exports),
+  ...Object.entries(icons).map(([name, icon]) => [`set's ${name}`, icon] as const),
+]
+
+for (const [name, icon] of all) {
   for (const size of [16, 20]) {
     test(`the ${name} icon at ${size} px draws a 1.5 px stroke`, () => {
       document.body.innerHTML = `<div style="width:${size}px;height:${size}px"></div>`
@@ -14,7 +20,7 @@ for (const [name, icon] of Object.entries(icons)) {
       const svg = box.querySelector('svg')!
       svg.style.width = `${size}px`
       svg.style.height = `${size}px`
-      const strokes = svg.querySelectorAll('path, rect, circle')
+      const strokes = svg.querySelectorAll('path, rect, circle, ellipse, line, polyline, polygon')
       expect(strokes.length).toBeGreaterThan(0)
       for (const stroke of strokes) {
         const style = getComputedStyle(stroke)

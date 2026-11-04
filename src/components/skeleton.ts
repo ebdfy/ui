@@ -1,5 +1,6 @@
 import { LitElement, css, html } from 'lit'
 
+/** Holds the place of text while it loads. Screen readers skip it, and it stops pulsing when the person asks for less motion. */
 export class EbSkeleton extends LitElement {
   static override properties = {
     lines: { type: Number },
@@ -18,7 +19,7 @@ export class EbSkeleton extends LitElement {
       width: 100%;
       height: 12px;
       border-radius: 6px;
-      background: var(--eb-color-line);
+      background: var(--eb-color-divider);
       animation: pulse 1.5s ease-in-out infinite;
     }
     .line.short .bar {
@@ -36,6 +37,7 @@ export class EbSkeleton extends LitElement {
     }
   `
 
+  /** How many lines to draw; the last of several is shorter. 1 when unset. */
   declare lines: number
 
   constructor() {

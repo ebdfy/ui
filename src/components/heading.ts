@@ -1,5 +1,10 @@
 import { LitElement, css, html } from 'lit'
 
+/**
+ * Sets a title at level 1, 2 or 3. Pick the level for the outline of the page, not for the size you want.
+ *
+ * @slot - The words of the title.
+ */
 export class EbHeading extends LitElement {
   static override properties = {
     level: { type: String, reflect: true },
@@ -33,6 +38,7 @@ export class EbHeading extends LitElement {
     }
   `
 
+  /** The level in the outline of the page: 1, 2 or 3. 2 when unset. */
   declare level: '1' | '2' | '3'
 
   constructor() {

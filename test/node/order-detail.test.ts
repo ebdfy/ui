@@ -116,3 +116,82 @@ test('in the playground order #1039 is an entry in the app nav and titles the ba
   await expect.poll(() => page.locator('eb-admin-chrome [part="title"]').textContent()).toBe('অর্ডার #1039')
   expect(errors).toEqual([])
 })
+
+test('in the playground order #1039 at 360 x 780 has a Back chevron, no tab bar, and at most 180 px of chrome', async () => {
+  const { page, errors } = await pages.open(`${pages.ui}/playground`, 360)
+  await page.setViewportSize({ width: 360, height: 780 })
+  const app = page.frameLocator('eb-admin-chrome iframe')
+  const title = page.locator('eb-admin-chrome [part="title"]')
+  const tabBar = () =>
+    page
+      .locator('eb-admin-chrome')
+      .evaluate((el) => el.shadowRoot!.querySelector('nav:not([part])')!.getBoundingClientRect().height)
+  await page.locator('eb-admin-chrome [part="app-nav"] a', { hasText: 'Order #1039' }).click({ timeout: 15_000 })
+  await app.locator('#order eb-heading:defined').first().waitFor({ timeout: 15_000 })
+  await expect.poll(() => title.textContent(), { timeout: 15_000 }).toBe('Order #1039')
+  await expect.poll(tabBar, { timeout: 15_000 }).toBe(0)
+  const back = page.locator('eb-admin-chrome [part="title-back"]')
+  expect(await back.getAttribute('aria-label')).toBe('Back')
+  const chrome = await page.locator('eb-admin-chrome').evaluate((el) => {
+    const frame = el.shadowRoot!.querySelector('.frame')!.getBoundingClientRect()
+    return el.getBoundingClientRect().height - frame.height
+  })
+  expect(chrome).toBeLessThanOrEqual(180)
+  // Back opens the orders list, whose screen has no bottom bar, so the tab bar returns.
+  await back.click()
+  await expect.poll(() => title.textContent(), { timeout: 15_000 }).toBe('Orders')
+  await expect.poll(tabBar).toBeGreaterThan(0)
+  expect(errors).toEqual([])
+})
+
+// On a desktop the order uses the width: the order and its items on the left, the customer on the
+// right, and its two actions in the Admin's title bar instead of a bar at the foot.
+test('in the playground at 1280 px order #1039 is two columns with its actions in the title bar', async () => {
+  const { page, errors } = await pages.open(`${pages.ui}/playground`, 1280)
+  const app = page.frameLocator('eb-admin-chrome iframe')
+  await page.locator('eb-admin-chrome [part="app-nav"] a', { hasText: 'Order #1039' }).click({ timeout: 15_000 })
+  await app.locator('#order eb-heading:defined').first().waitFor({ timeout: 15_000 })
+  const actions = page.locator('eb-admin-chrome [part="title-action"]')
+  await expect.poll(() => actions.allInnerTexts(), { timeout: 15_000 }).toEqual(['Ask for advance', 'Confirm order'])
+  expect(await app.locator('eb-bottom-bar').isVisible()).toBe(false)
+  const box = (selector: string) =>
+    app
+      .locator(selector)
+      .first()
+      .evaluate((el) => el.getBoundingClientRect().toJSON())
+  const [amount, items, customer] = [
+    await box('#order eb-heading[level="2"]'),
+    await box('#order eb-card[heading="Items"]'),
+    await box('#order eb-card:has(eb-avatar)'),
+  ]
+  expect(customer.left).toBeGreaterThan(items.right)
+  expect(customer.top).toBeLessThanOrEqual(amount.bottom)
+  // 2fr and 1fr, less the gap.
+  expect(items.width / customer.width).toBeGreaterThan(1.8)
+  expect(items.width / customer.width).toBeLessThan(2.2)
+  await actions.filter({ hasText: 'Confirm order' }).click()
+  await expect
+    .poll(() => page.locator('eb-admin-chrome [part="toast"] span').textContent())
+    .toBe('Order #1039 confirmed')
+  expect(errors).toEqual([])
+})
+
+test.for([
+  [1023, 1, true],
+  [640, 1, true],
+  [639, 1, false],
+] as const)('at %i px order #1039 is %i column and its bottom bar hidden: %s', async ([width, , hidden]) => {
+  const { page, errors } = await openOrder(width, 'en')
+  const customer = await box(page, '#order eb-card:has(eb-avatar)')
+  const items = await box(page, '#order eb-card[heading="Items"]')
+  expect(Math.round(customer.left)).toBe(Math.round(items.left))
+  expect(await page.locator('eb-bottom-bar').isVisible()).toBe(!hidden)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
+  // The order's blocks stand 12 px apart.
+  const gaps = await page.locator('#order-content').evaluate((content) => {
+    const boxes = [...content.children].map((child) => child.getBoundingClientRect())
+    return boxes.slice(1).map((next, i) => Math.round(next.top - boxes[i]!.bottom))
+  })
+  expect(new Set(gaps)).toEqual(new Set([12]))
+  expect(errors).toEqual([])
+})

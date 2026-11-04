@@ -14,23 +14,30 @@ async function open(page: string): Promise<void> {
   await chrome().updateComplete
 }
 
-test('the loading bar shows while the app loads, and goes once the app answers', async () => {
+const frame = () => chrome().shadowRoot!.querySelector<HTMLIFrameElement>('.frame iframe')!
+
+test('while the app loads, skeleton blocks stand in the app area and the frame stays hidden until it is ready', async () => {
   await open('app.html?title=Orders')
-  const bar = part('loading-bar')!
-  expect(bar.getAttribute('role')).toBe('progressbar')
-  expect(bar.getAttribute('aria-label')).toBe('Loading')
-  expect(bar.getBoundingClientRect().height).toBeGreaterThan(0)
-  await expect.poll(() => part('title')?.textContent, { timeout: 10_000 }).toBe('Orders')
+  const skeleton = part('skeleton')!
+  expect(skeleton.getAttribute('role')).toBe('progressbar')
+  expect(skeleton.getAttribute('aria-label')).toBe('Loading')
+  expect(skeleton.querySelectorAll('eb-skeleton').length).toBeGreaterThanOrEqual(2)
+  const area = chrome().shadowRoot!.querySelector('.frame')!.getBoundingClientRect()
+  const box = skeleton.getBoundingClientRect()
+  expect([box.top, box.left, box.width, box.height]).toEqual([area.top, area.left, area.width, area.height])
+  expect(getComputedStyle(frame()).visibility).toBe('hidden')
   expect(part('loading-bar')).toBeNull()
+  await expect.poll(() => part('title')?.textContent, { timeout: 10_000 }).toBe('Orders')
+  expect(part('skeleton')).toBeNull()
+  expect(getComputedStyle(frame()).visibility).toBe('visible')
 })
 
-test('an app that has not answered keeps the loading bar, over the frame', async () => {
+test('a page that never loads the bridge stays hidden behind the skeleton, its own words unseen', async () => {
   await open('silent.html')
-  await new Promise((resolve) => setTimeout(resolve, 500))
-  const bar = part('loading-bar')!.getBoundingClientRect()
-  const frame = chrome().shadowRoot!.querySelector('iframe')!.getBoundingClientRect()
-  expect(bar.top).toBe(frame.top)
-  expect(bar.width).toBe(frame.width)
+  await new Promise((resolve) => frame().addEventListener('load', resolve, { once: true }))
+  await new Promise((resolve) => setTimeout(resolve, 300))
+  expect(part('skeleton')).not.toBeNull()
+  expect(getComputedStyle(frame()).visibility).toBe('hidden')
 })
 
 test('ebdfy.loading(true) shows the loading bar and ebdfy.loading(false) hides it', async () => {

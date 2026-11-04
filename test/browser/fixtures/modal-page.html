@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="ebdfy-app" content="sample" />
+    <script type="module">
+      import '/src/v1.ts'
+      // The page cannot be seen into from the Admin, so it says in a toast how it was drawn: in what
+      // kind of modal, on what fill, and how tall its eb-page stands.
+      const report = () => {
+        const page = document.querySelector('eb-page')
+        const kind = document.documentElement.dataset.ebModal ?? 'none'
+        const height = Math.round(page.getBoundingClientRect().height)
+        // With bar, the toast ends with the height of the bar's buttons and the width of each.
+        const faces = [...document.querySelectorAll('eb-bottom-bar eb-button')].map((button) =>
+          button.shadowRoot.querySelector('button').getBoundingClientRect(),
+        )
+        const bar = faces.length ? ` bar ${faces[0].height} ${faces.map((face) => face.width).join(' ')}` : ''
+        ebdfy.toast(`${kind} ${getComputedStyle(page).backgroundColor} ${height}${bar}`)
+      }
+      // lines=N stands the page N lines tall; with grow, it gains them 300 ms after it shows.
+      const asked = new URLSearchParams(location.search)
+      const more = () => {
+        for (let i = 0; i < Number(asked.get('lines') ?? 0); i++) {
+          const line = document.createElement('p')
+          line.style.margin = '0'
+          line.textContent = `Line ${i + 1}`
+          document.querySelector('eb-page').append(line)
+        }
+      }
+      // With full, the page stands at the frame's height as a 1.0.0 page may, its words in a main
+      // that scrolls.
+      if (asked.has('full')) {
+        document.head.insertAdjacentHTML(
+          'beforeend',
+          '<style>html, body { height: 100%; } body { display: flex; flex-direction: column; } eb-page { flex: 1; overflow: auto; }</style>',
+        )
+      }
+      if (asked.has('bar')) {
+        document.body.insertAdjacentHTML(
+          'beforeend',
+          '<eb-bottom-bar><eb-button-group label="Booking"><eb-button>Cancel</eb-button><eb-button variant="primary">Book</eb-button></eb-button-group></eb-bottom-bar>',
+        )
+      }
+      // The test may ask the page to drop the lines it gained.
+      addEventListener('message', (event) => {
+        if (event.data?.shrink)
+          for (const line of document.querySelectorAll('eb-page p:not(:first-child)')) line.remove()
+      })
+      if (asked.has('grow')) setTimeout(more, 300)
+      else more()
+      await customElements.whenDefined('eb-page')
+      requestAnimationFrame(() => requestAnimationFrame(report))
+      addEventListener('message', (event) => event.data?.type === 'theme' && setTimeout(report))
+    </script>
+  </head>
+  <body style="margin: 0">
+    <eb-page><p style="margin: 0">Pathao, pickup tomorrow</p></eb-page>
+  </body>
+</html>

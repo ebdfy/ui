@@ -11,31 +11,18 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Divider</h1>
       <p>
         <code>eb-divider</code> is a 1 px line in the line colour. It fills the width of its row and has no attributes.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="Between two lines of text" caption-bn="দুই লাইন লেখার মাঝে" stack>
+          <eb-text data-en="New orders" data-bn="নতুন অর্ডার">New orders</eb-text>
+          <eb-divider></eb-divider>
+          <eb-text data-en="Sent to Sylhet" data-bn="সিলেটে পাঠানো">Sent to Sylhet</eb-text>
+        </docs-example>
       </div>
-      <div class="stack" id="examples" lang="en">
-        <eb-text data-en="New orders" data-bn="নতুন অর্ডার">New orders</eb-text>
-        <eb-divider></eb-divider>
-        <eb-text data-en="Sent to Sylhet" data-bn="সিলেটে পাঠানো">Sent to Sylhet</eb-text>
-      </div>
-      <pre><code>&lt;eb-text&gt;New orders&lt;/eb-text&gt;
-&lt;eb-divider&gt;&lt;/eb-divider&gt;
-&lt;eb-text&gt;Sent to Sylhet&lt;/eb-text&gt;</code></pre>
     </main>
   </body>
 </html>

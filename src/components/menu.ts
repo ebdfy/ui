@@ -1,8 +1,15 @@
 import { LitElement, css, html, nothing } from 'lit'
 
 import { apple } from './kbd.ts'
-import { EbPopover } from './popover.ts'
+import { EbPopover, focusedNear } from './popover.ts'
 
+/**
+ * One action in an eb-menu.
+ *
+ * @slot - The words of the action.
+ * @slot icon - An icon before the words.
+ * @csspart shortcut - The keys shown at the end of the item.
+ */
 export class EbMenuItem extends LitElement {
   static override properties = {
     tone: { type: String, reflect: true },
@@ -13,7 +20,7 @@ export class EbMenuItem extends LitElement {
     :host {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       box-sizing: border-box;
       min-height: var(--eb-size-control-md);
       padding: 0 8px;
@@ -34,15 +41,29 @@ export class EbMenuItem extends LitElement {
       outline: 2px solid var(--eb-color-focus);
       outline-offset: 2px;
     }
-    eb-kbd {
+    ::slotted([slot='icon']) {
+      color: var(--eb-color-text-2);
+    }
+    /* One chip per key, as Ctrl and D, at the end of the row. */
+    [part='shortcut'] {
+      display: flex;
+      gap: 4px;
       margin-inline-start: auto;
     }
-    :host([tone='critical']) {
+    :host([tone='danger']),
+    :host([tone='critical']),
+    :host([tone='danger']) ::slotted([slot='icon']),
+    :host([tone='critical']) ::slotted([slot='icon']) {
       color: var(--eb-color-danger-text);
     }
   `
 
-  declare tone: 'default' | 'critical'
+  /**
+   * The tone every component shares; only danger colours an item. Deprecated until 2.0: default
+   * (use neutral) and critical (use danger).
+   */
+  declare tone: 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'default' | 'critical'
+  /** The keys that run the action, such as mod+d, shown at the end of the item. */
   declare shortcut: string
 
   constructor() {
@@ -62,20 +83,34 @@ export class EbMenuItem extends LitElement {
       this.removeAttribute('aria-keyshortcuts')
       return
     }
-    // ARIA names the keys Control and Meta, and the letter in capitals.
-    const mod = apple(navigator.userAgent) ? 'Meta' : 'Control'
-    const keys = this.shortcut.split('+').map((part) => (part.toLowerCase() === 'mod' ? mod : part.toUpperCase()))
+    // ARIA names the keys Control or Meta, Alt and Shift, and the letter in capitals.
+    const named = new Map([
+      ['mod', apple(navigator.userAgent) ? 'Meta' : 'Control'],
+      ['alt', 'Alt'],
+      ['shift', 'Shift'],
+    ])
+    const keys = this.shortcut.split('+').map((part) => named.get(part.toLowerCase()) ?? part.toUpperCase())
     this.setAttribute('aria-keyshortcuts', keys.join('+'))
   }
 
   override render() {
     // The hint is aria-hidden so the item's name stays its label; aria-keyshortcuts carries the keys.
-    return html`<slot></slot>${
-        this.shortcut ? html`<eb-kbd part="shortcut" shortcut=${this.shortcut} aria-hidden="true"></eb-kbd>` : nothing
+    return html`<slot name="icon"></slot><slot></slot>${
+        this.shortcut
+          ? html`<span part="shortcut" aria-hidden="true"
+              >${this.shortcut.split('+').map((key) => html`<eb-kbd shortcut=${key}></eb-kbd>`)}</span
+            >`
+          : nothing
       }`
   }
 }
 
+/**
+ * Opens a list of actions from its trigger. Each action is an eb-menu-item.
+ *
+ * @slot - The eb-menu-item elements.
+ * @slot trigger - The eb-button that opens the menu.
+ */
 export class EbMenu extends EbPopover {
   static override styles = css`
     ${EbPopover.styles}
@@ -102,7 +137,8 @@ export class EbMenu extends EbPopover {
 
   protected override onPanelKeydown(event: KeyboardEvent): void {
     const items = this.#items
-    const at = items.findIndex((item) => item === document.activeElement)
+    const active = focusedNear(this)
+    const at = items.findIndex((item) => item === active)
     const go = (index: number) => {
       event.preventDefault()
       items[(index + items.length) % items.length]?.focus()

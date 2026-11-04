@@ -10,10 +10,10 @@
     <script type="module" src="%EB_CDN%/ui/v1.js"></script>
     <script type="module" src="/components.js"></script>
     <style>
-      .frame {
-        overflow: hidden;
-        border: 1px solid var(--eb-color-divider);
-        border-radius: var(--eb-radius-lg);
+      /* The scroll box is the demo itself, so the bar sticks to the foot of the frame's demo area. */
+      .demo {
+        display: block;
+        padding: 0;
       }
       .scroll {
         height: 240px;
@@ -26,26 +26,14 @@
     </style>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Bottom bar</h1>
       <p>
         <code>eb-bottom-bar</code> holds a page's buttons and stays at the bottom of the scrolling page while the
         content moves under it. The frame below keeps the example from sticking to this page.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
-      </div>
-      <div id="examples" lang="en">
-        <div class="frame">
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="Sticks to the foot of a scrolling box" caption-bn="স্ক্রলবক্সের নিচে আটকে থাকে">
           <div class="scroll">
             <p
               data-en="Order 1042: two items, to be sent to Sylhet."
@@ -88,12 +76,8 @@
               <eb-button variant="primary" data-en="Save" data-bn="সংরক্ষণ">Save</eb-button>
             </eb-bottom-bar>
           </div>
-        </div>
+        </docs-example>
       </div>
-      <pre><code>&lt;eb-bottom-bar&gt;
-  &lt;eb-button variant="secondary"&gt;Cancel&lt;/eb-button&gt;
-  &lt;eb-button variant="primary"&gt;Save&lt;/eb-button&gt;
-&lt;/eb-bottom-bar&gt;</code></pre>
     </main>
   </body>
 </html>

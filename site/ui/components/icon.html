@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Icon · ebdfy design system</title>
+    <link rel="stylesheet" href="/docs.css" />
+    <script src="/docs.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <script type="module" src="/components.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>Icon</h1>
+      <p>
+        <code>eb-icon</code> draws a Lucide icon by <code>name</code> at 16 px, or 20 px with <code>size="20"</code>, in
+        the colour of the text around it with a 1.5 px stroke. An app's own <code>&lt;svg&gt;</code> inside it is drawn
+        at the same size and stroke. Give an icon that stands alone a <code>label</code>; without one it is decoration
+        and hidden from screen readers.
+      </p>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="16 px" caption-bn="১৬ পিক্সেল">
+          <eb-icon name="truck" label="Shipped" data-label-en="Shipped" data-label-bn="পাঠানো হয়েছে"></eb-icon>
+          <eb-icon name="package"></eb-icon>
+          <eb-icon name="phone"></eb-icon>
+          <eb-icon name="search"></eb-icon>
+          <eb-icon name="printer"></eb-icon>
+        </docs-example>
+        <docs-example caption="20 px" caption-bn="২০ পিক্সেল">
+          <eb-icon
+            name="truck"
+            size="20"
+            label="Shipped"
+            data-label-en="Shipped"
+            data-label-bn="পাঠানো হয়েছে"
+          ></eb-icon>
+          <eb-icon name="package" size="20"></eb-icon>
+          <eb-icon name="phone" size="20"></eb-icon>
+          <eb-icon name="search" size="20"></eb-icon>
+          <eb-icon name="printer" size="20"></eb-icon>
+        </docs-example>
+        <docs-example caption="An app's own svg" caption-bn="অ্যাপের নিজের svg">
+          <eb-icon size="20">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12h18" />
+              <path d="M12 3v18" />
+              <circle cx="12" cy="12" r="9" />
+            </svg>
+          </eb-icon>
+        </docs-example>
+      </div>
+    </main>
+  </body>
+</html>

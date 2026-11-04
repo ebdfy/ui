@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest'
 
+import { initials } from '../../src/components/avatar.ts'
 import '../../src/v1.ts'
 
 type Updatable = HTMLElement & { updateComplete: Promise<unknown> }
@@ -47,7 +48,7 @@ test('a thumbnail with no src shows the image icon and no img', async () => {
   expect(shadow.querySelector('svg')).not.toBeNull()
   expect(shadow.querySelector('img')).toBeNull()
   const el = document.querySelector('eb-thumbnail')!
-  expect(getComputedStyle(el).backgroundColor).toBe('oklch(0.985 0.002 85)')
+  expect(getComputedStyle(el).backgroundColor).toBe('oklch(0.972 0.003 85)')
   expect(getComputedStyle(el).color).toBe('oklch(0.47 0.008 85)')
   expect(getComputedStyle(el).borderRadius).toBe('8px')
 })
@@ -70,16 +71,16 @@ test('a thumbnail whose src fails to load ends showing the icon', async () => {
 const names = [
   ['Rahim Uddin', 'RU'],
   ['Rahim', 'R'],
-  ['ক্ষমা রায়', 'ক্ষরা'],
+  ['ক্ষমা রায়', 'ক'],
 ] as const
 
-for (const [name, initials] of names) {
-  test(`an avatar for ${name} shows ${initials}`, async () => {
+for (const [name, shown] of names) {
+  test(`an avatar for ${name} shows ${shown}`, async () => {
     await render(`<eb-avatar name="${name}"></eb-avatar>`)
     const el = document.querySelector('eb-avatar')!
     const circle = root('eb-avatar').querySelector('[role="img"]')!
     expect(circle.getAttribute('aria-label')).toBe(name)
-    expect(circle.textContent?.trim()).toBe(initials)
+    expect(circle.textContent?.trim()).toBe(shown)
     const box = el.getBoundingClientRect()
     expect(box.width).toBe(40)
     expect(box.height).toBe(40)
@@ -103,6 +104,43 @@ test('an avatar with a src shows the picture', async () => {
   const shadow = root('eb-avatar')
   expect(shadow.querySelector('img')).not.toBeNull()
   expect(shadow.querySelector('[role="img"]')!.getAttribute('aria-label')).toBe('Rahim Uddin')
+})
+
+const initialsOf = [
+  ['মো. হাসান', 'হ'],
+  ['নুসরাত জাহান', 'ন'],
+  ['মোহাম্মদ রফিক', 'র'],
+  ['মোঃ করিম', 'ক'],
+  ['Md. Hasan', 'MH'],
+  ['Rahim Uddin', 'RU'],
+  ['হাসান', 'হ'],
+  ['মো.', 'ম'],
+  ['মো: হাসান', 'হ'],
+  ['মুহাম্মদ রফিক', 'র'],
+  ['মোছা. নাসরিন আক্তার', 'ন'],
+  ['মোসাম্মৎ শাহিনা বেগম', 'শ'],
+] as const
+
+for (const [name, expected] of initialsOf) {
+  test(`initials of ${name} are ${expected}`, () => {
+    expect(initials(name)).toBe(expected)
+  })
+}
+
+test('an avatar for a Bangla name with an honorific shows one letter', async () => {
+  await render('<eb-avatar name="মো. হাসান"></eb-avatar>')
+  expect(root('eb-avatar').querySelector('.circle')!.textContent?.trim()).toBe('হ')
+})
+
+test('an avatar whose picture fails shows its initials, and a new src brings the picture back', async () => {
+  await render('<eb-avatar name="Rahim Uddin" src="/does-not-exist.png"></eb-avatar>')
+  const shadow = root('eb-avatar')
+  await expect.poll(() => shadow.querySelector('img')).toBeNull()
+  expect(shadow.querySelector('.circle')!.textContent?.trim()).toBe('RU')
+
+  const svg = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22/%3E'
+  document.querySelector('eb-avatar')!.setAttribute('src', svg)
+  await expect.poll(() => shadow.querySelector('img')).not.toBeNull()
 })
 
 function paginationButtons(): HTMLButtonElement[] {
@@ -164,4 +202,30 @@ test('pagination speaks English by default', async () => {
   expect(previous!.getAttribute('aria-label')).toBe('Previous page')
   expect(next!.getAttribute('aria-label')).toBe('Next page')
   expect(root('eb-pagination').querySelector('nav')!.getAttribute('aria-label')).toBe('Pagination')
+})
+
+test.for([
+  ['small', 16],
+  ['medium', 16],
+  ['large', 20],
+] as const)(
+  "a %s thumbnail's placeholder icon is %i px, on surface-2 inside a 1 px divider ring",
+  async ([size, px]) => {
+    await render(`<eb-thumbnail size="${size}"></eb-thumbnail>`)
+    const host = document.querySelector('eb-thumbnail')!
+    const icon = root('eb-thumbnail').querySelector('svg')!.getBoundingClientRect()
+    expect([icon.width, icon.height]).toEqual([px, px])
+    expect(getComputedStyle(host).backgroundColor).toBe('oklch(0.972 0.003 85)')
+    expect(getComputedStyle(host, '::after').boxShadow).toBe('oklch(0.925 0.004 85) 0px 0px 0px 1px inset')
+  },
+)
+
+test('the ring sits over a picture too, so a white product keeps its edge', async () => {
+  const white =
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' fill='white'/%3E%3C/svg%3E"
+  await render(`<eb-thumbnail src="${white}" alt="Shirt"></eb-thumbnail>`)
+  const host = document.querySelector('eb-thumbnail')!
+  const ring = getComputedStyle(host, '::after')
+  expect(ring.position).toBe('absolute')
+  expect(ring.boxShadow).toBe('oklch(0.925 0.004 85) 0px 0px 0px 1px inset')
 })

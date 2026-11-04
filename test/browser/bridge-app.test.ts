@@ -41,10 +41,14 @@ test('a page that is not in a frame has no parent', () => {
   expect(parentOrigin(window.top!, false)).toBeNull()
 })
 
-function topLevel(search: string, app: string | null): Window {
-  const win = { location: { search }, document: document.implementation.createHTMLDocument() } as unknown as Window
+function topLevel(search: string, app: string | null, home?: string, pathname = '/'): Window {
+  const win = {
+    location: { search, pathname },
+    document: document.implementation.createHTMLDocument(),
+  } as unknown as Window
   ;(win as { top: Window }).top = win
   if (app) win.document.head.innerHTML = `<meta name="ebdfy-app" content="${app}">`
+  if (home) win.document.head.insertAdjacentHTML('beforeend', `<meta name="ebdfy-home" content="${home}">`)
   return win
 }
 
@@ -52,6 +56,22 @@ test('a top-level load with a store goes back into the Admin', () => {
   expect(adminRedirect(topLevel('?store=demo', 'sample'))).toBe('https://admin.ebdfy.com/store/demo/apps/sample')
   expect(adminRedirect(topLevel('?store=a%2F..%2Fb&x=1', 'sample'))).toBe(
     'https://admin.ebdfy.com/store/a%2F..%2Fb/apps/sample',
+  )
+})
+
+test('an app that names the playground as its home goes there with the same page open', () => {
+  const win = topLevel('?store=demo', 'sample', 'https://ui.ebdfy.com/playground', '/order-1039')
+  expect(adminRedirect(win, false)).toBe('https://ui.ebdfy.com/playground?page=%2Forder-1039')
+  // The page keeps its own query, less the store the home supplies.
+  const query = topLevel('?id=5&store=demo', 'sample', 'https://ui.ebdfy.com/playground', '/order')
+  expect(adminRedirect(query, false)).toBe('https://ui.ebdfy.com/playground?page=%2Forder%3Fid%3D5')
+})
+
+test('a home on a host the bridge does not know is ignored, and the app goes to the Admin', () => {
+  const win = topLevel('?store=demo', 'sample', 'https://evil.example/playground', '/order-1039')
+  expect(adminRedirect(win, false)).toBe('https://admin.ebdfy.com/store/demo/apps/sample')
+  expect(adminRedirect(topLevel('?store=demo', 'sample', 'not a url'), false)).toBe(
+    'https://admin.ebdfy.com/store/demo/apps/sample',
   )
 })
 

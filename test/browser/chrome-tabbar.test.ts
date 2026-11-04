@@ -1,5 +1,6 @@
 // Under 600 px the Admin's nav is a tab bar along the bottom of the chrome, as on a phone.
 import { afterEach, expect, test } from 'vitest'
+import { page, userEvent } from 'vitest/browser'
 
 import '../../src/host.ts'
 import { inDark } from './colour.ts'
@@ -22,14 +23,15 @@ async function open(query = '', bangla = false): Promise<void> {
   const labels = bangla
     ? ['হোম', 'অর্ডার', 'পণ্য', 'কাস্টমার', 'আরও']
     : ['Sample app', 'Docs', 'Hang the app', 'End access', 'Dark theme']
+  const names = ['home', 'shopping-bag', 'tag', 'users', 'settings']
   const [first, ...rest] = labels
   document.body.innerHTML = `<eb-admin-chrome app-name="Sample app" src="${fixture}/app.html?title=Orders&${query}">
-    <a slot="nav" href="#one" aria-current="page">${first}</a>
+    <a slot="nav" href="#one" aria-current="page" data-icon="${names[0]}">${first}</a>
     ${rest
       .slice(0, 3)
-      .map((label, index) => `<a slot="nav" href="#${index}">${label}</a>`)
+      .map((label, index) => `<a slot="nav" href="#${index}" data-icon="${names[index + 1]}">${label}</a>`)
       .join('')}
-    <button slot="nav" type="button">${rest[3]}</button>
+    <button slot="nav" type="button" data-icon="${names[4]}">${rest[3]}</button>
   </eb-admin-chrome>`
   await chrome().updateComplete
   await expect.poll(() => part('title')?.textContent, { timeout: 10_000 }).toBe('Orders')
@@ -93,4 +95,123 @@ test('a toast sits clear above the tab bar', async () => {
   await open('toast=Saved')
   await expect.poll(() => part('toast')).not.toBeNull()
   expect(part('toast')!.getBoundingClientRect().bottom).toBeLessThanOrEqual(tabBar().getBoundingClientRect().top - 8)
+})
+
+// The lines a tab's words take, by the top of each. A range gives more than one box per line.
+function lines(tab: HTMLElement): number[] {
+  const range = document.createRange()
+  range.selectNodeContents(tab)
+  return [...new Set([...range.getClientRects()].map((box) => box.top))]
+}
+
+test("each tab draws its link's icon at 20 px over a one-line label", async () => {
+  await open()
+  for (const tab of tabs()) {
+    const icon = getComputedStyle(tab, '::before')
+    expect([icon.width, icon.height, icon.display], tab.textContent!).toEqual(['20px', '20px', 'block'])
+    expect(icon.maskImage).toContain('data:image/svg+xml')
+    expect(icon.backgroundColor).toBe(getComputedStyle(tab).color)
+    const words = lines(tab)
+    expect(words, tab.textContent!).toHaveLength(1)
+    expect(words[0]!).toBeGreaterThanOrEqual(tab.getBoundingClientRect().top + 20)
+    expect(tab.getBoundingClientRect().height).toBe(52)
+  }
+})
+
+test('a label too long for its tab stays on one line and ends in an ellipsis', async () => {
+  await open()
+  const tab = tabs()[2]!
+  tab.textContent = 'Hang the app for a while'
+  const style = getComputedStyle(tab)
+  expect([style.whiteSpace, style.overflow, style.textOverflow]).toEqual(['nowrap', 'hidden', 'ellipsis'])
+  expect(lines(tab)).toHaveLength(1)
+  expect(tab.scrollWidth).toBeGreaterThan(tab.clientWidth)
+  expect(tab.getBoundingClientRect().height).toBe(52)
+})
+
+test('a link that names no icon, or one the chrome does not know, draws none', async () => {
+  await open()
+  tabs()[1]!.removeAttribute('data-icon')
+  tabs()[2]!.dataset.icon = 'nope'
+  for (const tab of tabs().slice(1, 3)) expect(getComputedStyle(tab, '::before').maskImage).toBe('none')
+})
+
+const strip = () => part('app-nav')!
+const stripLinks = () => [...shadow().querySelectorAll<HTMLAnchorElement>('[part="app-nav"] a')]
+
+// Four entries as the sample app has, the first with an icon and a count, the frame on the first.
+async function openStrip(labels = ['Orders', 'Order #1001', 'Order #1039', 'Drafts']): Promise<void> {
+  const four = labels.map(entry)
+  four[0] = { ...four[0]!, icon: 'shopping-bag', count: 2 } as (typeof four)[0]
+  document.body.innerHTML = `<eb-admin-chrome app-name="Sample app"
+      src="${fixture}/app.html?title=Orders&nav=${encodeURIComponent(JSON.stringify(four))}">
+    <a slot="nav" href="#one" aria-current="page">Home</a>
+  </eb-admin-chrome>`
+  await expect.poll(() => stripLinks().length, { timeout: 10_000 }).toBe(labels.length)
+  await userEvent.click(stripLinks()[1]!)
+  await expect.poll(() => stripLinks()[1]!.getAttribute('aria-current')).toBe('page')
+}
+
+test("the strip's entries stand 20 px apart, inactive in text-2, the current in text over a 2 px line", async () => {
+  await openStrip()
+  const boxes = stripLinks().map((link) => link.getBoundingClientRect())
+  for (const [index, box] of boxes.slice(1).entries()) {
+    if (box.left < strip().getBoundingClientRect().right) expect(box.left - boxes[index]!.right).toBe(20)
+  }
+  const look = (link: HTMLElement) => {
+    const style = getComputedStyle(link)
+    return {
+      colour: style.color,
+      weight: style.fontWeight,
+      line: `${style.borderBottomWidth} ${style.borderBottomColor}`,
+    }
+  }
+  expect(look(stripLinks()[0]!)).toEqual({
+    colour: 'oklch(0.47 0.008 85)',
+    weight: '500',
+    line: '2px rgba(0, 0, 0, 0)',
+  })
+  expect(look(stripLinks()[1]!)).toEqual({
+    colour: 'oklch(0.21 0.006 85)',
+    weight: '600',
+    line: '2px oklch(0.21 0.006 85)',
+  })
+  // The strip is words only: no icon, though the count stays.
+  expect(stripLinks()[0]!.querySelector('svg')!.getBoundingClientRect().width).toBe(0)
+  expect(stripLinks()[0]!.querySelector('[part="nav-count"]')!.textContent).toBe('2')
+})
+
+test('the strip scrolls sideways, its right edge fading, and its last entry scrolls clear of the fade', async () => {
+  await openStrip(['Orders', 'Order #1001', 'Order #1039', 'Drafts', 'Returns', 'Abandoned carts'])
+  const style = getComputedStyle(strip())
+  expect(style.overflowX).toBe('auto')
+  expect(strip().scrollWidth).toBeGreaterThan(strip().clientWidth)
+  expect(style.maskImage).toContain('linear-gradient')
+  strip().scrollLeft = strip().scrollWidth
+  const last = stripLinks().at(-1)!.getBoundingClientRect()
+  expect(last.right).toBeLessThanOrEqual(strip().getBoundingClientRect().right - 24)
+  expect(last.top).toBe(stripLinks()[0]!.getBoundingClientRect().top)
+})
+
+test('at 320 px the strip keeps each entry whole and scrolls rather than squeeze them together', async () => {
+  await page.viewport(320, 800)
+  try {
+    await openStrip()
+    for (const link of stripLinks()) expect(link.scrollWidth, link.textContent!).toBeLessThanOrEqual(link.clientWidth)
+    const boxes = stripLinks().map((link) => link.getBoundingClientRect())
+    for (const [index, box] of boxes.slice(1).entries()) expect(box.left - boxes[index]!.right).toBe(20)
+    expect(strip().scrollWidth).toBeGreaterThan(strip().clientWidth)
+  } finally {
+    await page.viewport(360, 800)
+  }
+})
+
+test('the strip marks the page the app is on, also when the app moved there by itself', async () => {
+  await openStrip()
+  const frame = shadow().querySelector<HTMLIFrameElement>('.frame iframe')!
+  frame.contentWindow!.location.href = `${fixture}/app.html?title=${encodeURIComponent('Order #1039')}`
+  await expect.poll(() => part('title')?.textContent, { timeout: 10_000 }).toBe('Order #1039')
+  await expect
+    .poll(() => stripLinks().map((link) => link.getAttribute('aria-current')))
+    .toEqual([null, null, 'page', null])
 })

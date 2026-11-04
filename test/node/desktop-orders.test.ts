@@ -30,34 +30,72 @@ const box = (page: Page, selector: string) =>
 const numbers = (page: Page) =>
   page.locator('eb-row').evaluateAll((rows) => rows.map((row) => (row as HTMLElement).dataset.number))
 
-test('at 1280 px a toolbar row of filters and a search field sits above the 44 px table', async () => {
-  const { page, errors } = await openOrders(1280)
-  const filters = page.locator('.toolbar eb-button-group eb-button')
-  expect(await filters.allTextContents()).toEqual(['All 6', 'New 2', 'Confirmed 1', 'With courier 1', 'Returned 1'])
-  expect(await filters.evaluateAll((els) => els.map((el) => el.getAttribute('variant')))).toEqual([
-    'primary',
-    'ghost',
-    'ghost',
-    'ghost',
-    'ghost',
-  ])
-  // A screen reader hears which filter is on, not only sees it.
-  expect(await page.getByRole('button', { name: 'All 6', pressed: true }).count()).toBe(1)
-  expect(await page.getByRole('button', { name: 'New 2', pressed: false }).count()).toBe(1)
-  expect(await page.locator('.toolbar eb-button-group').getAttribute('label')).toBe('Show')
-  expect(await page.locator('.toolbar eb-search-field').getAttribute('label')).toBe('Search orders')
-  const [toolbar, table, group, search] = [
-    await box(page, '.toolbar'),
-    await box(page, 'eb-table'),
-    await box(page, '.toolbar eb-button-group'),
-    await box(page, '.toolbar eb-search-field'),
-  ]
-  expect(toolbar.bottom).toBeLessThanOrEqual(table.top)
-  // One row: the search field beside the filters, not under them.
-  expect(search.left).toBeGreaterThanOrEqual(group.right)
-  expect(search.top).toBeLessThan(group.bottom)
-  expect((await box(page, 'eb-row[open] [part="row"]')).height).toBe(44)
-  expect(await page.locator('eb-row[open]').getAttribute('data-number')).toBe('1039')
+// The title, its line and Add order are the page's own header; filters are tabs with counts, in one
+// row with the search, at a desktop, at the playground's frame width and at a small tablet.
+test.for([1280, 1044, 600])(
+  'at %i px the page header holds Add order and the toolbar holds whole tabs and the search',
+  async (width) => {
+    const { page, errors } = await openOrders(width)
+    const header = page.locator('eb-page')
+    expect(await header.getAttribute('heading')).toBe('Orders')
+    expect(await header.getAttribute('description')).toBe('Your store’s orders, newest first.')
+    const add = page.locator('eb-page > eb-button[slot="actions"]')
+    expect(await add.innerText()).toBe('Add order')
+    expect(await add.getAttribute('variant')).toBe('primary')
+    expect(await page.locator('eb-card[heading="Orders"]').count()).toBe(0)
+
+    const tabs = page.getByRole('tablist', { name: 'Show' })
+    // A tab's count is drawn after its label, from its count property.
+    const names = await tabs
+      .getByRole('tab')
+      .evaluateAll((els) =>
+        els.map((el) => `${el.textContent!.trim()} ${(el as HTMLElement & { count: number }).count}`),
+      )
+    expect(names).toEqual(['All 6', 'New 2', 'Confirmed 1', 'With courier 1', 'Returned 1'])
+    expect(await tabs.getByRole('tab', { selected: true }).innerText()).toContain('All')
+    const search = page.getByRole('searchbox', { name: 'Search orders' })
+    expect(await search.count()).toBe(1)
+    const [tabsBox, searchBox, table] = [
+      await box(page, 'eb-tabs'),
+      await box(page, '.toolbar eb-search-field'),
+      await box(page, 'eb-table'),
+    ]
+    // One row from the playground's frame width: the search beside the tabs, its middle on theirs.
+    // A narrower list puts the search under them. Either way the table comes under both.
+    if (width >= 1044) {
+      expect(searchBox.left).toBeGreaterThanOrEqual(tabsBox.right)
+      expect(Math.abs((searchBox.top + searchBox.bottom) / 2 - (tabsBox.top + tabsBox.bottom) / 2)).toBeLessThanOrEqual(
+        2,
+      )
+    } else expect(searchBox.top).toBeGreaterThanOrEqual(tabsBox.bottom)
+    expect(searchBox.right).toBeLessThanOrEqual(width)
+    // Every tab shows whole: the row does not have to scroll to reach one.
+    const clipped = () =>
+      page.locator('eb-tabs').evaluate((tabs) => {
+        const row = tabs.shadowRoot!.querySelector('.row')!
+        return row.scrollWidth - row.clientWidth
+      })
+    expect(await clipped()).toBe(0)
+    await page.locator('.languages eb-button[data-lang="bn"]').click({ timeout: 5_000 })
+    await expect.poll(() => page.locator('eb-tab').first().textContent()).toBe('সব')
+    expect(await clipped()).toBe(0)
+    expect(tabsBox.bottom).toBeLessThanOrEqual(table.top)
+    expect(searchBox.bottom).toBeLessThanOrEqual(table.top)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
+    expect(errors).toEqual([])
+  },
+)
+
+test('in the playground at 1280 px the framed orders keep the tabs and the search in one row', async () => {
+  const { page, errors } = await pages.open(`${pages.ui}/playground`, 1280)
+  const app = page.frameLocator('eb-admin-chrome iframe')
+  await app.locator('eb-row').first().waitFor({ timeout: 15_000 })
+  const frameWidth = await app.locator('html').evaluate((html) => html.clientWidth)
+  expect(frameWidth).toBeLessThan(1100)
+  const tabs = await app.locator('eb-tabs').boundingBox()
+  const search = await app.locator('.toolbar eb-search-field').boundingBox()
+  expect(search!.x).toBeGreaterThanOrEqual(tabs!.x + tabs!.width)
+  expect(Math.abs(search!.y + search!.height / 2 - (tabs!.y + tabs!.height / 2))).toBeLessThanOrEqual(2)
   expect(errors).toEqual([])
 })
 
@@ -65,7 +103,7 @@ test('at 1280 px order #1039 shows in a pane beside the table, with Ask for adva
   const { page, errors } = await openOrders(1280)
   const pane = page.locator('.pane')
   await pane.locator('eb-heading:defined').first().waitFor()
-  expect(await pane.locator('eb-heading[level="3"]').textContent()).toBe('#1039')
+  expect(await pane.locator('eb-heading[level="1"]').textContent()).toBe('#1039')
   expect(await pane.locator('eb-heading[level="2"]').textContent()).toBe('৳1,800')
   expect(await pane.locator('eb-banner[tone="danger"]').textContent()).toContain('Ask for a ৳120 bKash advance')
   expect(await pane.locator('eb-button').allTextContents()).toEqual(['Ask for advance', 'Confirm order'])
@@ -112,16 +150,51 @@ test('below 1040 px the pane gives the table the width, and on a phone the toolb
   expect((await box(phone.page, '.toolbar')).height).toBe(0)
 })
 
-test('the New filter shows only the new orders, and a search for 1040 only #1040', async () => {
+test('the New tab shows only the new orders, and a search for 1040 only #1040', async () => {
   const { page, errors } = await openOrders(1280)
-  await page.locator('.toolbar eb-button', { hasText: 'New' }).click()
+  const tabs = page.getByRole('tablist', { name: 'Show' })
+  await tabs.getByRole('tab', { name: /^New/ }).click()
   await expect.poll(() => numbers(page)).toEqual(['1042', '1039'])
-  expect(await page.locator('.toolbar eb-button', { hasText: 'New' }).getAttribute('variant')).toBe('primary')
-  expect(await page.getByRole('button', { name: 'New 2', pressed: true }).count()).toBe(1)
-  expect(await page.locator('.toolbar eb-button', { hasText: 'All' }).getAttribute('variant')).toBe('ghost')
-  await page.locator('.toolbar eb-button', { hasText: 'All' }).click()
-  await page.locator('.toolbar eb-search-field input').fill('1040')
+  expect(await tabs.getByRole('tab', { name: /^New/ }).getAttribute('aria-selected')).toBe('true')
+  expect(await tabs.getByRole('tab', { name: /^All/ }).getAttribute('aria-selected')).toBe('false')
+  await tabs.getByRole('tab', { name: /^All/ }).click()
+  await page.getByRole('searchbox', { name: 'Search orders' }).fill('1040')
   await expect.poll(() => numbers(page)).toEqual(['1040'])
+  expect(errors).toEqual([])
+})
+
+// The pane reads as one order: one line of meta, 12 px between its blocks, each price on its item's
+// first line, and its actions in reach however far it scrolls.
+test('at 1280 x 600 the pane has one meta line, 12 px blocks, prices on the first line and actions in view', async () => {
+  const { page, errors } = await openOrders(1280)
+  await page.setViewportSize({ width: 1280, height: 600 })
+  const pane = page.locator('.pane')
+  await pane.locator('eb-heading:defined').first().waitFor()
+  expect(await pane.getByText(/2 h ago/).count()).toBe(1)
+  const gaps = await page.locator('.pane-content').evaluate((content) => {
+    const boxes = [...content.children].map((child) => child.getBoundingClientRect())
+    return boxes.slice(1).map((box, i) => Math.round(box.top - boxes[i]!.bottom))
+  })
+  expect(gaps.length).toBeGreaterThanOrEqual(4)
+  expect(new Set(gaps)).toEqual(new Set([12]))
+  const items = pane.locator('eb-card[heading="Items"] eb-thumbnail')
+  for (let i = 0; i < (await items.count()); i++) {
+    const tops = await items.nth(i).evaluate((thumb) => {
+      const row = thumb.parentElement!
+      const [name, price] = [row.children[1]!.firstElementChild!, row.lastElementChild!]
+      return [name.getBoundingClientRect().top, price.getBoundingClientRect().top]
+    })
+    expect(Math.abs(tops[0]! - tops[1]!)).toBeLessThanOrEqual(1)
+  }
+  const confirm = pane.getByRole('button', { name: 'Confirm order' })
+  const inView = async () => {
+    const box = (await confirm.boundingBox())!
+    return box.y >= 0 && box.y + box.height <= 600
+  }
+  expect(await inView()).toBe(true)
+  await page.mouse.wheel(0, 300)
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(0)
+  expect(await inView()).toBe(true)
   expect(errors).toEqual([])
 })
 
@@ -192,4 +265,46 @@ test('at 600 px every status stays inside its column, in English and Bangla', as
     )
     expect(spilled, lang).toEqual([])
   }
+})
+
+// The risk flag rides beside the customer's name, its icon centred on the name's ink rather than on
+// the line box, in which Bangla sits low.
+for (const lang of ['en', 'bn']) {
+  test(`at 1280 px in ${lang} the risk flag's icon sits on the middle of the name, within 1 px`, async () => {
+    const { page } = await openOrders(1280)
+    await page.locator(`.languages eb-button[data-lang="${lang}"]`).click()
+    await page.locator(`html[lang="${lang}"]`).waitFor({ state: 'attached' })
+    const flag = page.locator('eb-row eb-tooltip').first()
+    await flag.waitFor()
+    await page.evaluate(() => document.fonts.ready)
+    const offset = await flag.evaluate((tooltip) => {
+      const name = tooltip.parentElement!.firstChild as Text
+      const style = getComputedStyle(tooltip.parentElement!)
+      const context = document.createElement('canvas').getContext('2d')!
+      context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`
+      const ink = context.measureText(name.data.trim())
+      const range = document.createRange()
+      range.selectNodeContents(name)
+      const baseline = range.getBoundingClientRect().top + ink.fontBoundingBoxAscent
+      const inkMiddle = baseline + (ink.actualBoundingBoxDescent - ink.actualBoundingBoxAscent) / 2
+      const icon = tooltip.querySelector('svg')!.getBoundingClientRect()
+      return icon.top + icon.height / 2 - inkMiddle
+    })
+    expect(Math.abs(offset), `${offset.toFixed(2)} px off`).toBeLessThanOrEqual(1)
+  })
+}
+
+// A tab's count is drawn in the page's language, so a switch to Bangla redraws it in Bangla digits.
+test('after a switch to Bangla the status tabs count in Bangla digits, and in English again after', async () => {
+  const { page, errors } = await openOrders(1280)
+  const counts = () =>
+    page
+      .locator('eb-tab')
+      .evaluateAll((tabs) => tabs.map((tab) => tab.shadowRoot!.querySelector('.count')?.textContent))
+  expect(await counts()).toEqual(['6', '2', '1', '1', '1'])
+  await page.locator('.languages eb-button[data-lang="bn"]').click()
+  await expect.poll(counts).toEqual(['৬', '২', '১', '১', '১'])
+  await page.locator('.languages eb-button[data-lang="en"]').click()
+  await expect.poll(counts).toEqual(['6', '2', '1', '1', '1'])
+  expect(errors).toEqual([])
 })

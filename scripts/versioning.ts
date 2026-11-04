@@ -7,14 +7,26 @@ interface Member {
   privacy?: string
   static?: boolean
   type?: { text: string }
+  description?: string
+  default?: string
+  attribute?: string
 }
 
 interface Declaration {
   tagName?: string
   customElement?: boolean
-  attributes?: { name: string; fieldName?: string; type?: { text: string } }[]
+  description?: string
+  attributes?: {
+    name: string
+    fieldName?: string
+    type?: { text: string }
+    description?: string
+    default?: string
+  }[]
   members?: Member[]
-  events?: { name: string }[]
+  events?: { name: string; description?: string; type?: { text: string } }[]
+  slots?: { name: string; description?: string }[]
+  cssParts?: { name: string; description?: string }[]
 }
 
 export interface Manifest {

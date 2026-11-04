@@ -17,6 +17,7 @@ const light = css`
   --eb-color-text-3: oklch(0.54 0.008 85);
   --eb-color-primary: oklch(0.21 0.006 85);
   --eb-color-primary-hi: oklch(0.32 0.006 85);
+  --eb-color-primary-lo: oklch(0.15 0.005 85);
   --eb-color-on-primary: oklch(0.99 0 0);
   --eb-color-accent: oklch(0.52 0.19 268);
   --eb-color-accent-soft: oklch(0.96 0.022 268);
@@ -27,6 +28,8 @@ const light = css`
   --eb-color-shipped: oklch(0.58 0.1 200);
   --eb-color-paid: oklch(0.58 0.14 150);
   --eb-color-danger: oklch(0.55 0.2 27);
+  --eb-color-danger-hi: oklch(0.51 0.2 27);
+  --eb-color-danger-lo: oklch(0.47 0.19 27);
   --eb-color-on-danger: oklch(1 0 0);
   --eb-color-danger-text: oklch(0.49 0.19 27);
   --eb-color-danger-soft: oklch(0.965 0.025 25);
@@ -39,6 +42,7 @@ const light = css`
   --eb-color-knob: oklch(1 0 0);
   --eb-color-chrome: oklch(0.972 0.003 85);
   --eb-color-chrome-active: oklch(0.935 0.004 85);
+  --eb-color-track: oklch(0.952 0.004 85);
   --eb-color-overlay-edge: oklch(0.925 0.004 85);
   --eb-shadow-1: 0 1px 2px oklch(0.2 0.01 85 / 0.06);
   --eb-shadow-2: 0 1px 2px oklch(0.2 0.01 85 / 0.05), 0 4px 12px oklch(0.2 0.01 85 / 0.07);
@@ -49,8 +53,8 @@ const light = css`
 const dark = css`
   color-scheme: dark;
   --eb-color-bg: oklch(0.16 0.004 85);
-  --eb-color-surface: oklch(0.2 0.004 85);
-  --eb-color-surface-2: oklch(0.23 0.004 85);
+  --eb-color-surface: oklch(0.215 0.004 85);
+  --eb-color-surface-2: oklch(0.245 0.004 85);
   --eb-color-surface-3: oklch(0.29 0.005 85);
   --eb-color-divider: oklch(0.285 0.005 85);
   --eb-color-edge: oklch(0.35 0.006 85);
@@ -60,6 +64,7 @@ const dark = css`
   --eb-color-text-3: oklch(0.66 0.006 85);
   --eb-color-primary: oklch(0.955 0.003 85);
   --eb-color-primary-hi: oklch(0.86 0.003 85);
+  --eb-color-primary-lo: oklch(0.8 0.003 85);
   --eb-color-on-primary: oklch(0.17 0.004 85);
   --eb-color-accent: oklch(0.72 0.14 268);
   --eb-color-accent-soft: oklch(0.3 0.06 268);
@@ -70,6 +75,8 @@ const dark = css`
   --eb-color-shipped: oklch(0.74 0.1 200);
   --eb-color-paid: oklch(0.74 0.13 150);
   --eb-color-danger: oklch(0.55 0.2 27);
+  --eb-color-danger-hi: oklch(0.51 0.2 27);
+  --eb-color-danger-lo: oklch(0.47 0.19 27);
   --eb-color-on-danger: oklch(1 0 0);
   --eb-color-danger-text: oklch(0.8 0.11 27);
   --eb-color-danger-soft: oklch(0.29 0.07 25);
@@ -82,15 +89,17 @@ const dark = css`
   --eb-color-knob: oklch(1 0 0);
   --eb-color-chrome: oklch(0.18 0.004 85);
   --eb-color-chrome-active: oklch(0.25 0.005 85);
+  --eb-color-track: oklch(0.16 0.004 85);
   --eb-color-overlay-edge: oklch(0.35 0.006 85);
-  --eb-shadow-1: 0 1px 2px oklch(0 0 0 / 0.45);
+  --eb-shadow-1: inset 0 1px 0 oklch(1 0 0 / 0.04), 0 1px 2px oklch(0 0 0 / 0.5);
   --eb-shadow-2: inset 0 1px 0 oklch(1 0 0 / 0.04), 0 4px 14px oklch(0 0 0 / 0.45);
   --eb-shadow-3: inset 0 1px 0 oklch(1 0 0 / 0.06), 0 18px 48px oklch(0 0 0 / 0.6);
   --eb-shadow-button: inset 0 -1px 0 oklch(0 0 0 / 0.12), 0 1px 2px oklch(0 0 0 / 0.5);
 `
 
-// The v1 names, kept until the milestones that restyle their components retire them. They sit on
-// every theme root so each resolves against the theme in force there.
+// The v1 names, deprecated: kept until 2.0 only for 1.0.0 apps, such as the API's authorize pages,
+// and read by none of ours (tokens.test.ts holds that). They sit on every theme root so each
+// resolves against the theme in force there.
 const aliases = css`
   --eb-color-ground: var(--eb-color-bg);
   --eb-color-on-accent: var(--eb-color-on-primary);
@@ -149,13 +158,16 @@ export const tokens = css`
     --eb-font-weight-medium: 500;
     --eb-font-weight-semibold: 600;
     --eb-font-weight-bold: 650;
+    /* Deprecated v1 names, kept until 2.0. */
     --eb-font-size-title: var(--eb-font-size-heading-2);
     --eb-font-size-card-title: var(--eb-font-size-heading-3);
     --eb-font-size-badge: var(--eb-font-size-meta);
     --eb-line-height-heading: var(--eb-line-height-heading-3);
   }
+  /* A page in the Admin's dialog on a desktop is narrow, but read with a pointer, so it keeps the
+     desktop's body size. */
   @media (max-width: 640px) {
-    :root {
+    :root:not([data-eb-modal='dialog']) {
       --eb-font-size-body: 15px;
       --eb-line-height-body: 24px;
     }
@@ -186,6 +198,9 @@ export const tokens = css`
     --eb-size-control-md: 36px;
     --eb-size-control-lg: 44px;
     --eb-size-target: 44px;
+    --eb-duration-fast: 120ms;
+    --eb-duration-base: 200ms;
+    --eb-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
     --eb-font-family: 'Geist', 'Noto Sans Bengali', system-ui, sans-serif;
   }
   /* Bangla takes Geist for letters and digits only: its file has no comma, which would load Geist. */

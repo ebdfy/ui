@@ -2,7 +2,7 @@ import { css } from 'lit'
 
 import { EbTextField } from './text-field.ts'
 
-// A day, as YYYY-MM-DD.
+/** Picks a day and submits it as YYYY-MM-DD. */
 export class EbDateField extends EbTextField {
   // The calendar button inside a date input is a tab stop of its own, where the input has focus but
   // is not :focus-visible and Chromium rings the button with its default outline. The field keeps

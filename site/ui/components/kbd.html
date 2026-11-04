@@ -11,34 +11,28 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Kbd</h1>
       <p>
         <code>eb-kbd</code> shows a keyboard shortcut from its <code>shortcut</code>. <code>mod</code> is the main key:
         the page shows Ctrl here and ⌘ on a Mac or iPhone. The letters stay Latin on a Bangla page.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="Beside an action" caption-bn="কাজের পাশে" stack>
+          <p>
+            <span data-en="Duplicate the order" data-bn="অর্ডার ডুপ্লিকেট করুন">Duplicate the order</span>
+            <eb-kbd shortcut="mod+d"></eb-kbd>
+          </p>
+          <p>
+            <span data-en="Print the invoice" data-bn="ইনভয়েস প্রিন্ট করুন">Print the invoice</span>
+            <eb-kbd shortcut="mod+p"></eb-kbd>
+          </p>
+          <p>
+            <span data-en="Search the orders" data-bn="অর্ডার খুঁজুন">Search the orders</span>
+            <eb-kbd shortcut="/"></eb-kbd>
+          </p>
+        </docs-example>
       </div>
-      <div class="row" id="examples" lang="en">
-        <p data-en="Duplicate the order" data-bn="অর্ডার ডুপ্লিকেট করুন">Duplicate the order</p>
-        <eb-kbd shortcut="mod+d"></eb-kbd>
-        <p data-en="Print the invoice" data-bn="ইনভয়েস প্রিন্ট করুন">Print the invoice</p>
-        <eb-kbd shortcut="mod+p"></eb-kbd>
-        <p data-en="Search the orders" data-bn="অর্ডার খুঁজুন">Search the orders</p>
-        <eb-kbd shortcut="/"></eb-kbd>
-      </div>
-      <pre><code>&lt;eb-kbd shortcut="mod+d"&gt;&lt;/eb-kbd&gt;
-&lt;eb-kbd shortcut="/"&gt;&lt;/eb-kbd&gt;</code></pre>
     </main>
   </body>
 </html>

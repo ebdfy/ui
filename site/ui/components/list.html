@@ -11,37 +11,27 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>List</h1>
       <p>
         <code>eb-list</code> shows each child as a card, 12 px apart, on a screen of any width. Use it for short lists
         that are cards on every screen; for orders, which are a table on a computer, use <code>eb-table</code>.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="Cards in a list" caption-bn="তালিকায় কার্ড" stack>
+          <eb-list>
+            <div data-en="Pathao picks up at 4 pm." data-bn="পাঠাও বিকেল ৪টায় নিয়ে যায়।">
+              Pathao picks up at 4 pm.
+            </div>
+            <div data-en="Steadfast picks up at 6 pm." data-bn="স্টেডফাস্ট সন্ধ্যা ৬টায় নিয়ে যায়।">
+              Steadfast picks up at 6 pm.
+            </div>
+            <div data-en="RedX picks up at noon." data-bn="রেডএক্স দুপুর ১২টায় নিয়ে যায়।">
+              RedX picks up at noon.
+            </div>
+          </eb-list>
+        </docs-example>
       </div>
-      <div class="stack" id="examples" lang="en">
-        <eb-list>
-          <div data-en="Pathao picks up at 4 pm." data-bn="পাঠাও বিকেল ৪টায় নিয়ে যায়।">Pathao picks up at 4 pm.</div>
-          <div data-en="Steadfast picks up at 6 pm." data-bn="স্টেডফাস্ট সন্ধ্যা ৬টায় নিয়ে যায়।">
-            Steadfast picks up at 6 pm.
-          </div>
-          <div data-en="RedX picks up at noon." data-bn="রেডএক্স দুপুর ১২টায় নিয়ে যায়।">RedX picks up at noon.</div>
-        </eb-list>
-      </div>
-      <pre><code>&lt;eb-list&gt;
-  &lt;div&gt;Pathao picks up at 4 pm.&lt;/div&gt;
-  &lt;div&gt;Steadfast picks up at 6 pm.&lt;/div&gt;
-&lt;/eb-list&gt;</code></pre>
     </main>
   </body>
 </html>

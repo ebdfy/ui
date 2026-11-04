@@ -1,5 +1,10 @@
 import { LitElement, css, html } from 'lit'
 
+/**
+ * Puts its children in a column with the standard gap, or side by side in a row that wraps.
+ *
+ * @slot - The children to stack.
+ */
 export class EbStack extends LitElement {
   static override properties = {
     direction: { type: String, reflect: true },
@@ -17,6 +22,7 @@ export class EbStack extends LitElement {
     }
   `
 
+  /** Column, or row to put the children side by side. Column when unset. */
   declare direction: 'column' | 'row'
 
   constructor() {

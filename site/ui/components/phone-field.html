@@ -11,64 +11,62 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Phone field</h1>
       <p>
         <code>eb-phone-field</code> takes a Bangladesh mobile number: 11 digits starting with 01. It brings up the phone
         keypad and keeps the number in Latin digits, even when it is typed in Bangla digits.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="Default" caption-bn="সাধারণ">
+          <eb-phone-field
+            name="phone"
+            data-state="default"
+            label="Phone"
+            data-label-en="Phone"
+            data-label-bn="ফোন"
+          ></eb-phone-field>
+        </docs-example>
+        <docs-example caption="Focused" caption-bn="ফোকাসে">
+          <eb-phone-field
+            data-state="focus"
+            label="Customer phone"
+            data-label-en="Customer phone"
+            data-label-bn="ক্রেতার ফোন"
+          ></eb-phone-field>
+        </docs-example>
+        <docs-example caption="With an error" caption-bn="ভুলসহ">
+          <eb-phone-field
+            data-state="error"
+            value="0170707"
+            label="Phone"
+            data-label-en="Phone"
+            data-label-bn="ফোন"
+            error="Enter an 11-digit phone starting with 01."
+            data-error-en="Enter an 11-digit phone starting with 01."
+            data-error-bn="এগারো সংখ্যার, 01 দিয়ে শুরু ফোন নম্বর লিখুন।"
+          ></eb-phone-field>
+        </docs-example>
+        <docs-example caption="Disabled" caption-bn="বন্ধ">
+          <eb-phone-field
+            data-state="disabled"
+            value="01911004471"
+            disabled
+            label="Phone"
+            data-label-en="Phone"
+            data-label-bn="ফোন"
+          ></eb-phone-field>
+        </docs-example>
+        <docs-example caption="Filled" caption-bn="পূরণ করা">
+          <eb-phone-field
+            data-state="filled"
+            value="01707071591"
+            label="Phone"
+            data-label-en="Phone"
+            data-label-bn="ফোন"
+          ></eb-phone-field>
+        </docs-example>
       </div>
-      <div class="stack" id="examples" lang="en">
-        <p class="caption" data-en="Default" data-bn="সাধারণ">Default</p>
-        <eb-phone-field data-state="default" label="Phone" data-label-en="Phone" data-label-bn="ফোন"></eb-phone-field>
-        <p class="caption" data-en="Focused" data-bn="ফোকাসে">Focused</p>
-        <eb-phone-field
-          data-state="focus"
-          label="Customer phone"
-          data-label-en="Customer phone"
-          data-label-bn="ক্রেতার ফোন"
-        ></eb-phone-field>
-        <p class="caption" data-en="With an error" data-bn="ভুলসহ">With an error</p>
-        <eb-phone-field
-          data-state="error"
-          value="0170707"
-          label="Phone"
-          data-label-en="Phone"
-          data-label-bn="ফোন"
-          error="Enter an 11-digit phone starting with 01."
-          data-error-en="Enter an 11-digit phone starting with 01."
-          data-error-bn="এগারো সংখ্যার, 01 দিয়ে শুরু ফোন নম্বর লিখুন।"
-        ></eb-phone-field>
-        <p class="caption" data-en="Disabled" data-bn="বন্ধ">Disabled</p>
-        <eb-phone-field
-          data-state="disabled"
-          value="01911004471"
-          disabled
-          label="Phone"
-          data-label-en="Phone"
-          data-label-bn="ফোন"
-        ></eb-phone-field>
-        <p class="caption" data-en="Filled" data-bn="পূরণ করা">Filled</p>
-        <eb-phone-field
-          data-state="filled"
-          value="01707071591"
-          label="Phone"
-          data-label-en="Phone"
-          data-label-bn="ফোন"
-        ></eb-phone-field>
-      </div>
-      <pre><code>&lt;eb-phone-field name="phone" label="Phone"&gt;&lt;/eb-phone-field&gt;</code></pre>
     </main>
   </body>
 </html>

@@ -53,8 +53,8 @@ test('the tarball holds nothing else: no source, tests, docs site or playground'
   expect(files.filter((file) => file.includes('playground'))).toEqual([])
 })
 
-test('the packed package.json is the public 1.0.0 with its catalog versions written out', () => {
-  expect(packed).toMatchObject({ name: '@ebdfy/ui', version: '1.0.0', license: 'MIT' })
+test('the packed package.json is the public 1.1.0 with its catalog versions written out', () => {
+  expect(packed).toMatchObject({ name: '@ebdfy/ui', version: '1.1.0', license: 'MIT' })
   expect(packed).not.toHaveProperty('private')
   expect(packedText).not.toContain('catalog:')
   expect(packed.dependencies).toEqual({ lit: expect.stringMatching(/^\^?\d+\.\d+\.\d+$/) })

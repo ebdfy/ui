@@ -11,40 +11,36 @@
     <script type="module" src="/components.js"></script>
   </head>
   <body>
-    <header class="bar">
-      <a href="/">ebdfy design system</a>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
-      </div>
-    </header>
     <main>
       <h1>Banner</h1>
       <p>
         <code>eb-banner</code> puts a message in the page: <code>tone="info"</code>, the default, for a note, and
         <code>tone="danger"</code> for a risk to act on, such as a customer whose orders keep coming back. Its icon
-        carries a name for screen readers; the banner does not interrupt them.
+        carries a name for screen readers; the banner does not interrupt them. <code>heading</code> adds a title above
+        the words, an element with <code>slot="action"</code> sits after them, and <code>dismissible</code> adds a close
+        button that fires <code>eb-dismiss</code>, which a listener can cancel to keep the banner.
       </p>
-      <div class="row" id="language">
-        <eb-button data-lang="en">English</eb-button>
-        <eb-button data-lang="bn">বাংলা</eb-button>
+      <div id="examples" class="examples" lang="en">
+        <docs-example caption="Info, with a heading and an action" caption-bn="তথ্য, শিরোনাম ও কাজসহ" stack>
+          <eb-banner heading="Pickup cut-off" data-heading-en="Pickup cut-off" data-heading-bn="পিকআপের সময়সীমা">
+            <span
+              data-en="Pathao picks up orders booked before 4 pm the same day."
+              data-bn="বিকেল ৪টার আগে বুক করা অর্ডার পাঠাও একই দিনে নিয়ে যায়।"
+              >Pathao picks up orders booked before 4 pm the same day.</span
+            >
+            <eb-button slot="action" size="sm" data-en="Book pickup" data-bn="পিকআপ বুক করুন">Book pickup</eb-button>
+          </eb-banner>
+        </docs-example>
+        <docs-example caption="Danger, dismissible" caption-bn="ঝুঁকি, বন্ধ করা যায়" stack>
+          <eb-banner
+            tone="danger"
+            dismissible
+            data-en="3 of this number's 5 orders came back. Take the delivery charge in advance by bKash."
+            data-bn="এই নম্বরের ৫টি অর্ডারের ৩টি ফেরত এসেছে। ডেলিভারি চার্জ বিকাশে অগ্রিম নিন।"
+            >3 of this number's 5 orders came back. Take the delivery charge in advance by bKash.</eb-banner
+          >
+        </docs-example>
       </div>
-      <div class="stack" id="examples" lang="en">
-        <eb-banner
-          data-en="Pathao picks up orders booked before 4 pm the same day."
-          data-bn="বিকেল ৪টার আগে বুক করা অর্ডার পাঠাও একই দিনে নিয়ে যায়।"
-          >Pathao picks up orders booked before 4 pm the same day.</eb-banner
-        >
-        <eb-banner
-          tone="danger"
-          data-en="3 of this number's 5 orders came back. Take the delivery charge in advance by bKash."
-          data-bn="এই নম্বরের ৫টি অর্ডারের ৩টি ফেরত এসেছে। ডেলিভারি চার্জ বিকাশে অগ্রিম নিন।"
-          >3 of this number's 5 orders came back. Take the delivery charge in advance by bKash.</eb-banner
-        >
-      </div>
-      <pre><code>&lt;eb-banner&gt;Pathao picks up orders booked before 4 pm the same day.&lt;/eb-banner&gt;
-&lt;eb-banner tone="danger"&gt;3 of this number's 5 orders came back.&lt;/eb-banner&gt;</code></pre>
     </main>
   </body>
 </html>

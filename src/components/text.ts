@@ -1,5 +1,10 @@
 import { LitElement, css, html } from 'lit'
 
+/**
+ * Sets a paragraph. Use the meta variant for the smaller, quieter line under it.
+ *
+ * @slot - The words of the paragraph.
+ */
 export class EbText extends LitElement {
   static override properties = {
     variant: { type: String, reflect: true },
@@ -21,6 +26,7 @@ export class EbText extends LitElement {
     }
   `
 
+  /** The look: body, or meta for the smaller, quieter line. Body when unset. */
   declare variant: 'body' | 'meta'
 
   constructor() {

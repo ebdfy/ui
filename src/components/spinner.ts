@@ -7,6 +7,7 @@ const words = {
   en: { loading: 'Loading' },
 }
 
+/** A 20 px ring that turns while something loads. A screen reader hears "Loading" in the page's language. */
 export class EbSpinner extends LitElement {
   static override styles = css`
     :host {
@@ -19,7 +20,7 @@ export class EbSpinner extends LitElement {
       box-sizing: border-box;
       width: 100%;
       height: 100%;
-      border: 2px solid var(--eb-color-line);
+      border: 2px solid var(--eb-color-divider);
       border-top-color: var(--eb-color-accent);
       border-radius: 50%;
       animation: turn 1s linear infinite;

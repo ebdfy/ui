@@ -1,10 +1,13 @@
-// Every page of the sample app names its pages for the Admin nav. Sending the same list again on
-// each page replaces it, so the nav never doubles.
+import { countOrders } from './orders.js'
+
+// Every page of the sample app names its pages for the Admin nav, each with its icon, and Orders
+// with how many are new. Sending the same list again on each page replaces it, so the nav never
+// doubles.
 globalThis.ebdfy.nav([
-  { label: 'Orders', path: '/' },
-  { label: 'Order #1001', path: '/order' },
-  { label: 'Order #1039', path: '/order-1039' },
-  { label: 'Drafts', path: '/drafts' },
+  { label: 'Orders', path: '/', icon: 'shopping-bag', count: countOrders().new },
+  { label: 'Order #1001', path: '/order', icon: 'receipt' },
+  { label: 'Order #1039', path: '/order-1039', icon: 'receipt' },
+  { label: 'Drafts', path: '/drafts', icon: 'pencil' },
 ])
 
 // Each page names the store it works on, read through the Admin. Opened on its own, outside the
