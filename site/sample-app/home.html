@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <meta name="ebdfy-app" content="sample" />
+    <meta name="ebdfy-home" content="%EB_UI%/playground" />
+    <title>Home · Sample app · ebdfy</title>
+    <link
+      rel="preload"
+      href="%EB_CDN%/ui/fonts/manrope-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 16px;
+        background: var(--e-color-panel);
+      }
+      @media (min-width: 600px) {
+        body {
+          padding: 24px 28px;
+        }
+      }
+      html[data-setup-dismissed] e-setup-guide {
+        display: none;
+      }
+    </style>
+    <script>
+      // The page's language before anything draws: ?lang= first, then the choice kept in
+      // ebdfy-sample-lang, else English.
+      {
+        let lang = new URLSearchParams(location.search).get('lang')
+        if (lang !== 'bn' && lang !== 'en') {
+          try {
+            lang = localStorage.getItem('ebdfy-sample-lang')
+          } catch {
+            lang = 'en'
+          }
+        }
+        document.documentElement.lang = lang === 'bn' ? 'bn' : 'en'
+        // A guide the person dismissed stays hidden from the first paint.
+        try {
+          if (localStorage.getItem('ebdfy-sample-setup-dismissed') === 'yes') {
+            document.documentElement.dataset.setupDismissed = ''
+          }
+        } catch {}
+      }
+    </script>
+    <script type="module" src="%EB_CDN%/ui/v2.js"></script>
+  </head>
+  <body>
+    <e-page heading="Home" data-bn-heading="হোম">
+      <e-setup-guide heading="Set up your store" data-bn-heading="স্টোর সেট আপ করুন">
+        <e-setup-step done data-bn="প্রথম পণ্য যোগ করুন">Add your first product</e-setup-step>
+        <e-setup-step done data-bn="ডেলিভারি চার্জ ঠিক করুন">Set delivery charges</e-setup-step>
+        <e-setup-step data-bn="কুরিয়ার যুক্ত করুন">Connect a courier</e-setup-step>
+        <e-setup-step data-bn="পেমেন্ট পদ্ধতি যোগ করুন">Add a payment method</e-setup-step>
+        <e-setup-step data-bn="আপনার টিমকে আমন্ত্রণ জানান">Invite your team</e-setup-step>
+      </e-setup-guide>
+    </e-page>
+    <script>
+      // Puts the page's words in a language: before v2.js upgrades the markup when the page is Bangla,
+      // and again whenever the Admin's language changes. data-bn holds a tag's Bangla text and
+      // data-bn-NAME an attribute's; the first swap keeps the English in data-en and data-en-NAME. An
+      // e-button's label sits in the button it built, an e-setup-step's in its label. It does no
+      // layout of its own.
+      function speak(lang) {
+        document.documentElement.lang = lang
+        for (const tag of document.querySelectorAll('[data-bn]')) {
+          const inner = tag.localName === 'e-button' ? 'button' : tag.localName === 'e-setup-step' ? 'label' : null
+          const label = (inner && tag.querySelector(`:scope > ${inner}`)) || tag
+          tag.dataset.en ??= label.textContent
+          label.textContent = lang === 'bn' ? tag.dataset.bn : tag.dataset.en
+        }
+        for (const tag of document.querySelectorAll('*')) {
+          for (const name of tag.getAttributeNames()) {
+            if (!name.startsWith('data-bn-')) continue
+            const attribute = name.slice(8)
+            if (!tag.hasAttribute(`data-en-${attribute}`)) {
+              tag.setAttribute(`data-en-${attribute}`, tag.getAttribute(attribute) ?? '')
+            }
+            tag.setAttribute(attribute, tag.getAttribute(lang === 'bn' ? name : `data-en-${attribute}`))
+          }
+        }
+      }
+      if (document.documentElement.lang === 'bn') speak('bn')
+      // The page keeps the choice: a dismissed guide is removed now and hidden before first paint
+      // on the next load. Only the guide's own dismiss counts, not another part's that bubbles here.
+      const guide = document.querySelector('e-setup-guide')
+      if ('setupDismissed' in document.documentElement.dataset) guide?.remove()
+      guide?.addEventListener('dismiss', (event) => {
+        if (event.target !== guide) return
+        try {
+          localStorage.setItem('ebdfy-sample-setup-dismissed', 'yes')
+        } catch {}
+      })
+    </script>
+    <script type="module">
+      import { showNav } from '/nav.js'
+
+      // After v2.js, which holds the bridge: the page names itself in the Admin's title bar.
+      const name = () => {
+        ebdfy.title(document.querySelector('e-page').getAttribute('heading'))
+        showNav()
+      }
+      name()
+      // The app speaks the Admin's language, and keeps it for its next first paint. The Admin may
+      // have said it before this listener was added, so the page also asks once; outside the Admin
+      // there is no one to ask.
+      const follow = (language) => {
+        if (language === document.documentElement.lang) return
+        try {
+          localStorage.setItem('ebdfy-sample-lang', language)
+        } catch {}
+        speak(language)
+        name()
+      }
+      addEventListener('ebdfy:context', ({ detail }) => follow(detail.language))
+      ebdfy.user().then(
+        ({ language }) => follow(language),
+        () => {},
+      )
+    </script>
+  </body>
+</html>

@@ -1,24 +1,28 @@
 {
   "name": "@ebdfy/ui",
-  "version": "1.1.0",
-  "description": "The ebdfy design system: Lit web components, design tokens and the bridge for admin surfaces.",
+  "version": "2.0.1",
+  "description": "The ebdfy design system: custom elements, one stylesheet and the bridge for apps in the ebdfy Admin.",
   "license": "MIT",
   "files": [
     "dist/site/cdn",
     "dist/types",
-    "dist/custom-elements.json"
+    "dist/custom-elements-v2.json"
   ],
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/types/v1.d.ts",
-      "default": "./dist/site/cdn/ui/v1.js"
+      "types": "./dist/types/v2-elements.d.ts",
+      "default": "./dist/site/cdn/ui/v2.js"
     },
-    "./host": {
-      "types": "./dist/types/host.d.ts",
-      "default": "./dist/site/cdn/ui/host.js"
+    "./v2": {
+      "types": "./dist/types/v2-elements.d.ts",
+      "default": "./dist/site/cdn/ui/v2.js"
     },
-    "./custom-elements.json": "./dist/custom-elements.json"
+    "./v2/react": {
+      "types": "./dist/types/v2-react.d.ts"
+    },
+    "./v2.css": "./dist/site/cdn/ui/v2.css",
+    "./custom-elements-v2.json": "./dist/custom-elements-v2.json"
   },
   "publishConfig": {
     "access": "public"
@@ -27,19 +31,21 @@
     "build": "node scripts/build.ts",
     "dev": "node scripts/dev.ts",
     "test": "vitest run",
+    "test:speed": "vitest run --config vitest.speed.config.ts",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.types.json"
-  },
-  "dependencies": {
-    "lit": "catalog:"
   },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "catalog:",
     "@types/node": "catalog:",
+    "@types/react": "catalog:",
     "@vitest/browser-playwright": "catalog:",
+    "lightningcss": "catalog:",
+    "lit": "catalog:",
     "playwright": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "web-vitals": "catalog:"
   },
-  "customElements": "dist/custom-elements.json"
+  "customElements": "dist/custom-elements-v2.json"
 }

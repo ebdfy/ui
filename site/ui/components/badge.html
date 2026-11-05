@@ -4,28 +4,35 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Badge · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Badge · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Badge</h1>
-      <p>
-        <code>eb-badge</code> shows the status of an order as a dot and a word. The word carries the status; the
-        <code>tone</code> only repeats it.
+      <p class="lede">
+        <code>e-badge</code> tags an order with its status. The <code>tone</code> names the status. The words carry the
+        meaning and the colour only repeats it, so always write the status in the badge.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Order statuses" caption-bn="অর্ডারের অবস্থা">
-          <eb-badge tone="attention" data-en="New" data-bn="নতুন">New</eb-badge>
-          <eb-badge tone="critical" data-en="Returned" data-bn="ফেরত এসেছে">Returned</eb-badge>
-          <eb-badge tone="info" data-en="Confirmed" data-bn="কনফার্মড">Confirmed</eb-badge>
-          <eb-badge tone="shipped" data-en="Shipped" data-bn="পাঠানো হয়েছে">Shipped</eb-badge>
-          <eb-badge tone="success" data-en="Paid" data-bn="পরিশোধিত">Paid</eb-badge>
-        </docs-example>
-      </div>
+      <docs-example caption="The five statuses">
+        <e-badge tone="new">New</e-badge>
+        <e-badge tone="confirmed">Confirmed</e-badge>
+        <e-badge tone="courier">With courier</e-badge>
+        <e-badge tone="delivered">Delivered</e-badge>
+        <e-badge tone="returned">Returned</e-badge>
+      </docs-example>
+      <docs-example caption="Without a tone the badge is neutral">
+        <e-badge>Draft</e-badge>
+      </docs-example>
+      <docs-example caption="Beside an order" stack>
+        <e-text>Order #1042 <e-badge tone="delivered">Delivered</e-badge></e-text>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-badge tone="new">নতুন</e-badge>
+        <e-badge tone="confirmed">নিশ্চিত</e-badge>
+        <e-badge tone="courier">কুরিয়ারে</e-badge>
+        <e-badge tone="delivered">পৌঁছেছে</e-badge>
+        <e-badge tone="returned">ফেরত</e-badge>
+      </docs-example>
     </main>
   </body>
 </html>

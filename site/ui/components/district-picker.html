@@ -4,72 +4,31 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>District picker · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>District picker · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>District picker</h1>
-      <p>
-        <code>eb-district-picker</code> picks one of the 64 districts and offers that district's upazilas and city
-        thanas for the area, in the page's language. A <code>name</code> such as <code>address</code> submits
-        <code>address.district</code> and <code>address.area</code>.
+      <p class="lede">
+        <code>e-district-picker</code> chooses the district and upazila of a Bangladesh address. The upazila list
+        follows the district, and each part submits its English name in lower case.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Default" caption-bn="সাধারণ">
-          <eb-district-picker
-            name="address"
-            data-state="default"
-            label="District"
-            data-label-en="District"
-            data-label-bn="জেলা"
-          ></eb-district-picker>
-        </docs-example>
-        <docs-example caption="Focused" caption-bn="ফোকাসে">
-          <eb-district-picker
-            data-state="focus"
-            label="Delivery district"
-            data-label-en="Delivery district"
-            data-label-bn="ডেলিভারির জেলা"
-          ></eb-district-picker>
-        </docs-example>
-        <docs-example caption="With an error" caption-bn="ভুলসহ">
-          <eb-district-picker
-            data-state="error"
-            required
-            label="District"
-            data-label-en="District"
-            data-label-bn="জেলা"
-            error="Choose a district."
-            data-error-en="Choose a district."
-            data-error-bn="একটি জেলা বাছুন।"
-          ></eb-district-picker>
-        </docs-example>
-        <docs-example caption="Disabled" caption-bn="বন্ধ">
-          <eb-district-picker
-            data-state="disabled"
-            district="Sylhet"
-            area="Jalalabad"
-            disabled
-            label="District"
-            data-label-en="District"
-            data-label-bn="জেলা"
-          ></eb-district-picker>
-        </docs-example>
-        <docs-example caption="Filled" caption-bn="পূরণ করা">
-          <eb-district-picker
-            data-state="filled"
-            district="Dhaka"
-            area="Mirpur"
-            label="District"
-            data-label-en="District"
-            data-label-bn="জেলা"
-          ></eb-district-picker>
-        </docs-example>
-      </div>
+      <docs-example caption="District and upazila" stack>
+        <e-district-picker name="address"></e-district-picker>
+      </docs-example>
+      <docs-example caption="With an opening choice" stack>
+        <e-district-picker name="address" district="dhaka" upazila="mirpur"></e-district-picker>
+      </docs-example>
+      <docs-example caption="With errors" stack>
+        <e-district-picker
+          name="address"
+          error="Choose a district."
+          upazila-error="Choose an upazila."
+        ></e-district-picker>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-district-picker name="address" district="dhaka" upazila="mirpur"></e-district-picker>
+      </docs-example>
     </main>
   </body>
 </html>

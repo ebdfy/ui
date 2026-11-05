@@ -1,0 +1,34 @@
+/* e-progress-bar: a 4 px track filled to its value out of 100, as the ::before; the script reads the
+   value into --e-progress and says it to a screen reader. Without a value a short fill slides along. */
+e-progress-bar {
+  display: block;
+  position: relative;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--e-color-line);
+}
+e-progress-bar::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--e-progress, 40%);
+  background: var(--e-color-accent);
+}
+e-progress-bar:not([aria-valuenow])::before {
+  animation: e-slide 1.2s ease-in-out infinite;
+}
+@keyframes e-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+/* With less motion asked for, the fill stands still: the bar's role still says it is busy. */
+@media (prefers-reduced-motion: reduce) {
+  e-progress-bar:not([aria-valuenow])::before {
+    animation: none;
+  }
+}

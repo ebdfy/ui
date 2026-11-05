@@ -1,0 +1,92 @@
+/* e-phone-field and e-taka-field, drawn as e-text-field is: before the script the tag draws the label
+   as ::before and the box as ::after; the script builds a real label and input in the same rows, and
+   the pseudo-elements go. Below 600 px the box is a phone's 44 px target. taka-field.css adds the ৳. */
+e-phone-field,
+e-taka-field {
+  --e-field-height: var(--e-size-control-md);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 6px;
+  min-width: 0;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-body);
+}
+e-phone-field::before,
+e-phone-field > label,
+e-taka-field::before,
+e-taka-field > label {
+  grid-row: 1;
+  display: block;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-meta);
+  font-weight: var(--e-font-weight-semibold);
+  line-height: var(--e-line-height-meta);
+}
+e-phone-field::before,
+e-taka-field::before {
+  content: attr(label);
+}
+e-phone-field::after,
+e-phone-field > input,
+e-taka-field::after,
+e-taka-field > input {
+  grid-row: 2;
+  grid-column: 1;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: var(--e-field-height);
+  margin: 0;
+  padding: 0 var(--e-space-3);
+  border: 1px solid var(--e-color-line-2);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+  font: inherit;
+  font-size: var(--e-font-size-body);
+}
+e-phone-field::after,
+e-taka-field::after {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
+e-phone-field::after {
+  content: attr(placeholder);
+  color: var(--e-color-fg3);
+}
+e-phone-field[value]:not([value=''], :has(> input))::after {
+  content: attr(value);
+  color: var(--e-color-fg);
+}
+e-phone-field > input,
+e-taka-field > input {
+  appearance: none;
+  text-overflow: ellipsis;
+}
+e-phone-field > input::placeholder,
+e-taka-field > input::placeholder {
+  color: var(--e-color-fg3);
+  opacity: 1;
+}
+e-phone-field > input:focus-visible,
+e-taka-field > input:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
+e-phone-field:has(> input)::before,
+e-phone-field:has(> input)::after,
+e-taka-field:has(> input)::before,
+e-taka-field:has(> input)::after {
+  content: none;
+}
+
+@media (max-width: 599.98px) {
+  e-phone-field,
+  e-taka-field {
+    --e-field-height: var(--e-size-control-lg);
+  }
+}

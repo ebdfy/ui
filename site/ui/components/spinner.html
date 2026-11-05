@@ -4,25 +4,30 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Spinner · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Spinner · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Spinner</h1>
-      <p>
-        <code>eb-spinner</code> is a 20 px ring that turns while something loads. It has no attributes. A screen reader
-        hears "Loading", or "লোড হচ্ছে" on a Bangla page, from the language of the nearest <code>lang</code>.
+      <p class="lede">
+        <code>e-spinner</code> is a small ring that turns while something loads. It tells a screen reader
+        &ldquo;Loading&rdquo; in the page's language; an <code>aria-label</code> you give it stays. It keeps turning
+        when the reader asks for less motion, as a still ring would say nothing.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Beside the words it waits for" caption-bn="যার জন্য অপেক্ষা, তার পাশে">
-          <eb-spinner></eb-spinner>
-          <eb-text data-en="Loading the order." data-bn="অর্ডার লোড হচ্ছে।">Loading the order.</eb-text>
-        </docs-example>
-      </div>
+      <docs-example caption="A spinner">
+        <e-spinner></e-spinner>
+      </docs-example>
+      <docs-example caption="Beside the words it stands for">
+        <e-spinner></e-spinner>
+        <e-text>Booking Pathao for order #1042</e-text>
+      </docs-example>
+      <docs-example caption="With its own name">
+        <e-spinner aria-label="Syncing orders"></e-spinner>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-spinner></e-spinner>
+        <e-text>অর্ডার #১০৪২-এর জন্য পাঠাও বুক হচ্ছে</e-text>
+      </docs-example>
     </main>
   </body>
 </html>

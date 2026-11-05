@@ -4,83 +4,39 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Text field · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Text field · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Text field</h1>
-      <p>
-        <code>eb-text-field</code> takes a line of text, such as a name or an email address. It joins its form like a
-        native input, shows <code>help</code> under the field, and shows an <code>error</code> there with a red edge
-        that keeps the focus ring.
+      <p class="lede">
+        <code>e-text-field</code> takes one line of text. Its native input joins the form it sits in. Set
+        <code>type</code> and <code>inputmode</code> for email, phone or URL keyboards.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Default" caption-bn="সাধারণ">
-          <eb-text-field
-            name="name"
-            data-state="default"
-            label="Customer"
-            data-label-en="Customer"
-            data-label-bn="ক্রেতা"
-          ></eb-text-field>
-        </docs-example>
-        <docs-example caption="With help" caption-bn="সাহায্যসহ">
-          <eb-text-field
-            label="Recipient's name"
-            data-label-en="Recipient's name"
-            data-label-bn="প্রাপকের নাম"
-            help="As it shows on the parcel"
-            data-help-en="As it shows on the parcel"
-            data-help-bn="পার্সেলে যেভাবে লেখা"
-          ></eb-text-field>
-        </docs-example>
-        <docs-example caption="Focused" caption-bn="ফোকাসে">
-          <eb-text-field
-            data-state="focus"
-            label="Note for the courier"
-            data-label-en="Note for the courier"
-            data-label-bn="কুরিয়ারের জন্য নোট"
-          ></eb-text-field>
-        </docs-example>
-        <docs-example caption="With an error" caption-bn="ভুলসহ">
-          <eb-text-field
-            data-state="error"
-            type="email"
-            value="rahim@"
-            label="Email"
-            data-label-en="Email"
-            data-label-bn="ইমেইল"
-            error="Enter an email address like name@example.com."
-            data-error-en="Enter an email address like name@example.com."
-            data-error-bn="name@example.com এর মতো একটি ইমেইল ঠিকানা লিখুন।"
-          ></eb-text-field>
-        </docs-example>
-        <docs-example caption="Disabled" caption-bn="বন্ধ">
-          <eb-text-field
-            data-state="disabled"
-            value="1042"
-            disabled
-            label="Order number"
-            data-label-en="Order number"
-            data-label-bn="অর্ডার নম্বর"
-          ></eb-text-field>
-        </docs-example>
-        <docs-example caption="Filled" caption-bn="পূরণ করা">
-          <eb-text-field
-            data-state="filled"
-            label="Customer"
-            data-label-en="Customer"
-            data-label-bn="ক্রেতা"
-            value="Rahim Uddin"
-            data-value-en="Rahim Uddin"
-            data-value-bn="রহিম উদ্দিন"
-          ></eb-text-field>
-        </docs-example>
-      </div>
+      <docs-example caption="A labelled field">
+        <e-text-field label="Customer name" name="customer" placeholder="Rahim Uddin"></e-text-field>
+      </docs-example>
+      <docs-example caption="Email, required, with a value">
+        <e-text-field label="Email" name="email" type="email" required value="rahim@example.com"></e-text-field>
+      </docs-example>
+      <docs-example caption="With an error">
+        <e-text-field
+          label="Shipping city"
+          name="city"
+          value="Sylhet"
+          error="Enter a city we deliver to."
+        ></e-text-field>
+      </docs-example>
+      <docs-example caption="In a form with a submit button" stack>
+        <form>
+          <e-text-field label="Customer name" name="customer" required></e-text-field>
+          <e-text-field label="Email" name="email" type="email" autocomplete="email"></e-text-field>
+          <e-button type="submit" tone="primary">Save customer</e-button>
+        </form>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-text-field label="গ্রাহকের নাম" name="customer" placeholder="রহিম উদ্দিন"></e-text-field>
+      </docs-example>
     </main>
   </body>
 </html>

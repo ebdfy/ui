@@ -1,0 +1,15 @@
+/* The base type: Manrope for Latin, and Bangla characters fall to the Bangla face, which v2.css
+   declares. 14 px on a 20 px line keeps Bangla at a line height above 1.4. */
+body {
+  font-family: 'e Manrope', 'e Bangla', system-ui, sans-serif;
+  font-size: var(--e-font-size-body, 14px);
+  line-height: var(--e-line-height-body, 20px);
+}
+
+/* Bangla's marks rise above and fall below its letters, so in Bangla every line is at least 1.4 times
+   its size: 13 px labels on 20 px, 15 px titles on 22 px, 22 px headings on 32 px. */
+:lang(bn) {
+  --e-line-height-meta: 20px;
+  --e-line-height-body: 22px;
+  --e-line-height-heading: 32px;
+}

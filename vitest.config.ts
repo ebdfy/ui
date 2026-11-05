@@ -1,19 +1,7 @@
 import { playwright } from '@vitest/browser-playwright'
-import type { Plugin } from 'vite'
 import { defineConfig } from 'vitest/config'
 
 import { playgroundApiPlugin } from './scripts/pages.ts'
-
-// One fixture refuses to be framed, as an app sending X-Frame-Options: DENY does.
-const refuseFraming: Plugin = {
-  name: 'refuse-framing',
-  configureServer(server) {
-    server.middlewares.use((req, res, next) => {
-      if (req.url?.startsWith('/test/browser/fixtures/refused.html')) res.setHeader('X-Frame-Options', 'DENY')
-      next()
-    })
-  },
-}
 
 export default defineConfig({
   test: {
@@ -22,6 +10,8 @@ export default defineConfig({
         test: {
           name: 'node',
           include: ['test/node/**/*.test.ts'],
+          // Fails the run when src/ or site/ changed under it, as the dev servers then reload pages.
+          globalSetup: ['./test/setup/tree-guard.ts'],
           environment: 'node',
           testTimeout: 30_000,
           hookTimeout: 30_000,
@@ -42,10 +32,11 @@ export default defineConfig({
         },
       },
       {
-        plugins: [refuseFraming, playgroundApiPlugin()],
+        plugins: [playgroundApiPlugin()],
         test: {
           name: 'browser',
           include: ['test/browser/**/*.test.ts'],
+          globalSetup: ['./test/setup/tree-guard.ts'],
           setupFiles: ['./test/browser/setup.ts'],
           // A frame's page can take seconds to load while the node project's Chromium runs beside
           // this one; a poll still ends as soon as it passes.
@@ -57,7 +48,7 @@ export default defineConfig({
             api: { host: '127.0.0.1' },
             // Overlays ease in, and a click on a sliding sheet waits for it to stand still; beside
             // the node project's Chromium that wait outran the test. These tests assert end
-            // states, so they run with reduced motion; test/node/motion.test.ts asserts the motion.
+            // states, so they run with reduced motion.
             provider: playwright({ contextOptions: { reducedMotion: 'reduce' } }),
             instances: [{ browser: 'chromium', viewport: { width: 360, height: 800 } }],
           },

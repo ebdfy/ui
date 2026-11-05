@@ -4,52 +4,47 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Icon · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Icon · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Icon</h1>
-      <p>
-        <code>eb-icon</code> draws a Lucide icon by <code>name</code> at 16 px, or 20 px with <code>size="20"</code>, in
-        the colour of the text around it with a 1.5 px stroke. An app's own <code>&lt;svg&gt;</code> inside it is drawn
-        at the same size and stroke. Give an icon that stands alone a <code>label</code>; without one it is decoration
-        and hidden from screen readers.
+      <p class="lede">
+        <code>e-icon</code> draws a small icon from the kit's sprite. Pick it with <code>name</code>. It is 16 px, or 20
+        px with <code>size="20"</code>. An icon is decorative, so name the button it sits in.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="16 px" caption-bn="১৬ পিক্সেল">
-          <eb-icon name="truck" label="Shipped" data-label-en="Shipped" data-label-bn="পাঠানো হয়েছে"></eb-icon>
-          <eb-icon name="package"></eb-icon>
-          <eb-icon name="phone"></eb-icon>
-          <eb-icon name="search"></eb-icon>
-          <eb-icon name="printer"></eb-icon>
-        </docs-example>
-        <docs-example caption="20 px" caption-bn="২০ পিক্সেল">
-          <eb-icon
-            name="truck"
-            size="20"
-            label="Shipped"
-            data-label-en="Shipped"
-            data-label-bn="পাঠানো হয়েছে"
-          ></eb-icon>
-          <eb-icon name="package" size="20"></eb-icon>
-          <eb-icon name="phone" size="20"></eb-icon>
-          <eb-icon name="search" size="20"></eb-icon>
-          <eb-icon name="printer" size="20"></eb-icon>
-        </docs-example>
-        <docs-example caption="An app's own svg" caption-bn="অ্যাপের নিজের svg">
-          <eb-icon size="20">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M3 12h18" />
-              <path d="M12 3v18" />
-              <circle cx="12" cy="12" r="9" />
-            </svg>
-          </eb-icon>
-        </docs-example>
-      </div>
+      <docs-example caption="Two sizes">
+        <e-stack direction="row" gap="3" align="center">
+          <e-icon name="truck"></e-icon>
+          <e-icon name="truck" size="20"></e-icon>
+        </e-stack>
+      </docs-example>
+      <docs-example caption="Every icon in the sprite">
+        <e-stack direction="row" gap="3" wrap>
+          <e-icon name="truck" size="20"></e-icon>
+          <e-icon name="search" size="20"></e-icon>
+          <e-icon name="plus" size="20"></e-icon>
+          <e-icon name="x" size="20"></e-icon>
+          <e-icon name="check" size="20"></e-icon>
+          <e-icon name="chevron-left" size="20"></e-icon>
+          <e-icon name="chevron-right" size="20"></e-icon>
+          <e-icon name="chevron-down" size="20"></e-icon>
+          <e-icon name="more-horizontal" size="20"></e-icon>
+          <e-icon name="home" size="20"></e-icon>
+          <e-icon name="shopping-bag" size="20"></e-icon>
+          <e-icon name="package" size="20"></e-icon>
+          <e-icon name="users" size="20"></e-icon>
+          <e-icon name="settings" size="20"></e-icon>
+          <e-icon name="bell" size="20"></e-icon>
+          <e-icon name="help" size="20"></e-icon>
+        </e-stack>
+      </docs-example>
+      <docs-example caption="In a button">
+        <e-button><e-icon name="plus"></e-icon> New order</e-button>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-button><e-icon name="truck"></e-icon> কুরিয়ার বুক করুন</e-button>
+      </docs-example>
     </main>
   </body>
 </html>

@@ -1,0 +1,19 @@
+/* e-grid: its children in equal columns, 16 px apart, from 600 px: two, or as many as columns says
+   up to four; one column below. */
+e-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-space-4);
+  min-width: 0;
+}
+@media (min-width: 600px) {
+  e-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  e-grid[columns='3'] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  e-grid[columns='4'] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

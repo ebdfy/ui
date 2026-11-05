@@ -4,7 +4,7 @@ const heading = 'Update your browser to use ebdfy'
 const playStore = 'https://play.google.com/store/apps/details?id=com.android.chrome'
 
 // Each fixture is a fresh frame, so it can drop a browser feature or claim an old Chrome before
-// v1.js loads.
+// v2.js loads.
 async function open(query: string): Promise<Document> {
   const frame = document.createElement('iframe')
   frame.style.cssText = 'width:360px;height:600px;border:0'
@@ -23,13 +23,13 @@ test('a browser without declarative shadow DOM gets the update page and none of 
   expect(doc.querySelector('h1')!.textContent).toBe(heading)
   expect(doc.querySelector('a')!.href).toBe(playStore)
   expect(doc.body.children).toHaveLength(1)
-  expect(doc.querySelector('eb-card, eb-button')).toBeNull()
+  expect(doc.querySelector('e-card, e-button')).toBeNull()
 })
 
 test('a page opened with ?floor=old gets the update page', async () => {
   const doc = await open('?floor=old')
   expect(doc.querySelector('h1')!.textContent).toBe(heading)
-  expect(doc.querySelector('eb-card, eb-button')).toBeNull()
+  expect(doc.querySelector('e-card, e-button')).toBeNull()
 })
 
 test('the update page is in Bangla when the page language is bn', async () => {
@@ -43,8 +43,8 @@ test('the update page is in Bangla when the page language is bn', async () => {
 test('an old Chrome user agent with declarative shadow DOM still gets the normal page', async () => {
   const doc = await open('?agent')
   expect(doc.defaultView!.navigator.userAgent).toContain('Chrome/90.')
-  expect(doc.defaultView!.customElements.get('eb-card')).toBeDefined()
-  expect(doc.querySelector('eb-card')).not.toBeNull()
+  expect(doc.defaultView!.customElements.get('e-card')).toBeDefined()
+  expect(doc.querySelector('e-card')).not.toBeNull()
   expect(doc.querySelector('h1')).toBeNull()
 })
 

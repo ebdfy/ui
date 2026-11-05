@@ -1,0 +1,5504 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/avatar.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A 32 px circle for a person. It draws the first letter of the first and the last word of `name`; an\n`img` inside covers the initials.",
+          "name": "EAvatar",
+          "slots": [
+            {
+              "description": "An optional `img` of the person.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "method",
+              "name": "fill",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "description": "The person's name. It sets the initials and names the avatar for assistive tech."
+            },
+            {
+              "description": "The letters drawn. The script writes them from `name`; set it only for letters a name does not give.",
+              "name": "initials"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-avatar",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineAvatar",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EAvatar",
+          "declaration": {
+            "name": "EAvatar",
+            "module": "src/v2/avatar.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineAvatar",
+          "declaration": {
+            "name": "defineAvatar",
+            "module": "src/v2/avatar.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-avatar",
+          "declaration": {
+            "name": "EAvatar",
+            "module": "src/v2/avatar.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/badge.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "An order's status as a small tinted tag. The words carry the status; the colour only repeats it.",
+          "name": "EBadge",
+          "slots": [
+            {
+              "description": "The status in words.",
+              "name": ""
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "'new' | 'confirmed' | 'courier' | 'delivered' | 'returned'"
+              },
+              "description": "The status the colour repeats; none for neutral.",
+              "name": "tone"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-badge",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EBadge",
+          "declaration": {
+            "name": "EBadge",
+            "module": "src/v2/badge.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/banner.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A message across the page in a tone. A critical banner is announced as an alert. The heading and the\nclose button are built by the script, so a banner reads whole without it.",
+          "name": "EBanner",
+          "slots": [
+            {
+              "description": "The message.",
+              "name": ""
+            },
+            {
+              "description": "The close button. The script builds one for a dismissible banner; a page may supply its own.",
+              "name": "dismiss"
+            }
+          ],
+          "members": [
+            {
+              "kind": "method",
+              "name": "#closeButton",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "HTMLButtonElement"
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#watch",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.#name())"
+            },
+            {
+              "kind": "method",
+              "name": "#name",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "dismiss",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "When the close button is pressed, before the banner hides. Bubbles and is cancelable; `preventDefault()` keeps the banner open. detail is empty."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "heading",
+              "description": "The banner's title, built as its first line."
+            },
+            {
+              "name": "tone",
+              "type": {
+                "text": "'info' | 'success' | 'warning' | 'critical'"
+              },
+              "description": "The message's tone; `info` when absent."
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Adds a close button that hides the banner.",
+              "name": "dismissible"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-banner",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineBanner",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EBanner",
+          "declaration": {
+            "name": "EBanner",
+            "module": "src/v2/banner.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineBanner",
+          "declaration": {
+            "name": "defineBanner",
+            "module": "src/v2/banner.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-banner",
+          "declaration": {
+            "name": "EBanner",
+            "module": "src/v2/banner.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/bottom-bar.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A bar of buttons that sticks to the bottom of the page, with the buttons at its end. On a phone each\nbutton takes an equal share.",
+          "name": "EBottomBar",
+          "slots": [
+            {
+              "description": "The buttons.",
+              "name": ""
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-bottom-bar",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EBottomBar",
+          "declaration": {
+            "name": "EBottomBar",
+            "module": "src/v2/bottom-bar.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/bridge.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "keepStore",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "win",
+              "default": "window",
+              "type": {
+                "text": "Window"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "variable",
+          "name": "phoneWidth",
+          "type": {
+            "text": "string"
+          },
+          "default": "'(width < 600px)'"
+        },
+        {
+          "kind": "function",
+          "name": "createContext",
+          "parameters": [
+            {
+              "name": "win",
+              "default": "window",
+              "type": {
+                "text": "Window"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "variable",
+          "name": "language",
+          "type": {
+            "text": "AppContext['language'] | null"
+          },
+          "default": "null"
+        },
+        {
+          "kind": "function",
+          "name": "reportPage",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "win",
+              "default": "window",
+              "type": {
+                "text": "Window"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "reportModals",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "win",
+              "default": "window",
+              "type": {
+                "text": "Window"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "keepStore",
+          "declaration": {
+            "name": "keepStore",
+            "module": "src/v2/bridge.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "phoneWidth",
+          "declaration": {
+            "name": "phoneWidth",
+            "module": "src/v2/bridge.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "createContext",
+          "declaration": {
+            "name": "createContext",
+            "module": "src/v2/bridge.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "reportPage",
+          "declaration": {
+            "name": "reportPage",
+            "module": "src/v2/bridge.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "reportModals",
+          "declaration": {
+            "name": "reportModals",
+            "module": "src/v2/bridge.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/button-group.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A row of buttons where one is chosen, such as a language or a view. The chosen button carries `pressed`.",
+          "name": "EButtonGroup",
+          "slots": [
+            {
+              "description": "The `e-button` children. Mark the chosen one with `pressed`.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#seen",
+              "privacy": "private",
+              "default": "new MutationObserver((records) => { for (const record of records) { const tag = record.target if (record.type !== 'attributes' || !(tag instanceof Element) || !tag.hasAttribute('pressed')) continue for (const other of this.#buttons()) if (other !== tag) other.removeAttribute('pressed') } this.#sync() })"
+            },
+            {
+              "kind": "method",
+              "name": "#label",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#buttons",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "Element[]"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#sync",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#click",
+              "privacy": "private"
+            }
+          ],
+          "events": [
+            {
+              "description": "After a press on a button that was not chosen. Bubbles; `detail.value` is that e-button's `value` attribute, or null if it has none.",
+              "name": "e-button-group-change"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "Names the group for assistive tech, as its aria-label."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-button-group",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineButtonGroup",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EButtonGroup",
+          "declaration": {
+            "name": "EButtonGroup",
+            "module": "src/v2/button-group.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineButtonGroup",
+          "declaration": {
+            "name": "defineButtonGroup",
+            "module": "src/v2/button-group.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-button-group",
+          "declaration": {
+            "name": "EButtonGroup",
+            "module": "src/v2/button-group.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/button.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A button runs one action. Use one primary button for the main action on a page or card.",
+          "name": "EButton",
+          "slots": [
+            {
+              "description": "The label, with an optional `e-icon` before it. A `<button>` written inside is used as it is.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#button",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLButtonElement | null"
+              },
+              "default": "null"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Stops presses, and shows it."
+            },
+            {
+              "name": "type",
+              "type": {
+                "text": "'button' | 'submit' | 'reset'"
+              },
+              "description": "What the button does in a form, as a native button's type."
+            },
+            {
+              "name": "aria-label",
+              "description": "Names a button that shows only an icon."
+            },
+            {
+              "type": {
+                "text": "'primary' | 'plain'"
+              },
+              "description": "`primary` for the main action, `plain` for a quiet one; none for the default.",
+              "name": "tone"
+            },
+            {
+              "type": {
+                "text": "'sm' | 'lg'"
+              },
+              "description": "Small or large; none for medium. Every size is 44 px tall on a phone.",
+              "name": "size"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "In an `e-button-group`, the chosen button.",
+              "name": "pressed"
+            },
+            {
+              "description": "In an `e-button-group`, what `e-button-group-change` reports when this button is chosen.",
+              "name": "value"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-button",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineButton",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EButton",
+          "declaration": {
+            "name": "EButton",
+            "module": "src/v2/button.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineButton",
+          "declaration": {
+            "name": "defineButton",
+            "module": "src/v2/button.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-button",
+          "declaration": {
+            "name": "EButton",
+            "module": "src/v2/button.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/card.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A card groups what belongs together on a surface. With a heading it has a header row, and its\nactions sit at the right of it; on a phone the third and later fold into a More menu.",
+          "name": "ECard",
+          "slots": [
+            {
+              "description": "What the card holds.",
+              "name": ""
+            },
+            {
+              "description": "Buttons or links in the header, after the heading.",
+              "name": "actions"
+            }
+          ],
+          "members": [
+            {
+              "kind": "method",
+              "name": "#heading",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#folded",
+              "privacy": "private",
+              "type": {
+                "text": "[HTMLElement, HTMLElement][]"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "#watch",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.#say())"
+            },
+            {
+              "kind": "method",
+              "name": "#more",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#say",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "heading",
+              "description": "The card's title, built as its h2."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-card",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineCard",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ECard",
+          "declaration": {
+            "name": "ECard",
+            "module": "src/v2/card.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineCard",
+          "declaration": {
+            "name": "defineCard",
+            "module": "src/v2/card.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-card",
+          "declaration": {
+            "name": "ECard",
+            "module": "src/v2/card.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/checkbox.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A checkbox is one yes or no choice. Its native `<input type=\"checkbox\">` joins the form, and the\nbrowser's own change event bubbles out of the tag.",
+          "name": "ECheckbox",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#input",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLInputElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "checked",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "indeterminate",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#markMixed",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "The text beside the box."
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The box cannot be changed and is left out of the form."
+            },
+            {
+              "name": "indeterminate",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The box shows a dash for a mixed state; ticking it ends the state."
+            },
+            {
+              "name": "error",
+              "description": "A message shown under the box, which then reads invalid."
+            },
+            {
+              "description": "The name the box has in its form.",
+              "name": "name"
+            },
+            {
+              "description": "What the form submits while the box is ticked; the browser's `on` when left out.",
+              "name": "value"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The box opens ticked.",
+              "name": "checked"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Keep the label for screen readers only (its aria-label).",
+              "name": "hide-label"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-checkbox",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineCheckbox",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ECheckbox",
+          "declaration": {
+            "name": "ECheckbox",
+            "module": "src/v2/checkbox.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineCheckbox",
+          "declaration": {
+            "name": "defineCheckbox",
+            "module": "src/v2/checkbox.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-checkbox",
+          "declaration": {
+            "name": "ECheckbox",
+            "module": "src/v2/checkbox.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/choice-list.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A choice list is one pick from a few visible options, as a group of radio buttons. Write each\nchoice as an `<option>`; the script turns it into a labelled radio.",
+          "name": "EChoiceList",
+          "slots": [
+            {
+              "description": "The `<option value>` elements to choose from; add `selected` to one to open on it, or `disabled` to stop one.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#label",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "The group's name, shown above the choices."
+            },
+            {
+              "name": "error",
+              "description": "A message shown under the group, which then reads invalid."
+            },
+            {
+              "description": "The name the pick has in its form.",
+              "name": "name"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "No choice can be changed.",
+              "name": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-choice-list",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineChoiceList",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EChoiceList",
+          "declaration": {
+            "name": "EChoiceList",
+            "module": "src/v2/choice-list.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineChoiceList",
+          "declaration": {
+            "name": "defineChoiceList",
+            "module": "src/v2/choice-list.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-choice-list",
+          "declaration": {
+            "name": "EChoiceList",
+            "module": "src/v2/choice-list.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/courier-status.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A courier status names where a parcel is, in the page's language, in a badge coloured by how it\nstands: on the way, delivered, held or failed, returned or a problem, or neutral.",
+          "name": "ECourierStatus",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#stop",
+              "privacy": "private",
+              "type": {
+                "text": "(() => void) | undefined"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#say",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "status",
+              "type": {
+                "text": "'awaiting-pickup' | 'picked-up' | 'with-courier' | 'out-for-delivery' | 'on-hold' | 'delivery-failed' | 'delivered' | 'partly-delivered' | 'returning' | 'returned' | 'cancelled' | 'problem' | 'unknown' | 'PENDING' | 'PICKED_UP' | 'IN_TRANSIT' | 'OUT_FOR_DELIVERY' | 'ON_HOLD' | 'ATTEMPT_FAILED' | 'DELIVERED' | 'PARTIAL_DELIVERED' | 'RETURNING' | 'RETURNED' | 'CANCELLED' | 'EXCEPTION' | 'UNKNOWN'"
+              },
+              "description": "The parcel's status, as the kit's name or the courier API's code, such as `PICKED_UP`. Any other reads Unknown."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-courier-status",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineCourierStatus",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ECourierStatus",
+          "declaration": {
+            "name": "ECourierStatus",
+            "module": "src/v2/courier-status.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineCourierStatus",
+          "declaration": {
+            "name": "defineCourierStatus",
+            "module": "src/v2/courier-status.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-courier-status",
+          "declaration": {
+            "name": "ECourierStatus",
+            "module": "src/v2/courier-status.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/district-picker.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A district picker chooses the district and upazila of a Bangladesh address, as two selects named\nin the page's language. Each submits its English name in lower case.",
+          "name": "EDistrictPicker",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#district",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLSelectElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#upazila",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLSelectElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#stop",
+              "privacy": "private",
+              "type": {
+                "text": "(() => void) | undefined"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#part",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "HTMLSelectElement"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "part",
+                  "type": {
+                    "text": "'district' | 'upazila'"
+                  }
+                },
+                {
+                  "name": "base",
+                  "type": {
+                    "text": "string | null"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#mark",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#say",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#fill",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "value",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "error",
+              "description": "A message shown under the district select."
+            },
+            {
+              "name": "upazila-error",
+              "description": "A message shown under the upazila select."
+            },
+            {
+              "description": "A prefix for the form names: `address` gives `address.district` and `address.upazila`; without it they are `district` and `upazila`.",
+              "name": "name"
+            },
+            {
+              "description": "The district the picker opens with, as its lower-case English name such as `dhaka`.",
+              "name": "district"
+            },
+            {
+              "description": "The upazila the picker opens with, as its lower-case English name such as `mirpur`.",
+              "name": "upazila"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-district-picker",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineDistrictPicker",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EDistrictPicker",
+          "declaration": {
+            "name": "EDistrictPicker",
+            "module": "src/v2/district-picker.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineDistrictPicker",
+          "declaration": {
+            "name": "defineDistrictPicker",
+            "module": "src/v2/district-picker.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-district-picker",
+          "declaration": {
+            "name": "EDistrictPicker",
+            "module": "src/v2/district-picker.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/divider.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A thin line that separates two parts of a page or card.",
+          "name": "EDivider",
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-divider",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EDivider",
+          "declaration": {
+            "name": "EDivider",
+            "module": "src/v2/divider.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/empty-state.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Fills a page or card that has nothing to show yet: a heading, a line of text and an action.",
+          "name": "EEmptyState",
+          "slots": [
+            {
+              "description": "The line of text, in a `p`.",
+              "name": ""
+            },
+            {
+              "description": "The button or link that fixes the emptiness.",
+              "name": "action"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "heading",
+              "description": "The title, built as its h2."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-empty-state",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineEmptyState",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EEmptyState",
+          "declaration": {
+            "name": "EEmptyState",
+            "module": "src/v2/empty-state.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineEmptyState",
+          "declaration": {
+            "name": "defineEmptyState",
+            "module": "src/v2/empty-state.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-empty-state",
+          "declaration": {
+            "name": "EEmptyState",
+            "module": "src/v2/empty-state.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/fetch.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "signFetch",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "win",
+              "type": {
+                "text": "Window"
+              }
+            },
+            {
+              "name": "{ idToken, user }",
+              "type": {
+                "text": "{ idToken: () => Promise<string>; user: () => Promise<{ language: string }> }"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "signFetch",
+          "declaration": {
+            "name": "signFetch",
+            "module": "src/v2/fetch.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/field.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "markError",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "tag",
+              "type": {
+                "text": "Element"
+              }
+            },
+            {
+              "name": "control",
+              "type": {
+                "text": "Element"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "EField",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#input",
+              "privacy": "private",
+              "type": {
+                "text": "Control | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "create",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "Control"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "build",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "Control"
+                  }
+                },
+                {
+                  "name": "label",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "relabel",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "Control"
+                  }
+                },
+                {
+                  "name": "label",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "The label above the field."
+            },
+            {
+              "name": "placeholder",
+              "description": "A hint shown while the field is empty."
+            },
+            {
+              "name": "error",
+              "description": "A message shown under the field, which then reads invalid."
+            },
+            {
+              "description": "The name the field's value has in its form.",
+              "name": "name"
+            },
+            {
+              "description": "The value the field opens with.",
+              "name": "value"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The form will not submit while the field is empty.",
+              "name": "required"
+            },
+            {
+              "description": "What the browser may fill in, as a native input's autocomplete.",
+              "name": "autocomplete"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "A text field takes one line of text. Its native `<input>` joins the form it sits in.",
+          "name": "ETextField",
+          "members": [
+            {
+              "kind": "method",
+              "name": "build",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "Control"
+                  }
+                },
+                {
+                  "name": "text",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "relabel",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "Control"
+                  }
+                },
+                {
+                  "name": "text",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#input",
+              "privacy": "private",
+              "type": {
+                "text": "Control | null"
+              },
+              "default": "null",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "create",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "Control"
+                }
+              },
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "description": "The kind of text, as a native input's type: `email`, `tel`, `url`, `password`; none for text.",
+              "name": "type"
+            },
+            {
+              "description": "The keyboard a phone shows, as a native input's inputmode.",
+              "name": "inputmode"
+            },
+            {
+              "name": "label",
+              "description": "The label above the field.",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "name": "placeholder",
+              "description": "A hint shown while the field is empty.",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "name": "error",
+              "description": "A message shown under the field, which then reads invalid.",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "The name the field's value has in its form.",
+              "name": "name",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "The value the field opens with.",
+              "name": "value",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The form will not submit while the field is empty.",
+              "name": "required",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "What the browser may fill in, as a native input's autocomplete.",
+              "name": "autocomplete",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "EField",
+            "module": "src/v2/field.ts"
+          },
+          "tagName": "e-text-field",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "A date field picks a day with the browser's own date control. Its native `<input type=\"date\">` joins the form.",
+          "name": "EDateField",
+          "members": [
+            {
+              "kind": "method",
+              "name": "create",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "Control"
+                }
+              },
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "build",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "Control"
+                  }
+                },
+                {
+                  "name": "text",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "relabel",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "Control"
+                  }
+                },
+                {
+                  "name": "text",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#input",
+              "privacy": "private",
+              "type": {
+                "text": "Control | null"
+              },
+              "default": "null",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "The label above the field.",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "The name the field's value has in its form.",
+              "name": "name",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "The day the field opens with, as `YYYY-MM-DD`; the form submits it the same way.",
+              "name": "value",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "Leave it out: the field is always a date, and a type here would change that.",
+              "name": "type",
+              "inheritedFrom": {
+                "name": "ETextField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The form will not submit while no day is picked.",
+              "name": "required",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "name": "error",
+              "description": "A message shown under the field, which then reads invalid.",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "The keyboard a phone shows, as a native input's inputmode.",
+              "name": "inputmode",
+              "inheritedFrom": {
+                "name": "ETextField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "name": "placeholder",
+              "description": "A hint shown while the field is empty.",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "What the browser may fill in, as a native input's autocomplete.",
+              "name": "autocomplete",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "ETextField",
+            "module": "src/v2/field.ts"
+          },
+          "tagName": "e-date-field",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "A text area takes several lines of text. Its native `<textarea>` joins the form, and the tag's\n`value` is the text it opens with.",
+          "name": "ETextArea",
+          "members": [
+            {
+              "kind": "method",
+              "name": "create",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "Control"
+                }
+              },
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "build",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "Control"
+                  }
+                },
+                {
+                  "name": "text",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "relabel",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "Control"
+                  }
+                },
+                {
+                  "name": "text",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#input",
+              "privacy": "private",
+              "type": {
+                "text": "Control | null"
+              },
+              "default": "null",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "The label above the field.",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "The name the field's value has in its form.",
+              "name": "name",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "The text the field opens with.",
+              "name": "value",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "name": "placeholder",
+              "description": "A hint shown while the field is empty.",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "Has no effect: a text area takes no type.",
+              "name": "type",
+              "inheritedFrom": {
+                "name": "ETextField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "The keyboard a phone shows, as a native textarea's inputmode.",
+              "name": "inputmode",
+              "inheritedFrom": {
+                "name": "ETextField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The form will not submit while the field is empty.",
+              "name": "required",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "What the browser may fill in, as a native textarea's autocomplete.",
+              "name": "autocomplete",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "name": "error",
+              "description": "A message shown under the field, which then reads invalid.",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "ETextField",
+            "module": "src/v2/field.ts"
+          },
+          "tagName": "e-text-area",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "A search field is a one-line box with a search icon. It has no visible label: `label` is the\nname a screen reader speaks, so write it as you would the hint.",
+          "name": "ESearchField",
+          "members": [
+            {
+              "kind": "method",
+              "name": "build",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "Control"
+                  }
+                },
+                {
+                  "name": "label",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "relabel",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "Control"
+                  }
+                },
+                {
+                  "name": "label",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#input",
+              "privacy": "private",
+              "type": {
+                "text": "Control | null"
+              },
+              "default": "null",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "create",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "Control"
+                }
+              },
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "The input's accessible name (its aria-label); nothing shows it on screen.",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "The name the field's value has in its form.",
+              "name": "name",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "The text the field opens with.",
+              "name": "value",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "name": "placeholder",
+              "description": "A hint shown while the field is empty.",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The form will not submit while the field is empty.",
+              "name": "required",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "What the browser may fill in, as a native input's autocomplete.",
+              "name": "autocomplete",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "The keyboard a phone shows, as a native input's inputmode.",
+              "name": "inputmode"
+            },
+            {
+              "name": "error",
+              "description": "A message shown under the field, which then reads invalid.",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "EField",
+            "module": "src/v2/field.ts"
+          },
+          "tagName": "e-search-field",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineFields",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "markError",
+          "declaration": {
+            "name": "markError",
+            "module": "src/v2/field.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "EField",
+          "declaration": {
+            "name": "EField",
+            "module": "src/v2/field.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ETextField",
+          "declaration": {
+            "name": "ETextField",
+            "module": "src/v2/field.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "EDateField",
+          "declaration": {
+            "name": "EDateField",
+            "module": "src/v2/field.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ETextArea",
+          "declaration": {
+            "name": "ETextArea",
+            "module": "src/v2/field.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ESearchField",
+          "declaration": {
+            "name": "ESearchField",
+            "module": "src/v2/field.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineFields",
+          "declaration": {
+            "name": "defineFields",
+            "module": "src/v2/field.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-text-field",
+          "declaration": {
+            "name": "ETextField",
+            "module": "src/v2/field.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-date-field",
+          "declaration": {
+            "name": "EDateField",
+            "module": "src/v2/field.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-text-area",
+          "declaration": {
+            "name": "ETextArea",
+            "module": "src/v2/field.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-search-field",
+          "declaration": {
+            "name": "ESearchField",
+            "module": "src/v2/field.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/form-errors.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "clearErrors",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "form",
+              "type": {
+                "text": "HTMLFormElement"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "showErrors",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "form",
+              "type": {
+                "text": "HTMLFormElement"
+              }
+            },
+            {
+              "name": "errors",
+              "type": {
+                "text": "UserError[]"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "clearErrors",
+          "declaration": {
+            "name": "clearErrors",
+            "module": "src/v2/form-errors.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "showErrors",
+          "declaration": {
+            "name": "showErrors",
+            "module": "src/v2/form-errors.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/grid.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Lays its children out in equal columns: one below 600 px, two from 600 px, or more when you ask.",
+          "name": "EGrid",
+          "slots": [
+            {
+              "description": "The children, one per cell.",
+              "name": ""
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "'3' | '4'"
+              },
+              "description": "Three or four columns from 600 px; two when absent.",
+              "name": "columns"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-grid",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EGrid",
+          "declaration": {
+            "name": "EGrid",
+            "module": "src/v2/grid.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/icon.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A small icon from the kit's sprite. It is decorative: name the button or link it sits in.",
+          "name": "EIcon",
+          "attributes": [
+            {
+              "type": {
+                "text": "'truck' | 'search' | 'plus' | 'x' | 'check' | 'chevron-left' | 'chevron-right' | 'chevron-down' | 'more-horizontal' | 'home' | 'shopping-bag' | 'package' | 'users' | 'settings' | 'bell' | 'help'"
+              },
+              "description": "Which icon to draw.",
+              "name": "name"
+            },
+            {
+              "type": {
+                "text": "'20'"
+              },
+              "description": "20 px; 16 px when absent.",
+              "name": "size"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-icon",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineIcon",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EIcon",
+          "declaration": {
+            "name": "EIcon",
+            "module": "src/v2/icon.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineIcon",
+          "declaration": {
+            "name": "defineIcon",
+            "module": "src/v2/icon.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-icon",
+          "declaration": {
+            "name": "EIcon",
+            "module": "src/v2/icon.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/index-table.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Many records in one card: view tabs, a toolbar with search, filter chips and sort, a table whose rows\ncan be ticked, and a pager. Below 600 px each row is a card; a cell's `card` attribute (`title`,\n`status`, `aside`, `body`, `end` or `meta`) places it there, and a cell with none stays out of the card.\nThe parts are told apart by their tags: `e-tabs`, `e-table`, `e-empty-state` and `e-pagination` take a\nrow each, and every other child sits in the toolbar.",
+          "name": "EIndexTable",
+          "slots": [
+            {
+              "description": "The app's parts in order: `e-tabs`, the toolbar controls, `e-table`, `e-empty-state` and `e-pagination`.",
+              "name": ""
+            },
+            {
+              "description": "A removable filter chip (`slot=\"filter\"`, with a `name`). The script adds its remove button.",
+              "name": "filter"
+            },
+            {
+              "description": "The actions for ticked rows (`slot=\"bulk\"`). While rows are ticked they take the toolbar's place, after the count.",
+              "name": "bulk"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#chips",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.#build())"
+            },
+            {
+              "kind": "field",
+              "name": "#rows",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.#count())"
+            },
+            {
+              "kind": "field",
+              "name": "#stop",
+              "privacy": "private",
+              "type": {
+                "text": "(() => void) | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#status",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#selected",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "method",
+              "name": "#boxes",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "Box[]"
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#tick",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#count",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#empty",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#say",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#build",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#remove",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "chip",
+                  "type": {
+                    "text": "HTMLElement"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "e-selection-change",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "A row or the head checkbox changed the number of ticked rows. `detail` is `{ count }`."
+            },
+            {
+              "name": "e-filter-remove",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "A filter chip was removed. `detail` is `{ name }`, the chip's `name` attribute."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "Names the card as a region for assistive tech."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-index-table",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineIndexTable",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EIndexTable",
+          "declaration": {
+            "name": "EIndexTable",
+            "module": "src/v2/index-table.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineIndexTable",
+          "declaration": {
+            "name": "defineIndexTable",
+            "module": "src/v2/index-table.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-index-table",
+          "declaration": {
+            "name": "EIndexTable",
+            "module": "src/v2/index-table.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/kbd.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "apple",
+          "return": {
+            "type": {
+              "text": "boolean"
+            }
+          },
+          "parameters": [
+            {
+              "name": "userAgent",
+              "type": {
+                "text": "string"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "shortcutText",
+          "return": {
+            "type": {
+              "text": "string"
+            }
+          },
+          "parameters": [
+            {
+              "name": "shortcut",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "userAgent",
+              "type": {
+                "text": "string"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "description": "A key chip that shows a keyboard shortcut.",
+          "name": "EKbd",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#kbd",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "default": "null"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "shortcut",
+              "description": "Keys joined by `+`, such as `mod+k`. `mod` reads Ctrl, or ⌘ on Apple; `alt` and `shift` also change on Apple."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-kbd",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineKbd",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "userAgent",
+              "default": "navigator.userAgent",
+              "type": {
+                "text": "string"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "apple",
+          "declaration": {
+            "name": "apple",
+            "module": "src/v2/kbd.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "shortcutText",
+          "declaration": {
+            "name": "shortcutText",
+            "module": "src/v2/kbd.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "EKbd",
+          "declaration": {
+            "name": "EKbd",
+            "module": "src/v2/kbd.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineKbd",
+          "declaration": {
+            "name": "defineKbd",
+            "module": "src/v2/kbd.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-kbd",
+          "declaration": {
+            "name": "EKbd",
+            "module": "src/v2/kbd.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/link.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A link in a sentence. Write an `<a>` inside it and the tag styles that link, so it works with no script.",
+          "name": "ELink",
+          "slots": [
+            {
+              "description": "An `<a href>` with the link's words.",
+              "name": ""
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-link",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ELink",
+          "declaration": {
+            "name": "ELink",
+            "module": "src/v2/link.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/list.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A column of cards, one for each child, at any width. An `e-index-table`'s rows take the same look on a phone.",
+          "name": "EList",
+          "slots": [
+            {
+              "description": "The items, one card each.",
+              "name": ""
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-list",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EList",
+          "declaration": {
+            "name": "EList",
+            "module": "src/v2/list.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/menu.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "One choice in an `e-menu`. Listen for `click` on it; the menu closes after a press.",
+          "name": "EMenuItem",
+          "slots": [
+            {
+              "description": "The item's label.",
+              "name": ""
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "'danger'"
+              },
+              "description": "Draws the item in the danger colour, for an action such as Delete.",
+              "name": "tone"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-menu-item",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "A menu of actions. A press on the trigger opens a panel of items below it; the arrow keys, Home and\nEnd move between items, and Escape, a Tab or a press outside closes it.",
+          "name": "EMenu",
+          "slots": [
+            {
+              "description": "The `e-button` that opens the menu (`slot=\"trigger\"`).",
+              "name": "trigger"
+            },
+            {
+              "description": "The `e-menu-item` children, which the script moves into the panel.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#panel",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#trigger",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#items",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLElement[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#open",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "#state",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#show",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#hide",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "refocus",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#click",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#outside",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#panelClick",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#keydown",
+              "privacy": "private"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-menu",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineMenu",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EMenuItem",
+          "declaration": {
+            "name": "EMenuItem",
+            "module": "src/v2/menu.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "EMenu",
+          "declaration": {
+            "name": "EMenu",
+            "module": "src/v2/menu.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineMenu",
+          "declaration": {
+            "name": "defineMenu",
+            "module": "src/v2/menu.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-menu-item",
+          "declaration": {
+            "name": "EMenuItem",
+            "module": "src/v2/menu.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-menu",
+          "declaration": {
+            "name": "EMenu",
+            "module": "src/v2/menu.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/metrics.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Two to four numbers side by side from 600 px, two by two below. It is static content with no role;\nwrap it in an element with its own label to name the group. Each child is one metric: a\n`slot=\"label\"` element, a `strong` number and an optional `slot=\"change\"` element, such as\n`<span slot=\"change\" tone=\"up\">+12%</span>`. A change takes `tone=\"up\"` or `tone=\"down\"` for a colour.",
+          "name": "EMetrics",
+          "slots": [
+            {
+              "description": "One element for each metric.",
+              "name": ""
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-metrics",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EMetrics",
+          "declaration": {
+            "name": "EMetrics",
+            "module": "src/v2/metrics.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/modal.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A dialog that holds a task until the person closes it. It is closed on the page; open it with\n`ebdfy.modal.show(id)` and close it with `ebdfy.modal.hide(id)`, naming the modal's `id`.",
+          "name": "EModal",
+          "slots": [
+            {
+              "description": "The modal's content.",
+              "name": ""
+            },
+            {
+              "description": "Buttons in the footer.",
+              "name": "footer"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#dialog",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLDialogElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#title",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#close",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#footer",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#own",
+              "privacy": "private",
+              "type": {
+                "text": "Element[]"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "#state",
+              "privacy": "private",
+              "type": {
+                "text": "State"
+              },
+              "default": "'clean'"
+            },
+            {
+              "kind": "field",
+              "name": "#discard",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#save",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#ask",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#keepEditing",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#closeAnyway",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#bar",
+              "privacy": "private",
+              "type": {
+                "text": "ReturnType<typeof watchSaveBars> | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "method",
+              "name": "#show",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "State"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#leave",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "show",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "hide",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "e-modal-close",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "After the modal closes, by whatever way. Bubbles; detail is empty."
+            },
+            {
+              "name": "e-modal-open",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "After the modal opens. Bubbles; detail is empty."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "heading",
+              "description": "The title in the header."
+            },
+            {
+              "type": {
+                "text": "'small' | 'large'"
+              },
+              "description": "A narrower or wider dialog; none for medium. On a phone every size is a sheet at the bottom.",
+              "name": "size"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-modal",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineModal",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        },
+        {
+          "kind": "function",
+          "name": "showModal",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "id",
+              "type": {
+                "text": "string"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "hideModal",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "id",
+              "type": {
+                "text": "string"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EModal",
+          "declaration": {
+            "name": "EModal",
+            "module": "src/v2/modal.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineModal",
+          "declaration": {
+            "name": "defineModal",
+            "module": "src/v2/modal.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-modal",
+          "declaration": {
+            "name": "EModal",
+            "module": "src/v2/modal.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "showModal",
+          "declaration": {
+            "name": "showModal",
+            "module": "src/v2/modal.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "hideModal",
+          "declaration": {
+            "name": "hideModal",
+            "module": "src/v2/modal.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/page.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A page: a heading with its actions beside it, then the content. A child marked `aside` forms a 344 px\ncolumn beside the content from 600 px, and stacks below it on a phone.",
+          "name": "EPage",
+          "slots": [
+            {
+              "description": "The page's content.",
+              "name": ""
+            },
+            {
+              "description": "Buttons beside the heading.",
+              "name": "actions"
+            },
+            {
+              "description": "The side column; best one child, such as an `e-stack` of cards.",
+              "name": "aside"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "heading",
+              "description": "The page's title, built as its h1."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-page",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "definePage",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EPage",
+          "declaration": {
+            "name": "EPage",
+            "module": "src/v2/page.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "definePage",
+          "declaration": {
+            "name": "definePage",
+            "module": "src/v2/page.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-page",
+          "declaration": {
+            "name": "EPage",
+            "module": "src/v2/page.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/pagination.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A pager: a label such as \"21 to 40 of 120\" and two buttons, previous and next. It keeps no page\nnumber; the app sets the attributes and listens for the events.",
+          "name": "EPagination",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#text",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLSpanElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#previous",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLButtonElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#next",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLButtonElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#named",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#stop",
+              "privacy": "private",
+              "type": {
+                "text": "(() => void) | undefined"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#say",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#button",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "HTMLButtonElement"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "icon",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#update",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "event",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "description": "The previous button was pressed.",
+              "name": "e-previous"
+            },
+            {
+              "description": "The next button was pressed.",
+              "name": "e-next"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "The text before the buttons, such as the range shown."
+            },
+            {
+              "name": "has-previous",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "There is an earlier page. Without it the previous button is disabled."
+            },
+            {
+              "name": "has-next",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "There is a later page. Without it the next button is disabled."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-pagination",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "definePagination",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EPagination",
+          "declaration": {
+            "name": "EPagination",
+            "module": "src/v2/pagination.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "definePagination",
+          "declaration": {
+            "name": "definePagination",
+            "module": "src/v2/pagination.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-pagination",
+          "declaration": {
+            "name": "EPagination",
+            "module": "src/v2/pagination.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/phone-field.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A phone field takes a Bangladesh mobile number, 11 digits starting 01. Bangla digits turn Latin as\nthey are typed, and the form refuses any other number, saying why under the field in the page's language.",
+          "name": "EPhoneField",
+          "members": [
+            {
+              "kind": "method",
+              "name": "build",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "HTMLInputElement | HTMLTextAreaElement"
+                  }
+                },
+                {
+                  "name": "text",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "relabel",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "HTMLInputElement | HTMLTextAreaElement"
+                  }
+                },
+                {
+                  "name": "text",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#input",
+              "privacy": "private",
+              "type": {
+                "text": "Control | null"
+              },
+              "default": "null",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "create",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "Control"
+                }
+              },
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "The label above the field.",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "The name the number has in its form.",
+              "name": "name",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "The number the field opens with; Bangla digits turn Latin.",
+              "name": "value",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "name": "placeholder",
+              "description": "A hint shown while the field is empty.",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The form will not submit while the field is empty.",
+              "name": "required",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "description": "What the browser may fill in, as a native input's autocomplete.",
+              "name": "autocomplete",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            },
+            {
+              "name": "error",
+              "description": "A message shown under the field, which then reads invalid. A number that fails the check sets it.",
+              "inheritedFrom": {
+                "name": "EField",
+                "module": "src/v2/field.ts"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "EField",
+            "module": "/src/v2/field.ts"
+          },
+          "tagName": "e-phone-field",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "definePhoneField",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EPhoneField",
+          "declaration": {
+            "name": "EPhoneField",
+            "module": "src/v2/phone-field.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "definePhoneField",
+          "declaration": {
+            "name": "definePhoneField",
+            "module": "src/v2/phone-field.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-phone-field",
+          "declaration": {
+            "name": "EPhoneField",
+            "module": "src/v2/phone-field.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/place.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "place",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "trigger",
+              "type": {
+                "text": "Element"
+              }
+            },
+            {
+              "name": "panel",
+              "type": {
+                "text": "HTMLElement"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "place",
+          "declaration": {
+            "name": "place",
+            "module": "src/v2/place.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/popover.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A panel of any content that opens below its trigger. Escape or a press outside closes it. It fires no event.",
+          "name": "EPopover",
+          "slots": [
+            {
+              "description": "The panel's content, in elements rather than loose text.",
+              "name": ""
+            },
+            {
+              "description": "The control that opens and closes the panel.",
+              "name": "trigger"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#panel",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#observer",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.#state())"
+            },
+            {
+              "kind": "field",
+              "name": "#tag",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#trigger",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#open",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "#state",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "#place",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#show",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#hide",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "refocus",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#click",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#outside",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#keydown",
+              "privacy": "private"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "Names the panel for assistive tech."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-popover",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "definePopover",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EPopover",
+          "declaration": {
+            "name": "EPopover",
+            "module": "src/v2/popover.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "definePopover",
+          "declaration": {
+            "name": "definePopover",
+            "module": "src/v2/popover.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-popover",
+          "declaration": {
+            "name": "EPopover",
+            "module": "src/v2/popover.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/progress-bar.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Shows how far a task has gone. Without a value it is indeterminate and a short fill slides along it.",
+          "name": "EProgressBar",
+          "attributes": [
+            {
+              "name": "value",
+              "type": {
+                "text": "number"
+              },
+              "description": "A number from 0 to 100; a number outside it is clamped."
+            },
+            {
+              "name": "label",
+              "description": "Names the bar for a screen reader."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-progress-bar",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineProgressBar",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EProgressBar",
+          "declaration": {
+            "name": "EProgressBar",
+            "module": "src/v2/progress-bar.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineProgressBar",
+          "declaration": {
+            "name": "defineProgressBar",
+            "module": "src/v2/progress-bar.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-progress-bar",
+          "declaration": {
+            "name": "EProgressBar",
+            "module": "src/v2/progress-bar.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/select.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A select picks one value from the `<option>` children written inside it. Its native `<select>` joins the form,\nand the browser's own change event bubbles out of the tag.",
+          "name": "ESelect",
+          "slots": [
+            {
+              "description": "The `<option>` elements to choose from; add `selected` to one to open on it.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#select",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLSelectElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "The label above the select."
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The select cannot be changed and is left out of the form."
+            },
+            {
+              "name": "error",
+              "description": "A message shown under the select, which then reads invalid."
+            },
+            {
+              "description": "The name the choice has in its form.",
+              "name": "name"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Keep the label for screen readers only (its aria-label), with no visible label.",
+              "name": "hide-label"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-select",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineSelect",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ESelect",
+          "declaration": {
+            "name": "ESelect",
+            "module": "src/v2/select.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineSelect",
+          "declaration": {
+            "name": "defineSelect",
+            "module": "src/v2/select.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-select",
+          "declaration": {
+            "name": "ESelect",
+            "module": "src/v2/select.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/settings-section.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A group of settings: a heading and help text at the left, and the cards that hold the settings at the\nright. On a phone they stack.",
+          "name": "ESettingsSection",
+          "slots": [
+            {
+              "description": "The cards, usually one `e-card`.",
+              "name": ""
+            }
+          ],
+          "attributes": [
+            {
+              "name": "heading",
+              "description": "The section's title, built as its h2."
+            },
+            {
+              "name": "help",
+              "description": "A line that says what the section is for, built as a paragraph."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-settings-section",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineSettingsSection",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ESettingsSection",
+          "declaration": {
+            "name": "ESettingsSection",
+            "module": "src/v2/settings-section.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineSettingsSection",
+          "declaration": {
+            "name": "defineSettingsSection",
+            "module": "src/v2/settings-section.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-settings-section",
+          "declaration": {
+            "name": "ESettingsSection",
+            "module": "src/v2/settings-section.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/setup-guide.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "One step of a setup guide, with a tick. The tick sets and clears `done`, and a page may set it too.",
+          "name": "ESetupStep",
+          "slots": [
+            {
+              "description": "The step's words.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#input",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLInputElement | null"
+              },
+              "default": "null"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "done",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The step is finished."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-setup-step",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "The steps to set up a store, with a count such as \"2 of 5\" and a Dismiss button.",
+          "name": "ESetupGuide",
+          "slots": [
+            {
+              "description": "The `e-setup-step` tags.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#watch",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.#refresh())"
+            },
+            {
+              "kind": "method",
+              "name": "#refresh",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "dismiss",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "When Dismiss is pressed, as the guide is removed. Bubbles; detail is empty. The page keeps the choice."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "heading",
+              "description": "The guide's title, built as its h2."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-setup-guide",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineSetupGuide",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ESetupStep",
+          "declaration": {
+            "name": "ESetupStep",
+            "module": "src/v2/setup-guide.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ESetupGuide",
+          "declaration": {
+            "name": "ESetupGuide",
+            "module": "src/v2/setup-guide.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineSetupGuide",
+          "declaration": {
+            "name": "defineSetupGuide",
+            "module": "src/v2/setup-guide.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-setup-guide",
+          "declaration": {
+            "name": "ESetupGuide",
+            "module": "src/v2/setup-guide.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-setup-step",
+          "declaration": {
+            "name": "ESetupStep",
+            "module": "src/v2/setup-guide.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/skeleton.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Grey bars that hold the place of text while it loads. A screen reader finds nothing in it.",
+          "name": "ESkeleton",
+          "attributes": [
+            {
+              "type": {
+                "text": "'2' | '3' | '4' | '5' | '6' | '7' | '8'"
+              },
+              "description": "How many lines of body text to draw, the last one shorter; one line when absent.",
+              "name": "lines"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-skeleton",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ESkeleton",
+          "declaration": {
+            "name": "ESkeleton",
+            "module": "src/v2/skeleton.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/speech.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "onLangChange",
+          "return": {
+            "type": {
+              "text": "() => void"
+            }
+          },
+          "parameters": [
+            {
+              "name": "said",
+              "type": {
+                "text": "() => void"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "onLangChange",
+          "declaration": {
+            "name": "onLangChange",
+            "module": "src/v2/speech.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/spinner.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A small ring that turns while something loads. It says Loading to a screen reader, in the page's language.",
+          "name": "ESpinner",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#ours",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#watch",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.#say())"
+            },
+            {
+              "kind": "method",
+              "name": "#say",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "description": "Replaces the default Loading name.",
+              "name": "aria-label"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-spinner",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineSpinner",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ESpinner",
+          "declaration": {
+            "name": "ESpinner",
+            "module": "src/v2/spinner.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineSpinner",
+          "declaration": {
+            "name": "defineSpinner",
+            "module": "src/v2/spinner.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-spinner",
+          "declaration": {
+            "name": "ESpinner",
+            "module": "src/v2/spinner.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/stack.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Lays its children out in a column, or in a row, with an even gap between them.",
+          "name": "EStack",
+          "slots": [
+            {
+              "description": "The children to lay out.",
+              "name": ""
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "'row'"
+              },
+              "description": "Lays the children out in a row; a column when absent.",
+              "name": "direction"
+            },
+            {
+              "type": {
+                "text": "'1' | '2' | '3' | '4' | '5' | '6'"
+              },
+              "description": "The space between children, on the spacing scale. `2` when absent.",
+              "name": "gap"
+            },
+            {
+              "type": {
+                "text": "'start' | 'center' | 'end' | 'baseline'"
+              },
+              "description": "How children line up across the stack's direction.",
+              "name": "align"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Lets a row continue on the next line. Only with `direction=\"row\"`.",
+              "name": "wrap"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-stack",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EStack",
+          "declaration": {
+            "name": "EStack",
+            "module": "src/v2/stack.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/switch.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A switch is a setting that is on or off and takes effect at once. Its native checkbox with\nrole=switch joins the form (submitting `on` while on, or its `value`, and nothing while off).",
+          "name": "ESwitch",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#input",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLInputElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "checked",
+              "type": {
+                "text": "boolean"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "The text beside the switch."
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The switch cannot be changed and is left out of the form."
+            },
+            {
+              "name": "error",
+              "description": "A message shown under the switch, which then reads invalid."
+            },
+            {
+              "description": "The name the switch has in its form.",
+              "name": "name"
+            },
+            {
+              "description": "What the form submits while the switch is on; the browser's `on` when left out.",
+              "name": "value"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The switch opens on.",
+              "name": "checked"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-switch",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineSwitch",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ESwitch",
+          "declaration": {
+            "name": "ESwitch",
+            "module": "src/v2/switch.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineSwitch",
+          "declaration": {
+            "name": "defineSwitch",
+            "module": "src/v2/switch.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-switch",
+          "declaration": {
+            "name": "ESwitch",
+            "module": "src/v2/switch.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/table.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A table shows rows of data in columns. Its rows are `e-row`, and a row's children are its cells; a\nlink cell stays a link. Its rows and cells read the same before and without v2.js. For selection, search and\nfilters, put it in an `e-index-table`.",
+          "name": "ETable",
+          "slots": [
+            {
+              "description": "Its `e-row`s, the head row first.",
+              "name": ""
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "Names the table for assistive tech."
+            },
+            {
+              "description": "The column widths, as a grid's template, such as `2fr 1fr 1fr`, which v2.js applies. To draw them in the first frame, write them as `style=\"--e-columns: 2fr 1fr 1fr\"` instead.",
+              "name": "columns"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-table",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "One row of an `e-table`: each child is a cell.",
+          "name": "ERow",
+          "slots": [
+            {
+              "description": "Its cells. A cell may have `align=\"end\"` for numbers, or `tone=\"subdued\"`.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "seen",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.build())"
+            },
+            {
+              "kind": "method",
+              "name": "build",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The head row, whose cells name the columns.",
+              "name": "head"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-row",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineTable",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ETable",
+          "declaration": {
+            "name": "ETable",
+            "module": "src/v2/table.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ERow",
+          "declaration": {
+            "name": "ERow",
+            "module": "src/v2/table.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineTable",
+          "declaration": {
+            "name": "defineTable",
+            "module": "src/v2/table.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-table",
+          "declaration": {
+            "name": "ETable",
+            "module": "src/v2/table.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-row",
+          "declaration": {
+            "name": "ERow",
+            "module": "src/v2/table.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/tabs.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "One tab of an `e-tabs` row. The app moves the selection by setting `selected`; a click or key on a tab does it too.",
+          "name": "ETab",
+          "slots": [
+            {
+              "description": "The tab's label.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#seen",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.#name())"
+            },
+            {
+              "kind": "method",
+              "name": "#mark",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#name",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "selected",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The current tab, underlined. Only one tab in a row has it."
+            },
+            {
+              "name": "count",
+              "type": {
+                "text": "number"
+              },
+              "description": "A number shown after the label, and added to the tab's accessible name."
+            },
+            {
+              "description": "What `e-tab-change` reports when the tab is chosen.",
+              "name": "value"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-tab",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "A row of tabs, one for each view. It adds the tablist roles and the arrow, Home and End keys. It\nmoves nothing but the selected mark, and a row wider than its box scrolls inside it.",
+          "name": "ETabs",
+          "slots": [
+            {
+              "description": "Its `e-tab`s.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "method",
+              "name": "#label",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#tab",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "ETab | null"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#select",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "tab",
+                  "type": {
+                    "text": "ETab"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#click",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#keydown",
+              "privacy": "private"
+            }
+          ],
+          "events": [
+            {
+              "name": "e-tab-change",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "The person chose a tab that was not selected. `detail` is `{ value }`, the tab's `value`."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "Names the row for assistive tech."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-tabs",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineTabs",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ETab",
+          "declaration": {
+            "name": "ETab",
+            "module": "src/v2/tabs.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ETabs",
+          "declaration": {
+            "name": "ETabs",
+            "module": "src/v2/tabs.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineTabs",
+          "declaration": {
+            "name": "defineTabs",
+            "module": "src/v2/tabs.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-tab",
+          "declaration": {
+            "name": "ETab",
+            "module": "src/v2/tabs.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-tabs",
+          "declaration": {
+            "name": "ETabs",
+            "module": "src/v2/tabs.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/taka-field.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A taka field takes an amount in taka. It shows ৳ and the amount in the digits of the page's\nlanguage with lakh grouping, and submits the plain Latin number under its name.",
+          "name": "ETakaField",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#input",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLInputElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#amount",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLInputElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#stop",
+              "privacy": "private",
+              "type": {
+                "text": "(() => void) | undefined"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#draw",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "description": "The label above the field."
+            },
+            {
+              "name": "error",
+              "description": "A message shown under the field, which then reads invalid."
+            },
+            {
+              "description": "The name the amount has in its form, held by a hidden input.",
+              "name": "name"
+            },
+            {
+              "description": "The amount the field opens with, as a Latin number such as `12500`.",
+              "name": "value"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-taka-field",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineTakaField",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ETakaField",
+          "declaration": {
+            "name": "ETakaField",
+            "module": "src/v2/taka-field.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineTakaField",
+          "declaration": {
+            "name": "defineTakaField",
+            "module": "src/v2/taka-field.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-taka-field",
+          "declaration": {
+            "name": "ETakaField",
+            "module": "src/v2/taka-field.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/text.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A heading for a section of a page. Assistive tech reads it as a heading of its level.",
+          "name": "EHeading",
+          "slots": [
+            {
+              "description": "The heading's words.",
+              "name": ""
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "'1' | '2' | '3'"
+              },
+              "description": "The heading level, also its size; 2 when absent.",
+              "name": "level"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-heading",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "A block of body text. CSS draws it whole, so the class only types the tag and defines no behaviour.",
+          "name": "EText",
+          "slots": [
+            {
+              "description": "The text.",
+              "name": ""
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "'subdued' | 'faint'"
+              },
+              "description": "A quieter colour; none for the default.",
+              "name": "tone"
+            },
+            {
+              "type": {
+                "text": "'meta'"
+              },
+              "description": "Small print, such as a date or a count; none for body size.",
+              "name": "size"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-text",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineText",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EHeading",
+          "declaration": {
+            "name": "EHeading",
+            "module": "src/v2/text.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "EText",
+          "declaration": {
+            "name": "EText",
+            "module": "src/v2/text.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineText",
+          "declaration": {
+            "name": "defineText",
+            "module": "src/v2/text.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-heading",
+          "declaration": {
+            "name": "EHeading",
+            "module": "src/v2/text.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/thumbnail.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A fixed square for a product or item picture, 40 px by default. Put an `img` inside; its own `src`\nand `alt` are read. With no image the square is an empty tint.",
+          "name": "EThumbnail",
+          "slots": [
+            {
+              "description": "The `img`.",
+              "name": ""
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "'small' | 'large'"
+              },
+              "description": "32 px for small, 56 px for large. Without it the square is 40 px.",
+              "name": "size"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-thumbnail",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EThumbnail",
+          "declaration": {
+            "name": "EThumbnail",
+            "module": "src/v2/thumbnail.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/v2/tooltip.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A short text shown beside the control it wraps, on hover and on keyboard focus. Escape hides it. It\nfires no event. A control with no name takes the text as its name; one with a name is described by it.",
+          "name": "ETooltip",
+          "slots": [
+            {
+              "description": "The one control the tooltip belongs to.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#bubble",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#hovered",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#focused",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#named",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#observer",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.#wire())"
+            },
+            {
+              "kind": "field",
+              "name": "#tag",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "#control",
+              "privacy": "private",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "#wire",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#set",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "hovered",
+                  "type": {
+                    "text": "boolean"
+                  }
+                },
+                {
+                  "name": "focused",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#enter",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#leave",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#focusin",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#focusout",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#escape",
+              "privacy": "private"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "text",
+              "description": "The words in the bubble."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "e-tooltip",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "defineTooltip",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ETooltip",
+          "declaration": {
+            "name": "ETooltip",
+            "module": "src/v2/tooltip.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineTooltip",
+          "declaration": {
+            "name": "defineTooltip",
+            "module": "src/v2/tooltip.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "e-tooltip",
+          "declaration": {
+            "name": "ETooltip",
+            "module": "src/v2/tooltip.ts"
+          }
+        }
+      ]
+    }
+  ]
+}

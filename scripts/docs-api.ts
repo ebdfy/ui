@@ -3,19 +3,19 @@ import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
-import { generateManifest } from './declarations.ts'
+import { generateV2Manifest } from './declarations.ts'
 import type { Manifest } from './versioning.ts'
 
-let manifest: Manifest | undefined
+let v2Manifest: Manifest | undefined
 
 // The manifest is generated once per process, outside dist/, because many tests start dev servers at once.
-export function docsManifest(): Manifest {
-  if (!manifest) {
-    const dir = mkdtempSync(join(tmpdir(), 'ebdfy-manifest-'))
-    manifest = generateManifest(dir)
+export function v2DocsManifest(): Manifest {
+  if (!v2Manifest) {
+    const dir = mkdtempSync(join(tmpdir(), 'ebdfy-v2-manifest-'))
+    v2Manifest = generateV2Manifest(join(dir, 'custom-elements-v2.json'))
     rmSync(dir, { recursive: true, force: true })
   }
-  return manifest
+  return v2Manifest
 }
 
 const escape = (text: string) =>
@@ -41,7 +41,7 @@ function list(title: string, entries: Entry[]): string {
   return `<h4>${title}</h4><dl>${items.join('')}</dl>`
 }
 
-export function apiSection(tags: string[], source: Manifest = docsManifest()): string {
+export function apiSection(tags: string[], source: Manifest): string {
   if (!tags.length) return ''
   const declarations = source.modules.flatMap((m) => m.declarations ?? [])
   const elements = tags.map((tag) => {

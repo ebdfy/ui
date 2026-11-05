@@ -1,0 +1,6 @@
+/* e-divider: a 1 px line in the line colour across its row. */
+e-divider {
+  display: block;
+  height: 1px;
+  background: var(--e-color-line);
+}

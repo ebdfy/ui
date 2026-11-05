@@ -47,5 +47,5 @@ if (import.meta.main) {
   const dev = await startDev()
   console.log(`Docs:        ${dev.ui}/`)
   console.log(`Playground:  ${dev.ui}/playground`)
-  console.log(`Sample app:  ${dev.sampleApp}/`)
+  console.log(`Sample app:  ${dev.sampleApp}/orders`)
 }

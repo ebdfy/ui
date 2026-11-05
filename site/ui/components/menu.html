@@ -4,45 +4,37 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Menu · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Menu · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Menu</h1>
-      <p>
-        <code>eb-menu</code> opens a list of actions from the <code>eb-button</code> in its <code>trigger</code> slot.
-        Each action is an <code>eb-menu-item</code>. Set <code>tone="danger"</code> on a risky one, an
-        <code>eb-icon</code> in <code>slot="icon"</code> before its words, and <code>shortcut</code> to show its keys,
-        one per chip, at the end of the row. Pick keys the browser does not use for itself: Ctrl+D, Ctrl+P and Ctrl+N
-        bookmark, print and open a window, so these samples use Alt+Shift. The arrow keys move between items, Enter
-        picks one and Escape closes the menu. The page shows Ctrl and Alt here and ⌘ and ⌥ on a Mac or iPhone.
+      <p class="lede">
+        <code>e-menu</code> opens a list of <code>e-menu-item</code>s from the <code>e-button</code> marked
+        <code>slot="trigger"</code>. Use <code>tone="danger"</code> on an item that deletes or cancels.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example
-          caption="Actions with icons, a shortcut and a risky one"
-          caption-bn="আইকন, শর্টকাট ও ঝুঁকিপূর্ণ কাজসহ অ্যাকশন"
-        >
-          <eb-menu label="More actions" data-label-en="More actions" data-label-bn="আরও অ্যাকশন">
-            <eb-button slot="trigger" variant="secondary" data-en="More actions" data-bn="আরও">More actions</eb-button>
-            <eb-menu-item shortcut="alt+shift+d"
-              ><eb-icon slot="icon" name="copy"></eb-icon
-              ><span data-en="Duplicate" data-bn="ডুপ্লিকেট">Duplicate</span></eb-menu-item
-            >
-            <eb-menu-item shortcut="alt+shift+p"
-              ><eb-icon slot="icon" name="printer"></eb-icon
-              ><span data-en="Print invoice" data-bn="ইনভয়েস প্রিন্ট">Print invoice</span></eb-menu-item
-            >
-            <eb-menu-item tone="danger"
-              ><eb-icon slot="icon" name="x"></eb-icon
-              ><span data-en="Cancel order" data-bn="অর্ডার বাতিল">Cancel order</span></eb-menu-item
-            >
-          </eb-menu>
-        </docs-example>
-      </div>
+      <docs-example caption="A menu of actions">
+        <e-menu>
+          <e-button slot="trigger">Actions</e-button>
+          <e-menu-item>Print label</e-menu-item>
+          <e-menu-item>Mark as sent</e-menu-item>
+          <e-menu-item>Duplicate</e-menu-item>
+        </e-menu>
+      </docs-example>
+      <docs-example caption="With a danger item">
+        <e-menu>
+          <e-button slot="trigger" tone="plain">Order #1042</e-button>
+          <e-menu-item>Edit</e-menu-item>
+          <e-menu-item tone="danger">Cancel order</e-menu-item>
+        </e-menu>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-menu>
+          <e-button slot="trigger">কাজ</e-button>
+          <e-menu-item>লেবেল প্রিন্ট</e-menu-item>
+          <e-menu-item tone="danger">অর্ডার বাতিল</e-menu-item>
+        </e-menu>
+      </docs-example>
     </main>
   </body>
 </html>

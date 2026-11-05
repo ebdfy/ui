@@ -4,66 +4,44 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Select · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Select · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Select</h1>
-      <p>
-        <code>eb-select</code> picks one of the <code>&lt;option&gt;</code> elements written inside it. With no
-        <code>value</code> it starts on the first.
+      <p class="lede">
+        <code>e-select</code> picks one value from the <code>option</code> elements written inside it. Its native select
+        joins the form, and the change event bubbles out of the tag.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Default" caption-bn="সাধারণ">
-          <eb-select name="size" data-state="default" label="Size" data-label-en="Size" data-label-bn="সাইজ"
-            ><option value="s" data-en="Small" data-bn="ছোট">Small</option>
-            <option value="m" data-en="Medium" data-bn="মাঝারি">Medium</option>
-            <option value="l" data-en="Large" data-bn="বড়">Large</option></eb-select
-          >
-        </docs-example>
-        <docs-example caption="Focused" caption-bn="ফোকাসে">
-          <eb-select data-state="focus" label="Courier" data-label-en="Courier" data-label-bn="কুরিয়ার"
-            ><option value="pathao" data-en="Pathao" data-bn="পাঠাও">Pathao</option>
-            <option value="steadfast" data-en="Steadfast" data-bn="স্টেডফাস্ট">Steadfast</option>
-            <option value="redx" data-en="RedX" data-bn="রেডএক্স">RedX</option></eb-select
-          >
-        </docs-example>
-        <docs-example caption="With an error" caption-bn="ভুলসহ">
-          <eb-select
-            data-state="error"
-            value=""
-            required
-            label="Size"
-            data-label-en="Size"
-            data-label-bn="সাইজ"
-            error="Choose a size."
-            data-error-en="Choose a size."
-            data-error-bn="একটি সাইজ বাছুন।"
-            ><option value="" data-en="Choose a size" data-bn="সাইজ বাছুন">Choose a size</option>
-            <option value="s" data-en="Small" data-bn="ছোট">Small</option>
-            <option value="m" data-en="Medium" data-bn="মাঝারি">Medium</option>
-            <option value="l" data-en="Large" data-bn="বড়">Large</option></eb-select
-          >
-        </docs-example>
-        <docs-example caption="Disabled" caption-bn="বন্ধ">
-          <eb-select data-state="disabled" value="m" disabled label="Size" data-label-en="Size" data-label-bn="সাইজ"
-            ><option value="s" data-en="Small" data-bn="ছোট">Small</option>
-            <option value="m" data-en="Medium" data-bn="মাঝারি">Medium</option>
-            <option value="l" data-en="Large" data-bn="বড়">Large</option></eb-select
-          >
-        </docs-example>
-        <docs-example caption="Filled" caption-bn="পূরণ করা">
-          <eb-select data-state="filled" value="l" label="Size" data-label-en="Size" data-label-bn="সাইজ"
-            ><option value="s" data-en="Small" data-bn="ছোট">Small</option>
-            <option value="m" data-en="Medium" data-bn="মাঝারি">Medium</option>
-            <option value="l" data-en="Large" data-bn="বড়">Large</option></eb-select
-          >
-        </docs-example>
-      </div>
+      <docs-example caption="Options inside the tag">
+        <e-select label="Courier" name="courier">
+          <option value="pathao">Pathao</option>
+          <option value="steadfast" selected>Steadfast</option>
+          <option value="redx">RedX</option>
+        </e-select>
+      </docs-example>
+      <docs-example caption="With the label hidden">
+        <e-select label="Sort orders" name="sort" hide-label>
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+        </e-select>
+      </docs-example>
+      <docs-example caption="Disabled, and with an error" stack>
+        <e-select label="City" name="city" disabled>
+          <option>Dhaka</option>
+        </e-select>
+        <e-select label="Payment" name="payment" error="Choose how order #1042 is paid.">
+          <option value="">Choose one</option>
+          <option value="cod">Cash on delivery</option>
+          <option value="bkash">bKash</option>
+        </e-select>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-select label="কুরিয়ার" name="courier">
+          <option value="pathao">পাঠাও</option>
+          <option value="steadfast">স্টেডফাস্ট</option>
+        </e-select>
+      </docs-example>
     </main>
   </body>
 </html>

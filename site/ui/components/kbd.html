@@ -4,35 +4,30 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Kbd · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Kbd · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Kbd</h1>
-      <p>
-        <code>eb-kbd</code> shows a keyboard shortcut from its <code>shortcut</code>. <code>mod</code> is the main key:
-        the page shows Ctrl here and ⌘ on a Mac or iPhone. The letters stay Latin on a Bangla page.
+      <p class="lede">
+        <code>e-kbd</code> shows a keyboard shortcut as a key chip. Write the keys in <code>shortcut</code>, joined by
+        <code>+</code>. <code>mod</code> reads Ctrl, or ⌘ on an Apple device.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Beside an action" caption-bn="কাজের পাশে" stack>
-          <p>
-            <span data-en="Duplicate the order" data-bn="অর্ডার ডুপ্লিকেট করুন">Duplicate the order</span>
-            <eb-kbd shortcut="mod+d"></eb-kbd>
-          </p>
-          <p>
-            <span data-en="Print the invoice" data-bn="ইনভয়েস প্রিন্ট করুন">Print the invoice</span>
-            <eb-kbd shortcut="mod+p"></eb-kbd>
-          </p>
-          <p>
-            <span data-en="Search the orders" data-bn="অর্ডার খুঁজুন">Search the orders</span>
-            <eb-kbd shortcut="/"></eb-kbd>
-          </p>
-        </docs-example>
-      </div>
+      <docs-example caption="Search">
+        <e-stack direction="row" gap="2" align="center">
+          <e-text>Search orders</e-text>
+          <e-kbd shortcut="mod+k"></e-kbd>
+        </e-stack>
+      </docs-example>
+      <docs-example caption="Three keys">
+        <e-kbd shortcut="mod+shift+p"></e-kbd>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-stack direction="row" gap="2" align="center">
+          <e-text>অর্ডার খুঁজুন</e-text>
+          <e-kbd shortcut="mod+k"></e-kbd>
+        </e-stack>
+      </docs-example>
     </main>
   </body>
 </html>

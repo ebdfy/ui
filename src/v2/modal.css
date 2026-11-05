@@ -1,0 +1,120 @@
+/* e-modal: a native dialog the script builds inside the tag. Before the script, and while closed,
+   nothing of it shows or takes space. Medium is 620 px, small 380 and large 980; below 600 px every
+   size is a sheet docked to the bottom of the page's viewport. */
+e-modal {
+  display: none;
+}
+e-modal:has(> dialog) {
+  display: contents;
+}
+e-modal > dialog {
+  box-sizing: border-box;
+  width: min(100% - 32px, 620px);
+  max-width: none;
+  max-height: min(85dvh, 720px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--e-radius-3);
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+  box-shadow: 0 0 0 1px var(--e-color-line-2);
+  overflow: hidden;
+}
+e-modal[size='small'] > dialog {
+  width: min(100% - 32px, 380px);
+}
+e-modal[size='large'] > dialog {
+  width: min(100% - 32px, 980px);
+}
+e-modal > dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+e-modal > dialog::backdrop {
+  background: var(--e-color-scrim);
+}
+e-modal > dialog > header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--e-space-2);
+  padding: var(--e-space-3) var(--e-space-3) var(--e-space-3) var(--e-space-4);
+  border-bottom: 1px solid var(--e-color-line);
+}
+e-modal > dialog > header > h2 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--e-font-size-title);
+  line-height: var(--e-line-height-body);
+  font-weight: var(--e-font-weight-semibold);
+  overflow-wrap: anywhere;
+}
+e-modal > dialog > header > button {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--e-size-control-md);
+  height: var(--e-size-control-md);
+  padding: 0;
+  border: 0;
+  border-radius: var(--e-radius-1);
+  background: transparent;
+  color: var(--e-color-fg2);
+  font: inherit;
+  font-size: 22px;
+  line-height: var(--e-line-height-heading);
+  cursor: pointer;
+}
+/* On a phone the close button keeps its drawn size and takes a 44 px hit area around it. */
+@media (max-width: 599.98px) {
+  e-modal > dialog > header > button {
+    position: relative;
+  }
+  e-modal > dialog > header > button::before {
+    content: '';
+    position: absolute;
+    inset: calc((var(--e-size-control-md) - var(--e-size-control-lg)) / 2);
+  }
+}
+e-modal > dialog > header > button:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
+e-modal > dialog > div {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--e-space-4);
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+}
+e-modal > dialog > footer {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--e-space-2);
+  padding: var(--e-space-3) var(--e-space-4);
+  border-top: 1px solid var(--e-color-line);
+}
+/* The footer shows the modal's own buttons, its save bar or the ask before closing with edits, one
+   at a time; the script hides the rest. */
+e-modal > dialog > footer[hidden],
+e-modal > dialog > footer > [hidden] {
+  display: none;
+}
+e-modal > dialog > footer > [data-part='ask'] {
+  flex: 1 1 12em;
+  margin: 0;
+  font-weight: var(--e-font-weight-semibold);
+}
+@media (max-width: 599.98px) {
+  e-modal > dialog,
+  e-modal[size] > dialog {
+    width: 100%;
+    margin: auto 0 0;
+    border-radius: var(--e-radius-3) var(--e-radius-3) 0 0;
+  }
+}

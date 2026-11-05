@@ -4,69 +4,30 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Search field · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Search field · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Search field</h1>
-      <p>
-        <code>eb-search-field</code> is a search box. It brings up the search key on a phone, and the save bar never
-        counts it, even inside a form with a name.
+      <p class="lede">
+        <code>e-search-field</code> is a one-line box with a search icon. It shows no label: <code>label</code> is the
+        name a screen reader speaks.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Default" caption-bn="সাধারণ">
-          <eb-search-field
-            data-state="default"
-            label="Search orders"
-            data-label-en="Search orders"
-            data-label-bn="অর্ডার খুঁজুন"
-          ></eb-search-field>
-        </docs-example>
-        <docs-example caption="Focused" caption-bn="ফোকাসে">
-          <eb-search-field
-            data-state="focus"
-            label="Search customers"
-            data-label-en="Search customers"
-            data-label-bn="ক্রেতা খুঁজুন"
-          ></eb-search-field>
-        </docs-example>
-        <docs-example caption="With an error" caption-bn="ভুলসহ">
-          <eb-search-field
-            data-state="error"
-            value="r"
-            label="Search orders"
-            data-label-en="Search orders"
-            data-label-bn="অর্ডার খুঁজুন"
-            error="Type at least two letters."
-            data-error-en="Type at least two letters."
-            data-error-bn="অন্তত দুইটি অক্ষর লিখুন।"
-          ></eb-search-field>
-        </docs-example>
-        <docs-example caption="Disabled" caption-bn="বন্ধ">
-          <eb-search-field
-            data-state="disabled"
-            disabled
-            label="Search products"
-            data-label-en="Search products"
-            data-label-bn="পণ্য খুঁজুন"
-          ></eb-search-field>
-        </docs-example>
-        <docs-example caption="Filled" caption-bn="পূরণ করা">
-          <eb-search-field
-            data-state="filled"
-            label="Search orders"
-            data-label-en="Search orders"
-            data-label-bn="অর্ডার খুঁজুন"
-            value="Rahim"
-            data-value-en="Rahim"
-            data-value-bn="রহিম"
-          ></eb-search-field>
-        </docs-example>
-      </div>
+      <docs-example caption="Searching orders">
+        <e-search-field label="Search orders" name="q" placeholder="Search orders"></e-search-field>
+      </docs-example>
+      <docs-example caption="With a value">
+        <e-search-field label="Search customers" name="q" value="Rahim"></e-search-field>
+      </docs-example>
+      <docs-example caption="In a form with a submit button" stack>
+        <form>
+          <e-search-field label="Search by order number" name="order" placeholder="#1042"></e-search-field>
+          <e-button type="submit">Search</e-button>
+        </form>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-search-field label="অর্ডার খুঁজুন" name="q" placeholder="অর্ডার খুঁজুন"></e-search-field>
+      </docs-example>
     </main>
   </body>
 </html>

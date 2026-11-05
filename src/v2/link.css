@@ -1,0 +1,22 @@
+/* e-link styles the <a> the page wrote inside it, so a link works with no script. It takes the size
+   of the sentence around it. */
+e-link {
+  display: inline;
+  font-size: inherit;
+  line-height: inherit;
+  overflow-wrap: anywhere;
+}
+e-link > a {
+  color: var(--e-color-fg);
+  text-decoration: underline;
+  text-decoration-color: var(--e-color-line-2);
+  text-underline-offset: 2px;
+}
+e-link > a:hover {
+  text-decoration-color: var(--e-color-fg);
+}
+e-link > a:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}

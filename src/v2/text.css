@@ -1,0 +1,32 @@
+/* e-heading and e-text. */
+e-heading,
+e-text {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-body);
+  line-height: var(--e-line-height-body);
+}
+e-heading {
+  font-size: var(--e-font-size-title);
+  font-weight: var(--e-font-weight-semibold);
+}
+e-heading[level='1'] {
+  font-size: var(--e-font-size-heading);
+  line-height: var(--e-line-height-heading);
+  font-weight: var(--e-font-weight-bold);
+  letter-spacing: -0.01em;
+}
+e-heading[level='3'] {
+  font-size: var(--e-font-size-body);
+}
+e-text[tone='subdued'] {
+  color: var(--e-color-fg2);
+}
+e-text[tone='faint'] {
+  color: var(--e-color-fg3);
+}
+e-text[size='meta'] {
+  font-size: var(--e-font-size-meta);
+}

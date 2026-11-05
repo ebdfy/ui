@@ -1,0 +1,87 @@
+/* e-card: a surface with a header row (heading left, every slot="actions" child after it at the
+   right) when it has a heading. Each action takes the next column of row 1, so up to ten sit side by
+   side; empty columns are 0 wide and the gaps are margins, so they take no room. Before the script
+   the heading is the ::before; the script puts an h2 in the same grid cell. The heading's column is
+   never narrower than its longest word, so actions beside it never split a word: a page keeps its
+   action labels short enough to fit. */
+e-card {
+  display: grid;
+  grid-template-columns: minmax(auto, 1fr) repeat(10, auto);
+  row-gap: var(--e-space-3);
+  align-items: center;
+  align-content: start;
+  min-width: 0;
+  padding: var(--e-space-3) var(--e-space-4) var(--e-space-4);
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+  border: 1px solid var(--e-color-line);
+  border-radius: var(--e-radius-2);
+}
+e-card[heading]::before,
+e-card > h2[slot='heading'] {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  font-size: var(--e-font-size-title);
+  line-height: var(--e-line-height-body);
+  font-weight: var(--e-font-weight-semibold);
+  overflow-wrap: break-word;
+}
+e-card[heading]::before {
+  content: attr(heading);
+}
+e-card:has(> h2[slot='heading'])::before {
+  content: none;
+}
+e-card > [slot='actions'],
+e-card > e-menu[data-part='more'] {
+  grid-row: 1;
+  margin-inline-start: var(--e-space-2);
+}
+e-card > :not([slot='actions'], [slot='heading'], [data-part='more']) {
+  grid-column: 1 / -1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* On a phone a card with three or more actions shows two and a More menu, which the script builds
+   from the rest. Before the script the ::after draws the More trigger as an e-button, in the same
+   box, so nothing moves when the menu replaces it. Every action is a 44 px target. */
+@media (max-width: 599.98px) {
+  e-card > [slot='actions'] ~ [slot='actions'] ~ [slot='actions'] {
+    display: none;
+  }
+  e-card:has(> [slot='actions'] ~ [slot='actions'] ~ [slot='actions']):not(:has(> [data-part='more']))::after {
+    content: 'More';
+    grid-row: 1;
+    margin-inline-start: var(--e-space-2);
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: var(--e-size-control-lg);
+    padding: 0 14px;
+    border: 1px solid var(--e-color-line-2);
+    border-radius: var(--e-radius-1);
+    background: var(--e-color-surface);
+    color: var(--e-color-fg);
+    font-size: var(--e-font-size-meta);
+    font-weight: var(--e-font-weight-semibold);
+    line-height: var(--e-line-height-body);
+    white-space: nowrap;
+  }
+  e-card:lang(bn):has(> [slot='actions'] ~ [slot='actions'] ~ [slot='actions']):not(:has(> [data-part='more']))::after {
+    content: 'আরও';
+  }
+  e-card > [slot='actions'],
+  e-card > e-menu[data-part='more'] > [slot='trigger'] {
+    min-height: var(--e-size-control-lg);
+  }
+}
+@media (min-width: 600px) {
+  e-card > e-menu[data-part='more'] {
+    display: none;
+  }
+}

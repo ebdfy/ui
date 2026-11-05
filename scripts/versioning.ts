@@ -13,6 +13,7 @@ interface Member {
 }
 
 interface Declaration {
+  name?: string
   tagName?: string
   customElement?: boolean
   description?: string
@@ -30,7 +31,7 @@ interface Declaration {
 }
 
 export interface Manifest {
-  modules: { declarations?: Declaration[] }[]
+  modules: { path: string; declarations?: Declaration[] }[]
 }
 
 function elements(manifest: Manifest): Map<string, Declaration> {

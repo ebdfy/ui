@@ -23,45 +23,45 @@ const files = readdirSync(ui, { recursive: true, encoding: 'utf8' }).filter(
 )
 
 test('the code drops the docs-only attributes and puts one attribute per line on a long tag', () => {
-  expect(codeOf('<eb-button variant="primary" data-en="Save" data-bn="সেভ করুন">Save</eb-button>')).toBe(
-    '<eb-button variant="primary">Save</eb-button>',
+  expect(codeOf('<e-button tone="primary" data-en="Save" data-bn="সেভ করুন">Save</e-button>')).toBe(
+    '<e-button tone="primary">Save</e-button>',
   )
   expect(
-    codeOf(`<eb-text-field
+    codeOf(`<e-text-field
           label="Delivery address"
           help="As it shows on the parcel"
           data-label-en="Delivery address"
           data-label-bn="ডেলিভারির ঠিকানা"
           data-state="default"
           required
-        ></eb-text-field>`),
+        ></e-text-field>`),
   ).toBe(
     [
-      '<eb-text-field',
+      '<e-text-field',
       '  label="Delivery address"',
       '  help="As it shows on the parcel"',
       '  required',
-      '></eb-text-field>',
+      '></e-text-field>',
     ].join('\n'),
   )
   expect(
-    codeOf(`<eb-button variant="primary"
-            ><eb-icon slot="icon" name="plus"></eb-icon
-            ><span data-en="Add order" data-bn="অর্ডার যোগ করুন">Add order</span></eb-button
+    codeOf(`<e-button tone="primary"
+            ><e-icon slot="icon" name="plus"></e-icon
+            ><span data-en="Add order" data-bn="অর্ডার যোগ করুন">Add order</span></e-button
           >`),
   ).toBe(
     [
-      '<eb-button variant="primary">',
-      '  <eb-icon slot="icon" name="plus"></eb-icon>',
+      '<e-button tone="primary">',
+      '  <e-icon slot="icon" name="plus"></e-icon>',
       '  <span>Add order</span>',
-      '</eb-button>',
+      '</e-button>',
     ].join('\n'),
   )
 })
 
 test('a value that holds a double quote keeps its single quotes in the code', () => {
-  expect(codeOf(`<eb-text-field label='Say "hi"'></eb-text-field>`)).toBe(
-    `<eb-text-field label='Say "hi"'></eb-text-field>`,
+  expect(codeOf(`<e-text-field label='Say "hi"'></e-text-field>`)).toBe(
+    `<e-text-field label='Say "hi"'></e-text-field>`,
   )
 })
 
@@ -124,7 +124,8 @@ test('every code block on every docs page has a Copy button beside it', () => {
     .flatMap((file) => {
       const served = framePage(readFileSync(`${ui}${file}`, 'utf8'), pathOf(file))
       const blocks = served.match(/<pre[\s>]/g)?.length ?? 0
-      const copied = served.match(/<\/pre><button type="button" class="copy">Copy<\/button>/g)?.length ?? 0
+      // v2's wait hidden until its docs script shows them.
+      const copied = served.match(/<\/pre><button type="button" class="copy"( hidden)?>Copy<\/button>/g)?.length ?? 0
       return blocks === copied ? [] : [`${file}: ${blocks - copied} of ${blocks} without Copy`]
     })
   expect(bare).toEqual([])

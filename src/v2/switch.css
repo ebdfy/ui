@@ -1,0 +1,64 @@
+/* e-switch. Before the script the tag draws a 32 by 18 px track with its knob as ::before and the
+   label as ::after. The script builds a native role=switch checkbox and a label in the same places.
+   The knob is a radial gradient, so it takes its colour from the tokens in both themes. */
+e-switch {
+  --e-knob: radial-gradient(circle at 9px 50%, var(--e-color-surface) 6px, transparent 6.5px);
+  --e-knob-on: radial-gradient(circle at calc(100% - 9px) 50%, var(--e-color-primary-fg) 6px, transparent 6.5px);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-space-2);
+  vertical-align: middle;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-body);
+  line-height: var(--e-line-height-body);
+}
+e-switch::before,
+e-switch > input {
+  content: '';
+  box-sizing: border-box;
+  flex: none;
+  width: 32px;
+  height: 18px;
+  margin: 0;
+  border: 0;
+  border-radius: var(--e-radius-pill);
+  background: var(--e-knob), var(--e-color-line-2);
+}
+e-switch::after {
+  content: attr(label);
+}
+e-switch[checked]:not(:has(> input))::before,
+e-switch > input:checked {
+  background: var(--e-knob-on), var(--e-color-primary);
+}
+e-switch > input {
+  appearance: none;
+  cursor: pointer;
+}
+e-switch > input:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
+e-switch > label {
+  cursor: pointer;
+}
+e-switch:has(> input)::before,
+e-switch:has(> input)::after {
+  content: none;
+}
+e-switch[disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@media (max-width: 599.98px) {
+  e-switch {
+    min-height: var(--e-size-control-lg);
+  }
+  /* The label takes the row's whole height, so a tap anywhere on the 44 px row turns the switch. */
+  e-switch > label {
+    align-self: stretch;
+    display: inline-flex;
+    align-items: center;
+  }
+}

@@ -14,12 +14,8 @@ export type BridgeMessage =
   | { type: 'toast'; payload: { message: string; error: boolean; action?: string; call: number } }
   | { type: 'nav'; payload: { entries: NavEntry[] } }
   | { type: 'loading'; payload: { visible: boolean } }
-  // Whether the page shows an eb-bottom-bar, whose actions stand in for the Admin's tab bar on a phone.
-  | { type: 'bottomBar'; payload: { visible: boolean } }
   | { type: 'modal'; payload: ModalOptions }
   | { type: 'modalClose' }
-  // How tall a page shown in the Admin's modal stands, which the modal takes.
-  | { type: 'modalHeight'; payload: { height: number } }
   | { type: 'idToken'; payload: { id: number } }
   // Sent once the page listens, so the Admin can tell it its theme. It names the page, which the
   // Admin marks current in its nav even when the app moved there by itself.
@@ -33,7 +29,7 @@ export interface ModalOptions {
 }
 
 // One of an app's pages in the Admin nav: its label and its path on the app's origin, and
-// optionally an icon by its eb-icon name and a count, such as the orders waiting.
+// optionally an icon by its e-icon name and a count, such as the orders waiting.
 export interface NavEntry {
   label: string
   path: string
@@ -143,34 +139,6 @@ export function adminRedirect(win: Window, dev: boolean = import.meta.env.DEV): 
   return `https://admin.ebdfy.com/store/${encodeURIComponent(store)}/apps/${encodeURIComponent(app)}`
 }
 
-// The Admin names the frame of its modal ebdfy-dialog on a desktop and ebdfy-sheet on a phone, so a
-// page shown there knows before it first draws. It sits on the modal's surface, and its eb-page
-// stands as tall as its content rather than the frame, so the modal can fit it.
-const modalKinds = new Map([
-  ['ebdfy-dialog', 'dialog'],
-  ['ebdfy-sheet', 'sheet'],
-])
-// The page stands as tall as its content, never the frame's height, which the modal takes from it:
-// a page laid out at 100% or 100dvh would otherwise measure the frame, or nothing. A desktop dialog
-// is narrow but used with a pointer, so its controls are md and a bottom bar keeps its buttons at
-// their own width.
-const fitContent = `html, body { height: auto !important; min-height: 0 !important; }
-  eb-page { min-height: auto; background: var(--eb-color-surface); }`
-const inModal = {
-  sheet: fitContent,
-  dialog: `${fitContent}
-    :root { --eb-size-target: var(--eb-size-control-md); }
-    eb-bottom-bar { --eb-bar-fill: initial; }`,
-}
-
-function fitModal(win: Window, sheet: CSSStyleSheet): void {
-  const kind = modalKinds.get(win.name)
-  const root = win.document.documentElement
-  if (kind) root.dataset.ebModal = kind
-  else delete root.dataset.ebModal
-  sheet.replaceSync(kind === 'dialog' || kind === 'sheet' ? inModal[kind] : '')
-}
-
 // The element with focus, inside any shadow roots, which a focus() on its host would not reach.
 function focused(doc: Document): HTMLElement | null {
   let element = doc.activeElement
@@ -213,29 +181,6 @@ export function createBridge(win: Window = window) {
     post({ type: 'saveBar', payload: { visible: false } })
     // Nor does it want the loading bar an earlier page may have asked for.
     post({ type: 'loading', payload: { visible: false } })
-    // The Admin hides its tab bar on a phone while the page shows a bottom bar, so it hears when one
-    // comes and goes. A new page starts with none, which brings back a tab bar an earlier page hid.
-    let bottomBar = false
-    post({ type: 'bottomBar', payload: { visible: false } })
-    const watchBottomBar = () => {
-      const now = win.document.querySelector('eb-bottom-bar') !== null
-      if (now !== bottomBar) post({ type: 'bottomBar', payload: { visible: (bottomBar = now) } })
-    }
-    new MutationObserver(watchBottomBar).observe(win.document, { childList: true, subtree: true })
-    watchBottomBar()
-    // The modal's frame is renamed when the window crosses from a desktop to a phone, which resizes it.
-    const modalSheet = new CSSStyleSheet()
-    win.document.adoptedStyleSheets = [...win.document.adoptedStyleSheets, modalSheet]
-    fitModal(win, modalSheet)
-    win.addEventListener('resize', () => fitModal(win, modalSheet))
-    // A page in the modal says how tall it stands, and again whenever that changes.
-    let height = -1
-    const measure = new ResizeObserver(() => {
-      const root = win.document.documentElement
-      const now = Math.ceil(root.getBoundingClientRect().height)
-      if (root.dataset.ebModal && now !== height) post({ type: 'modalHeight', payload: { height: (height = now) } })
-    })
-    measure.observe(win.document.documentElement)
     // Escape pressed in a page shown in the Admin's modal never reaches the modal, which is in the
     // Admin's document, so the bridge passes it on. With no modal open the Admin ignores it.
     win.addEventListener('keydown', (event) => {

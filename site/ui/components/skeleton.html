@@ -4,25 +4,32 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Skeleton · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Skeleton · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Skeleton</h1>
-      <p>
-        <code>eb-skeleton</code> holds the place of text while an order loads. Set <code>lines</code> for how many lines
-        to draw; the last of several is shorter. Screen readers skip it, and it stops pulsing when the person asks for
-        less motion.
+      <p class="lede">
+        <code>e-skeleton</code> holds the place of text while it loads. Set <code>lines</code> from <code>2</code> to
+        <code>8</code> for that many lines of body text, the last one shorter; without it the skeleton is one line. A
+        screen reader finds nothing in it, so say the loading state elsewhere.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Loading the order, three lines" caption-bn="অর্ডার লোড হচ্ছে, তিন লাইন" stack>
-          <eb-skeleton lines="3"></eb-skeleton>
-        </docs-example>
-      </div>
+      <docs-example caption="One line" stack>
+        <e-skeleton></e-skeleton>
+      </docs-example>
+      <docs-example caption="Four lines" stack>
+        <e-skeleton lines="4"></e-skeleton>
+      </docs-example>
+      <docs-example caption="In a card" stack>
+        <e-card heading="Order #1042">
+          <e-skeleton lines="3"></e-skeleton>
+        </e-card>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-card heading="অর্ডার #১০৪২">
+          <e-skeleton lines="3"></e-skeleton>
+        </e-card>
+      </docs-example>
     </main>
   </body>
 </html>

@@ -1,0 +1,111 @@
+/* e-district-picker. Before the script the tag draws the district's label as ::before and its box as
+   ::after, in the page's language, and keeps the upazila's label and box as empty space below. The
+   script builds two boxes, each a label over a native select, in the same places, and the
+   pseudo-elements go. The chevron is drawn with gradients so it takes its colour from the tokens. */
+e-district-picker {
+  --e-picker-height: var(--e-size-control-md);
+  --e-chevron:
+    linear-gradient(
+        to bottom left,
+        transparent calc(50% - 1px),
+        var(--e-color-fg2) calc(50% - 1px),
+        var(--e-color-fg2) calc(50% + 1px),
+        transparent calc(50% + 1px)
+      )
+      right 17px center / 5px 5px no-repeat,
+    linear-gradient(
+        to bottom right,
+        transparent calc(50% - 1px),
+        var(--e-color-fg2) calc(50% - 1px),
+        var(--e-color-fg2) calc(50% + 1px),
+        transparent calc(50% + 1px)
+      )
+      right 12px center / 5px 5px no-repeat;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 6px;
+  min-width: 0;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-body);
+}
+/* The upazila's label line, the 6 px gap and its box, 16 px below the district's. */
+e-district-picker:not(:has(> div)) {
+  padding-bottom: calc(var(--e-space-4) + var(--e-line-height-meta) + 6px + var(--e-picker-height));
+}
+e-district-picker:has(> div) {
+  row-gap: var(--e-space-4);
+}
+e-district-picker > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 6px;
+  min-width: 0;
+}
+e-district-picker::before,
+e-district-picker > div > label {
+  display: block;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-meta);
+  font-weight: var(--e-font-weight-semibold);
+  line-height: var(--e-line-height-meta);
+}
+e-district-picker::before {
+  content: 'District';
+}
+e-district-picker:lang(bn)::before {
+  content: 'জেলা';
+}
+e-district-picker::after,
+e-district-picker > div > select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: var(--e-picker-height);
+  margin: 0;
+  padding: 0 36px 0 var(--e-space-3);
+  border: 1px solid var(--e-color-line-2);
+  border-radius: var(--e-radius-1);
+  background: var(--e-chevron), var(--e-color-surface);
+  color: var(--e-color-fg);
+  font: inherit;
+  font-size: var(--e-font-size-body);
+}
+e-district-picker::after {
+  content: 'Choose a district';
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  line-height: var(--e-line-height-body);
+}
+e-district-picker:lang(bn)::after {
+  content: 'জেলা বাছুন';
+}
+/* Built, the selects stand in their place. :lang(bn) above outranks a plain :has(), hence both here. */
+e-district-picker:has(> div)::before,
+e-district-picker:has(> div)::after,
+e-district-picker:lang(bn):has(> div)::before,
+e-district-picker:lang(bn):has(> div)::after {
+  content: none;
+}
+e-district-picker > div > select {
+  appearance: none;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+e-district-picker > div > select:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+e-district-picker > div > select:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
+
+@media (max-width: 599.98px) {
+  e-district-picker {
+    --e-picker-height: var(--e-size-control-lg);
+  }
+}

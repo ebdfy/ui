@@ -1,0 +1,85 @@
+/* e-button: the tag carries the whole look, so CSS draws it before the script. The script moves the
+   label into a native <button> that fills the tag, and the tag's side padding moves onto the button,
+   so the box never moves. */
+e-button {
+  --e-button-pad: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+  height: var(--e-size-control-md);
+  padding: 0 var(--e-button-pad);
+  border: 1px solid var(--e-color-line-2);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-meta);
+  font-weight: var(--e-font-weight-semibold);
+  line-height: var(--e-line-height-body);
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+}
+e-button:hover {
+  background: var(--e-color-surface-2);
+}
+e-button[tone='primary'] {
+  border-color: transparent;
+  background: var(--e-color-primary);
+  color: var(--e-color-primary-fg);
+}
+e-button[tone='plain'] {
+  border-color: transparent;
+  background: none;
+  color: var(--e-color-fg2);
+}
+e-button[tone='plain']:hover {
+  background: var(--e-color-surface-2);
+  color: var(--e-color-fg);
+}
+e-button[size='sm'] {
+  --e-button-pad: 10px;
+  height: var(--e-size-control-sm);
+}
+e-button[size='lg'] {
+  --e-button-pad: 18px;
+  height: var(--e-size-control-lg);
+  font-size: var(--e-font-size-body);
+}
+/* On a phone every button is a 44 px target, sm and the default too. */
+@media (max-width: 599.98px) {
+  e-button,
+  e-button[size='sm'] {
+    height: var(--e-size-control-lg);
+  }
+}
+e-button[disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+e-button:has(> button) {
+  padding: 0;
+}
+e-button > button {
+  all: unset;
+  display: inline-flex;
+  flex: 1 1 auto;
+  align-self: stretch;
+  align-items: center;
+  justify-content: center;
+  gap: inherit;
+  box-sizing: border-box;
+  padding: 0 var(--e-button-pad);
+  border-radius: inherit;
+  cursor: inherit;
+}
+e-button:has(> button:focus-visible) {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
+/* The kit's display rule would beat the browser's own for hidden, so a hidden button says it again. */
+e-button[hidden] {
+  display: none;
+}

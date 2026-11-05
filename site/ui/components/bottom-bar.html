@@ -4,80 +4,32 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Bottom bar · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
-    <style>
-      /* The scroll box is the demo itself, so the bar sticks to the foot of the frame's demo area. */
-      .demo {
-        display: block;
-        padding: 0;
-      }
-      .scroll {
-        height: 240px;
-        overflow: auto;
-      }
-      .scroll p {
-        margin: 0;
-        padding: 12px 16px;
-      }
-    </style>
+    <title>Bottom bar · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Bottom bar</h1>
-      <p>
-        <code>eb-bottom-bar</code> holds a page's buttons and stays at the bottom of the scrolling page while the
-        content moves under it. The frame below keeps the example from sticking to this page.
+      <p class="lede">
+        <code>e-bottom-bar</code> holds a page's buttons at the end of a bar that sticks to the bottom of the page. On a
+        phone each button takes an equal share.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Sticks to the foot of a scrolling box" caption-bn="স্ক্রলবক্সের নিচে আটকে থাকে">
-          <div class="scroll">
-            <p
-              data-en="Order 1042: two items, to be sent to Sylhet."
-              data-bn="অর্ডার 1042: দুইটি পণ্য, সিলেটে পাঠাতে হবে।"
-            >
-              Order 1042: two items, to be sent to Sylhet.
-            </p>
-            <p
-              data-en="Order 1043: one item, to be sent to Dhaka."
-              data-bn="অর্ডার 1043: একটি পণ্য, ঢাকায় পাঠাতে হবে।"
-            >
-              Order 1043: one item, to be sent to Dhaka.
-            </p>
-            <p
-              data-en="Order 1044: three items, to be sent to Khulna."
-              data-bn="অর্ডার 1044: তিনটি পণ্য, খুলনায় পাঠাতে হবে।"
-            >
-              Order 1044: three items, to be sent to Khulna.
-            </p>
-            <p
-              data-en="Order 1045: one item, to be sent to Rajshahi."
-              data-bn="অর্ডার 1045: একটি পণ্য, রাজশাহীতে পাঠাতে হবে।"
-            >
-              Order 1045: one item, to be sent to Rajshahi.
-            </p>
-            <p
-              data-en="Order 1046: two items, to be sent to Barishal."
-              data-bn="অর্ডার 1046: দুইটি পণ্য, বরিশালে পাঠাতে হবে।"
-            >
-              Order 1046: two items, to be sent to Barishal.
-            </p>
-            <p
-              data-en="Order 1047: one item, to be sent to Rangpur."
-              data-bn="অর্ডার 1047: একটি পণ্য, রংপুরে পাঠাতে হবে।"
-            >
-              Order 1047: one item, to be sent to Rangpur.
-            </p>
-            <eb-bottom-bar>
-              <eb-button variant="secondary" data-en="Cancel" data-bn="বাতিল">Cancel</eb-button>
-              <eb-button variant="primary" data-en="Save" data-bn="সংরক্ষণ">Save</eb-button>
-            </eb-bottom-bar>
-          </div>
-        </docs-example>
-      </div>
+      <docs-example caption="Save and discard" stack>
+        <e-bottom-bar>
+          <e-button>Discard</e-button>
+          <e-button tone="primary">Save</e-button>
+        </e-bottom-bar>
+      </docs-example>
+      <docs-example caption="One button" stack>
+        <e-bottom-bar>
+          <e-button tone="primary">Book Pathao</e-button>
+        </e-bottom-bar>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-bottom-bar>
+          <e-button>বাতিল</e-button>
+          <e-button tone="primary">সংরক্ষণ</e-button>
+        </e-bottom-bar>
+      </docs-example>
     </main>
   </body>
 </html>

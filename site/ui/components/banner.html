@@ -4,43 +4,46 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Banner · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Banner · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Banner</h1>
-      <p>
-        <code>eb-banner</code> puts a message in the page: <code>tone="info"</code>, the default, for a note, and
-        <code>tone="danger"</code> for a risk to act on, such as a customer whose orders keep coming back. Its icon
-        carries a name for screen readers; the banner does not interrupt them. <code>heading</code> adds a title above
-        the words, an element with <code>slot="action"</code> sits after them, and <code>dismissible</code> adds a close
-        button that fires <code>eb-dismiss</code>, which a listener can cancel to keep the banner.
+      <p class="lede">
+        <code>e-banner</code> shows a message across the page. Set <code>tone</code> to <code>info</code> (the default),
+        <code>success</code>, <code>warning</code> or <code>critical</code>; a critical banner is announced as an alert.
+        Add <code>dismissible</code> for a close button. The close button fires <code>dismiss</code>, which bubbles, so
+        a page listens on the banner itself.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Info, with a heading and an action" caption-bn="তথ্য, শিরোনাম ও কাজসহ" stack>
-          <eb-banner heading="Pickup cut-off" data-heading-en="Pickup cut-off" data-heading-bn="পিকআপের সময়সীমা">
-            <span
-              data-en="Pathao picks up orders booked before 4 pm the same day."
-              data-bn="বিকেল ৪টার আগে বুক করা অর্ডার পাঠাও একই দিনে নিয়ে যায়।"
-              >Pathao picks up orders booked before 4 pm the same day.</span
-            >
-            <eb-button slot="action" size="sm" data-en="Book pickup" data-bn="পিকআপ বুক করুন">Book pickup</eb-button>
-          </eb-banner>
-        </docs-example>
-        <docs-example caption="Danger, dismissible" caption-bn="ঝুঁকি, বন্ধ করা যায়" stack>
-          <eb-banner
-            tone="danger"
-            dismissible
-            data-en="3 of this number's 5 orders came back. Take the delivery charge in advance by bKash."
-            data-bn="এই নম্বরের ৫টি অর্ডারের ৩টি ফেরত এসেছে। ডেলিভারি চার্জ বিকাশে অগ্রিম নিন।"
-            >3 of this number's 5 orders came back. Take the delivery charge in advance by bKash.</eb-banner
-          >
-        </docs-example>
-      </div>
+      <docs-example caption="Info, the default" stack>
+        <e-banner heading="Pathao pickup at 4 pm">
+          <e-text>Orders confirmed before then go out today.</e-text>
+        </e-banner>
+      </docs-example>
+      <docs-example caption="The four tones" stack>
+        <e-banner tone="info" heading="Info">
+          <e-text>Order #1042 was placed.</e-text>
+        </e-banner>
+        <e-banner tone="success" heading="Success">
+          <e-text>Order #1042 was delivered to Sylhet.</e-text>
+        </e-banner>
+        <e-banner tone="warning" heading="Warning">
+          <e-text>Stock is low for 3 items.</e-text>
+        </e-banner>
+        <e-banner tone="critical" heading="Critical">
+          <e-text>The Pathao booking for #1042 failed.</e-text>
+        </e-banner>
+      </docs-example>
+      <docs-example caption="Dismissible" stack>
+        <e-banner heading="New courier rates" dismissible>
+          <e-text>Dhaka deliveries now cost ৳60.</e-text>
+        </e-banner>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-banner tone="warning" heading="স্টক কমে গেছে" dismissible>
+          <e-text>৩টি পণ্যের স্টক কম।</e-text>
+        </e-banner>
+      </docs-example>
     </main>
   </body>
 </html>

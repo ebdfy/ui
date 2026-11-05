@@ -1,0 +1,19 @@
+/* e-icon reserves its box before the script runs, so filling it moves nothing. */
+e-icon {
+  display: inline-block;
+  inline-size: 16px;
+  block-size: 16px;
+  vertical-align: -3px;
+}
+
+e-icon[size='20'] {
+  inline-size: 20px;
+  block-size: 20px;
+  vertical-align: -5px;
+}
+
+e-icon > svg {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}

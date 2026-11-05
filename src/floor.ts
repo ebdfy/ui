@@ -1,4 +1,4 @@
-// Imported by v1.ts and host.ts before either defines an element. Below the floor (Chrome 111),
+// Imported by v2.ts and v2-host.ts before either defines an element. Below the floor (Chrome 111),
 // the page's body becomes an update notice before any element is defined, so none upgrades. The test is a feature test,
 // declarative shadow DOM, which shipped in Chrome 111; the user agent is never read.
 // `?floor=old` fails the test on purpose, for the playground and for tests.

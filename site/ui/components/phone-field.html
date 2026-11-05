@@ -4,69 +4,30 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Phone field · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Phone field · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Phone field</h1>
-      <p>
-        <code>eb-phone-field</code> takes a Bangladesh mobile number: 11 digits starting with 01. It brings up the phone
-        keypad and keeps the number in Latin digits, even when it is typed in Bangla digits.
+      <p class="lede">
+        <code>e-phone-field</code> takes a Bangladesh mobile number: 11 digits starting 01. Bangla digits turn Latin as
+        they are typed, and the form says why a wrong number is refused.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Default" caption-bn="সাধারণ">
-          <eb-phone-field
-            name="phone"
-            data-state="default"
-            label="Phone"
-            data-label-en="Phone"
-            data-label-bn="ফোন"
-          ></eb-phone-field>
-        </docs-example>
-        <docs-example caption="Focused" caption-bn="ফোকাসে">
-          <eb-phone-field
-            data-state="focus"
-            label="Customer phone"
-            data-label-en="Customer phone"
-            data-label-bn="ক্রেতার ফোন"
-          ></eb-phone-field>
-        </docs-example>
-        <docs-example caption="With an error" caption-bn="ভুলসহ">
-          <eb-phone-field
-            data-state="error"
-            value="0170707"
-            label="Phone"
-            data-label-en="Phone"
-            data-label-bn="ফোন"
-            error="Enter an 11-digit phone starting with 01."
-            data-error-en="Enter an 11-digit phone starting with 01."
-            data-error-bn="এগারো সংখ্যার, 01 দিয়ে শুরু ফোন নম্বর লিখুন।"
-          ></eb-phone-field>
-        </docs-example>
-        <docs-example caption="Disabled" caption-bn="বন্ধ">
-          <eb-phone-field
-            data-state="disabled"
-            value="01911004471"
-            disabled
-            label="Phone"
-            data-label-en="Phone"
-            data-label-bn="ফোন"
-          ></eb-phone-field>
-        </docs-example>
-        <docs-example caption="Filled" caption-bn="পূরণ করা">
-          <eb-phone-field
-            data-state="filled"
-            value="01707071591"
-            label="Phone"
-            data-label-en="Phone"
-            data-label-bn="ফোন"
-          ></eb-phone-field>
-        </docs-example>
-      </div>
+      <docs-example caption="A mobile number">
+        <e-phone-field label="Customer phone" name="phone" placeholder="01XXXXXXXXX" required></e-phone-field>
+      </docs-example>
+      <docs-example caption="With a value">
+        <e-phone-field label="Phone" name="phone" value="01712345678"></e-phone-field>
+      </docs-example>
+      <docs-example caption="In a form with a submit button" stack>
+        <form>
+          <e-phone-field label="Phone" name="phone" required></e-phone-field>
+          <e-button type="submit" tone="primary">Save</e-button>
+        </form>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-phone-field label="গ্রাহকের ফোন" name="phone" value="০১৭১২৩৪৫৬৭৮"></e-phone-field>
+      </docs-example>
     </main>
   </body>
 </html>

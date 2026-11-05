@@ -1,0 +1,71 @@
+/* e-banner: a message across the page in a tone: info (the default) the soft accent fill, success
+   green, warning amber, critical red, which the script makes an alert. Before the script the heading
+   is the ::before; the script builds it in its place, and a close button for a dismissible one. */
+e-banner {
+  position: relative;
+  display: block;
+  min-width: 0;
+  padding: var(--e-space-3) var(--e-space-4);
+  border-radius: var(--e-radius-2);
+  background: var(--e-color-accent-soft);
+  color: var(--e-color-fg);
+  overflow-wrap: anywhere;
+}
+e-banner[hidden] {
+  display: none;
+}
+e-banner[tone='success'] {
+  background: var(--e-color-delivered-bg);
+}
+e-banner[tone='warning'] {
+  background: var(--e-color-new-bg);
+}
+e-banner[tone='critical'] {
+  background: var(--e-color-returned-bg);
+}
+e-banner[heading]::before,
+e-banner > [slot='heading'] {
+  display: block;
+  margin: 0;
+  font-weight: var(--e-font-weight-semibold);
+}
+e-banner[heading]::before {
+  content: attr(heading);
+}
+e-banner:has(> [slot='heading'])::before {
+  content: none;
+}
+/* The close button sits at the end of the first line, as tall as a line of the words, in room the
+   banner keeps for it from the first paint. */
+e-banner[dismissible] {
+  padding-right: calc(var(--e-space-4) + var(--e-space-2) + var(--e-line-height-body));
+}
+e-banner > [slot='dismiss'] {
+  position: absolute;
+  top: var(--e-space-3);
+  right: var(--e-space-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--e-line-height-body);
+  height: var(--e-line-height-body);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--e-radius-1);
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+e-banner > [slot='dismiss']:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
+/* On a phone the close button keeps its drawn size and takes a 44 px hit area around it. */
+@media (max-width: 599.98px) {
+  e-banner > [slot='dismiss']::before {
+    content: '';
+    position: absolute;
+    inset: calc((var(--e-line-height-body) - var(--e-size-control-lg)) / 2);
+  }
+}

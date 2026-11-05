@@ -1,0 +1,184 @@
+/* e-setup-guide and e-setup-step: steps with a done state, a count such as "2 of 5", and a dismiss event.
+   Before the script the heading is the ::before, the count the ::after (CSS counters over the steps)
+   and each step draws its box as ::before. The script builds an h2 and a Dismiss button in the heading
+   row, a count under it and a native checkbox with a label in each step, in the same places. */
+e-setup-guide {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--e-space-2);
+  row-gap: var(--e-space-1);
+  align-items: center;
+  align-content: start;
+  min-width: 0;
+  padding: var(--e-space-3) var(--e-space-4) var(--e-space-4);
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+  border: 1px solid var(--e-color-line);
+  border-radius: var(--e-radius-2);
+  counter-reset: steps done;
+}
+e-setup-guide[heading]::before,
+e-setup-guide > h2[slot='heading'] {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  min-width: 0;
+  min-height: var(--e-size-control-sm);
+  display: flex;
+  align-items: center;
+  font-size: var(--e-font-size-title);
+  line-height: var(--e-line-height-body);
+  font-weight: var(--e-font-weight-semibold);
+  overflow-wrap: anywhere;
+}
+e-setup-guide[heading]::before {
+  content: attr(heading);
+}
+e-setup-guide:has(> h2[slot='heading'])::before {
+  content: none;
+}
+
+e-setup-guide::after,
+e-setup-guide > [data-count] {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin-bottom: var(--e-space-2);
+  color: var(--e-color-fg2);
+  font-size: var(--e-font-size-body);
+  line-height: var(--e-line-height-body);
+}
+e-setup-guide::after {
+  content: counter(done) ' of ' counter(steps);
+}
+e-setup-guide:lang(bn)::after {
+  content: counter(steps, bengali) 'টির মধ্যে ' counter(done, bengali) 'টি';
+}
+e-setup-guide:has(> [data-count])::after {
+  content: none;
+}
+
+e-setup-guide > [data-dismiss] {
+  grid-column: 2;
+  grid-row: 1;
+  box-sizing: border-box;
+  height: var(--e-size-control-sm);
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: var(--e-radius-1);
+  background: none;
+  color: var(--e-color-fg2);
+  font: inherit;
+  font-size: var(--e-font-size-meta);
+  font-weight: var(--e-font-weight-semibold);
+  line-height: var(--e-line-height-body);
+  white-space: nowrap;
+  cursor: pointer;
+}
+e-setup-guide > [data-dismiss]:hover {
+  background: var(--e-color-surface-2);
+  color: var(--e-color-fg);
+}
+e-setup-guide > [data-dismiss]:focus-visible,
+e-setup-step > input:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
+
+e-setup-step {
+  /* The tick is two strokes meeting at its foot, in the 16 px inside the border. */
+  --e-check:
+    linear-gradient(
+        to bottom left,
+        transparent calc(50% - 1px),
+        var(--e-color-primary-fg) calc(50% - 1px),
+        var(--e-color-primary-fg) calc(50% + 1px),
+        transparent calc(50% + 1px)
+      )
+      2px 7px / 4px 4px no-repeat,
+    linear-gradient(
+        to bottom right,
+        transparent calc(50% - 1px),
+        var(--e-color-primary-fg) calc(50% - 1px),
+        var(--e-color-primary-fg) calc(50% + 1px),
+        transparent calc(50% + 1px)
+      )
+      6px 4px / 7px 7px no-repeat;
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--e-space-2);
+  min-width: 0;
+  padding: var(--e-space-1) 0;
+  font-size: var(--e-font-size-body);
+  line-height: var(--e-line-height-body);
+  counter-increment: steps;
+  position: relative;
+}
+e-setup-step[done] {
+  counter-increment: steps done;
+}
+e-setup-step::before,
+e-setup-step > input {
+  box-sizing: border-box;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+  border: 1px solid var(--e-color-line-2);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-surface);
+}
+e-setup-step::before {
+  content: '';
+}
+e-setup-step[done]:not(:has(> input))::before,
+e-setup-step > input:checked {
+  background: var(--e-check), var(--e-color-primary);
+}
+e-setup-step > input {
+  appearance: none;
+  cursor: pointer;
+  /* Above the label's row-wide hit area, so a tap on the box is the box's own. */
+  position: relative;
+  z-index: 1;
+}
+e-setup-step > label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+/* The whole row is the label's to tap, the space around the box included. */
+e-setup-step > label::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+e-setup-step[done] > label {
+  color: var(--e-color-fg2);
+}
+e-setup-step:has(> input)::before {
+  content: none;
+}
+/* On a phone Dismiss keeps its drawn size, so the heading row does not grow when it is built, and
+   takes a 44 px hit area around it. */
+@media (max-width: 599.98px) {
+  /* Each step is a 44 px row, its box and words centred in it. */
+  e-setup-step {
+    align-items: center;
+    min-height: var(--e-size-control-lg);
+    padding: 0;
+  }
+  e-setup-step::before,
+  e-setup-step > input {
+    margin: 0;
+  }
+  e-setup-guide > [data-dismiss] {
+    position: relative;
+  }
+  e-setup-guide > [data-dismiss]::before {
+    content: '';
+    position: absolute;
+    /* From the padding box, inside the 1 px border. */
+    inset: calc((var(--e-size-control-sm) - var(--e-size-control-lg)) / 2 - 1px);
+  }
+}

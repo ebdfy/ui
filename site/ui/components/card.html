@@ -4,37 +4,41 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Card · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Card · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Card</h1>
-      <p><code>eb-card</code> groups what belongs together on a surface. Give it a <code>heading</code> to title it.</p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Without a heading" caption-bn="শিরোনাম ছাড়া" stack>
-          <eb-card>
-            <p
-              data-en="A card without a heading holds text and actions."
-              data-bn="শিরোনামহীন কার্ডে লেখা ও কাজের বোতাম থাকে।"
-            >
-              A card without a heading holds text and actions.
-            </p>
-          </eb-card>
-        </docs-example>
-        <docs-example caption="With a heading and an action" caption-bn="শিরোনাম ও কাজসহ" stack>
-          <eb-card heading="Order 1042" data-heading-en="Order 1042" data-heading-bn="অর্ডার 1042">
-            <p data-en="Two items, to be sent to Sylhet." data-bn="দুইটি পণ্য, সিলেটে পাঠাতে হবে।">
-              Two items, to be sent to Sylhet.
-            </p>
-            <p><span data-en="Total" data-bn="মোট">Total</span>: <span data-taka>৳1,25,000</span></p>
-            <eb-button variant="primary" data-en="Add order" data-bn="অর্ডার যোগ করুন">Add order</eb-button>
-          </eb-card>
-        </docs-example>
-      </div>
+      <p class="lede">
+        <code>e-card</code> groups what belongs together on a surface. Give it a <code>heading</code> to title it, and
+        put its actions in the header with <code>slot="actions"</code>.
+      </p>
+      <docs-example caption="Without a heading" stack>
+        <e-card>
+          <e-text>A card without a heading holds text and actions.</e-text>
+        </e-card>
+      </docs-example>
+      <docs-example caption="With a heading and an action" stack>
+        <e-card heading="Order #1042">
+          <e-button slot="actions" tone="plain"><span data-en="Edit" data-bn="সম্পাদনা">Edit</span></e-button>
+          <e-text><span data-en="Two items, to be sent to Sylhet." data-bn="দুইটি পণ্য, সিলেটে পাঠাতে হবে।">Two items, to be sent to Sylhet.</span></e-text>
+          <e-text><span data-en="Total" data-bn="মোট">Total</span>: <span data-taka="125000">৳1,25,000</span></e-text>
+        </e-card>
+      </docs-example>
+      <docs-example caption="With three actions: the third folds into More on a phone" stack>
+        <e-card heading="Delivery">
+          <e-button slot="actions" tone="plain"><span data-en="Edit" data-bn="সম্পাদনা">Edit</span></e-button>
+          <e-button slot="actions" tone="plain"><span data-en="Print" data-bn="প্রিন্ট">Print</span></e-button>
+          <e-button slot="actions" tone="plain"><span data-en="Track" data-bn="ট্র্যাক">Track</span></e-button>
+          <e-text><span data-en="Pathao, booked today." data-bn="পাঠাও, আজ বুক করা হয়েছে।">Pathao, booked today.</span></e-text>
+        </e-card>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-card heading="অর্ডার #১০৪২">
+          <e-button slot="actions" tone="plain">সম্পাদনা</e-button>
+          <e-text>দুইটি পণ্য, সিলেটে পাঠাতে হবে।</e-text>
+        </e-card>
+      </docs-example>
     </main>
   </body>
 </html>

@@ -1,12 +1,16 @@
 // The docs, the playground and the sample app are plain HTML pages. They name the CDN and the
 // sample app's origin with placeholders, filled with local servers in development and with the
 // ebdfy hosts in the build.
+import { existsSync, readFileSync } from 'node:fs'
 import type { IncomingMessage, ServerResponse } from 'node:http'
+import { basename } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { bundle } from 'lightningcss'
 import type { Plugin } from 'vite'
 
-import { createPlaygroundApi } from '../src/playground-api.ts'
+import { createPlaygroundApi, type Jwks, verifyIdToken } from '../src/playground-api.ts'
+import { sitePage, siteRedirect } from '../src/site-routes.ts'
 import { framePage, pathOf } from './docs.ts'
 
 export interface Origins {
@@ -32,13 +36,72 @@ export function fillPage(html: string, origins: Origins, file = ''): string {
     .replaceAll('%EB_UI%', origins.ui)
 }
 
-// In development the pages load /ui/v1.js and /ui/host.js, which this serves from the source.
+const src = fileURLToPath(new URL('../src/', import.meta.url))
+
+// A v2 stylesheet bundled as the build bundles it, its url()s as written: they name files beside it.
+export function bundleSheet(name: 'v2' | 'v2-host', minify: boolean): Uint8Array {
+  return bundle({ filename: `${src}${name}.css`, minify }).code
+}
+
+// v2.css and the fonts it names, answered at the paths the CDN has them, so a page's preload names
+// the same URL in development as in production.
+function v2Files(req: IncomingMessage, res: ServerResponse, next: () => void) {
+  const path = req.url?.split('?')[0] ?? ''
+  const sheet = /^\/ui\/(v2|v2-host)\.css$/.exec(path)?.[1]
+  const font = /^\/ui\/fonts\/([\w.-]+\.woff2)$/.exec(path)?.[1]
+  if (sheet === 'v2' || sheet === 'v2-host') {
+    res.writeHead(200, { 'content-type': 'text/css', 'cache-control': 'no-cache' })
+    return res.end(bundleSheet(sheet, false))
+  }
+  if (font && existsSync(`${src}fonts/${font}`)) {
+    res.writeHead(200, { 'content-type': 'font/woff2', 'access-control-allow-origin': '*' })
+    return res.end(readFileSync(`${src}fonts/${font}`))
+  }
+  next()
+}
+
+// In development the pages load v2's scripts and stylesheets, which this serves from the source.
 export function pagesPlugin(origins: Origins): Plugin {
   return {
     name: 'ebdfy-pages',
+    configureServer(server) {
+      server.middlewares.use(v2Files)
+      // An old /v2/ link moves to the root, and a deep link is served the one page that stands for
+      // it, as the hosting Worker does both.
+      const folder = basename(server.config.root)
+      // The sample app's dev backend checks the ID token as a real app's backend would, and answers
+      // what it read. The production sample app stays static.
+      if (folder === 'sample-app') {
+        server.middlewares.use(async (req, res, next) => {
+          if (req.method !== 'GET' || req.url?.split('?')[0] !== '/api/orders') return next()
+          const send = (status: number, body: { store: string; language?: string } | { error: string }) => {
+            res.writeHead(status, { 'content-type': 'application/json' })
+            res.end(JSON.stringify(body))
+          }
+          try {
+            const bearer = /^Bearer (.+)$/.exec(req.headers.authorization ?? '')?.[1]
+            if (!bearer) throw new Error('The request has no bearer token.')
+            // SAFETY: the dev ui server's /dev/jwks.json answers a JWKS.
+            const jwks = (await (await fetch(`${origins.ui}/dev/jwks.json`)).json()) as Jwks
+            const claims = await verifyIdToken(bearer, jwks, { audience: 'app_sample' })
+            send(200, { store: claims.store, language: req.headers['accept-language'] })
+          } catch (error) {
+            send(401, { error: error instanceof Error ? error.message : String(error) })
+          }
+        })
+      }
+      server.middlewares.use((req, res, next) => {
+        const [path = '', query] = (req.url ?? '').split('?')
+        const moved = siteRedirect(folder, path, query === undefined ? '' : `?${query}`)
+        if (moved) return res.writeHead(301, { location: moved }).end()
+        const page = sitePage(folder, path)
+        if (page) req.url = `${page}.html${query === undefined ? '' : `?${query}`}`
+        next()
+      })
+    },
     resolveId(id) {
-      const entry = /^\/ui\/(v1|host)\.js$/.exec(id)?.[1]
-      return entry ? fileURLToPath(new URL(`../src/${entry}.ts`, import.meta.url)) : undefined
+      const script = /^\/ui\/(v2|v2-host)\.js$/.exec(id)?.[1]
+      return script ? `${src}${script}.ts` : undefined
     },
     transformIndexHtml: (html, ctx) => fillPage(html, origins, ctx.filename),
   }

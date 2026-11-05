@@ -4,68 +4,36 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Button · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
+    <title>Button · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Button</h1>
-      <p>
-        <code>eb-button</code> runs an action. Use <code>variant="primary"</code> for the one main action of a card, and
-        the default secondary for the rest. A button is as wide as its label; <code>full-width</code> makes it fill its
-        row, as two equal actions in a bar do. A toggle, such as the current filter, sets <code>pressed</code> to
-        <code>true</code> or <code>false</code>, so a screen reader hears whether it is on, and its fill goes a step
-        deeper while it is on. <code>disabled</code> locks a button: it ignores clicks and Tab skips it.
-        <code>loading</code> shows a spinner in place of the label while its action runs, at the same width, and ignores
-        clicks until it is done. An <code>eb-icon</code> in <code>slot="icon"</code> sits before the label;
-        <code>icon-only</code> makes a square button that shows only the icon, named by its <code>label</code>.
+      <p class="lede">
+        <code>e-button</code> runs one action. Use one primary button for the main action on a page or card.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Variants" caption-bn="ধরন">
-          <eb-button variant="primary" data-en="Add order" data-bn="অর্ডার যোগ করুন">Add order</eb-button>
-          <eb-button variant="secondary" data-en="Cancel" data-bn="বাতিল">Cancel</eb-button>
-          <eb-button variant="ghost" data-en="Skip" data-bn="এড়িয়ে যান">Skip</eb-button>
-          <eb-button variant="danger" data-en="Delete order" data-bn="অর্ডার মুছুন">Delete order</eb-button>
-        </docs-example>
-        <docs-example caption="Sizes" caption-bn="আকার">
-          <eb-button size="sm" data-en="Small" data-bn="ছোট">Small</eb-button>
-          <eb-button size="md" data-en="Medium" data-bn="মাঝারি">Medium</eb-button>
-          <eb-button size="lg" data-en="Large" data-bn="বড়">Large</eb-button>
-        </docs-example>
-        <docs-example caption="States" caption-bn="অবস্থা">
-          <eb-button variant="primary" loading data-en="Save" data-bn="সেভ করুন">Save</eb-button>
-          <eb-button variant="primary" disabled data-en="Save" data-bn="সেভ করুন">Save</eb-button>
-          <eb-button pressed="true" data-en="All" data-bn="সব">All</eb-button>
-          <eb-button pressed="false" data-en="New" data-bn="নতুন">New</eb-button>
-        </docs-example>
-        <docs-example caption="With an icon" caption-bn="আইকনসহ">
-          <eb-button variant="primary"
-            ><eb-icon slot="icon" name="plus"></eb-icon
-            ><span data-en="Add order" data-bn="অর্ডার যোগ করুন">Add order</span></eb-button
-          >
-          <eb-button
-            ><eb-icon slot="icon" name="printer"></eb-icon
-            ><span data-en="Print label" data-bn="লেবেল প্রিন্ট করুন">Print label</span></eb-button
-          >
-          <eb-button icon-only label="More actions" data-label-en="More actions" data-label-bn="আরও কাজ"
-            ><eb-icon slot="icon" name="more-horizontal"></eb-icon
-          ></eb-button>
-        </docs-example>
-        <docs-example caption="Full width" caption-bn="পুরো চওড়া" stack>
-          <p data-en="A new order from the shop." data-bn="দোকান থেকে নতুন অর্ডার।">A new order from the shop.</p>
-          <p>
-            <span data-en="Total" data-bn="মোট">Total</span>: <span data-taka>৳1,25,000</span>
-            <br />
-            <span data-en="Phone" data-bn="ফোন">Phone</span>: <span data-phone>01707071591</span>
-          </p>
-          <eb-button variant="primary" full-width data-en="Confirm order" data-bn="অর্ডার কনফার্ম করুন"
-            >Confirm order</eb-button
-          >
-        </docs-example>
-      </div>
+      <docs-example caption="Tones">
+        <e-button tone="primary">Save</e-button>
+        <e-button>Export</e-button>
+        <e-button tone="plain">Cancel</e-button>
+      </docs-example>
+      <docs-example caption="Sizes">
+        <e-button size="sm">Small</e-button>
+        <e-button>Medium</e-button>
+        <e-button size="lg">Large</e-button>
+      </docs-example>
+      <docs-example caption="With an icon">
+        <e-button tone="primary"><e-icon name="plus"></e-icon>Create order</e-button>
+        <e-button><e-icon name="truck"></e-icon>Book courier</e-button>
+      </docs-example>
+      <docs-example caption="Disabled">
+        <e-button tone="primary" disabled>Save</e-button>
+        <e-button disabled>Export</e-button>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-button tone="primary">সংরক্ষণ করুন</e-button>
+        <e-button>এক্সপোর্ট</e-button>
+      </docs-example>
     </main>
-    <script type="module" src="/components.js"></script>
   </body>
 </html>

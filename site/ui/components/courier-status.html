@@ -4,29 +4,35 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Courier status · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Courier status · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Courier status</h1>
-      <p>
-        <code>eb-courier-status</code> shows what a courier says happened to a parcel. Its <code>status</code> is the
-        courier's code, such as <code>IN_TRANSIT</code>; the element writes the words in the page's language and picks
-        the badge tone itself. A code it does not know reads as unknown.
+      <p class="lede">
+        <code>e-courier-status</code> names where a parcel is, in the page's language, in a badge coloured by how it
+        stands. <code>status</code> takes the kit's names or the courier API's codes.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="The courier's status codes" caption-bn="কুরিয়ারের স্ট্যাটাস কোড">
-          <eb-courier-status status="PENDING"></eb-courier-status>
-          <eb-courier-status status="IN_TRANSIT"></eb-courier-status>
-          <eb-courier-status status="OUT_FOR_DELIVERY"></eb-courier-status>
-          <eb-courier-status status="DELIVERED"></eb-courier-status>
-          <eb-courier-status status="RETURNED"></eb-courier-status>
-        </docs-example>
-      </div>
+      <docs-example caption="Statuses">
+        <e-courier-status status="awaiting-pickup"></e-courier-status>
+        <e-courier-status status="with-courier"></e-courier-status>
+        <e-courier-status status="delivered"></e-courier-status>
+        <e-courier-status status="on-hold"></e-courier-status>
+        <e-courier-status status="returned"></e-courier-status>
+      </docs-example>
+      <docs-example caption="The courier API's codes">
+        <e-courier-status status="IN_TRANSIT"></e-courier-status>
+        <e-courier-status status="OUT_FOR_DELIVERY"></e-courier-status>
+        <e-courier-status status="ATTEMPT_FAILED"></e-courier-status>
+      </docs-example>
+      <docs-example caption="Beside an order">
+        <e-text>Order #1042, Pathao: <e-courier-status status="out-for-delivery"></e-courier-status></e-text>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-courier-status status="with-courier"></e-courier-status>
+        <e-courier-status status="delivered"></e-courier-status>
+        <e-courier-status status="delivery-failed"></e-courier-status>
+      </docs-example>
     </main>
   </body>
 </html>

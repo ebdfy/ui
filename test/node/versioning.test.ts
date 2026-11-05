@@ -1,91 +1,98 @@
-import { readFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 
 import { expect, test } from 'vitest'
 
-import { generateManifest, generateTypes, typesDir } from '../../scripts/declarations.ts'
+import { generateTypes, generateV2Manifest, typesDir, v2Types } from '../../scripts/declarations.ts'
 import { aliasedAttributeTypes, breakingChanges } from '../../scripts/versioning.ts'
 
-// The manifest of the v1.js the CDN serves, which every later v1 must keep.
-const baseline = JSON.parse(readFileSync(new URL('../../release/v1.json', import.meta.url), 'utf8'))
+// The manifest of the v2.js 2.0.0 serves, which every later 2.x must keep.
+const baseline = JSON.parse(readFileSync(new URL('../../release/v2.json', import.meta.url), 'utf8'))
+
+// The source's manifest, written outside dist/ so the build's copy stays as it is.
+const current = () => generateV2Manifest(join(mkdtempSync(join(tmpdir(), 'ebdfy-versioning-')), 'v2.json'))
 
 interface Element {
   tagName?: string
   attributes?: { name: string; fieldName?: string; type?: { text: string } }[]
-  members?: { name: string }[]
+  members?: { name: string; kind?: string }[]
 }
 
-// A copy of the baseline with one change made to eb-button.
-function withButton(change: (button: Element) => void) {
+// A copy of the baseline with one change made to the element with the tag.
+function withElement(tag: string, change: (element: Element) => void) {
   const copy = structuredClone(baseline)
   for (const module of copy.modules) {
     for (const declaration of module.declarations ?? []) {
-      if (declaration.tagName === 'eb-button') change(declaration)
+      if (declaration.tagName === tag) change(declaration)
     }
   }
   return copy
 }
 
-test('the source keeps everything the released v1 manifest promises', () => {
-  expect(breakingChanges(baseline, generateManifest())).toEqual([])
+test('the source keeps everything the released v2 manifest promises', () => {
+  expect(breakingChanges(baseline, current())).toEqual([])
 })
 
-test("removing eb-button's variant attribute is a breaking change that names both", () => {
-  const removed = withButton((button) => {
-    button.attributes = button.attributes!.filter((a) => a.name !== 'variant')
-    button.members = button.members!.filter((m) => m.name !== 'variant')
+// e-checkbox's indeterminate is both an attribute and a property.
+test("removing e-checkbox's indeterminate attribute is a breaking change that names both", () => {
+  const removed = withElement('e-checkbox', (checkbox) => {
+    checkbox.attributes = checkbox.attributes!.filter((a) => a.name !== 'indeterminate')
+    checkbox.members = checkbox.members!.filter((m) => m.name !== 'indeterminate')
   })
   expect(breakingChanges(baseline, removed)).toEqual([
-    'eb-button: attribute variant was removed',
-    'eb-button: property variant was removed',
+    'e-checkbox: attribute indeterminate was removed',
+    'e-checkbox: property indeterminate was removed',
   ])
 })
 
-test('renaming variant to kind breaks the same way, and a new size attribute does not', () => {
-  const renamed = withButton((button) => {
-    for (const list of [button.attributes!, button.members!] as { name: string; fieldName?: string }[][]) {
+test('renaming indeterminate to mixed breaks the same way, and a new size attribute does not', () => {
+  const renamed = withElement('e-checkbox', (checkbox) => {
+    for (const list of [checkbox.attributes!, checkbox.members!] as { name: string; fieldName?: string }[][]) {
       for (const item of list) {
-        if (item.name === 'variant') Object.assign(item, { name: 'kind' }, item.fieldName ? { fieldName: 'kind' } : {})
+        if (item.name === 'indeterminate')
+          Object.assign(item, { name: 'mixed' }, item.fieldName ? { fieldName: 'mixed' } : {})
       }
     }
   })
   expect(breakingChanges(baseline, renamed)).toEqual([
-    'eb-button: attribute variant was removed',
-    'eb-button: property variant was removed',
+    'e-checkbox: attribute indeterminate was removed',
+    'e-checkbox: property indeterminate was removed',
   ])
 
-  const grown = withButton((button) => {
-    button.attributes!.push({ name: 'size', fieldName: 'size' })
-    button.members!.push({ name: 'size' })
+  const grown = withElement('e-checkbox', (checkbox) => {
+    checkbox.attributes!.push({ name: 'size', fieldName: 'size' })
+    checkbox.members!.push({ name: 'size', kind: 'field' })
   })
   expect(breakingChanges(baseline, grown)).toEqual([])
 })
 
 test('dropping an allowed value or a whole element is a breaking change', () => {
-  const narrowed = withButton((button) => {
-    const variant = button.attributes!.find((a) => a.name === 'variant')!
-    variant.type = { text: "'primary'" }
+  const narrowed = withElement('e-button', (button) => {
+    const tone = button.attributes!.find((a) => a.name === 'tone')!
+    tone.type = { text: "'primary'" }
   })
-  expect(breakingChanges(baseline, narrowed)).toEqual(["eb-button: attribute variant no longer allows 'secondary'"])
+  expect(breakingChanges(baseline, narrowed)).toEqual(["e-button: attribute tone no longer allows 'plain'"])
 
-  const gone = withButton((button) => {
-    button.tagName = 'eb-action'
+  const gone = withElement('e-button', (button) => {
+    button.tagName = 'e-action'
   })
-  expect(breakingChanges(baseline, gone)).toEqual(['eb-button was removed'])
+  expect(breakingChanges(baseline, gone)).toEqual(['e-button was removed'])
 })
 
 // A named alias hides its literals from the manifest, so a dropped value would go unnoticed.
 test('every attribute type in the source spells its allowed values out', () => {
-  expect(aliasedAttributeTypes(generateManifest())).toEqual([])
-  const aliased = withButton((button) => {
-    button.attributes!.find((a) => a.name === 'variant')!.type = { text: 'Variant' }
+  expect(aliasedAttributeTypes(current())).toEqual([])
+  const aliased = withElement('e-button', (button) => {
+    button.attributes!.find((a) => a.name === 'tone')!.type = { text: 'Tone' }
   })
-  expect(aliasedAttributeTypes(aliased)).toEqual([
-    "eb-button: attribute variant has the type 'Variant'; write its values out",
-  ])
+  expect(aliasedAttributeTypes(aliased)).toEqual(["e-button: attribute tone has the type 'Tone'; write its values out"])
 })
 
-test('the generated declarations put eb-button in HTMLElementTagNameMap', () => {
+test('the generated declarations put e-button in HTMLElementTagNameMap, from the class tsc emits', () => {
   generateTypes()
-  const declarations = readFileSync(`${typesDir}/components/button.d.ts`, 'utf8')
-  expect(declarations).toMatch(/interface HTMLElementTagNameMap \{\s*'eb-button': EbButton;?\s*\}/)
+  expect(readFileSync(`${typesDir}/v2/button.d.ts`, 'utf8')).toMatch(/export declare class EButton\b/)
+  expect(v2Types(current()).elements).toMatch(
+    /interface HTMLElementTagNameMap \{[^}]*'e-button': import\('\.\/v2\/button\.js'\)\.EButton\n/,
+  )
 })

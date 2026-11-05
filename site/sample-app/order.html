@@ -5,170 +5,418 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
     <meta name="ebdfy-app" content="sample" />
-    <!-- Opened on its own, a page of the sample app goes to the playground with that page open. -->
     <meta name="ebdfy-home" content="%EB_UI%/playground" />
-    <title>Sample app · ebdfy</title>
+    <title>Order · Sample app · ebdfy</title>
+    <link
+      rel="preload"
+      href="%EB_CDN%/ui/fonts/manrope-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2.css" />
     <style>
       body {
         margin: 0;
+        padding: 16px;
+        background: var(--e-color-panel);
       }
-      form {
-        display: flex;
-        flex-direction: column;
-        gap: var(--eb-space-gap);
+      @media (min-width: 600px) {
+        body {
+          padding: 24px 28px;
+        }
+      }
+      /* The link back to the list stands on its own line, so on a phone it is a 44 px target. */
+      @media (max-width: 599.98px) {
+        a[data-words='back'] {
+          display: inline-flex;
+          align-items: center;
+          min-height: 44px;
+        }
       }
     </style>
-    <script src="/lang.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/nav.js"></script>
-    <script type="module">
-      const copy = {
-        bn: {
-          title: 'অর্ডার #1001',
-          book: 'কুরিয়ার বুক করুন',
-          more: 'আরও',
-          print: 'প্রিন্ট',
-          duplicate: 'ডুপ্লিকেট করুন',
-          cancel: 'অর্ডার বাতিল করুন',
-          printed: 'প্রিন্টারে পাঠানো হয়েছে',
-          copied: 'নতুন খসড়ায় কপি হয়েছে',
-          undo: 'ফিরিয়ে নিন',
-          removed: 'খসড়া মুছে ফেলা হয়েছে',
-          cancelled: 'অর্ডার বাতিল হয়েছে',
-          refused: 'আপনি অর্ডার বাতিল করতে পারবেন না। স্টোরের মালিককে অনুমতি দিতে বলুন।',
-          risk: 'এই নম্বরের ৫টি অর্ডারের ৩টি ফেরত এসেছে। ডেলিভারি চার্জ বিকাশে আগে নিন।',
-          intro: 'অর্ডারটি বদলান, তারপর ওপরের বার থেকে সেভ বা বাতিল করুন।',
-          saved: 'সেভ হয়েছে',
-          badPhone: '০১ দিয়ে শুরু হওয়া ১১ অঙ্কের ফোন নম্বর দিন।',
-          noArea: 'এলাকার নাম দিন।',
-        },
-        en: {
-          title: 'Order #1001',
-          book: 'Book courier',
-          more: 'More',
-          print: 'Print',
-          duplicate: 'Duplicate',
-          cancel: 'Cancel order',
-          printed: 'Sent to the printer',
-          copied: 'Copied to a new draft',
-          undo: 'Undo',
-          removed: 'Draft removed',
-          cancelled: 'Order cancelled',
-          refused: "You can't cancel orders. Ask the store owner to give you access.",
-          risk: "3 of this number's 5 orders came back. Take the delivery charge in advance by bKash.",
-          intro: 'Edit the order, then save or discard from the bar above.',
-          saved: 'Saved',
-          badPhone: 'Enter an 11-digit phone starting with 01.',
-          noArea: 'Name the area.',
-        },
-      }
-      const t = copy[document.documentElement.lang]
-
-      document.querySelector('eb-banner').textContent = t.risk
-      document.querySelector('#intro').textContent = t.intro
-
-      // The demo staff member lacks write_orders, so the API refuses the cancel the app could make,
-      // and the app says so in words a merchant can act on.
-      async function cancelOrder() {
-        const { errors } = await ebdfy.fetch('mutation { orderCancel(id: "ord_1001") { userErrors { message } } }')
-        if (errors?.length) ebdfy.toast(t.refused, { error: true })
-        else ebdfy.toast(t.cancelled)
-      }
-      // The draft is the app's to remove again, so the toast offers Undo.
-      function duplicate() {
-        ebdfy.toast(t.copied, { action: { label: t.undo, onAction: () => ebdfy.toast(t.removed) } })
-      }
-      ebdfy.title(t.title, {
-        back: '/',
-        actions: [
-          { label: t.book, onAction: () => ebdfy.modal({ size: 'medium', src: '/book-courier', title: t.book }) },
-          {
-            label: t.more,
-            items: [
-              { label: t.print, onAction: () => ebdfy.toast(t.printed) },
-              { label: t.duplicate, onAction: duplicate },
-              { label: t.cancel, tone: 'critical', onAction: cancelOrder },
-            ],
-          },
-        ],
-      })
-      // Alt+Shift+D runs Duplicate too; Ctrl+D is the browser's bookmark key. The key's code, since
-      // Option on a Mac changes the letter it types.
-      document.addEventListener('keydown', (event) => {
-        if (event.code !== 'KeyD' || !event.altKey || !event.shiftKey || event.ctrlKey || event.metaKey) return
-        event.preventDefault()
-        duplicate()
-      })
-
-      // Stands in for the ebdfy API's order update, answering with the userErrors it gives.
-      async function updateOrder(input) {
-        await new Promise((resolve) => setTimeout(resolve, 300))
-        const userErrors = []
-        if (!/^01\d{9}$/.test(input.phone)) {
-          userErrors.push({
-            field: ['phone'],
-            code: 'INVALID_PHONE',
-            message: t.badPhone,
-          })
+    <script>
+      // The page's language before anything draws: ?lang= first, then the choice kept in
+      // ebdfy-sample-lang, else English.
+      {
+        let lang = new URLSearchParams(location.search).get('lang')
+        if (lang !== 'bn' && lang !== 'en') {
+          try {
+            lang = localStorage.getItem('ebdfy-sample-lang')
+          } catch {
+            lang = 'en'
+          }
         }
-        if (!input.address.area.trim()) {
-          userErrors.push({ field: ['address', 'area'], code: 'INVALID', message: t.noArea })
-        }
-        return { order: userErrors.length ? null : input, userErrors }
+        document.documentElement.lang = lang === 'bn' ? 'bn' : 'en'
       }
-
-      // address.area in the form is { address: { area } } in the API's input.
-      function inputOf(form) {
-        const input = {}
-        for (const [name, value] of new FormData(form)) {
-          const path = name.split('.')
-          let at = input
-          for (const key of path.slice(0, -1)) at = at[key] ??= {}
-          at[path.at(-1)] = value
-        }
-        return input
-      }
-
-      const form = document.querySelector('#order')
-      form.addEventListener('submit', async (event) => {
-        event.preventDefault()
-        const { userErrors } = await updateOrder(inputOf(form))
-        ebdfy.showErrors(form, userErrors)
-        if (!userErrors.length) ebdfy.toast(t.saved)
-      })
     </script>
+    <script type="module" src="%EB_CDN%/ui/v2.js"></script>
+    <script src="/orders-data.js"></script>
   </head>
   <body>
-    <eb-page>
-      <eb-text variant="meta" data-store-name></eb-text>
-      <eb-card>
-        <eb-banner tone="danger"
-          >3 of this number's 5 orders came back. Take the delivery charge in advance by bKash.</eb-banner
-        >
-        <p id="intro">Edit the order, then save or discard from the bar above.</p>
-        <form id="order" data-save-bar novalidate>
-          <eb-text-field name="name" label="Customer" value="Rahim Uddin"></eb-text-field>
-          <eb-phone-field name="phone" label="Phone" value="01707071591"></eb-phone-field>
-          <eb-district-picker name="address" district="Dhaka" area="Mirpur"></eb-district-picker>
-          <eb-text-area name="note" label="Note" value="Call before delivery."></eb-text-area>
+    <e-page>
+      <e-stack gap="4">
+        <e-text>
+          <span data-words="status"></span>: <strong data-order="status"></strong> ·
+          <span data-order="placed"></span>
+        </e-text>
+        <e-card id="items-card">
+          <e-button slot="actions" data-words="edit" data-toast="itemsEdited"></e-button>
+          <e-stack gap="1" data-items></e-stack>
+        </e-card>
+        <e-card id="payment-card">
+          <e-stack gap="1">
+            <e-text data-order="payment"></e-text>
+            <e-text><span data-words="total"></span>: <span data-order="total"></span></e-text>
+          </e-stack>
+        </e-card>
+        <e-text><e-link><a href="/orders" data-words="back"></a></e-link></e-text>
+      </e-stack>
+      <e-stack gap="4" slot="aside">
+        <e-card id="customer-card">
+          <e-button slot="actions" data-words="edit"></e-button>
+          <e-stack gap="1">
+            <e-text data-customer="name"></e-text>
+            <e-text data-customer="phone"></e-text>
+            <e-text data-customer="line"></e-text>
+            <e-text data-customer="area"></e-text>
+            <e-text tone="subdued" data-customer="charge"></e-text>
+          </e-stack>
+        </e-card>
+        <e-card id="delivery-card">
+          <e-button slot="actions" data-words="book" data-toast="booked"></e-button>
+          <e-button slot="actions" data-words="print" data-toast="printed"></e-button>
+          <e-button slot="actions" data-words="track" data-toast="tracked"></e-button>
+          <e-text data-order="courier"></e-text>
+        </e-card>
+        <e-card id="risk-card">
+          <e-stack gap="1">
+            <e-text data-words="riskLow"></e-text>
+            <e-text tone="subdued" data-words="riskWhy"></e-text>
+          </e-stack>
+        </e-card>
+        <e-card id="tags-card">
+          <e-button slot="actions" data-words="edit" data-toast="tagsEdited"></e-button>
+          <e-stack direction="row" gap="1" wrap>
+            <e-badge data-order="channel"></e-badge>
+            <e-badge data-words="repeat"></e-badge>
+          </e-stack>
+        </e-card>
+      </e-stack>
+    </e-page>
+    <e-modal id="confirm">
+      <e-stack gap="3">
+        <e-text data-order="summary"></e-text>
+        <form data-save-bar>
+          <e-text-field name="note"></e-text-field>
         </form>
-        <!-- A plain script, so the form has its words before v1.js, a module, upgrades it and the save
-             bar records the values it opened with. -->
-        <script>
-          if (document.documentElement.lang === 'bn') {
-            const fields = {
-              name: ['কাস্টমার', 'রহিম উদ্দিন'],
-              phone: ['ফোন'],
-              note: ['নোট', 'ডেলিভারির আগে ফোন করুন।'],
-            }
-            for (const [name, [label, value]] of Object.entries(fields)) {
-              const field = document.querySelector(`[name="${name}"]`)
-              field.setAttribute('label', label)
-              if (value) field.setAttribute('value', value)
-            }
+      </e-stack>
+      <e-button slot="footer" data-words="notNow"></e-button>
+      <e-button slot="footer" tone="primary" data-words="confirmIt"></e-button>
+    </e-modal>
+    <e-modal id="customer">
+      <form data-save-bar>
+        <e-stack gap="4">
+          <e-text-field name="name" data-label="name"></e-text-field>
+          <e-phone-field name="phone" data-label="phone"></e-phone-field>
+          <e-text-field name="address.line1" data-label="line"></e-text-field>
+          <e-district-picker name="address"></e-district-picker>
+          <e-taka-field name="charge" data-label="charge"></e-taka-field>
+          <e-text-area name="note" data-label="customerNote"></e-text-area>
+        </e-stack>
+      </form>
+    </e-modal>
+    <script>
+      // The order the address names, in the page's language: put in place before v2.js upgrades the
+      // markup, and again whenever the Admin's language changes or the order is confirmed. Only a new
+      // order can be confirmed, from the modal its Confirm opens.
+      const sample = (() => {
+        const words = {
+          en: {
+            heading: (n) => `Order #${n}`,
+            missing: 'Order not found',
+            status: 'Status',
+            total: 'Total',
+            back: '← All orders',
+            confirm: 'Confirm order',
+            confirmHeading: (n) => `Confirm order #${n}`,
+            notNow: 'Not now',
+            confirmIt: 'Confirm',
+            note: 'Note for the courier',
+            noteOpening: 'Ring the bell twice',
+            customer: 'Customer',
+            edit: 'Edit',
+            editCustomer: 'Edit customer',
+            name: 'Name',
+            phone: 'Phone',
+            line: 'Address',
+            charge: 'Delivery charge',
+            chargeIs: (amount) => `Delivery charge ${amount}`,
+            customerNote: 'Note',
+            lineOpening: 'House 12, Road 5',
+            saved: 'Saved',
+            items: 'Items',
+            payment: 'Payment',
+            delivery: 'Delivery',
+            risk: 'Risk',
+            tags: 'Tags',
+            products: ['Cotton saree', 'Three-piece set', 'Panjabi', 'Silk hijab', 'Block-print kurti'],
+            book: 'Book',
+            print: 'Print',
+            track: 'Track',
+            courier: {
+              new: 'Not booked yet: confirm the order first',
+              confirmed: 'Ready to book with a courier',
+              courier: 'With Steadfast, on its way',
+              delivered: 'Delivered by Steadfast',
+              returned: 'Returned by Steadfast',
+            },
+            riskLow: 'Low risk',
+            riskWhy: 'Every past order from this phone was delivered',
+            repeat: 'Repeat customer',
+            itemsEdited: 'The sample does not edit items',
+            tagsEdited: 'The sample does not edit tags',
+            booked: 'The sample does not book couriers',
+            printed: 'The sample does not print labels',
+            tracked: 'The sample does not track parcels',
+          },
+          bn: {
+            heading: (n) => `অর্ডার #${n}`,
+            missing: 'অর্ডারটি পাওয়া যায়নি',
+            status: 'অবস্থা',
+            total: 'মোট',
+            back: '← সব অর্ডার',
+            confirm: 'অর্ডার কনফার্ম করুন',
+            confirmHeading: (n) => `অর্ডার #${n} কনফার্ম করুন`,
+            notNow: 'এখন না',
+            confirmIt: 'কনফার্ম করুন',
+            note: 'কুরিয়ারের জন্য নোট',
+            noteOpening: 'দুইবার বেল বাজান',
+            customer: 'গ্রাহক',
+            edit: 'এডিট করুন',
+            editCustomer: 'গ্রাহকের তথ্য এডিট করুন',
+            name: 'নাম',
+            phone: 'ফোন',
+            line: 'ঠিকানা',
+            charge: 'ডেলিভারি চার্জ',
+            chargeIs: (amount) => `ডেলিভারি চার্জ ${amount}`,
+            customerNote: 'নোট',
+            lineOpening: 'বাড়ি ১২, রোড ৫',
+            saved: 'সংরক্ষিত',
+            items: 'পণ্য',
+            payment: 'পেমেন্ট',
+            delivery: 'ডেলিভারি',
+            risk: 'ঝুঁকি',
+            tags: 'ট্যাগ',
+            products: ['সুতি শাড়ি', 'থ্রি-পিস', 'পাঞ্জাবি', 'সিল্কের হিজাব', 'ব্লক প্রিন্ট কুর্তি'],
+            book: 'বুক করুন',
+            print: 'প্রিন্ট',
+            track: 'ট্র্যাক',
+            courier: {
+              new: 'এখনো বুক হয়নি: আগে অর্ডার কনফার্ম করুন',
+              confirmed: 'কুরিয়ারে বুক করার জন্য তৈরি',
+              courier: 'স্টেডফাস্টে, পথে আছে',
+              delivered: 'স্টেডফাস্ট ডেলিভারি করেছে',
+              returned: 'স্টেডফাস্ট ফেরত দিয়েছে',
+            },
+            riskLow: 'কম ঝুঁকি',
+            riskWhy: 'এই ফোন থেকে আগের সব অর্ডার ডেলিভারি হয়েছে',
+            repeat: 'পুরোনো গ্রাহক',
+            itemsEdited: 'স্যাম্পলে পণ্য এডিট করা যায় না',
+            tagsEdited: 'স্যাম্পলে ট্যাগ এডিট করা যায় না',
+            booked: 'স্যাম্পলে কুরিয়ার বুক করা যায় না',
+            printed: 'স্যাম্পলে লেবেল প্রিন্ট করা যায় না',
+            tracked: 'স্যাম্পলে পার্সেল ট্র্যাক করা যায় না',
+          },
+        }
+        const number = location.pathname.split('/').pop()
+        const order = sampleOrders.orders.find((one) => String(one.number) === number)
+        // The order's customer as the sample's backend holds them: in Kaliakair, Gazipur, until a save
+        // puts what the form sent in saved.
+        const customer = {
+          phone: `0170707${number.padStart(4, '0')}`,
+          district: 'gazipur',
+          upazila: 'kaliakair',
+          area: { en: 'Kaliakair, Gazipur', bn: 'কালিয়াকৈর, গাজীপুর' },
+          charge: 120,
+          saved: null,
+        }
+        // An e-button's label sits in the button it built, once v2.js has upgraded it.
+        const label = (tag, text) => ((tag.querySelector(':scope > button') ?? tag).textContent = text)
+        const render = (lang) => {
+          document.documentElement.lang = lang
+          const t = words[lang]
+          const page = document.querySelector('e-page')
+          page.setAttribute('heading', order ? t.heading(number) : t.missing)
+          document.querySelector('e-modal').setAttribute('heading', t.confirmHeading(number))
+          // The note's opening text is in place before v2.js builds its input; after, it is the
+          // person's to change.
+          const note = document.querySelector('e-modal e-text-field')
+          note.setAttribute('label', t.note)
+          if (!note.querySelector('input')) note.setAttribute('value', t.noteOpening)
+          for (const tag of document.querySelectorAll('[data-words]')) label(tag, t[tag.dataset.words])
+          for (const [id, heading] of Object.entries({
+            'items-card': t.items,
+            'payment-card': t.payment,
+            'delivery-card': t.delivery,
+            'risk-card': t.risk,
+            'tags-card': t.tags,
+          })) {
+            document.getElementById(id).setAttribute('heading', heading)
           }
-        </script>
-      </eb-card>
-    </eb-page>
+          if (!order) {
+            for (const card of page.querySelectorAll('e-card')) card.remove()
+            return
+          }
+          renderCustomer(lang)
+          const said = sampleOrders.read(order, lang)
+          const fill = {
+            status: said.status,
+            placed: `${said.placed} · ${said.channel}`,
+            payment: said.payment,
+            total: said.total,
+            courier: t.courier[order.status],
+            channel: said.channel,
+            summary: `${said.customer} · ${said.total} · ${said.payment}`,
+          }
+          // The order's items, one a line, the same every load.
+          const items = Array.from({ length: order.items }, (_, i) => {
+            const line = document.createElement('e-text')
+            line.textContent = `${t.products[(order.number + i) % t.products.length]} × 1`
+            return line
+          })
+          document.querySelector('[data-items]').replaceChildren(...items)
+          for (const tag of document.querySelectorAll('[data-order]')) tag.textContent = fill[tag.dataset.order]
+          let confirm = page.querySelector(':scope > e-button[slot="actions"]')
+          if (order.status !== 'new') {
+            confirm?.remove()
+            return
+          }
+          if (!confirm) {
+            confirm = document.createElement('e-button')
+            confirm.slot = 'actions'
+            confirm.setAttribute('tone', 'primary')
+            page.prepend(confirm)
+          }
+          label(confirm, t.confirm)
+        }
+        // The customer card and its form in the page's language. The form's opening values are in place
+        // before v2.js builds the fields; after, they are the person's to change. Until anything is saved
+        // a language switch with the form closed builds the fields again from their markup, with the
+        // opening values in the new language, so they are the save bar's opening values too.
+        let fields
+        const renderCustomer = (lang) => {
+          const t = words[lang]
+          document.getElementById('customer-card').setAttribute('heading', t.customer)
+          document.getElementById('customer').setAttribute('heading', t.editCustomer)
+          const stack = document.querySelector('#customer form e-stack')
+          fields ??= stack.innerHTML
+          const built = stack.querySelector('input') !== null
+          const fresh = document.createElement('template')
+          fresh.innerHTML = fields
+          const root = built ? fresh.content : stack
+          const field = (name) => root.querySelector(`[name="${name}"]`)
+          const opening = {
+            name: order.customer[lang],
+            phone: customer.phone,
+            'address.line1': t.lineOpening,
+            charge: String(customer.charge),
+          }
+          for (const [name, value] of Object.entries(opening)) field(name).setAttribute('value', value)
+          field('address').setAttribute('district', customer.district)
+          field('address').setAttribute('upazila', customer.upazila)
+          for (const tag of root.querySelectorAll('[data-label]')) tag.setAttribute('label', t[tag.dataset.label])
+          if (built && !customer.saved && !document.querySelector('#customer dialog[open]')) {
+            stack.replaceChildren(fresh.content)
+          }
+          for (const tag of document.querySelectorAll('[data-label]')) tag.setAttribute('label', t[tag.dataset.label])
+          const shown = customer.saved ?? {
+            name: order.customer[lang],
+            phone: customer.phone,
+            line: t.lineOpening,
+            area: customer.area[lang],
+            charge: customer.charge,
+          }
+          const fill = { ...shown, charge: t.chargeIs(sampleOrders.taka(shown.charge, lang)) }
+          for (const tag of document.querySelectorAll('[data-customer]')) tag.textContent = fill[tag.dataset.customer]
+        }
+        const confirm = () => {
+          order.status = 'confirmed'
+          render(document.documentElement.lang)
+        }
+        // Keeps what the customer form sent, with the district and upazila as the picker names them.
+        const saveCustomer = (data, area) => {
+          customer.saved = {
+            name: data.get('name'),
+            phone: data.get('phone'),
+            line: data.get('address.line1'),
+            area,
+            charge: Number(data.get('charge')),
+          }
+          renderCustomer(document.documentElement.lang)
+        }
+        return { render, confirm, saveCustomer, words: () => words[document.documentElement.lang] }
+      })()
+      sample.render(document.documentElement.lang === 'bn' ? 'bn' : 'en')
+    </script>
+    <script type="module">
+      import { showNav } from '/nav.js'
+
+      // After v2.js, which holds the bridge: the page names its order in the Admin's title bar.
+      const name = () => {
+        ebdfy.title(document.querySelector('e-page').getAttribute('heading'))
+        showNav()
+      }
+      name()
+      // The app speaks the Admin's language, and keeps it for its next first paint. The Admin may
+      // have said it before this listener was added, so the page also asks once; outside the Admin
+      // there is no one to ask.
+      const follow = (language) => {
+        if (language === document.documentElement.lang) return
+        try {
+          localStorage.setItem('ebdfy-sample-lang', language)
+        } catch {}
+        sample.render(language)
+        name()
+      }
+      addEventListener('ebdfy:context', ({ detail }) => follow(detail.language))
+      ebdfy.user().then(
+        ({ language }) => follow(language),
+        () => {},
+      )
+      // Confirm opens the modal, whose own buttons close it or confirm the order; Edit on the customer
+      // opens their form.
+      document.querySelector('e-page').addEventListener('click', (event) => {
+        if (event.target.closest('e-page > e-button[slot="actions"]')) ebdfy.modal.show('confirm')
+        if (event.target.closest('#customer-card > e-button[slot="actions"]')) ebdfy.modal.show('customer')
+        // The sample's other card actions only say what a real app would do.
+        const told = event.target.closest('[data-toast]')
+        if (told) ebdfy.toast(sample.words()[told.dataset.toast])
+      })
+      // Saving the customer goes to the sample's backend, which answers after a moment, as a real one
+      // would; the save bar has already taken the sent values as the saved ones, so the modal's Save
+      // is gone meanwhile.
+      const customerForm = document.querySelector('#customer form')
+      customerForm.addEventListener('submit', async (event) => {
+        event.preventDefault()
+        const data = new FormData(customerForm)
+        const [district, upazila] = customerForm.querySelectorAll('e-district-picker select')
+        const area = [upazila, district].map((select) => select.selectedOptions[0]?.text ?? '').join(', ')
+        await new Promise((resolve) => setTimeout(resolve, 400))
+        sample.saveCustomer(data, area)
+        ebdfy.toast(document.documentElement.lang === 'bn' ? 'সংরক্ষিত' : 'Saved')
+      })
+      // Saving the note keeps it with the order, which the sample only says it did.
+      document.querySelector('e-modal form').addEventListener('submit', (event) => {
+        event.preventDefault()
+        ebdfy.toast(document.documentElement.lang === 'bn' ? 'সংরক্ষিত' : 'Saved')
+      })
+      const [notNow, confirmIt] = document.querySelectorAll('e-modal e-button[slot="footer"]')
+      notNow.addEventListener('click', () => ebdfy.modal.hide('confirm'))
+      confirmIt.addEventListener('click', () => {
+        sample.confirm()
+        ebdfy.modal.hide('confirm')
+      })
+    </script>
   </body>
 </html>

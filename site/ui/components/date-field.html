@@ -4,66 +4,32 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Date field · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Date field · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Date field</h1>
-      <p><code>eb-date-field</code> picks a day and submits it as YYYY-MM-DD.</p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Default" caption-bn="সাধারণ">
-          <eb-date-field
-            name="deliver_on"
-            data-state="default"
-            label="Delivery day"
-            data-label-en="Delivery day"
-            data-label-bn="ডেলিভারির দিন"
-          ></eb-date-field>
-        </docs-example>
-        <docs-example caption="Focused" caption-bn="ফোকাসে">
-          <eb-date-field
-            data-state="focus"
-            label="Pickup day"
-            data-label-en="Pickup day"
-            data-label-bn="পিকআপের দিন"
-          ></eb-date-field>
-        </docs-example>
-        <docs-example caption="With an error" caption-bn="ভুলসহ">
-          <eb-date-field
-            data-state="error"
-            value="2026-01-05"
-            label="Delivery day"
-            data-label-en="Delivery day"
-            data-label-bn="ডেলিভারির দিন"
-            error="Choose a day after today."
-            data-error-en="Choose a day after today."
-            data-error-bn="আজকের পরের একটি দিন বাছুন।"
-          ></eb-date-field>
-        </docs-example>
-        <docs-example caption="Disabled" caption-bn="বন্ধ">
-          <eb-date-field
-            data-state="disabled"
-            value="2026-11-02"
-            disabled
-            label="Order placed"
-            data-label-en="Order placed"
-            data-label-bn="অর্ডারের দিন"
-          ></eb-date-field>
-        </docs-example>
-        <docs-example caption="Filled" caption-bn="পূরণ করা">
-          <eb-date-field
-            data-state="filled"
-            value="2026-11-05"
-            label="Delivery day"
-            data-label-en="Delivery day"
-            data-label-bn="ডেলিভারির দিন"
-          ></eb-date-field>
-        </docs-example>
-      </div>
+      <p class="lede">
+        <code>e-date-field</code> picks a day with the browser's own date control. Its value is <code>YYYY-MM-DD</code>,
+        and the form submits it the same way.
+      </p>
+      <docs-example caption="A labelled date">
+        <e-date-field label="Delivery date" name="delivery"></e-date-field>
+      </docs-example>
+      <docs-example caption="With a value">
+        <e-date-field label="Ordered on" name="ordered" value="2026-03-14"></e-date-field>
+      </docs-example>
+      <docs-example caption="Required, with an error">
+        <e-date-field
+          label="Pickup date"
+          name="pickup"
+          required
+          error="Pick a day for the Pathao pickup."
+        ></e-date-field>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-date-field label="ডেলিভারির তারিখ" name="delivery" value="2026-03-14"></e-date-field>
+      </docs-example>
     </main>
   </body>
 </html>

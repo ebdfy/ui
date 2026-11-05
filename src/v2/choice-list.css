@@ -1,0 +1,77 @@
+/* e-choice-list. Before the script the tag draws its label as ::before and each <option> child as a
+   row with an 18 px circle, the selected one filled. The script puts a label holding a native radio
+   in each option's place, drawn the same, and a real label in place of the ::before. */
+e-choice-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-body);
+  line-height: var(--e-line-height-body);
+}
+e-choice-list::before,
+e-choice-list > [data-part='label'] {
+  display: block;
+  margin: 0 0 6px;
+  overflow-wrap: anywhere;
+  font-size: var(--e-font-size-meta);
+  font-weight: var(--e-font-weight-semibold);
+  line-height: var(--e-line-height-meta);
+}
+e-choice-list::before {
+  content: attr(label);
+}
+e-choice-list:has(> [data-part='label'])::before {
+  content: none;
+}
+e-choice-list > option,
+e-choice-list > label {
+  display: flex;
+  align-items: center;
+  gap: var(--e-space-2);
+  min-height: var(--e-size-control-md);
+  margin: 0;
+  padding: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  color: var(--e-color-fg);
+  font: inherit;
+  cursor: pointer;
+}
+e-choice-list > option::before,
+e-choice-list > label > input {
+  content: '';
+  box-sizing: border-box;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  border: 1px solid var(--e-color-line-2);
+  border-radius: 50%;
+  background: var(--e-color-surface);
+}
+e-choice-list > label > input {
+  appearance: none;
+  cursor: pointer;
+}
+/* The chosen circle is a 6 px dot in the primary ring. */
+e-choice-list > option[selected]::before,
+e-choice-list > label > input:checked {
+  border: 6px solid var(--e-color-primary);
+  background: var(--e-color-primary-fg);
+}
+e-choice-list > label > input:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
+e-choice-list[disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@media (max-width: 599.98px) {
+  e-choice-list > option,
+  e-choice-list > label {
+    min-height: var(--e-size-control-lg);
+  }
+}

@@ -1,0 +1,28 @@
+/* e-popover: the element marked slot="trigger" opens a panel below it; Escape closes it, focus back on the trigger. */
+/* The tag is its trigger, so CSS draws it before the script and the content takes no room. Text
+   loose in the tag, outside any element, cannot be hidden this way, so content goes in elements.
+   The script moves the content into a panel inside the tag, position: fixed and placed by script. */
+e-popover {
+  display: inline-flex;
+  vertical-align: middle;
+}
+e-popover > :not([slot='trigger'], [data-part='panel']) {
+  display: none;
+}
+e-popover > [data-part='panel'] {
+  position: fixed;
+  z-index: 10;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: calc(100vw - 16px);
+  max-height: calc(100vh - 16px);
+  overflow: auto;
+  padding: var(--e-space-3);
+  border: 1px solid var(--e-color-line-2);
+  border-radius: var(--e-radius-2);
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-body);
+  line-height: var(--e-line-height-body);
+  box-shadow: 0 8px 24px var(--e-color-scrim);
+}

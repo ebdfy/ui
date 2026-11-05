@@ -3,8 +3,6 @@ import { fileURLToPath } from 'node:url'
 
 import { expect, test } from 'vitest'
 
-import { fillPage, production } from '../../scripts/pages.ts'
-
 const site = fileURLToPath(new URL('../../site/', import.meta.url))
 const viewport = '<meta name="viewport" content="width=device-width, initial-scale=1" />'
 
@@ -31,14 +29,5 @@ test('the site has pages to check', () => {
 for (const file of pages) {
   test(`${file} has a doctype, html lang and the viewport meta`, () => {
     expect(problems(readFileSync(`${site}${file}`, 'utf8'))).toEqual([])
-  })
-}
-
-// Every docs page carries the theme switch, so a reader can check it in light and dark.
-for (const file of pages.filter((path) => path.startsWith('ui/') && !path.endsWith('playground.html'))) {
-  test(`${file} has the theme switch`, () => {
-    const html = fillPage(readFileSync(`${site}${file}`, 'utf8'), production, `${site}${file}`)
-    expect(html).toContain('<script src="/docs.js"></script>')
-    expect(html).toContain('data-theme-choice="dark"')
   })
 }

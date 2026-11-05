@@ -4,136 +4,120 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Playground · ebdfy design system</title>
+    <title>Playground · ebdfy design system v2</title>
+    <link
+      rel="preload"
+      href="%EB_CDN%/ui/fonts/manrope-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2.css" />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2-host.css" />
+    <script type="module" src="%EB_CDN%/ui/v2-host.js"></script>
     <style>
-      /* The playground's own controls sit in a toolbar above the Admin, which takes the rest of the screen. */
-      body {
-        display: flex;
-        flex-direction: column;
-        height: 100dvh;
-        margin: 0;
-        background: var(--eb-color-bg);
-      }
-      eb-admin-chrome {
-        flex: 1;
-        min-height: 0;
-        height: auto;
-      }
-      [role='toolbar'] {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        padding: 4px 8px;
-        border-bottom: 1px dashed var(--eb-color-edge);
-        background: var(--eb-color-surface-2);
-        font-family: var(--eb-font-family);
-        font-size: var(--eb-font-size-meta);
-        line-height: var(--eb-line-height-meta);
-      }
-      [role='toolbar'] > span {
-        margin-inline-end: auto;
-        padding-inline: 4px;
-        color: var(--eb-color-text-3);
-        font-weight: var(--eb-font-weight-semibold);
-      }
-      [role='toolbar'] > a,
-      [role='toolbar'] > button {
-        display: inline-flex;
-        align-items: center;
-        box-sizing: border-box;
-        height: var(--eb-size-control-sm);
+      /* The playground's language switch, a word among the frame's icon buttons. */
+      [slot='actions'] > button[data-language] {
+        inline-size: auto;
         padding: 0 8px;
-        border: 0;
-        border-radius: var(--eb-radius-md);
-        background: none;
-        color: var(--eb-color-text-2);
         font: inherit;
-        font-weight: var(--eb-font-weight-medium);
-        text-decoration: none;
-        white-space: nowrap;
-        cursor: pointer;
+        font-size: var(--e-font-size-meta);
+        font-weight: var(--e-font-weight-semibold);
       }
-      [role='toolbar'] > a:hover,
-      [role='toolbar'] > button:hover {
-        background: var(--eb-color-surface-3);
-        color: var(--eb-color-text);
-      }
-      [role='toolbar'] > :focus-visible {
-        outline: 2px solid var(--eb-color-focus);
-        outline-offset: 2px;
-      }
-      /* On a phone the controls take a thumb's height and the toolbar's name steps aside for them. */
-      @media (max-width: 599.98px) {
-        [role='toolbar'] {
-          justify-content: space-between;
-          gap: 0;
-          padding: 0 4px;
-        }
-        [role='toolbar'] > span {
+      /* On a phone the frame's top bar has room for the switch or the Hang link, not both. */
+      @media (width < 600px) {
+        #hang {
           display: none;
-        }
-        [role='toolbar'] > a,
-        [role='toolbar'] > button {
-          height: var(--eb-size-target);
-          padding: 0 6px;
         }
       }
     </style>
-    <script type="module" src="%EB_CDN%/ui/host.js"></script>
+    <script>
+      // The staff member's language, kept by this browser as the Admin keeps it for them, before
+      // anything draws.
+      try {
+        document.documentElement.lang = localStorage.getItem('ebdfy-playground-lang') === 'bn' ? 'bn' : 'en'
+      } catch {}
+    </script>
   </head>
   <body>
-    <div role="toolbar" aria-label="Playground">
-      <span aria-hidden="true">Playground</span>
-      <a href="/">Docs</a>
-      <a href="/playground?hang" id="hang">Hang the app</a>
-      <a href="/playground?ended" id="ended">End access</a>
-      <button type="button" id="theme">Dark theme</button>
-    </div>
-    <eb-admin-chrome
-      app-name="Sample app"
-      src="%EB_SAMPLE_APP%/?store=demo"
-      token-url="/dev/id-token?app=sample"
-      api-url="/dev/graphql"
-      stores-url="/playground"
-    >
+    <e-admin-frame>
+      <div slot="store">
+        <span aria-hidden="true">D</span>
+        <span>Demo shop<small>demo-shop.ebdfy.com</small></span>
+      </div>
       <!-- A merchant's own Admin pages, which the playground does not have, all lead back to it. -->
-      <a slot="nav" href="/playground" data-icon="home">Home</a>
-      <a slot="nav" href="/playground" data-icon="shopping-bag">Orders</a>
-      <a slot="nav" href="/playground" data-icon="package">Products</a>
-      <a slot="nav" href="/playground" data-icon="users">Customers</a>
-    </eb-admin-chrome>
+      <nav slot="menu" aria-label="Main">
+        <a href="/playground"><e-icon name="home"></e-icon><span>Home</span></a>
+        <a href="/playground" aria-current="page"><e-icon name="shopping-bag"></e-icon><span>Orders</span></a>
+        <a href="/playground"><e-icon name="package"></e-icon><span>Products</span></a>
+        <a href="/playground"><e-icon name="users"></e-icon><span>Customers</span></a>
+      </nav>
+      <form slot="search" role="search">
+        <e-icon name="search"></e-icon>
+        <input type="search" name="q" aria-label="Search" placeholder="Search orders, products, customers" />
+      </form>
+      <div slot="actions">
+        <button type="button" aria-label="Help"><e-icon name="help"></e-icon></button>
+        <button type="button" data-language></button>
+        <button type="button" aria-label="Notifications"><e-icon name="bell"></e-icon></button>
+        <span aria-hidden="true">RA</span>
+        <a href="/playground?hang" id="hang">Hang the app</a>
+      </div>
+      <e-admin-panel
+        store="demo"
+        app="sample"
+        app-url="%EB_SAMPLE_APP%"
+        base="/playground"
+        token-url="/dev/id-token?app=sample"
+        api-url="/dev/graphql"
+      >
+        <header><h1>Sample app</h1></header>
+        <iframe title="Sample app"></iframe>
+      </e-admin-panel>
+    </e-admin-frame>
     <script>
-      // The theme switch flips the Admin between light and dark, starting from the device's theme.
-      const root = document.documentElement
-      const theme = document.querySelector('#theme')
-      const dark = () =>
-        root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
-      const label = () => (theme.textContent = dark() ? 'Light theme' : 'Dark theme')
+      // The address names the app's page and its query after the panel's base, the orders list when
+      // it names none, under the app's registered URL. ?hang frames a sample page that never answers,
+      // so the chrome's notice shows after 15 s. This only names the app's page: v2-host.js loads it
+      // once it listens, as the app says it is ready only once.
+      // A tab opened on its own from an app page lands here with ?page=<its path on the app's
+      // origin>, which opens instead, if it is on the app's origin.
+      const panel = document.querySelector('e-admin-panel')
+      const query = new URLSearchParams(location.search)
+      const hang = query.has('hang')
+      const app = new URL(panel.getAttribute('app-url'))
+      const asked = query.get('page')
+      query.delete('page')
+      const path = location.pathname.slice(panel.getAttribute('base').length)
+      // An app URL that is an origin alone reads with a trailing slash, which the path brings itself.
+      let page = new URL(
+        `${app.href.replace(/\/$/, '')}${path.length > 1 ? path : '/orders'}${query.size ? `?${query}` : ''}`,
+      )
+      const named = asked?.startsWith('/') ? new URL(asked, app) : null
+      if (named?.origin === app.origin) page = named
+      page.searchParams.set('store', panel.getAttribute('store'))
+      panel.querySelector(':scope > iframe').dataset.src = hang ? '%EB_SAMPLE_APP%/hang?store=demo' : page.href
+      // The switch names the other language in that language, and turns the Admin to it; v2-host.js
+      // tells the app.
+      const switcher = document.querySelector('[data-language]')
+      const label = () => {
+        const bn = document.documentElement.lang === 'bn'
+        switcher.textContent = bn ? 'English' : 'বাংলা'
+        switcher.lang = bn ? 'en' : 'bn'
+      }
       label()
-      theme.addEventListener('click', () => {
-        root.dataset.theme = dark() ? 'light' : 'dark'
+      switcher.addEventListener('click', () => {
+        const next = document.documentElement.lang === 'bn' ? 'en' : 'bn'
+        document.documentElement.lang = next
+        try {
+          localStorage.setItem('ebdfy-playground-lang', next)
+        } catch {}
         label()
       })
-      // ?page=/order-1039 opens that page of the sample app, as a tab opened on its own lands here.
-      const page = new URLSearchParams(location.search).get('page')
-      const opened = page?.startsWith('/') ? new URL(page, '%EB_SAMPLE_APP%') : null
-      if (opened?.origin === new URL('%EB_SAMPLE_APP%').origin) {
-        opened.searchParams.set('store', 'demo')
-        document.querySelector('eb-admin-chrome').setAttribute('src', opened.href)
-      }
-      // ?hang frames a sample page that never answers, so the chrome's notice shows after 15 s.
-      if (new URLSearchParams(location.search).has('hang')) {
-        document.querySelector('eb-admin-chrome').setAttribute('src', '%EB_SAMPLE_APP%/hang?store=demo')
+      if (hang) {
         const toggle = document.querySelector('#hang')
         toggle.href = '/playground'
         toggle.textContent = 'Stop hanging'
-      }
-      // ?ended plays a staff member whose access has ended: the next ID token is refused.
-      if (new URLSearchParams(location.search).has('ended')) {
-        document.querySelector('eb-admin-chrome').setAttribute('token-url', '/dev/id-token?app=sample&ended')
-        const toggle = document.querySelector('#ended')
-        toggle.href = '/playground'
-        toggle.textContent = 'Give access back'
       }
     </script>
   </body>

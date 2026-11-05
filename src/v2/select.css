@@ -1,0 +1,99 @@
+/* e-select. Before the script the tag's <option> children are the box: the selected one, or the first
+   when none is, is drawn as the select's box and the others are hidden but still take their width, so
+   the tag is as wide as the native select will be. The script moves the options into a native select
+   that takes the same place. The chevron is drawn with gradients so it takes its colour from the tokens. */
+e-select {
+  --e-select-height: var(--e-size-control-md);
+  --e-chevron:
+    linear-gradient(
+        to bottom left,
+        transparent calc(50% - 1px),
+        var(--e-color-fg2) calc(50% - 1px),
+        var(--e-color-fg2) calc(50% + 1px),
+        transparent calc(50% + 1px)
+      )
+      right 17px center / 5px 5px no-repeat,
+    linear-gradient(
+        to bottom right,
+        transparent calc(50% - 1px),
+        var(--e-color-fg2) calc(50% - 1px),
+        var(--e-color-fg2) calc(50% + 1px),
+        transparent calc(50% + 1px)
+      )
+      right 12px center / 5px 5px no-repeat;
+  display: inline-grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 6px;
+  min-width: 0;
+  vertical-align: middle;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-body);
+}
+e-select::before,
+e-select > label {
+  grid-row: 1;
+  display: block;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-meta);
+  font-weight: var(--e-font-weight-semibold);
+  line-height: var(--e-line-height-meta);
+}
+e-select::before {
+  content: attr(label);
+}
+e-select[hide-label]::before,
+e-select:has(> select)::before {
+  content: none;
+}
+e-select > select,
+e-select > option {
+  grid-row: 2;
+  grid-column: 1;
+  box-sizing: border-box;
+  min-width: 0;
+  height: var(--e-select-height);
+  margin: 0;
+  padding: 0 36px 0 var(--e-space-3);
+  border: 1px solid var(--e-color-line-2);
+  border-radius: var(--e-radius-1);
+  background: var(--e-chevron), var(--e-color-surface);
+  color: var(--e-color-fg);
+  font: inherit;
+  font-size: var(--e-font-size-body);
+}
+e-select[hide-label] > select,
+e-select[hide-label] > option {
+  grid-row: 1;
+}
+e-select > option {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  visibility: hidden;
+}
+e-select > option[selected],
+e-select:not(:has(> option[selected])) > option:first-of-type {
+  visibility: visible;
+}
+e-select > select {
+  appearance: none;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+e-select > select:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
+e-select[disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@media (max-width: 599.98px) {
+  e-select {
+    --e-select-height: var(--e-size-control-lg);
+  }
+}

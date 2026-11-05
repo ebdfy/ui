@@ -10,6 +10,6 @@
     "types": ["vite/client"]
   },
   "include": ["src"],
-  // The playground's fake API is for the dev servers and the Worker, not for apps.
-  "exclude": ["src/playground-api.ts"]
+  // The playground's fake API and the site's routes are for the dev servers and the Worker, not for apps.
+  "exclude": ["src/playground-api.ts", "src/site-routes.ts"]
 }

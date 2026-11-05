@@ -1,0 +1,61 @@
+/* e-tabs and e-tab: a row of tabs with a line under it. The selected tab has a 2 px underline and the
+   count is drawn after the label. The script only adds roles, so the row looks the same before it. A
+   row wider than e-tabs scrolls inside e-tabs and never widens the page. */
+e-tabs {
+  display: flex;
+  align-items: center;
+  gap: var(--e-space-1);
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--e-color-line);
+}
+e-tabs::-webkit-scrollbar {
+  display: none;
+}
+e-tab {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  height: var(--e-size-control-md);
+  padding: 0 var(--e-space-3);
+  border-bottom: 2px solid transparent;
+  color: var(--e-color-fg2);
+  font-size: var(--e-font-size-body);
+  font-weight: var(--e-font-weight-medium);
+  line-height: var(--e-line-height-body);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+e-tab:hover {
+  color: var(--e-color-fg);
+}
+e-tab[selected] {
+  border-bottom-color: var(--e-color-primary);
+  color: var(--e-color-fg);
+}
+e-tab[count]::after {
+  content: attr(count);
+  padding: 0 6px;
+  border-radius: var(--e-radius-pill);
+  background: var(--e-color-surface-2);
+  font-size: var(--e-font-size-meta);
+  font-weight: var(--e-font-weight-semibold);
+}
+/* The ring sits inside the tab, because e-tabs clips whatever stands outside its box. */
+e-tab:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: -2px;
+}
+e-tabs > :not(e-tab) {
+  flex: none;
+}
+
+@media (max-width: 599.98px) {
+  e-tab {
+    height: var(--e-size-control-lg);
+  }
+}

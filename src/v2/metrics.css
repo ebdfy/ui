@@ -1,0 +1,58 @@
+/* e-metrics: two to four numbers above a list. It is static content, so it has no script and no role;
+   a page that wants the group named wraps it in an element with its own label. From 600 px the
+   metrics sit in one row of equal columns, whatever their count (grid-auto-flow: column makes one
+   column per child); below that they sit two by two, so four make two rows and two make one. */
+e-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--e-space-3);
+  min-width: 0;
+  color: var(--e-color-fg);
+}
+@media (min-width: 600px) {
+  e-metrics {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+  }
+}
+/* One metric: the label on its own line, then the number with the change after it on one baseline. */
+e-metrics > * {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  align-content: start;
+  column-gap: var(--e-space-2);
+  min-width: 0;
+  padding: var(--e-space-3) var(--e-space-4);
+  background: var(--e-color-surface);
+  border: 1px solid var(--e-color-line);
+  border-radius: var(--e-radius-2);
+}
+e-metrics > * > [slot='label'] {
+  flex: 0 0 100%;
+  min-width: 0;
+  color: var(--e-color-fg2);
+  font-size: var(--e-font-size-meta);
+  line-height: var(--e-line-height-body);
+  overflow-wrap: anywhere;
+}
+e-metrics > * > strong {
+  font-size: var(--e-font-size-heading);
+  line-height: var(--e-line-height-heading);
+  font-weight: var(--e-font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+e-metrics > * > [slot='change'] {
+  color: var(--e-color-fg2);
+  font-size: var(--e-font-size-meta);
+  line-height: var(--e-line-height-body);
+  font-variant-numeric: tabular-nums;
+}
+e-metrics > * > [slot='change'][tone='up'] {
+  color: var(--e-color-delivered-fg);
+}
+e-metrics > * > [slot='change'][tone='down'] {
+  color: var(--e-color-returned-fg);
+}

@@ -4,26 +4,28 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Heading · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Heading · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Heading</h1>
-      <p>
-        <code>eb-heading</code> sets a title at level 1, 2 or 3. Pick the level for the outline of the page, not for the
-        size you want.
+      <p class="lede">
+        <code>e-heading</code> is a heading for a section of a page. Set <code>level</code> to <code>1</code>,
+        <code>2</code> or <code>3</code>; without it the heading is level 2. Assistive tech reads it as a heading of
+        that level.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Three levels" caption-bn="তিনটি ধাপ" stack>
-          <eb-heading level="1" data-en="Orders" data-bn="অর্ডার">Orders</eb-heading>
-          <eb-heading level="2" data-en="New orders" data-bn="নতুন অর্ডার">New orders</eb-heading>
-          <eb-heading level="3" data-en="Sent to Sylhet" data-bn="সিলেটে পাঠানো">Sent to Sylhet</eb-heading>
-        </docs-example>
-      </div>
+      <docs-example caption="Level 2, the default" stack>
+        <e-heading>Recent orders</e-heading>
+      </docs-example>
+      <docs-example caption="The three levels" stack>
+        <e-heading level="1">Order #1042</e-heading>
+        <e-heading level="2">Delivery</e-heading>
+        <e-heading level="3">Pathao, booked today</e-heading>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-heading level="1">অর্ডার #১০৪২</e-heading>
+        <e-heading level="3">ঢাকা থেকে সিলেটে পাঠানো হবে</e-heading>
+      </docs-example>
     </main>
   </body>
 </html>

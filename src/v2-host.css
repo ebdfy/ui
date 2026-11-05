@@ -1,0 +1,538 @@
+/* The Admin chrome's stylesheet, which the playground and the Admin load beside v2.css and apps
+   never do. Like the kit, every rule sits in layer e. */
+@layer e;
+
+/* Midnight's frame: store, menu and search on the navy frame, and the app in a light panel inset
+   10 px from the window's right and bottom. The page's markup and this sheet draw it whole, so
+   v2-host.js only adds behaviour. Below 1040 px the menu becomes a bottom tab bar. */
+@layer e {
+  body {
+    margin: 0;
+    background: var(--e-color-frame);
+  }
+
+  e-admin-frame {
+    display: grid;
+    grid-template-columns: 228px minmax(0, 1fr) auto;
+    grid-template-rows: 58px minmax(0, 1fr);
+    grid-template-areas:
+      'store search actions'
+      'menu panel panel';
+    block-size: 100dvh;
+    overflow: hidden;
+    background: var(--e-color-frame);
+    color: var(--e-color-frame-fg);
+    font-size: var(--e-font-size-body);
+    line-height: var(--e-line-height-body);
+  }
+
+  e-admin-frame e-icon {
+    inline-size: 18px;
+    block-size: 18px;
+    vertical-align: -4px;
+    flex: none;
+  }
+
+  e-admin-frame > [slot='store'] {
+    grid-area: store;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    padding: 0 18px;
+    font-weight: var(--e-font-weight-semibold);
+  }
+  [slot='store'] > :first-child {
+    display: grid;
+    place-items: center;
+    inline-size: 30px;
+    block-size: 30px;
+    flex: none;
+    border-radius: var(--e-radius-1);
+    background: var(--e-color-side-on-bg);
+    color: var(--e-color-side-on-fg);
+    font-weight: var(--e-font-weight-bold);
+  }
+  [slot='store'] > :last-child {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  [slot='store'] small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--e-color-frame-fg2);
+    font-size: 11.5px;
+    font-weight: var(--e-font-weight-medium);
+    line-height: 1.2;
+  }
+
+  e-admin-frame > [slot='menu'] {
+    grid-area: menu;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-height: 0;
+    overflow: auto;
+    padding: 6px 10px 12px;
+  }
+  [slot='menu'] > a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    block-size: 36px;
+    padding: 0 10px;
+    border-radius: var(--e-radius-1);
+    color: var(--e-color-side-fg);
+    font-weight: var(--e-font-weight-medium);
+    text-decoration: none;
+  }
+  [slot='menu'] > a[aria-current='page'] {
+    background: var(--e-color-side-on-bg);
+    color: var(--e-color-side-on-fg);
+    font-weight: var(--e-font-weight-semibold);
+  }
+  [slot='menu'] > a > span {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* The app's own pages, under the Admin's current entry: smaller rows set in past its icon, the
+     current one in the frame's own text colour. Below 1040 px they move to a strip in the panel. */
+  [slot='menu'] > .e-app-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 2px 0 6px 28px;
+  }
+  .e-app-nav > a {
+    display: flex;
+    align-items: center;
+    block-size: 32px;
+    padding: 0 10px;
+    border-radius: var(--e-radius-1);
+    color: var(--e-color-side-fg);
+    font-size: var(--e-font-size-meta);
+    font-weight: var(--e-font-weight-medium);
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .e-app-nav > a[aria-current='page'] {
+    color: var(--e-color-frame-fg);
+    font-weight: var(--e-font-weight-semibold);
+  }
+  e-admin-panel > header > .e-app-pages-button,
+  [slot='menu'] > .e-app-nav[hidden] {
+    display: none;
+  }
+
+  e-admin-frame > [slot='search'] {
+    grid-area: search;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-sizing: border-box;
+    inline-size: min(460px, 100% - 18px);
+    block-size: 36px;
+    margin: 0 0 0 18px;
+    padding: 0 12px;
+    border-radius: var(--e-radius-2);
+    background: var(--e-color-frame-field);
+    color: var(--e-color-frame-fg2);
+  }
+  [slot='search'] > input {
+    flex: 1;
+    min-width: 0;
+    block-size: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: none;
+    color: var(--e-color-frame-fg);
+    font: inherit;
+    font-size: var(--e-font-size-meta);
+  }
+  [slot='search'] > input::placeholder {
+    color: var(--e-color-frame-fg2);
+    opacity: 1;
+  }
+
+  e-admin-frame > [slot='actions'] {
+    grid-area: actions;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px 0 10px;
+  }
+  [slot='actions'] > button {
+    display: grid;
+    place-items: center;
+    inline-size: 36px;
+    block-size: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--e-radius-1);
+    background: none;
+    color: inherit;
+    cursor: pointer;
+  }
+  [slot='actions'] > a {
+    color: var(--e-color-frame-fg2);
+    font-size: var(--e-font-size-meta);
+    white-space: nowrap;
+  }
+  [slot='actions'] > span {
+    display: grid;
+    place-items: center;
+    inline-size: 32px;
+    block-size: 32px;
+    border-radius: 50%;
+    background: var(--e-color-side-on-bg);
+    color: var(--e-color-side-on-fg);
+    font-size: 12px;
+    font-weight: var(--e-font-weight-bold);
+  }
+
+  [slot='menu'] > a:focus-visible,
+  .e-app-nav > a:focus-visible,
+  .e-app-pages > a:focus-visible,
+  .e-app-pages-button:focus-visible,
+  [slot='actions'] > button:focus-visible,
+  [slot='actions'] > a:focus-visible,
+  [slot='search']:focus-within {
+    outline: 2px solid var(--e-color-focus);
+    outline-offset: 2px;
+  }
+
+  /* The panel is a grid of two rows so the loading bar, the notice and the toast v2-host.js adds
+     lie over the iframe's cell and never move it. */
+  e-admin-panel {
+    grid-area: panel;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    margin: 0 10px 10px 0;
+    border-radius: var(--e-radius-3);
+    background: var(--e-color-panel);
+    color: var(--e-color-fg);
+  }
+  e-admin-panel > header {
+    padding: 20px 28px 12px;
+  }
+  e-admin-panel > header h1 {
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: var(--e-font-size-heading);
+    line-height: var(--e-line-height-heading);
+    font-weight: var(--e-font-weight-bold);
+    letter-spacing: -0.01em;
+  }
+  /* A grid places a replaced element at its start, so the iframe is stretched by name. */
+  e-admin-panel > iframe {
+    grid-area: 2 / 1;
+    align-self: stretch;
+    justify-self: stretch;
+    display: block;
+    min-height: 0;
+    inline-size: 100%;
+    border: 0;
+  }
+
+  /* A 3 px bar along the top of the app's area while the app loads or says it is busy. */
+  e-admin-panel > .e-loading-bar {
+    grid-area: 2 / 1;
+    align-self: start;
+    position: relative;
+    block-size: 3px;
+    overflow: hidden;
+    background: var(--e-color-line);
+  }
+  e-admin-panel > .e-loading-bar[hidden],
+  e-admin-panel > .e-notice[hidden] {
+    display: none;
+  }
+  .e-loading-bar::after {
+    position: absolute;
+    inset: 0;
+    inline-size: 40%;
+    background: var(--e-color-accent);
+    content: '';
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .e-loading-bar::after {
+      animation: e-loading 1.2s ease-in-out infinite;
+    }
+  }
+  @keyframes e-loading {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(250%);
+    }
+  }
+
+  /* The notice covers the app's area, not the title bar or the menu, when the app has not answered. */
+  e-admin-panel > .e-notice {
+    grid-area: 2 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--e-space-2);
+    padding: var(--e-space-6);
+    background: var(--e-color-panel);
+    text-align: center;
+  }
+  .e-notice > p {
+    margin: 0;
+    max-inline-size: 36em;
+    color: var(--e-color-fg2);
+  }
+  .e-notice > p:first-child {
+    color: var(--e-color-fg);
+    font-size: var(--e-font-size-title);
+    font-weight: var(--e-font-weight-semibold);
+  }
+  .e-notice > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--e-space-2);
+    margin-top: var(--e-space-2);
+  }
+
+  /* The toast: an inverse pill at the foot of the app's area, over the app. The panel's text colour
+     makes its ground, so it stands out in light and in dark. */
+  e-admin-panel > .e-toast {
+    grid-area: 2 / 1;
+    align-self: end;
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    gap: var(--e-space-3);
+    max-inline-size: calc(100% - 2 * var(--e-space-4));
+    box-sizing: border-box;
+    margin-bottom: var(--e-space-5);
+    padding: var(--e-space-3) var(--e-space-5);
+    border-radius: var(--e-radius-pill);
+    background: var(--e-color-fg);
+    color: var(--e-color-panel);
+    font-weight: var(--e-font-weight-medium);
+  }
+  .e-toast > button {
+    flex: none;
+    block-size: var(--e-size-control-sm);
+    margin: calc(-1 * var(--e-space-1)) 0;
+    padding: 0 var(--e-space-2);
+    border: 0;
+    border-radius: var(--e-radius-pill);
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-weight: var(--e-font-weight-bold);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  /* The focus token is drawn for the panel's ground, not the inverse pill's, so the ring takes the
+     toast's text colour. */
+  .e-toast > button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  /* While the app shows a modal of its own, the Admin dims everything outside the app's frame with
+     the scrim the modal's backdrop wears, and the frame rises above it, so the two read as one modal
+     over the whole Admin. The toast stays above both. */
+  e-admin-frame[data-app-modal]::after {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background: var(--e-color-scrim);
+    content: '';
+  }
+  e-admin-frame[data-app-modal] e-admin-panel > iframe {
+    position: relative;
+    z-index: 2;
+  }
+  e-admin-panel > .e-toast {
+    position: relative;
+    z-index: 3;
+  }
+  /* Below 600 px the app's modal is a sheet, so the tab bar folds away while it is open and the
+     sheet reaches the screen's bottom edge. */
+  @media (width < 600px) {
+    e-admin-frame[data-app-modal] {
+      grid-template-rows: 56px minmax(0, 1fr) 0;
+    }
+    e-admin-frame[data-app-modal] > [slot='menu'] {
+      display: none;
+    }
+  }
+
+  /* The phone: a 56 px top bar with the store, search and notifications, the panel below it with
+     22 px top corners, and the menu as a tab bar on the panel's ground. */
+  @media (width < 1040px) {
+    e-admin-frame {
+      grid-template-columns: fit-content(45%) minmax(0, 1fr) auto;
+      grid-template-rows: 56px minmax(0, 1fr) 68px;
+      grid-template-areas:
+        'store search actions'
+        'panel panel panel'
+        'menu menu menu';
+    }
+    e-admin-frame > [slot='store'] {
+      gap: 8px;
+      padding: 0 0 0 16px;
+      font-weight: var(--e-font-weight-bold);
+    }
+    [slot='store'] > :first-child {
+      inline-size: 28px;
+      block-size: 28px;
+      font-size: var(--e-font-size-meta);
+    }
+    [slot='store'] small,
+    [slot='actions'] > button:first-child,
+    [slot='actions'] > span {
+      display: none;
+    }
+    e-admin-frame > [slot='search'] {
+      inline-size: auto;
+      margin-left: 8px;
+    }
+    e-admin-frame > [slot='actions'] {
+      gap: 8px;
+      padding: 0 12px 0 4px;
+    }
+    e-admin-panel {
+      margin: 0;
+      border-radius: 22px 22px 0 0;
+    }
+    e-admin-panel > header {
+      padding: 16px 16px 8px;
+    }
+    /* The app's pages: a button at the end of the title bar, its room kept whether or not the app
+       names pages, opens them as a menu across the panel just under the title bar. */
+    [slot='menu'] > .e-app-nav {
+      display: none;
+    }
+    e-admin-panel > header {
+      position: relative;
+    }
+    e-admin-panel > header h1 {
+      padding-inline-end: 40px;
+    }
+    e-admin-panel > header > .e-app-pages-button {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-end: 8px;
+      display: grid;
+      place-items: center;
+      inline-size: 36px;
+      block-size: 36px;
+      margin-block: auto;
+      padding: 0;
+      border: 0;
+      border-radius: var(--e-radius-1);
+      background: none;
+      color: var(--e-color-fg);
+      cursor: pointer;
+    }
+    e-admin-panel > header > .e-app-pages-button[hidden] {
+      display: none;
+    }
+    /* Below 600 px the top bar's controls are 44 px. The buttons draw no box, so growing them moves no
+       icon: the gap closes by what each button gains. The search bar fills the bar's 56 px less 12. The
+       chevron grows to 44 px about the same centre, 4 px nearer the edge, so its icon stays put. */
+    @media (width < 600px) {
+      e-admin-frame > [slot='search'] {
+        block-size: 44px;
+      }
+      e-admin-frame > [slot='actions'] {
+        gap: 0;
+        padding: 0 8px 0 0;
+      }
+      [slot='actions'] > button {
+        inline-size: 44px;
+        block-size: 44px;
+      }
+      e-admin-panel > header > .e-app-pages-button {
+        inset-inline-end: 4px;
+        inline-size: 44px;
+        block-size: 44px;
+      }
+    }
+    e-admin-panel > .e-app-pages {
+      position: fixed;
+      inset: auto 8px;
+      inline-size: auto;
+      block-size: auto;
+      margin: 0;
+      padding: 6px;
+      border: 1px solid var(--e-color-line);
+      border-radius: var(--e-radius-2);
+      background: var(--e-color-surface);
+      color: var(--e-color-fg);
+      box-shadow: 0 8px 24px color-mix(in oklch, var(--e-color-scrim) 40%, transparent);
+    }
+    e-admin-panel > .e-app-pages:popover-open {
+      display: flex;
+      flex-direction: column;
+    }
+    .e-app-pages > a {
+      display: flex;
+      align-items: center;
+      min-block-size: 44px;
+      padding: 0 12px;
+      border-radius: var(--e-radius-1);
+      color: var(--e-color-fg);
+      text-decoration: none;
+    }
+    .e-app-pages > a[aria-current='page'] {
+      background: var(--e-color-surface-2);
+      font-weight: var(--e-font-weight-semibold);
+    }
+    e-admin-frame > [slot='menu'] {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0;
+      overflow: hidden;
+      padding: 0 0 8px;
+      border-top: 1px solid var(--e-color-line);
+      background: var(--e-color-panel);
+    }
+    [slot='menu'] > a,
+    [slot='menu'] > a[aria-current='page'] {
+      flex-direction: column;
+      justify-content: center;
+      gap: 3px;
+      min-width: 0;
+      block-size: auto;
+      padding: 0 4px;
+      border-radius: 0;
+      background: none;
+      color: var(--e-color-fg2);
+      font-size: 11.5px;
+      font-weight: var(--e-font-weight-semibold);
+    }
+    [slot='menu'] > a[aria-current='page'] {
+      color: var(--e-color-fg);
+    }
+    [slot='menu'] > a > span {
+      max-inline-size: 100%;
+    }
+  }
+}

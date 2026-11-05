@@ -4,34 +4,30 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Progress bar · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Progress bar · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Progress bar</h1>
-      <p>
-        <code>eb-progress-bar</code> is a thin bar that fills the width of its row. <code>value</code> is 0 to 100 and
-        sets how much of the bar is filled. With no <code>value</code> the bar is indeterminate: a block slides along it
-        while the work goes on. <code>label</code> names the bar for a screen reader.
+      <p class="lede">
+        <code>e-progress-bar</code> shows how far a task has gone. <code>value</code> is a number from 0 to 100. Without
+        a value the bar is indeterminate and a short fill slides along it. Set <code>label</code> to name it for a
+        screen reader.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Determinate, 40 of 100" caption-bn="নির্দিষ্ট মাত্রা, ১০০-র মধ্যে ৪০" stack>
-          <eb-progress-bar value="40" label="New orders" data-label-en="New orders" data-label-bn="নতুন অর্ডার">
-          </eb-progress-bar>
-        </docs-example>
-        <docs-example caption="Indeterminate" caption-bn="অনির্দিষ্ট মাত্রা" stack>
-          <eb-progress-bar
-            label="Loading the order."
-            data-label-en="Loading the order."
-            data-label-bn="অর্ডার লোড হচ্ছে।"
-          >
-          </eb-progress-bar>
-        </docs-example>
-      </div>
+      <docs-example caption="A value" stack>
+        <e-progress-bar value="60" label="Orders imported"></e-progress-bar>
+      </docs-example>
+      <docs-example caption="No value: indeterminate" stack>
+        <e-progress-bar label="Booking Pathao"></e-progress-bar>
+      </docs-example>
+      <docs-example caption="With the words beside it" stack>
+        <e-text>৳2,450 of ৳5,000 collected</e-text>
+        <e-progress-bar value="49" label="Collected"></e-progress-bar>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-text>৪০টির মধ্যে ২৪টি অর্ডার আমদানি হয়েছে</e-text>
+        <e-progress-bar value="60" label="অর্ডার আমদানি"></e-progress-bar>
+      </docs-example>
     </main>
   </body>
 </html>

@@ -5,58 +5,51 @@
 // a second tap on Save finds nothing to submit, until the app shows userErrors for it: then nothing
 // was saved, and the values from before the submit are the saved ones again.
 
+import { clearErrors } from './v2/form-errors.ts'
+
 export type SaveBarAction = 'save' | 'discard'
 
 // What showErrors raises on a form when the API refused its save.
-export const refused = 'eb-save-refused'
+export const refused = 'e-save-refused'
 
-// The properties that hold what a person entered: a native input's or an eb field's value, a
-// checkbox's checked, and the district picker's district and area.
+// The properties that hold what a person entered: a native control's value, and a checkbox's checked.
 interface Entered {
   value?: string
   checked?: boolean
-  district?: string
-  area?: string
 }
 
-// What the form helper shows when the API refuses a save.
-interface Shown {
-  error?: string
-  areaError?: string
-}
+type Field = Element & Entered
 
-type Field = Element & Entered & Shown
-
-function snapshot({ value, checked, district, area }: Field): Entered {
-  return { value, checked, district, area }
+function snapshot({ value, checked }: Field): Entered {
+  return { value, checked }
 }
 
 function restore(field: Field, state: Entered): void {
   if (state.value !== undefined) field.value = state.value
   if (state.checked !== undefined) field.checked = state.checked
-  if (state.district !== undefined) field.district = state.district
-  if (state.area !== undefined) field.area = state.area
 }
 
 function counts(element: Element): boolean {
   if (!('name' in element) || !element.name) return false
-  if (element.localName === 'eb-search-field') return false
   return !(element instanceof HTMLInputElement && ['search', 'submit', 'button', 'reset'].includes(element.type))
 }
 
-// SAFETY: a form's elements are native controls and eb fields, which keep what was entered in the
-// Entered properties or lack them.
+// SAFETY: a form's elements are native controls, which keep what was entered in the Entered
+// properties or lack them.
 const fieldsOf = (form: HTMLFormElement) => [...form.elements].filter(counts) as Field[]
 
 const same = (a: Entered, b: Entered) => JSON.stringify(a) === JSON.stringify(b)
 
-// The form a field belongs to, which a native input and an eb field both name.
+// The form a field belongs to, which a native control names.
 function formOf(target: EventTarget | null): HTMLFormElement | null {
   const form = target && 'form' in target ? target.form : null
   return form instanceof HTMLFormElement && form.hasAttribute('data-save-bar') ? form : null
 }
 
-export function watchSaveBars(doc: Document, show: (visible: boolean) => void) {
+// root is the page's document, or the dialog of an e-modal: a form inside an e-modal saves from that
+// modal's own footer, so only its dialog watches it, never the page's bar.
+export function watchSaveBars(root: Document | Element, show: (visible: boolean) => void) {
+  const owns = (form: HTMLFormElement) => (form.closest('e-modal > dialog') ?? form.ownerDocument) === root
   const saved = new Map<HTMLFormElement, Map<Field, Entered>>()
   // The saved values from before each form's last submit.
   const before = new Map<HTMLFormElement, Map<Field, Entered>>()
@@ -68,7 +61,9 @@ export function watchSaveBars(doc: Document, show: (visible: boolean) => void) {
     saved.set(form, values)
     for (const field of fieldsOf(form)) if (!values.has(field)) values.set(field, snapshot(field))
   }
-  const scan = () => doc.querySelectorAll<HTMLFormElement>('form[data-save-bar]').forEach(watch)
+  const scan = () => {
+    for (const form of root.querySelectorAll<HTMLFormElement>('form[data-save-bar]')) if (owns(form)) watch(form)
+  }
 
   const dirty = (form: HTMLFormElement) =>
     [...(saved.get(form) ?? [])].some(([field, values]) => field.isConnected && !same(values, snapshot(field)))
@@ -81,23 +76,23 @@ export function watchSaveBars(doc: Document, show: (visible: boolean) => void) {
 
   const edited = (event: Event) => {
     const form = formOf(event.target)
-    if (!form || !(event.target instanceof Element) || !counts(event.target)) return
+    if (!form || !owns(form) || !(event.target instanceof Element) || !counts(event.target)) return
     watch(form)
     update()
   }
 
   // On the way up, once the field has taken the new value.
-  doc.addEventListener('input', edited)
-  doc.addEventListener('change', edited)
+  root.addEventListener('input', edited)
+  root.addEventListener('change', edited)
   // A submitted form's values are its new saved ones, whichever way it was submitted.
-  doc.addEventListener('submit', (event) => {
+  root.addEventListener('submit', (event) => {
     const form = event.target
     if (!(form instanceof HTMLFormElement) || !saved.has(form)) return
     before.set(form, saved.get(form)!)
     saved.set(form, new Map(fieldsOf(form).map((field) => [field, snapshot(field)])))
     update()
   })
-  doc.addEventListener(refused, (event) => {
+  root.addEventListener(refused, (event) => {
     const form = event.target
     const values = form instanceof HTMLFormElement ? before.get(form) : undefined
     if (!values || !(form instanceof HTMLFormElement)) return
@@ -105,7 +100,7 @@ export function watchSaveBars(doc: Document, show: (visible: boolean) => void) {
     saved.set(form, values)
     update()
   })
-  new MutationObserver(scan).observe(doc, { childList: true, subtree: true })
+  new MutationObserver(scan).observe(root, { childList: true, subtree: true })
   scan()
 
   return {
@@ -115,12 +110,8 @@ export function watchSaveBars(doc: Document, show: (visible: boolean) => void) {
         for (const [form, values] of saved) {
           for (const [field, state] of values) {
             restore(field, state)
-            if (field.error) field.error = ''
-            if (field.areaError) field.areaError = ''
           }
-          form.querySelector(':scope > [data-eb-form-errors]')?.remove()
-          const announced = form.querySelector(':scope > [data-eb-announce]')
-          if (announced) announced.textContent = ''
+          clearErrors(form)
         }
         update()
         return

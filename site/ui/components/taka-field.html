@@ -4,69 +4,32 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Taka field · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Taka field · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Taka field</h1>
-      <p>
-        <code>eb-taka-field</code> takes an amount in taka. It shows ৳ before the number and groups it in lakhs, in the
-        digits of its language, and submits the plain number.
+      <p class="lede">
+        <code>e-taka-field</code> takes an amount in taka. It shows ৳ and the amount in the digits of the page's
+        language with lakh grouping, and submits the plain number.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Default" caption-bn="সাধারণ">
-          <eb-taka-field
-            name="price"
-            data-state="default"
-            label="Price"
-            data-label-en="Price"
-            data-label-bn="দাম"
-          ></eb-taka-field>
-        </docs-example>
-        <docs-example caption="Focused" caption-bn="ফোকাসে">
-          <eb-taka-field
-            data-state="focus"
-            label="Advance by bKash"
-            data-label-en="Advance by bKash"
-            data-label-bn="বিকাশে অগ্রিম"
-          ></eb-taka-field>
-        </docs-example>
-        <docs-example caption="With an error" caption-bn="ভুলসহ">
-          <eb-taka-field
-            data-state="error"
-            value="5000"
-            label="Discount"
-            data-label-en="Discount"
-            data-label-bn="ছাড়"
-            error="The discount is more than the order."
-            data-error-en="The discount is more than the order."
-            data-error-bn="ছাড় অর্ডারের চেয়ে বেশি।"
-          ></eb-taka-field>
-        </docs-example>
-        <docs-example caption="Disabled" caption-bn="বন্ধ">
-          <eb-taka-field
-            data-state="disabled"
-            value="120"
-            disabled
-            label="Delivery charge"
-            data-label-en="Delivery charge"
-            data-label-bn="ডেলিভারি চার্জ"
-          ></eb-taka-field>
-        </docs-example>
-        <docs-example caption="Filled" caption-bn="পূরণ করা">
-          <eb-taka-field
-            data-state="filled"
-            value="125000"
-            label="Price"
-            data-label-en="Price"
-            data-label-bn="দাম"
-          ></eb-taka-field>
-        </docs-example>
-      </div>
+      <docs-example caption="An amount">
+        <e-taka-field label="Delivery charge" name="charge" value="60"></e-taka-field>
+      </docs-example>
+      <docs-example caption="Lakh grouping">
+        <e-taka-field label="Order total" name="total" value="125000"></e-taka-field>
+      </docs-example>
+      <docs-example caption="With an error">
+        <e-taka-field
+          label="Refund"
+          name="refund"
+          value="1200"
+          error="The refund cannot pass the order total."
+        ></e-taka-field>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-taka-field label="অর্ডারের মোট" name="total" value="125000"></e-taka-field>
+      </docs-example>
     </main>
   </body>
 </html>

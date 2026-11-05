@@ -4,72 +4,36 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Text area · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Text area · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Text area</h1>
-      <p>
-        <code>eb-text-area</code> takes a few lines of text, such as a note on an order. A person can drag it taller.
+      <p class="lede">
+        <code>e-text-area</code> takes several lines of text, such as an order note. Its native textarea joins the form,
+        and <code>value</code> is the text it opens with.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Default" caption-bn="সাধারণ">
-          <eb-text-area
-            name="note"
-            data-state="default"
-            label="Note"
-            data-label-en="Note"
-            data-label-bn="নোট"
-          ></eb-text-area>
-        </docs-example>
-        <docs-example caption="Focused" caption-bn="ফোকাসে">
-          <eb-text-area
-            data-state="focus"
-            label="Note for the courier"
-            data-label-en="Note for the courier"
-            data-label-bn="কুরিয়ারের জন্য নোট"
-          ></eb-text-area>
-        </docs-example>
-        <docs-example caption="With an error" caption-bn="ভুলসহ">
-          <eb-text-area
-            data-state="error"
-            required
-            label="Reason for the return"
-            data-label-en="Reason for the return"
-            data-label-bn="ফেরতের কারণ"
-            error="Say why the order came back."
-            data-error-en="Say why the order came back."
-            data-error-bn="অর্ডারটি কেন ফেরত এসেছে লিখুন।"
-          ></eb-text-area>
-        </docs-example>
-        <docs-example caption="Disabled" caption-bn="বন্ধ">
-          <eb-text-area
-            data-state="disabled"
-            disabled
-            label="Note from the shop"
-            data-label-en="Note from the shop"
-            data-label-bn="দোকানের নোট"
-            value="Gift wrap"
-            data-value-en="Gift wrap"
-            data-value-bn="গিফট র‍্যাপ"
-          ></eb-text-area>
-        </docs-example>
-        <docs-example caption="Filled" caption-bn="পূরণ করা">
-          <eb-text-area
-            data-state="filled"
-            label="Note"
-            data-label-en="Note"
-            data-label-bn="নোট"
-            value="Call before delivery."
-            data-value-en="Call before delivery."
-            data-value-bn="ডেলিভারির আগে ফোন করুন।"
-          ></eb-text-area>
-        </docs-example>
-      </div>
+      <docs-example caption="A labelled text area">
+        <e-text-area label="Order note" name="note" placeholder="Anything the courier should know"></e-text-area>
+      </docs-example>
+      <docs-example caption="With a value">
+        <e-text-area
+          label="Delivery note"
+          name="delivery"
+          value="Call before arriving. Gate 2, Mirpur 10, Dhaka."
+        ></e-text-area>
+      </docs-example>
+      <docs-example caption="Required, with an error">
+        <e-text-area
+          label="Return reason"
+          name="reason"
+          required
+          error="Tell us why order #1042 comes back."
+        ></e-text-area>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-text-area label="অর্ডারের নোট" name="note" value="আসার আগে ফোন করবেন। মিরপুর ১০, ঢাকা।"></e-text-area>
+      </docs-example>
     </main>
   </body>
 </html>

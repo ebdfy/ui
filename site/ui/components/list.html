@@ -4,34 +4,34 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>List · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>List · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>List</h1>
-      <p>
-        <code>eb-list</code> shows each child as a card, 12 px apart, on a screen of any width. Use it for short lists
-        that are cards on every screen; for orders, which are a table on a computer, use <code>eb-table</code>.
+      <p class="lede">
+        <code>e-list</code> shows a column of cards, one for each child, at any width. The children can be any element.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Cards in a list" caption-bn="তালিকায় কার্ড" stack>
-          <eb-list>
-            <div data-en="Pathao picks up at 4 pm." data-bn="পাঠাও বিকেল ৪টায় নিয়ে যায়।">
-              Pathao picks up at 4 pm.
-            </div>
-            <div data-en="Steadfast picks up at 6 pm." data-bn="স্টেডফাস্ট সন্ধ্যা ৬টায় নিয়ে যায়।">
-              Steadfast picks up at 6 pm.
-            </div>
-            <div data-en="RedX picks up at noon." data-bn="রেডএক্স দুপুর ১২টায় নিয়ে যায়।">
-              RedX picks up at noon.
-            </div>
-          </eb-list>
-        </docs-example>
-      </div>
+      <docs-example caption="Plain items" stack>
+        <e-list>
+          <div>Pathao pickup at 4 pm</div>
+          <div>Call the customer in Sylhet</div>
+          <div>Print two labels</div>
+        </e-list>
+      </docs-example>
+      <docs-example caption="Items with more inside" stack>
+        <e-list>
+          <div><strong>#1042</strong> · Rahima Akter · ৳1,930</div>
+          <div><strong>#1041</strong> · Tanvir Hasan · ৳3,200</div>
+        </e-list>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-list>
+          <div>বিকাল ৪টায় পাঠাও পিকআপ</div>
+          <div>সিলেটের গ্রাহককে ফোন করুন</div>
+          <div>দুইটি লেবেল প্রিন্ট করুন</div>
+        </e-list>
+      </docs-example>
     </main>
   </body>
 </html>

@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <meta name="ebdfy-app" content="sample" />
+    <meta name="ebdfy-home" content="%EB_UI%/playground" />
+    <title>Orders · Sample app · ebdfy</title>
+    <link
+      rel="preload"
+      href="%EB_CDN%/ui/fonts/manrope-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 16px;
+        background: var(--e-color-panel);
+      }
+      /* Each row holds a checkbox, then an order's number, date, customer, channel, payment, status,
+         items and total. Below 600 px the index table draws each row as a card; from 600 px it is a
+         table showing the number, date, customer, status and total, with the payment joining from
+         800 px and the channel and items from 1040 px, the widths where each still fits. */
+      @media (min-width: 600px) {
+        body {
+          padding: 24px 28px;
+        }
+        e-table {
+          --e-columns: 42px 72px 104px minmax(0, 1fr) auto auto;
+        }
+        e-row > :nth-child(5),
+        e-row > :nth-child(6),
+        e-row > :nth-child(8) {
+          display: none;
+        }
+        e-row > :nth-child(4) {
+          white-space: normal;
+        }
+      }
+      @media (min-width: 800px) {
+        e-table {
+          --e-columns: 42px 80px 112px minmax(120px, 1fr) auto auto auto;
+        }
+        e-row > :nth-child(6) {
+          display: flex;
+        }
+      }
+      @media (min-width: 1040px) {
+        e-table {
+          --e-columns: 42px 80px 112px minmax(140px, 1fr) auto auto auto auto auto;
+        }
+        e-row > :nth-child(5),
+        e-row > :nth-child(8) {
+          display: flex;
+        }
+        e-row > :nth-child(4) {
+          white-space: nowrap;
+        }
+      }
+    </style>
+    <script>
+      // The page's language before anything draws: ?lang= first, then the choice kept in
+      // ebdfy-sample-lang, else English.
+      {
+        let lang = new URLSearchParams(location.search).get('lang')
+        if (lang !== 'bn' && lang !== 'en') {
+          try {
+            lang = localStorage.getItem('ebdfy-sample-lang')
+          } catch {
+            lang = 'en'
+          }
+        }
+        document.documentElement.lang = lang === 'bn' ? 'bn' : 'en'
+      }
+    </script>
+    <script type="module" src="%EB_CDN%/ui/v2.js"></script>
+    <script defer src="/orders-data.js"></script>
+  </head>
+  <body>
+    <e-page heading="Orders" data-bn-heading="অর্ডার">
+      <e-button slot="actions" tone="primary" data-bn="সংরক্ষণ করুন">Save</e-button>
+      <e-stack gap="4">
+        <e-metrics label="Today" data-bn-label="আজ">
+          <div>
+            <span slot="label" data-bn="আজকের অর্ডার">Orders today</span>
+            <strong data-bn="৩৮">38</strong>
+            <span slot="change" tone="up" data-bn="+১২%">+12%</span>
+          </div>
+          <div>
+            <span slot="label" data-bn="কনফার্ম বাকি">To confirm</span>
+            <strong data-count="new" data-bn="১২">12</strong>
+          </div>
+          <div>
+            <span slot="label" data-bn="কুরিয়ারে">With courier</span>
+            <strong data-count="courier" data-bn="৫৪">54</strong>
+          </div>
+          <div>
+            <span slot="label" data-bn="ফেরতের হার, ৭ দিন">Return rate, 7 days</span>
+            <strong data-bn="২.১%">2.1%</strong>
+          </div>
+        </e-metrics>
+        <e-index-table label="Orders" data-bn-label="অর্ডার">
+          <e-tabs label="Order views" data-bn-label="অর্ডারের ভিউ">
+            <e-tab value="all" count="120" data-bn-count="১২০" data-bn="সব" selected>All</e-tab>
+            <e-tab value="new" count="12" data-bn-count="১২" data-bn="নতুন">New</e-tab>
+            <e-tab value="confirmed" count="18" data-bn-count="১৮" data-bn="কনফার্মড">Confirmed</e-tab>
+            <e-tab value="courier" count="54" data-bn-count="৫৪" data-bn="কুরিয়ারে">With courier</e-tab>
+            <e-tab value="delivered" count="30" data-bn-count="৩০" data-bn="ডেলিভারি হয়েছে">Delivered</e-tab>
+            <e-tab value="returned" count="6" data-bn-count="৬" data-bn="ফেরত এসেছে">Returned</e-tab>
+            <e-button tone="plain" aria-label="Add view" data-bn-aria-label="ভিউ যোগ করুন"
+              ><e-icon name="plus"></e-icon
+            ></e-button>
+          </e-tabs>
+          <e-search-field
+            label="Search orders"
+            name="q"
+            placeholder="Search orders"
+            data-bn-label="অর্ডার খুঁজুন"
+            data-bn-placeholder="অর্ডার খুঁজুন"
+          ></e-search-field>
+          <span slot="filter" name="date"><span data-bn="তারিখ: গত ৩০ দিন">Date: Last 30 days</span></span>
+          <e-button data-bn="ফিল্টার যোগ করুন">Add filter</e-button>
+          <e-select label="Sort" hide-label data-bn-label="সাজান">
+            <option value="newest" selected data-bn="নতুন আগে">Newest first</option>
+            <option value="oldest" data-bn="পুরোনো আগে">Oldest first</option>
+          </e-select>
+          <div slot="bulk">
+            <e-button data-bn="কনফার্ম করুন" data-act="confirm">Confirm</e-button>
+            <e-button data-bn="কুরিয়ার বুক করুন" data-act="courier">Book courier</e-button>
+            <e-button data-bn="লেবেল প্রিন্ট করুন" data-act="labels">Print labels</e-button>
+          </div>
+          <e-table label="Orders" data-bn-label="অর্ডার">
+            <e-row head>
+              <span
+                ><e-checkbox
+                  label="Select all shown orders"
+                  hide-label
+                  data-bn-label="দেখানো সব অর্ডার নির্বাচন করুন"
+                ></e-checkbox
+              ></span>
+              <span data-bn="অর্ডার">Order</span>
+              <span data-bn="তারিখ">Date</span>
+              <span data-bn="গ্রাহক">Customer</span>
+              <span data-bn="চ্যানেল">Channel</span>
+              <span data-bn="পেমেন্ট">Payment</span>
+              <span data-bn="অবস্থা">Status</span>
+              <span align="end" data-bn="পণ্য">Items</span>
+              <span align="end" data-bn="মোট">Total</span>
+            </e-row>
+            <e-row data-number="1042">
+              <span
+                ><e-checkbox label="Select #1042" hide-label data-bn-label="অর্ডার #1042 নির্বাচন করুন"></e-checkbox
+              ></span>
+              <span card="title"><e-link><a href="/orders/1042">#1042</a></e-link></span>
+              <span tone="subdued" card="aside" data-bn="আজ ১১:২৪">Today 11:24</span>
+              <span card="body" data-bn="রহিমা আক্তার">Rahima Akter</span>
+              <span data-bn="ফেসবুক">Facebook</span>
+              <span card="meta" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</span>
+              <span card="status"><e-badge tone="new" data-bn="নতুন">New</e-badge></span>
+              <span align="end" data-bn="২টি পণ্য">2 items</span>
+              <span align="end" card="end" data-bn="৳১,৯৩০">৳1,930</span>
+            </e-row>
+            <e-row data-number="1041">
+              <span
+                ><e-checkbox label="Select #1041" hide-label data-bn-label="অর্ডার #1041 নির্বাচন করুন"></e-checkbox
+              ></span>
+              <span card="title"><e-link><a href="/orders/1041">#1041</a></e-link></span>
+              <span tone="subdued" card="aside" data-bn="আজ ১১:০৬">Today 11:06</span>
+              <span card="body" data-bn="তানভীর হাসান">Tanvir Hasan</span>
+              <span data-bn="ওয়েবসাইট">Website</span>
+              <span card="meta" data-bn="বিকাশ · পরিশোধিত">bKash · Paid</span>
+              <span card="status"><e-badge tone="confirmed" data-bn="কনফার্মড">Confirmed</e-badge></span>
+              <span align="end" data-bn="৩টি পণ্য">3 items</span>
+              <span align="end" card="end" data-bn="৳৩,২০০">৳3,200</span>
+            </e-row>
+            <e-row data-number="1040">
+              <span
+                ><e-checkbox label="Select #1040" hide-label data-bn-label="অর্ডার #1040 নির্বাচন করুন"></e-checkbox
+              ></span>
+              <span card="title"><e-link><a href="/orders/1040">#1040</a></e-link></span>
+              <span tone="subdued" card="aside" data-bn="আজ ১০:৪৮">Today 10:48</span>
+              <span card="body" data-bn="নুসরাত জাহান">Nusrat Jahan</span>
+              <span data-bn="ফেসবুক">Facebook</span>
+              <span card="meta" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</span>
+              <span card="status"><e-badge tone="new" data-bn="নতুন">New</e-badge></span>
+              <span align="end" data-bn="২টি পণ্য">2 items</span>
+              <span align="end" card="end" data-bn="৳২,৪৫০">৳2,450</span>
+            </e-row>
+            <e-row data-number="1039">
+              <span
+                ><e-checkbox label="Select #1039" hide-label data-bn-label="অর্ডার #1039 নির্বাচন করুন"></e-checkbox
+              ></span>
+              <span card="title"><e-link><a href="/orders/1039">#1039</a></e-link></span>
+              <span tone="subdued" card="aside" data-bn="আজ ১০:৩০">Today 10:30</span>
+              <span card="body" data-bn="আরিফ চৌধুরী">Arif Chowdhury</span>
+              <span data-bn="ফোন">Phone</span>
+              <span card="meta" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</span>
+              <span card="status"><e-badge tone="courier" data-bn="কুরিয়ারে">With courier</e-badge></span>
+              <span align="end" data-bn="৪টি পণ্য">4 items</span>
+              <span align="end" card="end" data-bn="৳১২,৫০০">৳12,500</span>
+            </e-row>
+            <e-row data-number="1038">
+              <span
+                ><e-checkbox label="Select #1038" hide-label data-bn-label="অর্ডার #1038 নির্বাচন করুন"></e-checkbox
+              ></span>
+              <span card="title"><e-link><a href="/orders/1038">#1038</a></e-link></span>
+              <span tone="subdued" card="aside" data-bn="আজ ১০:১২">Today 10:12</span>
+              <span card="body" data-bn="সুমাইয়া ইসলাম">Sumaiya Islam</span>
+              <span data-bn="ইনস্টাগ্রাম">Instagram</span>
+              <span card="meta" data-bn="কার্ড · পরিশোধিত">Card · Paid</span>
+              <span card="status"><e-badge tone="delivered" data-bn="ডেলিভারি হয়েছে">Delivered</e-badge></span>
+              <span align="end" data-bn="২টি পণ্য">2 items</span>
+              <span align="end" card="end" data-bn="৳৪,৭৮০">৳4,780</span>
+            </e-row>
+            <e-row data-number="1037">
+              <span
+                ><e-checkbox label="Select #1037" hide-label data-bn-label="অর্ডার #1037 নির্বাচন করুন"></e-checkbox
+              ></span>
+              <span card="title"><e-link><a href="/orders/1037">#1037</a></e-link></span>
+              <span tone="subdued" card="aside" data-bn="আজ ০৯:৫৪">Today 09:54</span>
+              <span card="body" data-bn="মাহমুদুল করিম">Mahmudul Karim</span>
+              <span data-bn="ফেসবুক">Facebook</span>
+              <span card="meta" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</span>
+              <span card="status"><e-badge tone="returned" data-bn="ফেরত এসেছে">Returned</e-badge></span>
+              <span align="end" data-bn="১টি পণ্য">1 item</span>
+              <span align="end" card="end" data-bn="৳৯৯০">৳990</span>
+            </e-row>
+            <e-row data-number="1036">
+              <span
+                ><e-checkbox label="Select #1036" hide-label data-bn-label="অর্ডার #1036 নির্বাচন করুন"></e-checkbox
+              ></span>
+              <span card="title"><e-link><a href="/orders/1036">#1036</a></e-link></span>
+              <span tone="subdued" card="aside" data-bn="আজ ০৯:৩৬">Today 09:36</span>
+              <span card="body" data-bn="ফারজানা রহমান">Farzana Rahman</span>
+              <span data-bn="ওয়েবসাইট">Website</span>
+              <span card="meta" data-bn="বিকাশ · পরিশোধিত">bKash · Paid</span>
+              <span card="status"><e-badge tone="delivered" data-bn="ডেলিভারি হয়েছে">Delivered</e-badge></span>
+              <span align="end" data-bn="৩টি পণ্য">3 items</span>
+              <span align="end" card="end" data-bn="৳৬,৩২০">৳6,320</span>
+            </e-row>
+            <e-row data-number="1035">
+              <span
+                ><e-checkbox label="Select #1035" hide-label data-bn-label="অর্ডার #1035 নির্বাচন করুন"></e-checkbox
+              ></span>
+              <span card="title"><e-link><a href="/orders/1035">#1035</a></e-link></span>
+              <span tone="subdued" card="aside" data-bn="আজ ০৯:১৮">Today 09:18</span>
+              <span card="body" data-bn="ইমরান হোসেন">Imran Hossain</span>
+              <span data-bn="ফেসবুক">Facebook</span>
+              <span card="meta" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</span>
+              <span card="status"><e-badge tone="courier" data-bn="কুরিয়ারে">With courier</e-badge></span>
+              <span align="end" data-bn="১টি পণ্য">1 item</span>
+              <span align="end" card="end" data-bn="৳১,৪৫০">৳1,450</span>
+            </e-row>
+            <e-row data-number="1034">
+              <span
+                ><e-checkbox label="Select #1034" hide-label data-bn-label="অর্ডার #1034 নির্বাচন করুন"></e-checkbox
+              ></span>
+              <span card="title"><e-link><a href="/orders/1034">#1034</a></e-link></span>
+              <span tone="subdued" card="aside" data-bn="আজ ০৯:০০">Today 09:00</span>
+              <span card="body" data-bn="সাদিয়া আফরিন">Sadia Afrin</span>
+              <span data-bn="ইনস্টাগ্রাম">Instagram</span>
+              <span card="meta" data-bn="নগদ · পরিশোধিত">Nagad · Paid</span>
+              <span card="status"><e-badge tone="new" data-bn="নতুন">New</e-badge></span>
+              <span align="end" data-bn="২টি পণ্য">2 items</span>
+              <span align="end" card="end" data-bn="৳২,৮৯০">৳2,890</span>
+            </e-row>
+            <e-row data-number="1033">
+              <span
+                ><e-checkbox label="Select #1033" hide-label data-bn-label="অর্ডার #1033 নির্বাচন করুন"></e-checkbox
+              ></span>
+              <span card="title"><e-link><a href="/orders/1033">#1033</a></e-link></span>
+              <span tone="subdued" card="aside" data-bn="আজ ০৮:৪২">Today 08:42</span>
+              <span card="body" data-bn="রাকিব উদ্দিন">Rakib Uddin</span>
+              <span data-bn="ফোন">Phone</span>
+              <span card="meta" data-bn="বিকাশ · পরিশোধিত">bKash · Paid</span>
+              <span card="status"><e-badge tone="confirmed" data-bn="কনফার্মড">Confirmed</e-badge></span>
+              <span align="end" data-bn="৬টি পণ্য">6 items</span>
+              <span align="end" card="end" data-bn="৳১,১২,৪০০">৳1,12,400</span>
+            </e-row>
+          </e-table>
+          <e-empty-state heading="No orders match" data-bn-heading="কোনো অর্ডার মেলেনি">
+            <p data-bn="অন্য শব্দে খুঁজুন, অথবা খোঁজা মুছে দিন।">Try another word, or clear the search.</p>
+            <e-button slot="action" data-bn="খোঁজা মুছুন">Clear search</e-button>
+          </e-empty-state>
+          <e-pagination label="1–10 of 120" data-bn-label="১–১০, মোট ১২০" has-next></e-pagination>
+        </e-index-table>
+      </e-stack>
+    </e-page>
+    <script>
+      // Puts the page's words in a language: before v2.js upgrades the markup when the page is Bangla,
+      // and again whenever the Admin's language changes. data-bn holds a tag's Bangla text and
+      // data-bn-NAME an attribute's; the first swap keeps the English in data-en and data-en-NAME. An
+      // e-button's label sits in the button it built. It does no layout of its own.
+      function speak(lang) {
+        document.documentElement.lang = lang
+        for (const tag of document.querySelectorAll('[data-bn]')) {
+          tag.dataset.en ??= tag.textContent
+          const label = (tag.localName === 'e-button' && tag.querySelector(':scope > button')) || tag
+          label.textContent = lang === 'bn' ? tag.dataset.bn : tag.dataset.en
+        }
+        for (const tag of document.querySelectorAll('*')) {
+          for (const name of tag.getAttributeNames()) {
+            if (!name.startsWith('data-bn-')) continue
+            const attribute = name.slice(8)
+            if (!tag.hasAttribute(`data-en-${attribute}`)) {
+              tag.setAttribute(`data-en-${attribute}`, tag.getAttribute(attribute) ?? '')
+            }
+            tag.setAttribute(attribute, tag.getAttribute(lang === 'bn' ? name : `data-en-${attribute}`))
+          }
+        }
+      }
+      if (document.documentElement.lang === 'bn') speak('bn')
+    </script>
+    <script type="module">
+      import { showNav } from '/nav.js'
+      import { startList } from '/orders-list.js'
+
+      // After v2.js, which holds the bridge: the page names itself in the Admin's title bar, and Save
+      // tells the Admin to show that it saved, each in the page's language at the time.
+      const bn = () => document.documentElement.lang === 'bn'
+      const name = () => {
+        ebdfy.title(bn() ? 'অর্ডার' : 'Orders')
+        showNav()
+      }
+      name()
+      document
+        .querySelector('e-page > e-button[slot="actions"]')
+        .addEventListener('click', () => ebdfy.toast(bn() ? 'সংরক্ষিত' : 'Saved'))
+      startList(document.querySelector('e-index-table'))
+      // A view a merchant saves comes later; for now the + says so.
+      document
+        .querySelector('e-tabs > e-button')
+        .addEventListener('click', () => ebdfy.toast(bn() ? 'ভিউ সেভ করা পরে আসছে' : 'Saving views comes later'))
+      // The app speaks the Admin's language, and keeps it for its next first paint. The Admin may
+      // have said it before this listener was added, so the page also asks once; outside the Admin
+      // there is no one to ask.
+      const follow = (language) => {
+        if (language === document.documentElement.lang) return
+        try {
+          localStorage.setItem('ebdfy-sample-lang', language)
+        } catch {}
+        speak(language)
+        name()
+      }
+      addEventListener('ebdfy:context', ({ detail }) => follow(detail.language))
+      ebdfy.user().then(
+        ({ language }) => follow(language),
+        () => {},
+      )
+    </script>
+  </body>
+</html>

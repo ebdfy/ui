@@ -1,0 +1,78 @@
+/* e-table and e-row. The table is one grid and each e-row is display: contents, so every cell of every
+   row is a cell of the same grid and the columns line up without subgrid. The columns come from the
+   --e-columns custom property (the script copies the columns attribute into it); with none, the head
+   row's cell count gives that many content-sized columns, up to 10. */
+e-table {
+  --e-count: 1;
+  display: grid;
+  grid-template-columns: var(--e-columns, repeat(var(--e-count), auto));
+  grid-auto-rows: minmax(var(--e-size-row), auto);
+  min-width: 0;
+  overflow-x: auto;
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-body);
+  line-height: var(--e-line-height-body);
+}
+e-table:has(> e-row > :nth-child(2)) {
+  --e-count: 2;
+}
+e-table:has(> e-row > :nth-child(3)) {
+  --e-count: 3;
+}
+e-table:has(> e-row > :nth-child(4)) {
+  --e-count: 4;
+}
+e-table:has(> e-row > :nth-child(5)) {
+  --e-count: 5;
+}
+e-table:has(> e-row > :nth-child(6)) {
+  --e-count: 6;
+}
+e-table:has(> e-row > :nth-child(7)) {
+  --e-count: 7;
+}
+e-table:has(> e-row > :nth-child(8)) {
+  --e-count: 8;
+}
+e-table:has(> e-row > :nth-child(9)) {
+  --e-count: 9;
+}
+e-table:has(> e-row > :nth-child(10)) {
+  --e-count: 10;
+}
+e-row {
+  display: contents;
+}
+e-row > * {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: var(--e-size-row);
+  padding: 0 var(--e-space-3);
+  border-bottom: 1px solid var(--e-color-line);
+  white-space: nowrap;
+}
+e-row:last-child > * {
+  border-bottom: 0;
+}
+/* A cell that holds only a checkbox, as a selectable row's first does, gives it the whole cell. */
+e-row > :has(> e-checkbox:only-child) {
+  justify-content: center;
+  padding: 0;
+}
+e-row > [align='end'] {
+  justify-content: flex-end;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+e-row > [tone='subdued'] {
+  color: var(--e-color-fg2);
+}
+e-row[head] > * {
+  background: var(--e-color-surface-2);
+  color: var(--e-color-fg2);
+  font-size: var(--e-font-size-meta);
+  font-weight: var(--e-font-weight-semibold);
+}

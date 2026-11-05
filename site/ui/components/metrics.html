@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Metrics · ebdfy design system v2</title>
+  </head>
+  <body>
+    <main>
+      <h1>Metrics</h1>
+      <p class="lede">
+        <code>e-metrics</code> shows two to four numbers. Each child is one metric: a <code>slot="label"</code>, a
+        <code>strong</code> number, and an optional <code>slot="change"</code> with <code>tone="up"</code> or
+        <code>tone="down"</code>.
+      </p>
+      <docs-example caption="Two metrics" stack>
+        <e-metrics>
+          <div>
+            <span slot="label">Orders today</span>
+            <strong>38</strong>
+          </div>
+          <div>
+            <span slot="label">To confirm</span>
+            <strong>12</strong>
+          </div>
+        </e-metrics>
+      </docs-example>
+      <docs-example caption="Four metrics, with a change" stack>
+        <e-metrics>
+          <div>
+            <span slot="label">Orders today</span>
+            <strong>38</strong>
+            <span slot="change" tone="up">+12%</span>
+          </div>
+          <div>
+            <span slot="label">With Pathao</span>
+            <strong>54</strong>
+          </div>
+          <div>
+            <span slot="label">Sales</span>
+            <strong>৳41,500</strong>
+            <span slot="change" tone="down">-4%</span>
+          </div>
+          <div>
+            <span slot="label">Return rate</span>
+            <strong>2.1%</strong>
+          </div>
+        </e-metrics>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-metrics>
+          <div>
+            <span slot="label">আজকের অর্ডার</span>
+            <strong>৩৮</strong>
+            <span slot="change" tone="up">+১২%</span>
+          </div>
+          <div>
+            <span slot="label">কুরিয়ারে</span>
+            <strong>৫৪</strong>
+          </div>
+        </e-metrics>
+      </docs-example>
+    </main>
+  </body>
+</html>

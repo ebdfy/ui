@@ -1,0 +1,28 @@
+/* e-tooltip: a short text shown by its trigger, the element it wraps, on hover and on keyboard focus. */
+/* The tag is its trigger's box. The script adds the bubble inside it, position: fixed and placed by
+   script, so it takes no room. */
+e-tooltip {
+  display: inline-flex;
+  vertical-align: middle;
+}
+e-tooltip > [data-part='bubble'] {
+  position: fixed;
+  z-index: 20;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: calc(100vw - 16px);
+  padding: var(--e-space-1) var(--e-space-2);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-primary);
+  color: var(--e-color-primary-fg);
+  font-size: var(--e-font-size-meta);
+  line-height: var(--e-line-height-meta);
+  white-space: normal;
+}
+/* place() leaves a 4 px gap to the trigger. A clear border of hit area bridges it, so the pointer
+   can cross onto the bubble without it hiding. */
+e-tooltip > [data-part='bubble']::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+}

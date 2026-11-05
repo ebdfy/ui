@@ -4,30 +4,31 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Text · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Text · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Text</h1>
-      <p>
-        <code>eb-text</code> sets a paragraph. Use <code>variant="meta"</code> for the smaller, quieter line under it.
+      <p class="lede">
+        <code>e-text</code> is a block of body text. Use <code>tone</code> to quiet it and <code>size="meta"</code> for
+        small print such as a date or a count.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Body" caption-bn="মূল লেখা">
-          <eb-text data-en="A new order came in from the shop." data-bn="দোকান থেকে নতুন অর্ডার এসেছে।"
-            >A new order came in from the shop.</eb-text
-          >
-        </docs-example>
-        <docs-example caption="Meta" caption-bn="মেটা">
-          <eb-text variant="meta" data-en="Placed today at 10:30" data-bn="আজ সকাল ১০:৩০ এ দেওয়া হয়েছে"
-            >Placed today at 10:30</eb-text
-          >
-        </docs-example>
-      </div>
+      <docs-example caption="Body text" stack>
+        <e-text>Order #1042 is packed and waits for the Pathao rider.</e-text>
+      </docs-example>
+      <docs-example caption="Tones" stack>
+        <e-text>Default: the order total is ৳2,450.</e-text>
+        <e-text tone="subdued">Subdued: delivery to Sylhet takes two days.</e-text>
+        <e-text tone="faint">Faint: placed on 5 November.</e-text>
+      </docs-example>
+      <docs-example caption="Meta size" stack>
+        <e-text size="meta" tone="subdued">Updated 2 minutes ago</e-text>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-text>অর্ডার #১০৪২ প্যাক হয়েছে, পাঠাওয়ের রাইডারের অপেক্ষায়।</e-text>
+        <e-text tone="subdued">মোট ৳২,৪৫০, সিলেটে ডেলিভারি।</e-text>
+        <e-text size="meta" tone="faint">২ মিনিট আগে হালনাগাদ</e-text>
+      </docs-example>
     </main>
   </body>
 </html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Index table · ebdfy design system v2</title>
+  </head>
+  <body>
+    <main>
+      <h1>Index table</h1>
+      <p class="lede">
+        <code>e-index-table</code> holds many records in one card: view tabs, a toolbar, a table and a pager. It also
+        keeps the selection. Put an <code>e-checkbox</code> in each row's first cell and one in the head row. Ticking
+        rows shows how many are selected and your <code>slot="bulk"</code> actions in place of the toolbar. Below 600 px
+        each row becomes a card. When the table has no rows, an <code>e-empty-state</code> you add takes its place.
+      </p>
+      <docs-example caption="Search, a filter, rows to tick and bulk actions" stack>
+        <e-index-table label="Orders">
+          <e-tabs label="Order views">
+            <e-tab value="all" count="120" selected>All</e-tab>
+            <e-tab value="new" count="12">New</e-tab>
+          </e-tabs>
+          <e-search-field label="Search orders" name="q" placeholder="Search orders"></e-search-field>
+          <span slot="filter" name="date"><span>Last 30 days</span></span>
+          <div slot="bulk">
+            <e-button>Confirm</e-button>
+            <e-button>Print labels</e-button>
+          </div>
+          <e-table label="Orders">
+            <e-row head>
+              <span><e-checkbox label="Select all orders" hide-label></e-checkbox></span>
+              <span>Order</span>
+              <span>Customer</span>
+              <span align="end">Total</span>
+            </e-row>
+            <e-row>
+              <span><e-checkbox label="Select #1042" hide-label></e-checkbox></span>
+              <span card="title"><a href="#1042">#1042</a></span>
+              <span card="body">Rahima Akter</span>
+              <span align="end" card="end">৳1,930</span>
+            </e-row>
+            <e-row>
+              <span><e-checkbox label="Select #1041" hide-label></e-checkbox></span>
+              <span card="title"><a href="#1041">#1041</a></span>
+              <span card="body">Tanvir Hasan</span>
+              <span align="end" card="end">৳3,200</span>
+            </e-row>
+            <e-row>
+              <span><e-checkbox label="Select #1040" hide-label></e-checkbox></span>
+              <span card="title"><a href="#1040">#1040</a></span>
+              <span card="body">Nusrat Jahan</span>
+              <span align="end" card="end">৳2,450</span>
+            </e-row>
+          </e-table>
+          <e-pagination label="1–3 of 120" has-next></e-pagination>
+        </e-index-table>
+      </docs-example>
+      <docs-example caption="Without the toolbar: tabs, rows and a pager" stack>
+        <e-index-table label="Orders">
+          <e-tabs label="Order views">
+            <e-tab value="all" count="120" selected>All</e-tab>
+          </e-tabs>
+          <e-table label="Orders">
+            <e-row head>
+              <span>Order</span>
+              <span>Customer</span>
+              <span align="end">Total</span>
+            </e-row>
+            <e-row>
+              <span card="title">#1042</span>
+              <span card="body">Rahima Akter</span>
+              <span align="end" card="end">৳1,930</span>
+            </e-row>
+          </e-table>
+          <e-pagination label="1 of 120" has-next></e-pagination>
+        </e-index-table>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-index-table label="অর্ডার">
+          <e-tabs label="অর্ডারের ভিউ">
+            <e-tab value="all" count="১২০" selected>সব</e-tab>
+            <e-tab value="new" count="১২">নতুন</e-tab>
+          </e-tabs>
+          <e-search-field label="অর্ডার খুঁজুন" name="q" placeholder="অর্ডার খুঁজুন"></e-search-field>
+          <span slot="filter" name="date"><span>গত ৩০ দিন</span></span>
+          <div slot="bulk">
+            <e-button>কনফার্ম করুন</e-button>
+            <e-button>লেবেল প্রিন্ট করুন</e-button>
+          </div>
+          <e-table label="অর্ডার">
+            <e-row head>
+              <span><e-checkbox label="সব অর্ডার নির্বাচন করুন" hide-label></e-checkbox></span>
+              <span>অর্ডার</span>
+              <span>গ্রাহক</span>
+              <span align="end">মোট</span>
+            </e-row>
+            <e-row>
+              <span><e-checkbox label="#১০৪২ নির্বাচন করুন" hide-label></e-checkbox></span>
+              <span card="title"><a href="#1042">#১০৪২</a></span>
+              <span card="body">রহিমা আক্তার</span>
+              <span align="end" card="end">৳১,৯৩০</span>
+            </e-row>
+            <e-row>
+              <span><e-checkbox label="#১০৪১ নির্বাচন করুন" hide-label></e-checkbox></span>
+              <span card="title"><a href="#1041">#১০৪১</a></span>
+              <span card="body">তানভীর হাসান</span>
+              <span align="end" card="end">৳৩,২০০</span>
+            </e-row>
+          </e-table>
+          <e-pagination label="১–২, মোট ১২০" has-next></e-pagination>
+        </e-index-table>
+      </docs-example>
+    </main>
+  </body>
+</html>

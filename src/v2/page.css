@@ -1,0 +1,74 @@
+/* e-page: a header row (heading left, slot="actions" right), then the content in a column. Before
+   the script the heading is the ::before; the script puts an h1 in the same grid cell. */
+e-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--e-space-3);
+  row-gap: var(--e-space-4);
+  align-items: center;
+  min-width: 0;
+}
+e-page[heading]::before,
+e-page > h1[slot='heading'] {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  min-width: 0;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  font-size: var(--e-font-size-heading);
+  line-height: var(--e-line-height-heading);
+  font-weight: var(--e-font-weight-bold);
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+e-page[heading]::before {
+  content: attr(heading);
+}
+e-page:has(> h1[slot='heading'])::before {
+  content: none;
+}
+e-page > [slot='actions'] {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  gap: var(--e-space-2);
+}
+e-page > :not([slot='actions'], [slot='aside'], [slot='heading']) {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+/* Below 600 px the side column stacks under the content, in source order. */
+e-page > [slot='aside'] {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+/* The content and the side column each start at the top of their row, not its middle. */
+e-page > :not([slot='actions'], [slot='heading']) {
+  align-self: start;
+}
+/* From 600 px the children marked slot="aside" form a 344 px column beside the content. Each column
+   is best one child (an e-stack of cards), as the columns share their rows: nothing at the browser
+   floor lets two columns of cards flow apart. Several aside children stack row by row. */
+@media (min-width: 600px) {
+  e-page:has(> [slot='aside']) {
+    grid-template-columns: minmax(0, 1fr) 344px;
+    column-gap: var(--e-space-4);
+  }
+  e-page:has(> [slot='aside']) > :not([slot='actions'], [slot='aside'], [slot='heading']) {
+    grid-column: 1;
+  }
+  e-page > [slot='aside'] {
+    grid-column: 2;
+  }
+  e-page:has(> [slot='aside']) > [slot='actions'] {
+    justify-self: end;
+  }
+  /* Without actions the heading takes the whole first row, so the side column starts beside the
+     content and not beside the heading. */
+  e-page[heading]:has(> [slot='aside']):not(:has(> [slot='actions']))::before,
+  e-page:has(> [slot='aside']):not(:has(> [slot='actions'])) > h1[slot='heading'] {
+    grid-column: 1 / -1;
+  }
+}

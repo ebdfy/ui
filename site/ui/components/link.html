@@ -4,25 +4,30 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Link · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Link · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Link</h1>
-      <p><code>eb-link</code> goes to another page. It takes the size of the sentence around it.</p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Inside a sentence" caption-bn="বাক্যের ভেতরে">
-          <p>
-            <span data-en="Details are on the " data-bn="বিস্তারিত আছে ">Details are on the </span
-            ><eb-link href="/components/button" data-en="Button page" data-bn="বোতামের পাতায়">Button page</eb-link
-            ><span data-en="." data-bn="।">.</span>
-          </p>
-        </docs-example>
-      </div>
+      <p class="lede">
+        <code>e-link</code> styles the <code>&lt;a&gt;</code> you write inside it, so the link works with no script. It
+        takes the size of the sentence around it.
+      </p>
+      <docs-example caption="A link in a sentence">
+        <e-text>
+          Order #1042 is with Pathao.
+          <e-link><a href="/components/card">See the delivery</a></e-link>
+        </e-text>
+      </docs-example>
+      <docs-example caption="A link on its own">
+        <e-link><a href="/components/table">Back to orders</a></e-link>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-text>
+          অর্ডার #১০৪২ সিলেটে যাচ্ছে।
+          <e-link><a href="/components/card">ডেলিভারি দেখুন</a></e-link>
+        </e-text>
+      </docs-example>
     </main>
   </body>
 </html>

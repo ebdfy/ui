@@ -1,0 +1,67 @@
+/* e-settings-section: a heading and help text in the left third and its cards on the right from
+   600 px, all stacked below. Before the script the heading is the ::before and the help the ::after;
+   the script puts an h2 and a p in the same grid cells. */
+e-settings-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-space-2) var(--e-space-4);
+  align-items: start;
+  min-width: 0;
+}
+e-settings-section > :not([slot='heading'], [slot='help']) {
+  min-width: 0;
+}
+e-settings-section > :not(:nth-child(1 of :not([slot='heading'], [slot='help'])), [slot='heading'], [slot='help']) {
+  margin-top: var(--e-space-2);
+}
+e-settings-section[heading]::before,
+e-settings-section > h2[slot='heading'] {
+  grid-row: 1;
+  margin: 0;
+  font-size: var(--e-font-size-title);
+  line-height: var(--e-line-height-body);
+  font-weight: var(--e-font-weight-semibold);
+  overflow-wrap: anywhere;
+}
+e-settings-section[heading]::before {
+  content: attr(heading);
+}
+e-settings-section[help]::after,
+e-settings-section > p[slot='help'] {
+  grid-row: 2;
+  margin: 0;
+  color: var(--e-color-fg2);
+  font-size: var(--e-font-size-body);
+  line-height: var(--e-line-height-body);
+  overflow-wrap: anywhere;
+}
+e-settings-section[help]::after {
+  content: attr(help);
+}
+e-settings-section:has(> h2[slot='heading'])::before,
+e-settings-section:has(> p[slot='help'])::after {
+  content: none;
+}
+/* Two columns: the first card spans the heading's and the help's rows, and the help's row is the
+   flexible one, so a tall card grows that row and the help stays under the heading. Later cards
+   follow the first, 16 px apart. */
+@media (min-width: 600px) {
+  e-settings-section {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    grid-template-rows: auto 1fr;
+    row-gap: 0;
+  }
+  e-settings-section[help]::after,
+  e-settings-section > p[slot='help'] {
+    margin-top: var(--e-space-2);
+  }
+  e-settings-section > :not([slot='heading'], [slot='help']) {
+    grid-column: 2;
+  }
+  e-settings-section > :nth-child(1 of :not([slot='heading'], [slot='help'])) {
+    grid-row: 1 / span 2;
+  }
+  e-settings-section > :not(:nth-child(1 of :not([slot='heading'], [slot='help'])), [slot='heading'], [slot='help']) {
+    margin-top: var(--e-space-4);
+  }
+}

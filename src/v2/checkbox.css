@@ -1,0 +1,93 @@
+/* e-checkbox. Before the script the tag draws an 18 px box as ::before and the label as ::after. The
+   script builds a native checkbox and a label that take the same places, and the pseudo-elements go.
+   The mark is drawn with gradients, not text or an image, so it takes its colour from the tokens in
+   both themes. */
+e-checkbox {
+  /* The tick is two strokes meeting at its foot, and the dash one stroke, in the 16 px inside the border. */
+  --e-check:
+    linear-gradient(
+        to bottom left,
+        transparent calc(50% - 1px),
+        var(--e-color-primary-fg) calc(50% - 1px),
+        var(--e-color-primary-fg) calc(50% + 1px),
+        transparent calc(50% + 1px)
+      )
+      2px 7px / 4px 4px no-repeat,
+    linear-gradient(
+        to bottom right,
+        transparent calc(50% - 1px),
+        var(--e-color-primary-fg) calc(50% - 1px),
+        var(--e-color-primary-fg) calc(50% + 1px),
+        transparent calc(50% + 1px)
+      )
+      6px 4px / 7px 7px no-repeat;
+  --e-dash: linear-gradient(var(--e-color-primary-fg), var(--e-color-primary-fg)) 3px 7px / 10px 2px no-repeat;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-space-2);
+  vertical-align: middle;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-body);
+  line-height: var(--e-line-height-body);
+}
+e-checkbox::before,
+e-checkbox > input {
+  box-sizing: border-box;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  border: 1px solid var(--e-color-line-2);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-surface);
+}
+e-checkbox::before {
+  content: '';
+}
+e-checkbox::after {
+  content: attr(label);
+}
+e-checkbox > label {
+  margin: 0;
+  cursor: pointer;
+}
+e-checkbox[hide-label]::after {
+  content: none;
+}
+e-checkbox[checked]:not(:has(> input))::before,
+e-checkbox > input:checked {
+  background: var(--e-check), var(--e-color-primary);
+}
+e-checkbox[indeterminate]:not(:has(> input))::before,
+e-checkbox > input:indeterminate {
+  background: var(--e-dash), var(--e-color-primary);
+}
+e-checkbox > input {
+  appearance: none;
+  position: relative;
+  cursor: pointer;
+}
+e-checkbox > input:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
+e-checkbox:has(> input)::before,
+e-checkbox:has(> input)::after {
+  content: none;
+}
+e-checkbox[disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* On a phone the tag is a 44 px tap target with the box in the middle; the script passes a tap on the
+   tag to the input. */
+@media (max-width: 599.98px) {
+  e-checkbox {
+    min-width: var(--e-size-control-lg);
+    min-height: var(--e-size-control-lg);
+  }
+  e-checkbox[hide-label] {
+    justify-content: center;
+  }
+}

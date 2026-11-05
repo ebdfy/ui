@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Setup guide · ebdfy design system v2</title>
+  </head>
+  <body>
+    <main>
+      <h1>Setup guide</h1>
+      <p class="lede">
+        <code>e-setup-guide</code> lists the steps to set up a store. Each <code>e-setup-step</code> has a tick; a
+        ticked step has <code>done</code>, which the tick sets and clears and a page may set too. The guide shows a
+        count such as &ldquo;2 of 5&rdquo; and a Dismiss button. Dismiss fires <code>dismiss</code>, which bubbles (a
+        page listens on the guide itself), and removes the guide; the page keeps the choice.
+      </p>
+      <docs-example caption="A guide with two steps done" stack>
+        <e-setup-guide heading="Set up your store">
+          <e-setup-step done>Add your first product</e-setup-step>
+          <e-setup-step done>Connect Pathao</e-setup-step>
+          <e-setup-step>Set the Dhaka delivery fee</e-setup-step>
+          <e-setup-step>Invite your team</e-setup-step>
+        </e-setup-guide>
+      </docs-example>
+      <docs-example caption="No step done yet" stack>
+        <e-setup-guide heading="Before your first order">
+          <e-setup-step>Add a product</e-setup-step>
+          <e-setup-step>Choose a courier</e-setup-step>
+        </e-setup-guide>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-setup-guide heading="আপনার দোকান সাজান">
+          <e-setup-step done>প্রথম পণ্য যোগ করুন</e-setup-step>
+          <e-setup-step>পাঠাও যুক্ত করুন</e-setup-step>
+          <e-setup-step>ঢাকার ডেলিভারি ফি ঠিক করুন</e-setup-step>
+        </e-setup-guide>
+      </docs-example>
+    </main>
+  </body>
+</html>

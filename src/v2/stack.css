@@ -1,0 +1,43 @@
+/* e-stack: column by default, never wrapping, since a wrapping column takes its widest child's width. */
+e-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-space-2);
+  min-width: 0;
+}
+e-stack[direction='row'] {
+  flex-direction: row;
+}
+e-stack[direction='row'][wrap] {
+  flex-wrap: wrap;
+}
+e-stack[gap='1'] {
+  gap: var(--e-space-1);
+}
+e-stack[gap='2'] {
+  gap: var(--e-space-2);
+}
+e-stack[gap='3'] {
+  gap: var(--e-space-3);
+}
+e-stack[gap='4'] {
+  gap: var(--e-space-4);
+}
+e-stack[gap='5'] {
+  gap: var(--e-space-5);
+}
+e-stack[gap='6'] {
+  gap: var(--e-space-6);
+}
+e-stack[align='start'] {
+  align-items: flex-start;
+}
+e-stack[align='center'] {
+  align-items: center;
+}
+e-stack[align='end'] {
+  align-items: flex-end;
+}
+e-stack[align='baseline'] {
+  align-items: baseline;
+}

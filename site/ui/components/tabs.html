@@ -4,52 +4,38 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Tabs · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Tabs · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Tabs</h1>
-      <p>
-        <code>eb-tabs</code> holds one <code>eb-tab</code> per filter of a list, underlined when selected, with a count
-        after its label. Set <code>label</code> on the tabs to name them and <code>value</code> to the selected tab's
-        <code>value</code>; a tab's <code>count</code> is optional. The arrow keys move between tabs, and Enter or Space
-        selects. It sends <code>eb-change</code> with the new value when a person picks another tab, and nothing when
-        you set <code>value</code> yourself.
+      <p class="lede">
+        <code>e-tabs</code> is a row of <code>e-tab</code>s, one for each view. Mark the current one with
+        <code>selected</code>; choosing another moves the mark and fires <code>e-tab-change</code>. Add
+        <code>count</code> to show a number after the label.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Filters with counts" caption-bn="সংখ্যাসহ ফিল্টার" stack>
-          <eb-tabs
-            id="filters"
-            label="Orders by status"
-            data-label-en="Orders by status"
-            data-label-bn="অবস্থা অনুযায়ী অর্ডার"
-            value="all"
-          >
-            <eb-tab value="all" count="6" data-en="All" data-bn="সব">All</eb-tab>
-            <eb-tab value="new" count="2" data-en="New" data-bn="নতুন">New</eb-tab>
-            <eb-tab value="confirmed" count="1" data-en="Confirmed" data-bn="কনফার্মড">Confirmed</eb-tab>
-            <eb-tab value="courier" count="1" data-en="With courier" data-bn="কুরিয়ারে">With courier</eb-tab>
-            <eb-tab value="returned" count="1" data-en="Returned" data-bn="ফেরত এসেছে">Returned</eb-tab>
-          </eb-tabs>
-          <p id="shown" data-en="Showing: All" data-bn="দেখানো হচ্ছে: সব">Showing: All</p>
-        </docs-example>
-      </div>
+      <docs-example caption="Tabs" stack>
+        <e-tabs label="Order views">
+          <e-tab value="all" selected>All</e-tab>
+          <e-tab value="new">New</e-tab>
+          <e-tab value="courier">With courier</e-tab>
+        </e-tabs>
+      </docs-example>
+      <docs-example caption="Tabs with counts" stack>
+        <e-tabs label="Order views">
+          <e-tab value="all" count="120" selected>All</e-tab>
+          <e-tab value="new" count="12">New</e-tab>
+          <e-tab value="courier" count="54">With courier</e-tab>
+          <e-tab value="returned" count="6">Returned</e-tab>
+        </e-tabs>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-tabs label="অর্ডারের ভিউ">
+          <e-tab value="all" count="১২০" selected>সব</e-tab>
+          <e-tab value="new" count="১২">নতুন</e-tab>
+          <e-tab value="courier" count="৫৪">কুরিয়ারে</e-tab>
+        </e-tabs>
+      </docs-example>
     </main>
-    <script type="module">
-      // Names the selected filter under the tabs, as an app would filter its list. The line keeps both
-      // languages in data-en and data-bn, so the language switch can redraw it.
-      const filters = document.getElementById('filters')
-      const shown = document.getElementById('shown')
-      filters.addEventListener('eb-change', (event) => {
-        const tab = filters.querySelector(`eb-tab[value="${event.detail.value}"]`)
-        shown.dataset.en = `Showing: ${tab.dataset.en}`
-        shown.dataset.bn = `দেখানো হচ্ছে: ${tab.dataset.bn}`
-        shown.textContent = shown.dataset[document.getElementById('examples').lang]
-      })
-    </script>
   </body>
 </html>

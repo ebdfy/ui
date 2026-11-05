@@ -1,0 +1,19 @@
+/* e-list: a column of cards, one for each child, at any width. An index table's rows take the same
+   look on a phone. */
+e-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-space-2);
+  min-width: 0;
+}
+e-list > * {
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  padding: var(--e-space-3) var(--e-space-4);
+  border: 1px solid var(--e-color-line);
+  border-radius: var(--e-radius-2);
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+  overflow-wrap: anywhere;
+}

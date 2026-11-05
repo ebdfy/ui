@@ -1,0 +1,227 @@
+/* e-text-field, e-date-field, e-text-area and e-search-field. Before the script the tag draws the
+   label as ::before and the box with its placeholder, or its value, as ::after. The script builds a
+   real label and input, or textarea, that take the same places, and the pseudo-elements go. */
+e-text-field,
+e-date-field,
+e-text-area {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 6px;
+  min-width: 0;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-body);
+}
+e-text-field::before,
+e-date-field::before,
+e-text-field > label,
+e-date-field > label,
+e-text-area::before,
+e-text-area > label {
+  grid-row: 1;
+  display: block;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-meta);
+  font-weight: var(--e-font-weight-semibold);
+  line-height: var(--e-line-height-meta);
+}
+e-text-field::after,
+e-date-field::after,
+e-text-field > input,
+e-date-field > input,
+e-text-area::after,
+e-text-area > textarea {
+  grid-row: 2;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: var(--e-size-control-md);
+  margin: 0;
+  padding: 0 var(--e-space-3);
+  border: 1px solid var(--e-color-line-2);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+  font: inherit;
+  font-size: var(--e-font-size-body);
+}
+/* On a phone the box is a 44 px target, as every phone tap target is. */
+@media (max-width: 599.98px) {
+  e-text-field::after,
+  e-date-field::after,
+  e-text-field > input,
+  e-date-field > input {
+    height: var(--e-size-control-lg);
+  }
+}
+/* Four 20 px lines inside 8 px padding and the 1 px border. */
+e-text-area::after,
+e-text-area > textarea {
+  height: calc(4 * var(--e-line-height-body) + 2 * var(--e-space-2) + 2px);
+  padding: var(--e-space-2) var(--e-space-3);
+  line-height: var(--e-line-height-body);
+}
+e-text-field::before,
+e-date-field::before,
+e-text-area::before {
+  content: attr(label);
+}
+e-text-field::after,
+e-date-field::after,
+e-text-area::after {
+  content: attr(placeholder);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--e-color-fg3);
+}
+e-text-area::after {
+  align-items: flex-start;
+  white-space: pre-wrap;
+}
+e-text-field[value]:not([value=''], :has(> input))::after,
+e-date-field[value]:not([value=''], :has(> input))::after,
+e-text-area[value]:not([value=''], :has(> textarea))::after {
+  content: attr(value);
+  color: var(--e-color-fg);
+}
+e-text-field > input,
+e-date-field > input {
+  appearance: none;
+  text-overflow: ellipsis;
+}
+e-text-area > textarea {
+  resize: vertical;
+}
+e-text-field > input::placeholder,
+e-date-field > input::placeholder,
+e-text-area > textarea::placeholder,
+e-search-field > input::placeholder {
+  color: var(--e-color-fg3);
+  opacity: 1;
+}
+e-text-field > input:focus-visible,
+e-date-field > input:focus-visible,
+e-text-area > textarea:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
+e-text-field:has(> input)::before,
+e-date-field:has(> input)::before,
+e-text-field:has(> input)::after,
+e-date-field:has(> input)::after,
+e-text-area:has(> textarea)::before,
+e-text-area:has(> textarea)::after {
+  content: none;
+}
+
+/* A field's error: the control's edge turns red, and the message shows on the row under it. */
+[aria-invalid='true']:is(input, textarea, select) {
+  border-color: var(--e-color-returned-fg);
+}
+/* A checkbox or switch is one row, so its message takes a row of its own under it. */
+e-checkbox:has(> [data-e-error]),
+e-switch:has(> [data-e-error]) {
+  flex-wrap: wrap;
+}
+e-checkbox > [data-e-error],
+e-switch > [data-e-error] {
+  flex-basis: 100%;
+}
+[data-e-error] {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--e-color-returned-fg);
+  font-size: var(--e-font-size-meta);
+  line-height: var(--e-line-height-meta);
+}
+
+/* The form helper's banner, for the API's errors that name no field, and its announcer, which only a
+   screen reader hears. */
+form > [data-e-form-errors] {
+  display: grid;
+  gap: var(--e-space-1);
+  margin: 0 0 var(--e-space-4);
+  padding: var(--e-space-3) var(--e-space-4);
+  border: 1px solid var(--e-color-returned-fg);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-returned-bg);
+  color: var(--e-color-returned-fg);
+}
+form > [data-e-form-errors] > p {
+  margin: 0;
+}
+form > [data-e-announce] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The search field is one 36 px row, 44 px on a phone: the icon's 16 px box, then the placeholder or the input. */
+e-search-field {
+  display: flex;
+  align-items: center;
+  gap: var(--e-space-2);
+  box-sizing: border-box;
+  min-width: 0;
+  height: var(--e-size-control-md);
+  padding: 0 var(--e-space-3);
+  border: 1px solid var(--e-color-line);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-surface-2);
+  color: var(--e-color-fg3);
+  font-size: var(--e-font-size-body);
+}
+@media (max-width: 599.98px) {
+  e-search-field {
+    height: var(--e-size-control-lg);
+  }
+}
+e-search-field::before {
+  content: '';
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+e-search-field::after,
+e-search-field > input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+e-search-field::after {
+  content: attr(placeholder);
+  overflow: hidden;
+  white-space: nowrap;
+}
+e-search-field[value]:not([value=''], :has(> input))::after {
+  content: attr(value);
+  color: var(--e-color-fg);
+}
+e-search-field > e-icon {
+  flex: none;
+}
+e-search-field > input {
+  appearance: none;
+  box-sizing: border-box;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  color: var(--e-color-fg);
+  font: inherit;
+}
+e-search-field:has(> input:focus-visible) {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
+e-search-field:has(> e-icon)::before,
+e-search-field:has(> input)::after {
+  content: none;
+}

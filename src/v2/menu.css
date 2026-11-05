@@ -1,0 +1,62 @@
+/* e-menu: the tag is its trigger, so CSS draws it before the script and the items take no room. The
+   script moves the items into a panel inside the tag, which opens below the trigger as position:
+   fixed and is placed by script. */
+e-menu {
+  display: inline-flex;
+  vertical-align: middle;
+}
+e-menu > e-menu-item {
+  display: none;
+}
+e-menu > [data-part='panel'] {
+  position: fixed;
+  z-index: 10;
+  box-sizing: border-box;
+  width: max-content;
+  /* A menu of one short word still reads as a menu, and its item is a full target. */
+  min-width: 160px;
+  max-width: calc(100vw - 16px);
+  max-height: calc(100vh - 16px);
+  overflow: auto;
+  padding: var(--e-space-1);
+  border: 1px solid var(--e-color-line-2);
+  border-radius: var(--e-radius-2);
+  background: var(--e-color-surface);
+  box-shadow: 0 8px 24px var(--e-color-scrim);
+}
+/* The panel's display would beat the browser's own for hidden, so a hidden panel says it again. */
+e-menu > [data-part='panel'][hidden] {
+  display: none;
+}
+e-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--e-space-2);
+  box-sizing: border-box;
+  min-height: var(--e-size-control-md);
+  padding: 0 var(--e-space-2);
+  border-radius: var(--e-radius-1);
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-body);
+  line-height: var(--e-line-height-body);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+e-menu-item:hover {
+  background: var(--e-color-surface-2);
+}
+e-menu-item:focus-visible {
+  background: var(--e-color-surface-2);
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: -2px;
+}
+e-menu-item[tone='danger'] {
+  color: var(--e-color-returned-fg);
+}
+
+@media (max-width: 599.98px) {
+  e-menu-item {
+    min-height: var(--e-size-control-lg);
+  }
+}

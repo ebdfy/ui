@@ -139,7 +139,9 @@ export function renderExamples(html: string): string {
     const bangla = read('caption-bn')?.[1]
     const words = bangla ? ` data-en="${caption}" data-bn="${bangla}"` : ''
     const layout = read('stack') ? 'demo stack' : 'demo'
-    return `<figure class="example">
+    // An example in another language says so, so it takes that language's type and words.
+    const lang = read('lang')?.[1]
+    return `<figure class="example"${lang ? ` lang="${lang}"` : ''}>
         <figcaption${words}>${caption}</figcaption>
         <div class="frame">
           <div class="${layout}">${markup}</div>

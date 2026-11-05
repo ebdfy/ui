@@ -4,35 +4,32 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Empty state · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Empty state · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Empty state</h1>
-      <p>
-        <code>eb-empty-state</code> tells a person why a list has nothing in it and what to do next. Its
-        <code>heading</code> is the title, a paragraph inside it explains, and an element with
-        <code>slot="action"</code> is the next step. An <code>eb-icon</code> with <code>slot="icon"</code> sits above
-        the heading.
+      <p class="lede">
+        <code>e-empty-state</code> fills a page or card that has nothing to show yet. Give it a <code>heading</code>, a
+        line of text in a <code>p</code>, and an action with <code>slot="action"</code>.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="An empty list, with its next step" caption-bn="খালি তালিকা, পরের ধাপসহ" stack>
-          <eb-empty-state heading="No drafts yet" data-heading-en="No drafts yet" data-heading-bn="এখনো কোনো খসড়া নেই">
-            <eb-icon slot="icon" name="package" size="20"></eb-icon>
-            <p
-              data-en="Orders you start but do not confirm are kept here."
-              data-bn="যে অর্ডার শুরু করে নিশ্চিত করেননি, তা এখানে থাকবে।"
-            >
-              Orders you start but do not confirm are kept here.
-            </p>
-            <eb-button slot="action" variant="primary" data-en="New order" data-bn="নতুন অর্ডার">New order</eb-button>
-          </eb-empty-state>
-        </docs-example>
-      </div>
+      <docs-example caption="Heading and text" stack>
+        <e-empty-state heading="No orders yet">
+          <p>Orders from your store appear here.</p>
+        </e-empty-state>
+      </docs-example>
+      <docs-example caption="With an action" stack>
+        <e-empty-state heading="No products in Sylhet">
+          <p>Add a product to start selling.</p>
+          <e-button slot="action" tone="primary">Add product</e-button>
+        </e-empty-state>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-empty-state heading="এখনও কোনো অর্ডার নেই">
+          <p>আপনার দোকানের অর্ডার এখানে দেখা যাবে।</p>
+          <e-button slot="action" tone="primary">পণ্য যোগ করুন</e-button>
+        </e-empty-state>
+      </docs-example>
     </main>
   </body>
 </html>

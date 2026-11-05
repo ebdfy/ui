@@ -4,38 +4,42 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Stack · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Stack · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Stack</h1>
-      <p>
-        <code>eb-stack</code> puts its children in a column with the standard gap. Set <code>direction="row"</code> to
-        put them side by side: they stay centred and wrap to a new line when the screen is narrow.
+      <p class="lede">
+        <code>e-stack</code> lays its children out in a column with an even gap. Use <code>direction="row"</code> for a
+        row, <code>gap</code> from 1 to 6 for the space, and <code>align</code> to line children up.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="A column" caption-bn="কলাম" stack>
-          <eb-stack>
-            <eb-text data-en="Two items, to be sent to Sylhet." data-bn="দুইটি পণ্য, সিলেটে পাঠাতে হবে।"
-              >Two items, to be sent to Sylhet.</eb-text
-            >
-            <eb-text data-en="One item, to be sent to Dhaka." data-bn="একটি পণ্য, ঢাকায় পাঠাতে হবে।"
-              >One item, to be sent to Dhaka.</eb-text
-            >
-          </eb-stack>
-        </docs-example>
-        <docs-example caption="A row" caption-bn="সারি" stack>
-          <eb-stack direction="row">
-            <eb-button data-en="Confirm" data-bn="কনফার্ম">Confirm</eb-button>
-            <eb-button variant="secondary" data-en="Book courier" data-bn="কুরিয়ার বুক">Book courier</eb-button>
-            <eb-button variant="ghost" data-en="Print labels" data-bn="লেবেল প্রিন্ট">Print labels</eb-button>
-          </eb-stack>
-        </docs-example>
-      </div>
+      <docs-example caption="A column with a gap of 3" stack>
+        <e-stack gap="3">
+          <e-text>Order #1042</e-text>
+          <e-text>Sylhet</e-text>
+          <e-text tone="subdued">৳১,২৫০</e-text>
+        </e-stack>
+      </docs-example>
+      <docs-example caption="A row that wraps">
+        <e-stack direction="row" gap="1" wrap>
+          <e-badge>Pathao</e-badge>
+          <e-badge>Paid</e-badge>
+          <e-badge>Dhaka</e-badge>
+          <e-badge>Repeat customer</e-badge>
+        </e-stack>
+      </docs-example>
+      <docs-example caption="A row aligned to the centre">
+        <e-stack direction="row" gap="2" align="center">
+          <e-icon name="truck"></e-icon>
+          <e-text>On its way to Sylhet</e-text>
+        </e-stack>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-stack gap="2">
+          <e-text>অর্ডার #১০৪২</e-text>
+          <e-text tone="subdued">সিলেট · ৳১,২৫০</e-text>
+        </e-stack>
+      </docs-example>
     </main>
   </body>
 </html>

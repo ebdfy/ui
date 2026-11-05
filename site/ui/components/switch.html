@@ -4,77 +4,29 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Switch · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Switch · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Switch</h1>
-      <p>
-        <code>eb-switch</code> turns a setting on or off. It joins its form like a checkbox. The track sits beside its
-        label; add <code>stretch</code> to put the label at the start of a settings row and the track at the end.
+      <p class="lede">
+        <code>e-switch</code> is a setting that is on or off and takes effect at once. Its native checkbox has role
+        switch and joins the form.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Default" caption-bn="সাধারণ">
-          <eb-switch
-            name="alerts"
-            data-state="default"
-            label="Order alerts"
-            data-label-en="Order alerts"
-            data-label-bn="অর্ডারের সতর্কবার্তা"
-          ></eb-switch>
-        </docs-example>
-        <docs-example caption="Stretched across a settings row" caption-bn="সেটিংস সারিজুড়ে ছড়ানো">
-          <eb-switch
-            stretch
-            label="Order alerts"
-            data-label-en="Order alerts"
-            data-label-bn="অর্ডারের সতর্কবার্তা"
-          ></eb-switch>
-        </docs-example>
-        <docs-example caption="Focused" caption-bn="ফোকাসে">
-          <eb-switch
-            data-state="focus"
-            label="Cash on delivery"
-            data-label-en="Cash on delivery"
-            data-label-bn="ক্যাশ অন ডেলিভারি"
-          ></eb-switch>
-        </docs-example>
-        <docs-example caption="With an error" caption-bn="ভুলসহ">
-          <eb-switch
-            data-state="error"
-            required
-            label="Accept the courier terms"
-            data-label-en="Accept the courier terms"
-            data-label-bn="কুরিয়ারের শর্ত মেনে নিন"
-            error="Turn this on to book a courier."
-            data-error-en="Turn this on to book a courier."
-            data-error-bn="কুরিয়ার বুক করতে এটি চালু করুন।"
-          ></eb-switch>
-        </docs-example>
-        <docs-example caption="Disabled" caption-bn="বন্ধ">
-          <eb-switch
-            data-state="disabled"
-            checked
-            disabled
-            label="bKash payments"
-            data-label-en="bKash payments"
-            data-label-bn="বিকাশ পেমেন্ট"
-          ></eb-switch>
-        </docs-example>
-        <docs-example caption="Filled" caption-bn="পূরণ করা">
-          <eb-switch
-            data-state="filled"
-            checked
-            label="Order alerts"
-            data-label-en="Order alerts"
-            data-label-bn="অর্ডারের সতর্কবার্তা"
-          ></eb-switch>
-        </docs-example>
-      </div>
+      <docs-example caption="On and off" stack>
+        <e-switch label="Notify me of new orders" name="notify" checked></e-switch>
+        <e-switch label="Pause the shop" name="pause"></e-switch>
+      </docs-example>
+      <docs-example caption="Disabled" stack>
+        <e-switch label="Cash on delivery" name="cod" checked disabled></e-switch>
+      </docs-example>
+      <docs-example caption="With an error" stack>
+        <e-switch label="Auto-book Pathao" name="auto" error="Connect a Pathao account first."></e-switch>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-switch label="নতুন অর্ডারের বিজ্ঞপ্তি" name="notify" checked></e-switch>
+        <e-switch label="দোকান বন্ধ রাখুন" name="pause"></e-switch>
+      </docs-example>
     </main>
   </body>
 </html>

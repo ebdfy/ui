@@ -4,64 +4,26 @@
     <meta charset="utf-8" />
     <meta name="ebdfy-app" content="sample" />
     <script type="module">
-      import '/src/v1.ts'
+      import '/src/v2.ts'
       const asked = new URLSearchParams(location.search)
-      // Each title action counts its taps in a toast, or opens the sheet when the page asks.
+      // Each title action counts its taps in a toast.
       const taps = {}
       const action = (label) => ({
         label,
         onAction() {
           taps[label] = (taps[label] ?? 0) + 1
-          if (asked.has('modal')) ebdfy.modal({ src: '/test/browser/fixtures/sheet.html', title: label })
-          else ebdfy.toast(`${label} ran ${taps[label]}`)
+          ebdfy.toast(`${label} ran ${taps[label]}`)
         },
       })
-      // An action given as { label, items } opens a menu whose items count their taps the same way.
-      const entry = (given) =>
-        typeof given === 'string'
-          ? action(given)
-          : { label: given.label, items: given.items.map((item) => ({ ...action(item.label), tone: item.tone })) }
-      const options = asked.has('actions') ? { actions: JSON.parse(asked.get('actions')).map(entry) } : {}
-      if (asked.has('back')) options.back = asked.get('back')
+      const options = asked.has('actions') ? { actions: JSON.parse(asked.get('actions')).map(action) } : {}
       ebdfy.title(asked.get('title') ?? 'Orders', options)
-      for (const entries of asked.getAll('nav')) ebdfy.nav(JSON.parse(entries))
-      // With bottom-bar, the page shows an eb-bottom-bar of its own, gone after 300 ms with bottom-bar=gone.
-      if (asked.has('bottom-bar')) {
-        const bar = document.createElement('eb-bottom-bar')
-        bar.innerHTML = '<button type="button">Confirm</button>'
-        document.body.append(bar)
-        if (asked.get('bottom-bar') === 'gone') setTimeout(() => bar.remove(), 300)
-      }
-      if (asked.has('loading')) ebdfy.loading(true)
-      if (asked.get('loading') === 'done') setTimeout(() => ebdfy.loading(false), 300)
-      // With undo, each toast carries an Undo that shows in the title how often it ran.
-      let undone = 0
-      const undo = {
-        label: 'Undo',
-        onAction() {
-          undone += 1
-          ebdfy.title(`Undone ${undone}`)
-        },
-      }
-      // With theme, the title says the page's background token and how many theme messages came.
-      if (asked.has('theme')) {
-        let themes = 0
-        const report = () =>
-          ebdfy.title(
-            `${getComputedStyle(document.documentElement).getPropertyValue('--eb-color-bg').trim()} ${themes}`,
-          )
-        addEventListener('message', (event) => {
-          if (event.data?.type !== 'theme') return
-          themes += 1
-          setTimeout(report)
-        })
-        report()
-      }
-      for (const message of asked.getAll('toast')) {
-        ebdfy.toast(message, {
-          error: asked.has('error'),
-          tone: asked.get('tone') ?? undefined,
-          action: asked.has('undo') ? undo : undefined,
+      // With form, the page holds a save-bar form whose submit says in a toast what it sent.
+      if (asked.has('form')) {
+        document.body.innerHTML = '<form data-save-bar><input name="note" value="Call first" /></form>'
+        const form = document.querySelector('form')
+        form.addEventListener('submit', (event) => {
+          event.preventDefault()
+          ebdfy.toast(`Saved ${new FormData(form).get('note')}`)
         })
       }
     </script>

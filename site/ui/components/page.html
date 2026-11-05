@@ -4,48 +4,40 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Page · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
-    <style>
-      /* The example frame keeps the page from taking over this one: a short scrolling box. */
-      .demo {
-        display: block;
-        padding: 0;
-      }
-      eb-page {
-        min-height: 0;
-        height: 360px;
-        overflow: auto;
-      }
-    </style>
+    <title>Page · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Page</h1>
-      <p>
-        <code>eb-page</code> is the screen of an app: the page background, a <code>heading</code> and a column for its
-        cards. The frame below keeps the example from taking over this page.
+      <p class="lede">
+        <code>e-page</code> lays out a page: a <code>heading</code>, buttons beside it with <code>slot="actions"</code>,
+        then the content. A child with <code>slot="aside"</code> forms a 344 px column beside the content from 600 px,
+        and stacks below it on a phone.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="A heading and cards" caption-bn="শিরোনাম ও কার্ড">
-          <eb-page heading="Orders" data-heading-en="Orders" data-heading-bn="অর্ডার">
-            <eb-card heading="Order 1042" data-heading-en="Order 1042" data-heading-bn="অর্ডার 1042">
-              <p data-en="Two items, to be sent to Sylhet." data-bn="দুইটি পণ্য, সিলেটে পাঠাতে হবে।">
-                Two items, to be sent to Sylhet.
-              </p>
-            </eb-card>
-            <eb-card heading="Order 1043" data-heading-en="Order 1043" data-heading-bn="অর্ডার 1043">
-              <p data-en="One item, to be sent to Dhaka." data-bn="একটি পণ্য, ঢাকায় পাঠাতে হবে।">
-                One item, to be sent to Dhaka.
-              </p>
-              <eb-button data-en="Open" data-bn="খুলুন">Open</eb-button>
-            </eb-card>
-          </eb-page>
-        </docs-example>
-      </div>
+      <docs-example caption="A heading and an action" stack>
+        <e-page heading="Orders">
+          <e-button slot="actions" tone="primary">New</e-button>
+          <e-text>Fourteen orders today.</e-text>
+        </e-page>
+      </docs-example>
+      <docs-example caption="With a side column" stack>
+        <e-page heading="Order #1042">
+          <e-card heading="Items">
+            <e-text>Two items.</e-text>
+          </e-card>
+          <e-stack slot="aside">
+            <e-card heading="Customer">
+              <e-text>Rahim Uddin, Sylhet</e-text>
+            </e-card>
+          </e-stack>
+        </e-page>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-page heading="অর্ডার #১০৪২">
+          <e-button slot="actions">সম্পাদনা</e-button>
+          <e-text>দুইটি পণ্য, সিলেটে পাঠাতে হবে।</e-text>
+        </e-page>
+      </docs-example>
     </main>
   </body>
 </html>

@@ -4,58 +4,55 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Modal · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="%EB_CDN%/ui/host.js"></script>
-    <script type="module" src="/components.js"></script>
-    <style>
-      .demo {
-        padding: 0;
-      }
-      eb-admin-chrome {
-        height: 560px;
-      }
-    </style>
+    <title>Modal · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Modal</h1>
-      <p>
-        An app opens a modal with <code>ebdfy.modal</code>, and the Admin chrome draws it over the app. The page inside
-        is one of the app's own pages. In the frame below, press Book courier in the title bar.
+      <p class="lede">
+        <code>e-modal</code> is a dialog that holds a task until the person closes it. In markup it is closed and takes
+        no room. A page opens it with <code>ebdfy.modal.show(id)</code> and closes it with
+        <code>ebdfy.modal.hide(id)</code>, where <code>id</code> is the modal's <code>id</code>. Set
+        <code>size</code> to <code>small</code> or <code>large</code>; medium is the default, and on a phone every size
+        is a sheet at the bottom. Put buttons in the footer with <code>slot="footer"</code>. The modal fires
+        <code>e-modal-open</code> and <code>e-modal-close</code>, which bubble.
       </p>
       <p>
-        On a desktop the sizes are small at 380 px, medium at 620 px and large at 980 px wide. On a phone the modal is a
-        bottom sheet with a grab handle. Escape, the close button or a tap on the backdrop closes it, and focus goes
-        back to what opened it. Only a path on the app's own origin opens.
+        With JavaScript off the buttons below do nothing and the modals stay closed; the code under each example shows
+        the markup.
       </p>
-      <p>
-        The chrome's own words (such as Close) follow the page's <code>lang</code>, not the language row below. The row
-        changes only this page's own strings.
-      </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example
-          caption="Book courier opens a modal over the app"
-          caption-bn="কুরিয়ার বুক অ্যাপের ওপর মোডাল খোলে"
-          stack
-        >
-          <eb-admin-chrome
-            app-name="Sample app"
-            src="%EB_SAMPLE_APP%/order?store=demo"
-            token-url="/dev/id-token?app=sample"
-            api-url="/dev/graphql"
-            stores-url="/playground"
-          >
-            <a slot="nav" href="#examples" aria-current="page" data-en="Sample app" data-bn="স্যাম্পল অ্যাপ"
-              >Sample app</a
-            >
-          </eb-admin-chrome>
-        </docs-example>
-      </div>
-      <p>The app opens the modal from script.</p>
-      <pre><code>ebdfy.modal({ src: '/book-courier', size: 'medium', title: 'Book courier' })</code></pre>
+      <docs-example caption="A modal and the button that opens it">
+        <e-button data-opens="confirm-modal">Cancel order</e-button>
+        <e-modal id="confirm-modal" heading="Cancel order #1042?" size="small">
+          <e-text>The customer in Sylhet will be told.</e-text>
+          <e-button slot="footer" data-closes="confirm-modal">Keep order</e-button>
+          <e-button slot="footer" tone="primary" data-closes="confirm-modal">Cancel order</e-button>
+        </e-modal>
+      </docs-example>
+      <docs-example caption="Large">
+        <e-button data-opens="address-modal">Edit address</e-button>
+        <e-modal id="address-modal" heading="Delivery address" size="large">
+          <e-text>Order #1042 goes to Zindabazar, Sylhet.</e-text>
+          <e-button slot="footer" data-closes="address-modal">Close</e-button>
+        </e-modal>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-button data-opens="bn-modal">অর্ডার বাতিল</e-button>
+        <e-modal id="bn-modal" heading="অর্ডার #১০৪২ বাতিল করবেন?" size="small">
+          <e-text>সিলেটের গ্রাহককে জানানো হবে।</e-text>
+          <e-button slot="footer" data-closes="bn-modal">রাখুন</e-button>
+          <e-button slot="footer" tone="primary" data-closes="bn-modal">বাতিল করুন</e-button>
+        </e-modal>
+      </docs-example>
+      <script type="module">
+        // The page's own wiring: a button with data-opens opens that modal, data-closes closes it.
+        document.addEventListener('click', (event) => {
+          const button = event.target instanceof Element ? event.target.closest('[data-opens], [data-closes]') : null
+          if (!button || !globalThis.ebdfy) return
+          if (button.dataset.opens) ebdfy.modal.show(button.dataset.opens)
+          else ebdfy.modal.hide(button.dataset.closes)
+        })
+      </script>
     </main>
   </body>
 </html>

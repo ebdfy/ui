@@ -4,35 +4,36 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Popover · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Popover · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Popover</h1>
-      <p>
-        <code>eb-popover</code> opens a panel of any content below the <code>eb-button</code> in its
-        <code>trigger</code> slot. Give it a <code>label</code> so a screen reader can name the panel. Escape or a press
-        outside closes it.
+      <p class="lede">
+        <code>e-popover</code> opens a panel of any content below its trigger. Mark the trigger with
+        <code>slot="trigger"</code> and put the content in elements, not loose text. Set <code>label</code> to name the
+        panel. Escape or a press outside closes it. The popover fires no event of its own.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="A panel of text" caption-bn="লেখার প্যানেল">
-          <eb-popover label="Delivery note" data-label-en="Delivery note" data-label-bn="ডেলিভারি নোট">
-            <eb-button slot="trigger" variant="secondary" data-en="Delivery note" data-bn="ডেলিভারি নোট"
-              >Delivery note</eb-button
-            >
-            <p
-              data-en="Call before you arrive. Leave the parcel with the guard if nobody answers."
-              data-bn="পৌঁছানোর আগে ফোন করুন। কেউ না ধরলে পার্সেল গার্ডের কাছে রেখে যান।"
-            >
-              Call before you arrive. Leave the parcel with the guard if nobody answers.
-            </p>
-          </eb-popover>
-        </docs-example>
-      </div>
+      <docs-example caption="A trigger and a panel">
+        <e-popover label="Delivery details">
+          <e-button slot="trigger">Delivery</e-button>
+          <e-text>Pathao, booked today.</e-text>
+        </e-popover>
+      </docs-example>
+      <docs-example caption="Any markup in the panel">
+        <e-popover label="Order #1042">
+          <e-button slot="trigger" tone="plain">Order #1042</e-button>
+          <e-heading level="3">Sylhet</e-heading>
+          <e-text tone="subdued">Two items, ৳2,450.</e-text>
+          <e-button tone="primary" size="sm">Open order</e-button>
+        </e-popover>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-popover label="ডেলিভারির বিবরণ">
+          <e-button slot="trigger">ডেলিভারি</e-button>
+          <e-text>পাঠাও, আজ বুক করা হয়েছে।</e-text>
+        </e-popover>
+      </docs-example>
     </main>
   </body>
 </html>

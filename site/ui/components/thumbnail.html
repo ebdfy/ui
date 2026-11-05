@@ -4,49 +4,43 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Thumbnail · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Thumbnail · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Thumbnail</h1>
-      <p>
-        <code>eb-thumbnail</code> shows a product's picture in a small square. Set <code>src</code> and
-        <code>alt</code>, and <code>size</code> to <code>small</code>, <code>medium</code> or <code>large</code>. With
-        no <code>src</code>, or when the picture fails to load, it shows a plain picture icon.
+      <p class="lede">
+        <code>e-thumbnail</code> is a fixed square for a product picture. Put an <code>img</code> inside, with its own
+        <code>alt</code>. It is 40 px; <code>size</code> makes it small or large.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Small, medium and large" caption-bn="ছোট, মাঝারি ও বড়">
-          <eb-thumbnail
-            size="small"
-            src="/samples/tea-cup.jpg"
-            alt="Blue tea cup"
-            data-alt-en="Blue tea cup"
-            data-alt-bn="নীল চায়ের কাপ"
-          ></eb-thumbnail>
-          <eb-thumbnail
-            src="/samples/jamdani-blue.jpg"
-            alt="Blue jamdani saree"
-            data-alt-en="Blue jamdani saree"
-            data-alt-bn="নীল জামদানি শাড়ি"
-          ></eb-thumbnail>
-          <eb-thumbnail
-            size="large"
-            src="/samples/jamdani-stack.jpg"
-            alt="Jamdani sarees"
-            data-alt-en="Jamdani sarees"
-            data-alt-bn="জামদানি শাড়ি"
-          ></eb-thumbnail>
-        </docs-example>
-        <docs-example caption="With no picture" caption-bn="ছবি ছাড়া">
-          <eb-thumbnail size="small"></eb-thumbnail>
-          <eb-thumbnail></eb-thumbnail>
-          <eb-thumbnail size="large"></eb-thumbnail>
-        </docs-example>
-      </div>
+      <docs-example caption="Three sizes">
+        <e-thumbnail size="small"
+          ><img
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23c8d6e5'/%3E%3C/svg%3E"
+            alt="Cotton panjabi"
+        /></e-thumbnail>
+        <e-thumbnail
+          ><img
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23c8d6e5'/%3E%3C/svg%3E"
+            alt="Cotton panjabi"
+        /></e-thumbnail>
+        <e-thumbnail size="large"
+          ><img
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23c8d6e5'/%3E%3C/svg%3E"
+            alt="Cotton panjabi"
+        /></e-thumbnail>
+      </docs-example>
+      <docs-example caption="With no image">
+        <e-thumbnail></e-thumbnail>
+        <e-thumbnail size="large"></e-thumbnail>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-thumbnail size="large"
+          ><img
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23c8d6e5'/%3E%3C/svg%3E"
+            alt="সুতির পাঞ্জাবি"
+        /></e-thumbnail>
+      </docs-example>
     </main>
   </body>
 </html>

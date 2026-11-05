@@ -1,0 +1,17 @@
+/* e-taka-field: phone-field.css draws its label and box. Before the script the box shows ৳ and the
+   value; after it the ৳ sits over the start of the input, which leaves it room. */
+e-taka-field::after {
+  content: '৳' attr(value);
+}
+e-taka-field > [data-e-prefix] {
+  grid-row: 2;
+  grid-column: 1;
+  align-self: center;
+  justify-self: start;
+  padding-left: calc(var(--e-space-3) + 1px);
+  color: var(--e-color-fg);
+  pointer-events: none;
+}
+e-taka-field > input {
+  padding-left: 28px;
+}

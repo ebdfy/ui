@@ -4,25 +4,37 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Divider · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Divider · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Divider</h1>
-      <p>
-        <code>eb-divider</code> is a 1 px line in the line colour. It fills the width of its row and has no attributes.
+      <p class="lede">
+        <code>e-divider</code> is a thin line across its row. Use it to separate two parts of a card or page.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Between two lines of text" caption-bn="দুই লাইন লেখার মাঝে" stack>
-          <eb-text data-en="New orders" data-bn="নতুন অর্ডার">New orders</eb-text>
-          <eb-divider></eb-divider>
-          <eb-text data-en="Sent to Sylhet" data-bn="সিলেটে পাঠানো">Sent to Sylhet</eb-text>
-        </docs-example>
-      </div>
+      <docs-example caption="Between two lines of text" stack>
+        <e-stack gap="3">
+          <e-text>Order #1042</e-text>
+          <e-divider></e-divider>
+          <e-text>Sent with Pathao</e-text>
+        </e-stack>
+      </docs-example>
+      <docs-example caption="In a card" stack>
+        <e-card heading="Payment">
+          <e-stack gap="3">
+            <e-text>Subtotal ৳১,১৭০</e-text>
+            <e-divider></e-divider>
+            <e-text>Total ৳১,২৫০</e-text>
+          </e-stack>
+        </e-card>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-stack gap="3">
+          <e-text>অর্ডার #১০৪২</e-text>
+          <e-divider></e-divider>
+          <e-text>পাঠাও দিয়ে পাঠানো হয়েছে</e-text>
+        </e-stack>
+      </docs-example>
     </main>
   </body>
 </html>

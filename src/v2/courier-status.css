@@ -1,0 +1,144 @@
+/* e-courier-status: what a courier says happened to a parcel, drawn as e-badge draws a status. Before
+   the script the tag draws its words as ::before, in the page's language; the script writes the same
+   words as text and the pseudo-element goes. status takes the kit's names (with-courier) or the API's
+   codes (IN_TRANSIT); any other reads Unknown. On the way is the courier teal, delivered green,
+   returned, cancelled and problem red, the held and failed ones amber, the rest neutral. */
+e-courier-status {
+  --e-badge-bg: var(--e-color-neutral-bg);
+  --e-badge-fg: var(--e-color-neutral-fg);
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 1px var(--e-space-2);
+  border-radius: calc(var(--e-radius-1) / 2);
+  background: var(--e-badge-bg);
+  color: var(--e-badge-fg);
+  font-size: var(--e-font-size-meta);
+  font-weight: var(--e-font-weight-semibold);
+  line-height: 20px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+e-courier-status:not(:empty)::before {
+  content: none;
+}
+e-courier-status:is(
+  [status='picked-up'],
+  [status='PICKED_UP'],
+  [status='with-courier'],
+  [status='IN_TRANSIT'],
+  [status='out-for-delivery'],
+  [status='OUT_FOR_DELIVERY']
+) {
+  --e-badge-bg: var(--e-color-courier-bg);
+  --e-badge-fg: var(--e-color-courier-fg);
+}
+e-courier-status:is([status='delivered'], [status='DELIVERED']) {
+  --e-badge-bg: var(--e-color-delivered-bg);
+  --e-badge-fg: var(--e-color-delivered-fg);
+}
+e-courier-status:is(
+  [status='returned'],
+  [status='RETURNED'],
+  [status='cancelled'],
+  [status='CANCELLED'],
+  [status='problem'],
+  [status='EXCEPTION']
+) {
+  --e-badge-bg: var(--e-color-returned-bg);
+  --e-badge-fg: var(--e-color-returned-fg);
+}
+e-courier-status:is(
+  [status='on-hold'],
+  [status='ON_HOLD'],
+  [status='delivery-failed'],
+  [status='ATTEMPT_FAILED'],
+  [status='partly-delivered'],
+  [status='PARTIAL_DELIVERED'],
+  [status='returning'],
+  [status='RETURNING']
+) {
+  --e-badge-bg: var(--e-color-new-bg);
+  --e-badge-fg: var(--e-color-new-fg);
+}
+
+/* The words, each in English and then in Bangla, which wins on a Bangla page. */
+e-courier-status:empty::before {
+  content: 'Unknown';
+}
+e-courier-status:empty:lang(bn)::before {
+  content: 'অজানা';
+}
+e-courier-status:is([status='awaiting-pickup'], [status='PENDING']):empty::before {
+  content: 'Awaiting pickup';
+}
+e-courier-status:is([status='awaiting-pickup'], [status='PENDING']):empty:lang(bn)::before {
+  content: 'পিকআপের অপেক্ষায়';
+}
+e-courier-status:is([status='picked-up'], [status='PICKED_UP']):empty::before {
+  content: 'Picked up';
+}
+e-courier-status:is([status='picked-up'], [status='PICKED_UP']):empty:lang(bn)::before {
+  content: 'পিকআপ হয়েছে';
+}
+e-courier-status:is([status='with-courier'], [status='IN_TRANSIT']):empty::before {
+  content: 'With courier';
+}
+e-courier-status:is([status='with-courier'], [status='IN_TRANSIT']):empty:lang(bn)::before {
+  content: 'কুরিয়ারে';
+}
+e-courier-status:is([status='out-for-delivery'], [status='OUT_FOR_DELIVERY']):empty::before {
+  content: 'Out for delivery';
+}
+e-courier-status:is([status='out-for-delivery'], [status='OUT_FOR_DELIVERY']):empty:lang(bn)::before {
+  content: 'ডেলিভারির পথে';
+}
+e-courier-status:is([status='on-hold'], [status='ON_HOLD']):empty::before {
+  content: 'On hold';
+}
+e-courier-status:is([status='on-hold'], [status='ON_HOLD']):empty:lang(bn)::before {
+  content: 'আটকে আছে';
+}
+e-courier-status:is([status='delivery-failed'], [status='ATTEMPT_FAILED']):empty::before {
+  content: 'Delivery failed';
+}
+e-courier-status:is([status='delivery-failed'], [status='ATTEMPT_FAILED']):empty:lang(bn)::before {
+  content: 'ডেলিভারি হয়নি';
+}
+e-courier-status:is([status='delivered'], [status='DELIVERED']):empty::before {
+  content: 'Delivered';
+}
+e-courier-status:is([status='delivered'], [status='DELIVERED']):empty:lang(bn)::before {
+  content: 'ডেলিভারি হয়েছে';
+}
+e-courier-status:is([status='partly-delivered'], [status='PARTIAL_DELIVERED']):empty::before {
+  content: 'Partly delivered';
+}
+e-courier-status:is([status='partly-delivered'], [status='PARTIAL_DELIVERED']):empty:lang(bn)::before {
+  content: 'আংশিক ডেলিভারি';
+}
+e-courier-status:is([status='returning'], [status='RETURNING']):empty::before {
+  content: 'Returning';
+}
+e-courier-status:is([status='returning'], [status='RETURNING']):empty:lang(bn)::before {
+  content: 'ফেরত আসছে';
+}
+e-courier-status:is([status='returned'], [status='RETURNED']):empty::before {
+  content: 'Returned';
+}
+e-courier-status:is([status='returned'], [status='RETURNED']):empty:lang(bn)::before {
+  content: 'ফেরত এসেছে';
+}
+e-courier-status:is([status='cancelled'], [status='CANCELLED']):empty::before {
+  content: 'Cancelled';
+}
+e-courier-status:is([status='cancelled'], [status='CANCELLED']):empty:lang(bn)::before {
+  content: 'বাতিল';
+}
+e-courier-status:is([status='problem'], [status='EXCEPTION']):empty::before {
+  content: 'Problem';
+}
+e-courier-status:is([status='problem'], [status='EXCEPTION']):empty:lang(bn)::before {
+  content: 'সমস্যা';
+}

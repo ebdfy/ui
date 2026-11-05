@@ -1,0 +1,41 @@
+/* e-empty-state: a centred column, the heading first, then the text, then the action. Before the script
+   the heading is the ::before; the script puts an h2 in the same place. */
+e-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--e-space-2);
+  min-width: 0;
+  padding: var(--e-space-6) var(--e-space-4);
+  color: var(--e-color-fg2);
+  font-size: var(--e-font-size-body);
+  line-height: var(--e-line-height-body);
+  text-align: center;
+}
+e-empty-state[hidden] {
+  display: none;
+}
+e-empty-state[heading]::before,
+e-empty-state > h2[slot='heading'] {
+  margin: 0;
+  min-width: 0;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-title);
+  line-height: var(--e-line-height-body);
+  font-weight: var(--e-font-weight-semibold);
+  overflow-wrap: anywhere;
+}
+e-empty-state[heading]::before {
+  content: attr(heading);
+}
+e-empty-state:has(> h2[slot='heading'])::before {
+  content: none;
+}
+e-empty-state > p {
+  margin: 0;
+  max-width: 40ch;
+  overflow-wrap: anywhere;
+}
+e-empty-state > [slot='action'] {
+  margin-top: var(--e-space-2);
+}

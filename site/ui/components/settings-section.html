@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Settings section · ebdfy design system v2</title>
+  </head>
+  <body>
+    <main>
+      <h1>Settings section</h1>
+      <p class="lede">
+        <code>e-settings-section</code> groups settings under a <code>heading</code> and a line of <code>help</code>.
+        The cards sit beside them from 600 px and below them on a phone.
+      </p>
+      <docs-example caption="A section with one card" stack>
+        <e-settings-section
+          heading="Delivery charges"
+          help="What a customer pays for delivery, inside and outside Dhaka."
+        >
+          <e-card>
+            <e-text>Inside Dhaka ৳৮০, outside ৳১৩০.</e-text>
+          </e-card>
+        </e-settings-section>
+      </docs-example>
+      <docs-example caption="A section with two cards" stack>
+        <e-settings-section heading="Confirming orders" help="How your team checks a new order.">
+          <e-card>
+            <e-text>Call the customer first.</e-text>
+          </e-card>
+          <e-card>
+            <e-text>Hold orders over ৳১০,০০০.</e-text>
+          </e-card>
+        </e-settings-section>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-settings-section heading="ডেলিভারি চার্জ" help="ঢাকার ভেতরে ও বাইরে ডেলিভারির জন্য গ্রাহক কত দেবেন।">
+          <e-card>
+            <e-text>ঢাকার ভেতরে ৳৮০, বাইরে ৳১৩০।</e-text>
+          </e-card>
+        </e-settings-section>
+      </docs-example>
+    </main>
+  </body>
+</html>

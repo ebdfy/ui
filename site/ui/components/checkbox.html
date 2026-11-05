@@ -4,78 +4,37 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Checkbox · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Checkbox · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Checkbox</h1>
-      <p>
-        <code>eb-checkbox</code> is a yes or no a person ticks. It submits its value only while checked.
-        <code>indeterminate</code> shows a dash for a box that is partly checked, such as select all over some rows; the
-        next click ticks it.
+      <p class="lede">
+        <code>e-checkbox</code> is one yes or no choice. Its native checkbox joins the form, and the change event
+        bubbles out of the tag.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Default" caption-bn="সাধারণ">
-          <eb-checkbox
-            name="gift"
-            data-state="default"
-            label="Gift wrap"
-            data-label-en="Gift wrap"
-            data-label-bn="গিফট র‍্যাপ"
-          ></eb-checkbox>
-        </docs-example>
-        <docs-example caption="Focused" caption-bn="ফোকাসে">
-          <eb-checkbox
-            data-state="focus"
-            label="Send the customer an SMS"
-            data-label-en="Send the customer an SMS"
-            data-label-bn="ক্রেতাকে এসএমএস পাঠান"
-          ></eb-checkbox>
-        </docs-example>
-        <docs-example caption="With an error" caption-bn="ভুলসহ">
-          <eb-checkbox
-            data-state="error"
-            required
-            label="I have checked the address"
-            data-label-en="I have checked the address"
-            data-label-bn="আমি ঠিকানা যাচাই করেছি"
-            error="Tick this to go on."
-            data-error-en="Tick this to go on."
-            data-error-bn="এগিয়ে যেতে এটি টিক দিন।"
-          ></eb-checkbox>
-        </docs-example>
-        <docs-example caption="Disabled" caption-bn="বন্ধ">
-          <eb-checkbox
-            data-state="disabled"
-            checked
-            disabled
-            label="Paid by bKash"
-            data-label-en="Paid by bKash"
-            data-label-bn="বিকাশে পরিশোধিত"
-          ></eb-checkbox>
-        </docs-example>
-        <docs-example caption="Filled" caption-bn="পূরণ করা">
-          <eb-checkbox
-            data-state="filled"
-            checked
-            label="Gift wrap"
-            data-label-en="Gift wrap"
-            data-label-bn="গিফট র‍্যাপ"
-          ></eb-checkbox>
-        </docs-example>
-        <docs-example caption="Partly checked" caption-bn="আংশিক টিক">
-          <eb-checkbox
-            indeterminate
-            label="All orders"
-            data-label-en="All orders"
-            data-label-bn="সব অর্ডার"
-          ></eb-checkbox>
-        </docs-example>
-      </div>
+      <docs-example caption="Checked and unchecked" stack>
+        <e-checkbox label="Send a confirmation SMS" name="sms" checked></e-checkbox>
+        <e-checkbox label="Gift wrap" name="gift"></e-checkbox>
+      </docs-example>
+      <docs-example caption="Indeterminate and disabled" stack>
+        <e-checkbox label="Select all orders" indeterminate></e-checkbox>
+        <e-checkbox label="Order #1042 is shipped" checked disabled></e-checkbox>
+      </docs-example>
+      <docs-example caption="With the label hidden">
+        <e-checkbox label="Select order #1042" name="order" value="1042" hide-label></e-checkbox>
+      </docs-example>
+      <docs-example caption="With an error" stack>
+        <e-checkbox
+          label="I accept the delivery terms"
+          name="terms"
+          error="Accept the terms to place the order."
+        ></e-checkbox>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-checkbox label="নিশ্চিতকরণ এসএমএস পাঠান" name="sms" checked></e-checkbox>
+        <e-checkbox label="উপহারের মোড়ক" name="gift"></e-checkbox>
+      </docs-example>
     </main>
   </body>
 </html>

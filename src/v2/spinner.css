@@ -1,0 +1,18 @@
+/* e-spinner: a 20 px ring that turns while something loads. It keeps turning with reduced motion
+   asked for, as a still ring would say nothing; the script names it for a screen reader. */
+e-spinner {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  border: 2px solid var(--e-color-line);
+  border-top-color: var(--e-color-accent);
+  border-radius: 50%;
+  animation: e-turn 1s linear infinite;
+}
+@keyframes e-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}

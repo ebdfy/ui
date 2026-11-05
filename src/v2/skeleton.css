@@ -1,0 +1,64 @@
+/* e-skeleton: grey bars that hold the place of text while it loads. lines="N" draws N body-text lines
+   4 px apart, the pitch e-stack gap="1" gives e-text, so a card keeps its height when its N lines
+   arrive; the line height follows the page's language. The ::before draws every line but the last,
+   the ::after the last, shorter. Screen readers find nothing in it. */
+e-skeleton {
+  --e-skeleton-lines: 1;
+  display: block;
+  min-width: 0;
+}
+e-skeleton[lines='2'] {
+  --e-skeleton-lines: 2;
+}
+e-skeleton[lines='3'] {
+  --e-skeleton-lines: 3;
+}
+e-skeleton[lines='4'] {
+  --e-skeleton-lines: 4;
+}
+e-skeleton[lines='5'] {
+  --e-skeleton-lines: 5;
+}
+e-skeleton[lines='6'] {
+  --e-skeleton-lines: 6;
+}
+e-skeleton[lines='7'] {
+  --e-skeleton-lines: 7;
+}
+e-skeleton[lines='8'] {
+  --e-skeleton-lines: 8;
+}
+e-skeleton::before,
+e-skeleton::after {
+  --line: var(--e-line-height-body);
+  --bar: 12px;
+  content: '';
+  display: block;
+  background: linear-gradient(
+      transparent calc((var(--line) - var(--bar)) / 2),
+      var(--e-color-line) 0 calc((var(--line) + var(--bar)) / 2),
+      transparent 0
+    )
+    0 0 / 100% calc(var(--line) + var(--e-space-1));
+  animation: e-pulse 1.5s ease-in-out infinite;
+}
+e-skeleton::before {
+  height: calc((var(--e-skeleton-lines) - 1) * (var(--line) + var(--e-space-1)));
+}
+e-skeleton::after {
+  height: var(--line);
+}
+e-skeleton:is([lines='2'], [lines='3'], [lines='4'], [lines='5'], [lines='6'], [lines='7'], [lines='8'])::after {
+  width: 60%;
+}
+@keyframes e-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  e-skeleton::before,
+  e-skeleton::after {
+    animation: none;
+  }
+}

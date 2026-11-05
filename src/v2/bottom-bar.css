@@ -1,0 +1,19 @@
+/* e-bottom-bar: a page's buttons at the end of a bar that sticks to the bottom of the frame the page
+   scrolls in, above the phone's home indicator. On a phone each button takes an equal share. */
+e-bottom-bar {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--e-space-2);
+  box-sizing: border-box;
+  padding: var(--e-space-3) var(--e-space-4) calc(var(--e-space-3) + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--e-color-line);
+  background: var(--e-color-surface);
+}
+@media (max-width: 599.98px) {
+  e-bottom-bar > * {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}

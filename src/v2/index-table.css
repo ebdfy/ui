@@ -1,0 +1,254 @@
+/* e-index-table: many records in one card. The view tabs run along the top; under them a toolbar holds
+   the search field, the removable filter chips, Add filter and the sort, wrapping on a phone; then the
+   table, and the pager at the foot. The app writes every part in the markup, so the card draws whole
+   before the script, and the parts are told apart by their tags: e-tabs, e-table, e-empty-state and
+   e-pagination take a row each, and every other child sits in the toolbar. */
+e-index-table {
+  --e-index-pad: var(--e-space-3);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-space-2);
+  min-width: 0;
+  padding: 0 var(--e-index-pad) var(--e-space-2);
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+  border: 1px solid var(--e-color-line);
+  border-radius: var(--e-radius-2);
+  overflow: hidden;
+}
+/* The tabs, the table and the empty state run edge to edge, past the card's side padding, which keeps
+   every toolbar line off the edges. */
+e-index-table > e-tabs,
+e-index-table > e-table,
+e-index-table > e-empty-state {
+  flex: 1 1 calc(100% + 2 * var(--e-index-pad));
+  margin: 0 calc(-1 * var(--e-index-pad));
+}
+e-index-table > e-pagination {
+  flex: 1 1 100%;
+}
+e-index-table > e-tabs {
+  margin-bottom: var(--e-space-1);
+  padding: 0 var(--e-space-2);
+}
+e-index-table > e-search-field {
+  flex: 1 1 200px;
+}
+e-index-table > e-table {
+  margin-top: var(--e-space-1);
+  border-top: 1px solid var(--e-color-line);
+  border-bottom: 1px solid var(--e-color-line);
+}
+
+/* The app's e-empty-state waits until the table has no rows, as after a search that matched none; then
+   it takes the table's place, and the pager, with nothing to page, goes. */
+e-index-table:not([empty]) > e-empty-state,
+e-index-table[empty] > e-table,
+e-index-table[empty] > e-pagination {
+  display: none;
+}
+
+/* While rows are selected the bulk bar takes the toolbar's place: the count, then the app's actions. */
+e-index-table > [slot='bulk'] {
+  display: none;
+}
+e-index-table[selecting] > :not(e-tabs, e-table, e-empty-state, e-pagination, [slot='bulk']) {
+  display: none;
+}
+e-index-table[selecting] > [slot='bulk'] {
+  display: flex;
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-space-2);
+  min-height: var(--e-size-control-md);
+}
+e-index-table > [slot='bulk'] > [role='status'] {
+  margin-right: var(--e-space-2);
+  font-size: var(--e-font-size-body);
+  font-weight: var(--e-font-weight-semibold);
+}
+e-index-table > e-table > e-row[selected] > * {
+  background: var(--e-color-accent-soft);
+}
+
+/* A filter chip: its words, then the remove button. Before the script the ::after keeps the button's
+   room; the script builds the button there. */
+e-index-table > [slot='filter'] {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-space-1);
+  box-sizing: border-box;
+  max-width: 100%;
+  height: var(--e-size-control-md);
+  padding: 0 var(--e-space-1) 0 var(--e-space-3);
+  border: 1px solid var(--e-color-line-2);
+  border-radius: var(--e-radius-pill);
+  background: var(--e-color-surface-2);
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-meta);
+  font-weight: var(--e-font-weight-medium);
+  line-height: var(--e-line-height-body);
+  white-space: nowrap;
+}
+e-index-table > [slot='filter']::after {
+  content: '';
+  flex: none;
+  width: 28px;
+  height: 28px;
+}
+e-index-table > [slot='filter']:has(> button)::after {
+  content: none;
+}
+e-index-table > [slot='filter'] > button {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--e-radius-pill);
+  background: none;
+  color: var(--e-color-fg2);
+  cursor: pointer;
+}
+e-index-table > [slot='filter'] > button:hover {
+  background: var(--e-color-line);
+  color: var(--e-color-fg);
+}
+e-index-table > [slot='filter'] > button:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: -2px;
+}
+
+/* A phone's toolbar: the search field takes its own line, and the chips and controls wrap under it. The
+   remove button keeps its 28 px drawn size and takes a 46 px tall hit area, reaching left over its own
+   chip's words but not right past the chip, so nothing spills sideways. */
+@media (max-width: 599.98px) {
+  e-index-table > [slot='filter'] > button {
+    position: relative;
+  }
+  e-index-table > [slot='filter'] > button::after {
+    content: '';
+    position: absolute;
+    inset: -9px 0 -9px -16px;
+  }
+  e-index-table > e-search-field {
+    flex-basis: 100%;
+  }
+}
+
+/* Below 600 px each row is a card, as e-list draws one. A cell's card attribute places it: title and
+   status lead the first line and aside ends it, body and end make the second, and meta the third. A
+   cell with no card attribute stays out of the card, the head row goes, and a checkbox cell stands at
+   the start. The order's link covers the whole card, so a tap anywhere opens it, and the checkbox sits
+   above it. */
+@media (max-width: 599.98px) {
+  e-index-table > e-table {
+    display: flex;
+    flex-direction: column;
+    gap: var(--e-space-2);
+    flex-basis: 100%;
+    margin: var(--e-space-1) 0 0;
+    overflow: visible;
+    border: 0;
+    background: none;
+  }
+  e-index-table > e-table > e-row[head] {
+    display: none;
+  }
+  e-index-table > e-table > e-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      'check title status aside'
+      'check body body end'
+      'check meta meta meta';
+    align-items: center;
+    column-gap: var(--e-space-2);
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: var(--e-size-control-lg);
+    padding: var(--e-space-3) var(--e-space-4);
+    border: 1px solid var(--e-color-line);
+    border-radius: var(--e-radius-2);
+    background: var(--e-color-surface);
+  }
+  e-index-table > e-table > e-row:has(> * > e-checkbox) {
+    padding-left: var(--e-space-1);
+  }
+  e-index-table > e-table > e-row > * {
+    display: none;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  e-index-table > e-table > e-row > :has(> e-checkbox) {
+    z-index: 1;
+    display: flex;
+    grid-area: check;
+  }
+  e-index-table > e-table > e-row > [card='title'] {
+    display: flex;
+    grid-area: title;
+    font-weight: var(--e-font-weight-semibold);
+    white-space: nowrap;
+  }
+  e-index-table > e-table > e-row > [card='status'] {
+    display: flex;
+    grid-area: status;
+  }
+  e-index-table > e-table > e-row > [card='aside'] {
+    display: flex;
+    grid-area: aside;
+    justify-content: flex-end;
+    color: var(--e-color-fg2);
+    font-size: var(--e-font-size-meta);
+    white-space: nowrap;
+  }
+  e-index-table > e-table > e-row > [card='body'] {
+    display: flex;
+    grid-area: body;
+  }
+  e-index-table > e-table > e-row > [card='end'] {
+    display: flex;
+    grid-area: end;
+    justify-content: flex-end;
+    font-weight: var(--e-font-weight-semibold);
+    white-space: nowrap;
+  }
+  e-index-table > e-table > e-row > [card='meta'] {
+    display: flex;
+    grid-area: meta;
+    color: var(--e-color-fg2);
+    font-size: var(--e-font-size-meta);
+  }
+  e-index-table > e-table > e-row > [card='title'] a {
+    color: inherit;
+    text-decoration: none;
+  }
+  e-index-table > e-table > e-row > [card='title'] a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  e-index-table > e-table > e-row:has([card='title'] a:focus-visible) {
+    outline: 2px solid var(--e-color-focus);
+    outline-offset: 2px;
+  }
+  e-index-table > e-table > e-row[selected] {
+    border-color: var(--e-color-accent);
+    background: var(--e-color-accent-soft);
+  }
+  e-index-table > e-table > e-row[selected] > * {
+    background: none;
+  }
+}

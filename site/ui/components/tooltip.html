@@ -4,27 +4,31 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Tooltip · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Tooltip · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Tooltip</h1>
-      <p>
-        <code>eb-tooltip</code> shows a short <code>text</code> above the element inside it, on hover or keyboard focus.
-        Escape closes it. When the element has no name of its own, such as an icon, the tooltip's text becomes its name
-        and the keyboard can reach it.
+      <p class="lede">
+        <code>e-tooltip</code> wraps one control and shows the <code>text</code> beside it on hover and on keyboard
+        focus. A control with no name of its own, such as an icon button, takes the text as its name; a control with a
+        name is described by it. Escape hides the tooltip. It fires no event.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Hover or focus the flag" caption-bn="পতাকায় হোভার বা ফোকাস করুন">
-          <eb-tooltip text="High return risk" data-text-en="High return risk" data-text-bn="ফেরতের ঝুঁকি বেশি">
-            <span role="img"><eb-icon name="triangle-alert"></eb-icon></span>
-          </eb-tooltip>
-        </docs-example>
-      </div>
+      <docs-example caption="Text on a button">
+        <e-tooltip text="Send to Pathao">
+          <e-button>Book</e-button>
+        </e-tooltip>
+      </docs-example>
+      <docs-example caption="An icon button takes the text as its name">
+        <e-tooltip text="Track the parcel">
+          <e-button tone="plain"><e-icon name="truck"></e-icon></e-button>
+        </e-tooltip>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-tooltip text="পাঠাওয়ে পাঠান">
+          <e-button>বুক করুন</e-button>
+        </e-tooltip>
+      </docs-example>
     </main>
   </body>
 </html>

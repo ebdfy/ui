@@ -4,34 +4,42 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Grid · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Grid · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Grid</h1>
-      <p>
-        <code>eb-grid</code> lays its children out in equal columns. Set <code>columns</code> to the number you want, 2
-        by default. On a screen under 600 px wide it shows one column, whatever <code>columns</code> says.
+      <p class="lede">
+        <code>e-grid</code> lays its children out in equal columns. It has one column below 600 px and two from 600 px.
+        Set <code>columns</code> to 3 or 4 for more.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Three columns" caption-bn="তিন কলাম" stack>
-          <eb-grid columns="3">
-            <eb-card>
-              <eb-text data-en="New orders" data-bn="নতুন অর্ডার">New orders</eb-text>
-            </eb-card>
-            <eb-card>
-              <eb-text data-en="Sent to Sylhet" data-bn="সিলেটে পাঠানো">Sent to Sylhet</eb-text>
-            </eb-card>
-            <eb-card>
-              <eb-text data-en="Total" data-bn="মোট">Total</eb-text>
-            </eb-card>
-          </eb-grid>
-        </docs-example>
-      </div>
+      <docs-example caption="Two columns by default" stack>
+        <e-grid>
+          <e-card heading="Dhaka">
+            <e-text>৳৮০</e-text>
+          </e-card>
+          <e-card heading="Outside Dhaka">
+            <e-text>৳১৩০</e-text>
+          </e-card>
+        </e-grid>
+      </docs-example>
+      <docs-example caption="Three columns" stack>
+        <e-grid columns="3">
+          <e-card><e-text>Pending</e-text></e-card>
+          <e-card><e-text>Sent</e-text></e-card>
+          <e-card><e-text>Delivered</e-text></e-card>
+        </e-grid>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-grid>
+          <e-card heading="ঢাকা">
+            <e-text>৳৮০</e-text>
+          </e-card>
+          <e-card heading="ঢাকার বাইরে">
+            <e-text>৳১৩০</e-text>
+          </e-card>
+        </e-grid>
+      </docs-example>
     </main>
   </body>
 </html>

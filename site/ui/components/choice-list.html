@@ -4,75 +4,41 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Choice list · ebdfy design system</title>
-    <link rel="stylesheet" href="/docs.css" />
-    <script src="/docs.js"></script>
-    <script type="module" src="%EB_CDN%/ui/v1.js"></script>
-    <script type="module" src="/components.js"></script>
+    <title>Choice list · ebdfy design system v2</title>
   </head>
   <body>
     <main>
       <h1>Choice list</h1>
-      <p>
-        <code>eb-choice-list</code> is one pick from the <code>&lt;option&gt;</code> elements written inside it, drawn
-        as radio buttons.
+      <p class="lede">
+        <code>e-choice-list</code> is one pick from a few visible options. Write each choice as an <code>option</code>;
+        the script turns it into a labelled radio, and the arrow keys move between them.
       </p>
-      <div id="examples" class="examples" lang="en">
-        <docs-example caption="Default" caption-bn="সাধারণ">
-          <eb-choice-list
-            name="payment"
-            data-state="default"
-            label="Payment"
-            data-label-en="Payment"
-            data-label-bn="পেমেন্ট"
-            ><option value="cod" data-en="Cash on delivery" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</option>
-            <option value="bkash" data-en="bKash" data-bn="বিকাশ">bKash</option></eb-choice-list
-          >
-        </docs-example>
-        <docs-example caption="Focused" caption-bn="ফোকাসে">
-          <eb-choice-list data-state="focus" label="Delivery" data-label-en="Delivery" data-label-bn="ডেলিভারি"
-            ><option value="inside" data-en="Inside Dhaka" data-bn="ঢাকার ভেতরে">Inside Dhaka</option>
-            <option value="outside" data-en="Outside Dhaka" data-bn="ঢাকার বাইরে">Outside Dhaka</option></eb-choice-list
-          >
-        </docs-example>
-        <docs-example caption="With an error" caption-bn="ভুলসহ">
-          <eb-choice-list
-            data-state="error"
-            required
-            label="Payment"
-            data-label-en="Payment"
-            data-label-bn="পেমেন্ট"
-            error="Choose how the customer pays."
-            data-error-en="Choose how the customer pays."
-            data-error-bn="ক্রেতা কীভাবে পরিশোধ করবেন বাছুন।"
-            ><option value="cod" data-en="Cash on delivery" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</option>
-            <option value="bkash" data-en="bKash" data-bn="বিকাশ">bKash</option></eb-choice-list
-          >
-        </docs-example>
-        <docs-example caption="Disabled" caption-bn="বন্ধ">
-          <eb-choice-list
-            data-state="disabled"
-            value="bkash"
-            disabled
-            label="Payment"
-            data-label-en="Payment"
-            data-label-bn="পেমেন্ট"
-            ><option value="cod" data-en="Cash on delivery" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</option>
-            <option value="bkash" data-en="bKash" data-bn="বিকাশ">bKash</option></eb-choice-list
-          >
-        </docs-example>
-        <docs-example caption="Filled" caption-bn="পূরণ করা">
-          <eb-choice-list
-            data-state="filled"
-            value="cod"
-            label="Payment"
-            data-label-en="Payment"
-            data-label-bn="পেমেন্ট"
-            ><option value="cod" data-en="Cash on delivery" data-bn="ক্যাশ অন ডেলিভারি">Cash on delivery</option>
-            <option value="bkash" data-en="bKash" data-bn="বিকাশ">bKash</option></eb-choice-list
-          >
-        </docs-example>
-      </div>
+      <docs-example caption="One pick" stack>
+        <e-choice-list label="Delivery" name="delivery">
+          <option value="inside" selected>Inside Dhaka, ৳60</option>
+          <option value="outside">Outside Dhaka, ৳120</option>
+          <option value="pickup">Pick up from the shop</option>
+        </e-choice-list>
+      </docs-example>
+      <docs-example caption="A disabled choice" stack>
+        <e-choice-list label="Payment" name="payment">
+          <option value="cod" selected>Cash on delivery</option>
+          <option value="bkash">bKash</option>
+          <option value="card" disabled>Card, not for this order</option>
+        </e-choice-list>
+      </docs-example>
+      <docs-example caption="With an error" stack>
+        <e-choice-list label="Courier" name="courier" error="Choose a courier for order #1042.">
+          <option value="pathao">Pathao</option>
+          <option value="steadfast">Steadfast</option>
+        </e-choice-list>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-choice-list label="ডেলিভারি" name="delivery">
+          <option value="inside" selected>ঢাকার ভেতরে, ৳৬০</option>
+          <option value="outside">ঢাকার বাইরে, ৳১২০</option>
+        </e-choice-list>
+      </docs-example>
     </main>
   </body>
 </html>

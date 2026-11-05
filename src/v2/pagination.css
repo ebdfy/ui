@@ -1,0 +1,67 @@
+/* e-pagination: one row with the label on the left and room for two square buttons at the end. Before
+   the script the label is the ::before and the room is the ::after; the script builds a label span and
+   the two buttons in those places, so the box never moves. */
+e-pagination {
+  --e-pagination-size: var(--e-size-control-md);
+  display: flex;
+  align-items: center;
+  gap: var(--e-space-1);
+  box-sizing: border-box;
+  height: var(--e-pagination-size);
+  min-width: 0;
+  color: var(--e-color-fg2);
+  font-size: var(--e-font-size-body);
+}
+e-pagination::before,
+e-pagination > span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+e-pagination::before {
+  content: attr(label);
+}
+e-pagination::after {
+  content: '';
+  flex: none;
+  width: calc(var(--e-pagination-size) * 2 + var(--e-space-1));
+}
+e-pagination:has(> button)::before,
+e-pagination:has(> button)::after {
+  content: none;
+}
+e-pagination > button {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  box-sizing: border-box;
+  width: var(--e-pagination-size);
+  height: var(--e-pagination-size);
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--e-color-line-2);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+  font: inherit;
+  cursor: pointer;
+}
+e-pagination > button:hover:not(:disabled) {
+  background: var(--e-color-surface-2);
+}
+e-pagination > button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+e-pagination > button:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
+
+@media (max-width: 599.98px) {
+  e-pagination {
+    --e-pagination-size: var(--e-size-control-lg);
+  }
+}

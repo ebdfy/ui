@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <meta name="ebdfy-app" content="sample" />
+    <meta name="ebdfy-home" content="%EB_UI%/playground" />
+    <title>Order settings · Sample app · ebdfy</title>
+    <link
+      rel="preload"
+      href="%EB_CDN%/ui/fonts/manrope-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 16px;
+        background: var(--e-color-panel);
+      }
+      @media (min-width: 600px) {
+        body {
+          padding: 24px 28px;
+        }
+      }
+    </style>
+    <script>
+      // The page's language before anything draws: ?lang= first, then the choice kept in
+      // ebdfy-sample-lang, else English.
+      {
+        let lang = new URLSearchParams(location.search).get('lang')
+        if (lang !== 'bn' && lang !== 'en') {
+          try {
+            lang = localStorage.getItem('ebdfy-sample-lang')
+          } catch {
+            lang = 'en'
+          }
+        }
+        document.documentElement.lang = lang === 'bn' ? 'bn' : 'en'
+      }
+    </script>
+    <script type="module" src="%EB_CDN%/ui/v2.js"></script>
+  </head>
+  <body>
+    <e-page heading="Order settings" data-bn-heading="অর্ডার সেটিংস">
+      <e-stack gap="6">
+        <e-settings-section
+          heading="Delivery charges"
+          data-bn-heading="ডেলিভারি চার্জ"
+          help="What a customer pays for delivery, inside and outside Dhaka."
+          data-bn-help="ঢাকার ভেতরে ও বাইরে ডেলিভারির জন্য গ্রাহক কত দেবেন।"
+        >
+          <e-card>
+            <e-stack gap="4">
+              <e-taka-field name="inside" value="80" label="Inside Dhaka" data-bn-label="ঢাকার ভেতরে"></e-taka-field>
+              <e-taka-field name="outside" value="150" label="Outside Dhaka" data-bn-label="ঢাকার বাইরে"></e-taka-field>
+            </e-stack>
+          </e-card>
+        </e-settings-section>
+        <e-settings-section
+          heading="Confirming orders"
+          data-bn-heading="অর্ডার কনফার্ম করা"
+          help="How your team checks a new order before it goes to a courier."
+          data-bn-help="কুরিয়ারে পাঠানোর আগে আপনার টিম কীভাবে নতুন অর্ডার যাচাই করে।"
+        >
+          <e-card>
+            <e-text data-bn="নতুন অর্ডার কনফার্ম করার আগে গ্রাহককে ফোন করুন।"
+              >Call the customer before you confirm a new order.</e-text
+            >
+          </e-card>
+        </e-settings-section>
+      </e-stack>
+    </e-page>
+    <script>
+      // Puts the page's words in a language: before v2.js upgrades the markup when the page is Bangla,
+      // and again whenever the Admin's language changes. data-bn holds a tag's Bangla text and
+      // data-bn-NAME an attribute's; the first swap keeps the English in data-en and data-en-NAME. An
+      // e-button's label sits in the button it built. It does no layout of its own.
+      function speak(lang) {
+        document.documentElement.lang = lang
+        for (const tag of document.querySelectorAll('[data-bn]')) {
+          tag.dataset.en ??= tag.textContent
+          const label = (tag.localName === 'e-button' && tag.querySelector(':scope > button')) || tag
+          label.textContent = lang === 'bn' ? tag.dataset.bn : tag.dataset.en
+        }
+        for (const tag of document.querySelectorAll('*')) {
+          for (const name of tag.getAttributeNames()) {
+            if (!name.startsWith('data-bn-')) continue
+            const attribute = name.slice(8)
+            if (!tag.hasAttribute(`data-en-${attribute}`)) {
+              tag.setAttribute(`data-en-${attribute}`, tag.getAttribute(attribute) ?? '')
+            }
+            tag.setAttribute(attribute, tag.getAttribute(lang === 'bn' ? name : `data-en-${attribute}`))
+          }
+        }
+      }
+      if (document.documentElement.lang === 'bn') speak('bn')
+    </script>
+    <script type="module">
+      import { showNav } from '/nav.js'
+
+      // After v2.js, which holds the bridge: the page names itself in the Admin's title bar.
+      const name = () => {
+        ebdfy.title(document.querySelector('e-page').getAttribute('heading'))
+        showNav()
+      }
+      name()
+      // The app speaks the Admin's language, and keeps it for its next first paint. The Admin may
+      // have said it before this listener was added, so the page also asks once; outside the Admin
+      // there is no one to ask.
+      const follow = (language) => {
+        if (language === document.documentElement.lang) return
+        try {
+          localStorage.setItem('ebdfy-sample-lang', language)
+        } catch {}
+        speak(language)
+        name()
+      }
+      addEventListener('ebdfy:context', ({ detail }) => follow(detail.language))
+      ebdfy.user().then(
+        ({ language }) => follow(language),
+        () => {},
+      )
+    </script>
+  </body>
+</html>
