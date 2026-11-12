@@ -8,6 +8,11 @@ e-page {
   align-items: center;
   min-width: 0;
 }
+/* The kit's display rule would beat the browser's own for hidden, so a hidden page says it again: a
+   page its own script fills stays hidden until then. */
+e-page[hidden] {
+  display: none;
+}
 e-page[heading]::before,
 e-page > h1[slot='heading'] {
   grid-column: 1;

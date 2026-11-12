@@ -52,8 +52,8 @@ test('the tarball holds nothing else: no source, tests, docs site or playground'
   expect(files.filter((file) => file.includes('playground'))).toEqual([])
 })
 
-test('the packed package.json is the public 2.0.1, with nothing to install beside it', () => {
-  expect(packed).toMatchObject({ name: '@ebdfy/ui', version: '2.0.1', license: 'MIT' })
+test('the packed package.json is the public 2.0.2, with nothing to install beside it', () => {
+  expect(packed).toMatchObject({ name: '@ebdfy/ui', version: '2.0.2', license: 'MIT' })
   expect(packed).not.toHaveProperty('private')
   expect(packedText).not.toContain('catalog:')
   // v2's scripts bundle no library, so an app installs nothing else with the kit.

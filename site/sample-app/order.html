@@ -54,7 +54,9 @@
     <script src="/orders-data.js"></script>
   </head>
   <body>
-    <e-page>
+    <!-- Hidden until the script below has put the order in place: a browser may paint before it
+         reaches that script, and would show these cards empty, then move them. -->
+    <e-page hidden>
       <e-stack gap="4">
         <e-text>
           <span data-words="status"></span>: <strong data-order="status"></strong> ·
@@ -358,6 +360,7 @@
         return { render, confirm, saveCustomer, words: () => words[document.documentElement.lang] }
       })()
       sample.render(document.documentElement.lang === 'bn' ? 'bn' : 'en')
+      document.querySelector('e-page').hidden = false
     </script>
     <script type="module">
       import { showNav } from '/nav.js'

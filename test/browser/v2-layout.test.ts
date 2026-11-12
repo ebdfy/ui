@@ -40,6 +40,12 @@ test('without the script the page header shows the heading at 22 px with the act
   }
 })
 
+// A page whose own script fills it stays hidden until then, so the browser never paints it empty.
+test('a hidden page shows nothing', () => {
+  render(`<e-page hidden heading="Orders"><e-card heading="Items">Body</e-card></e-page>`)
+  expect(getComputedStyle(document.querySelector('e-page')!).display).toBe('none')
+})
+
 test('the script builds one h1 and one h2 and nothing moves by more than 1 px', async () => {
   render(ordersPage)
   const els = ['e-page', 'button', 'e-card'].map((s) => document.querySelector(s)!)

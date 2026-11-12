@@ -194,6 +194,26 @@ test.for([
   },
 )
 
+// A browser may paint a page before it has read all of it, as a busy phone does. The sample's order
+// page puts its order's words in place with a script at the end of its body, so until that script
+// has run the page shows nothing, not a column of empty cards that then move. Here the script never
+// runs, as the orders it reads are blocked.
+test('the sample order page shows no tag until its own script has filled it', async () => {
+  const context = await browser.newContext({ viewport: { width: 360, height: 780 } })
+  const page = await context.newPage()
+  await page.route(kit, (route) => route.abort())
+  await page.route(/\/orders-data\.js$/, (route) => route.abort())
+  await page.goto(`${site.sampleApp}/orders/1042?store=demo`, { waitUntil: 'networkidle' })
+  const cards = await page.locator('e-page e-card').count()
+  const drawn = await page.locator('e-page').evaluate((tag) => getComputedStyle(tag).rowGap !== 'normal')
+  const shown = await tagsIn(page.mainFrame())
+  await context.close()
+  // The page is the order's, with v2.css on it.
+  expect(cards).toBeGreaterThan(3)
+  expect(drawn).toBe(true)
+  expect(shown.map(({ name }) => name)).toEqual([])
+})
+
 test('a page whose v2.css did not load fails the first-frame check', async () => {
   const context = await browser.newContext({ viewport: { width: 360, height: 780 } })
   const page = await context.newPage()

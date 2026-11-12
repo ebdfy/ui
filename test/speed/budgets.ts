@@ -7,6 +7,7 @@ export const budgets = {
   js: 30 * kb,
   firstScreen: 120 * kb,
   lcp: 2000,
+  move: 1500,
   cls: 0.02,
   inp: 150,
 }

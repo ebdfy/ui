@@ -4,10 +4,11 @@
 import { existsSync, mkdtempSync, readFileSync, statSync } from 'node:fs'
 import { createServer, type Server } from 'node:http'
 import { tmpdir } from 'node:os'
-import { extname, join } from 'node:path'
+import { basename, extname, join } from 'node:path'
 import { gzipSync } from 'node:zlib'
 
 import { buildSite } from '../../scripts/build.ts'
+import { sitePage } from '../../src/site-routes.ts'
 
 const types: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -29,7 +30,9 @@ function fileFor(folder: string, path: string): string | null {
 
 function serve(folder: string): Promise<{ server: Server; origin: string }> {
   const server = createServer((req, res) => {
-    const file = fileFor(folder, new URL(req.url ?? '/', 'http://x').pathname)
+    const path = new URL(req.url ?? '/', 'http://x').pathname
+    // A page that stands for many addresses, such as each order's, as the hosting Worker serves it.
+    const file = fileFor(folder, sitePage(basename(folder), path) ?? path)
     if (!file) {
       res.writeHead(404).end('Not found')
       return

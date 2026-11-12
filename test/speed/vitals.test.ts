@@ -1,5 +1,7 @@
 // Web Vitals: LCP, CLS and INP for a tap, as a mid Android phone on slow 4G sees v2: a 360 x 780
-// screen, the CPU four times slower, a 150 ms round trip, 1.6 Mbps down and 750 Kbps up.
+// screen, the CPU four times slower, a 150 ms round trip, 1.6 Mbps down and 750 Kbps up. And a move
+// between two app pages on that phone: how long after the tap the next page shows, and that the
+// Admin's chrome stays where it was.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -173,4 +175,124 @@ test.for(['en', 'bn'])('the playground orders list in %s is within its LCP, CLS 
   console.log(report(measured))
   expect(measured.every(({ value }) => Number.isFinite(value))).toBe(true)
   expect(over(measured)).toEqual([])
+})
+
+interface Shift {
+  at: number
+  value: number
+}
+
+// Both clocks read as times of day, so a tap in one document is compared with what another draws.
+// Every frame keeps the time of its last tap where the page it moves to can read it, and every
+// layout shift it sees, a tap just before it or not.
+const followMoves = () => {
+  addEventListener(
+    'click',
+    (event) => sessionStorage.setItem('ebdfy-tap', String(performance.timeOrigin + event.timeStamp)),
+    true,
+  )
+  const shifts: Shift[] = []
+  Object.assign(globalThis, { ebdfyShifts: shifts })
+  new PerformanceObserver((list) => {
+    for (const entry of list.getEntries())
+      shifts.push({ at: performance.timeOrigin + entry.startTime, value: (entry as unknown as Shift).value })
+  }).observe({ type: 'layout-shift', buffered: true })
+}
+
+// What a move cost once the app's new page has settled: the time from the tap to its largest paint,
+// its own CLS, and every shift of the chrome since the tap.
+async function moveLines(where: string, page: Page, app: Frame): Promise<Line[]> {
+  await app.waitForLoadState('networkidle')
+  await page.waitForTimeout(1000)
+  const { tap, shown, cls } = await app.evaluate(() => {
+    const seen = (globalThis as unknown as { ebdfyVitals: Vitals }).ebdfyVitals
+    return {
+      tap: Number(sessionStorage.getItem('ebdfy-tap')),
+      shown: performance.timeOrigin + (seen.lcp ?? Number.NaN),
+      cls: seen.cls,
+    }
+  })
+  const chrome = await page.evaluate(
+    (since) =>
+      (globalThis as unknown as { ebdfyShifts: Shift[] }).ebdfyShifts
+        .filter(({ at }) => at >= since)
+        .reduce((sum, { value }) => sum + value, 0),
+    tap,
+  )
+  await expectThrottled(app)
+  return [
+    { what: `tap to ${where}`, value: shown - tap, budget: budgets.move, unit: 'ms' },
+    { what: `CLS, ${where}`, value: cls ?? Number.NaN, budget: budgets.cls, unit: '' },
+    { what: `chrome shift, to ${where}`, value: chrome, budget: budgets.cls, unit: '' },
+  ]
+}
+
+// The move a merchant makes most: from the orders list into an order, and back to the list. From
+// 1040 px the app's nav sits in the Admin's menu and is drawn again as each page names its pages, so
+// the wide move is the one that would show the menu shifting.
+async function orderAndBack(lang: string, broken?: 'slow order' | 'moved chrome', width = 360): Promise<Line[]> {
+  const { context, page } = await phone(lang)
+  await page.setViewportSize({ width, height: 780 })
+  await context.addInitScript(followMoves)
+  await settle(page, `${site.ui}/playground`)
+  const app = page.frames().find((frame) => frame.url().startsWith(site.sampleApp))
+  expect(app).toBeDefined()
+  if (!app) return []
+  // The app has named its three pages, and from 1040 px they show in the Admin's menu.
+  await expect.poll(() => page.locator('.e-app-nav:visible a').count()).toBe(width >= 1040 ? 3 : 0)
+  const where = width === 360 ? lang : `${lang}, ${width} px`
+  if (broken === 'slow order')
+    await context.route(/\/orders\/\d+/, async (route) => {
+      await new Promise((done) => setTimeout(done, budgets.move))
+      await route.continue()
+    })
+  const rounds: Line[][] = []
+  for (let round = 0; round < 3; round++) {
+    await app.getByRole('link', { name: '#1042' }).tap()
+    if (broken === 'moved chrome')
+      await page.evaluate(() => {
+        document.querySelector<HTMLElement>('e-admin-panel')!.style.marginTop = '80px'
+      })
+    await app.locator('#items-card').waitFor()
+    expect(await app.locator('e-page').getAttribute('heading')).toContain('#1042')
+    const there = await moveLines(`order, ${where}`, page, app)
+    await app.locator('a[data-words="back"]').tap()
+    await app.getByRole('link', { name: '#1042' }).waitFor()
+    rounds.push([...there, ...(await moveLines(`orders list, ${where}`, page, app))])
+  }
+  await context.close()
+  // A busy machine only adds time, so the fastest of three moves is the move's own time, while a
+  // shift in any of the three counts.
+  return rounds[0]!.map(({ what, budget, unit }, index) => ({
+    what,
+    value: (unit === 'ms' ? Math.min : Math.max)(...rounds.map((one) => one[index]!.value)),
+    budget,
+    unit,
+  }))
+}
+
+test.for(['en', 'bn'])('moving from the orders list to an order and back in %s is within its budgets', async (lang) => {
+  const measured = await orderAndBack(lang)
+  console.log(report(measured))
+  expect(measured.every(({ value }) => Number.isFinite(value))).toBe(true)
+  expect(over(measured)).toEqual([])
+})
+
+test('moving from the orders list to an order and back at 1280 px is within its budgets', async () => {
+  const measured = await orderAndBack('en', undefined, 1280)
+  console.log(report(measured))
+  expect(measured.every(({ value }) => Number.isFinite(value))).toBe(true)
+  expect(over(measured)).toEqual([])
+})
+
+test('an order page held back by the move budget puts the move to it over', async () => {
+  const measured = await orderAndBack('en', 'slow order')
+  console.log(report(measured))
+  expect(over(measured).map(({ what }) => what)).toEqual(['tap to order, en'])
+})
+
+test('a chrome that moves as the order loads puts its shift over', async () => {
+  const measured = await orderAndBack('en', 'moved chrome')
+  console.log(report(measured))
+  expect(over(measured).map(({ what }) => what)).toEqual(['chrome shift, to order, en'])
 })
