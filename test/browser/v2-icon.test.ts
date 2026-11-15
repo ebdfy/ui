@@ -54,6 +54,13 @@ test('the truck draws as an svg using #e-icon-truck inside the same box, after t
   expect(Math.abs(after[1]! - before[1]!)).toBeLessThanOrEqual(1)
 })
 
+test('a printer draws as an svg using #e-icon-printer', async () => {
+  document.body.innerHTML = '<e-icon name="printer"></e-icon>'
+  const icon = document.querySelector('e-icon')!
+  await expect.poll(() => icon.querySelectorAll('svg').length).toBe(1)
+  expect(icon.querySelector('use')!.getAttribute('href')).toBe('#e-icon-printer')
+})
+
 test('an unknown name draws nothing, throws nothing and keeps the box', async () => {
   document.body.innerHTML = '<e-icon name="truck"></e-icon><e-icon name="no-such-icon" size="20"></e-icon>'
   const [known, unknown] = document.querySelectorAll('e-icon')

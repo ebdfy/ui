@@ -47,8 +47,23 @@ test.for([1280, 360])('at %i px with v2.js blocked the English page is drawn who
   expect(await page.locator('e-search-field').getAttribute('placeholder')).toBe('Search orders')
   const rows = page.locator('e-row:not([head])')
   expect(await rows.count()).toBe(10)
+  // Below 600 px the CSS hides the checkbox cell until select mode, and shows every cell it places.
+  const drawnCells = await rows.evaluateAll((all) =>
+    all.map((row) => {
+      const cells = [...row.children]
+      return {
+        check: cells[0]!.checkVisibility(),
+        placed: cells
+          .filter((cell) => cell.hasAttribute('card'))
+          .every((cell) => cell.getBoundingClientRect().height > 0),
+      }
+    }),
+  )
+  expect(drawnCells).toEqual(
+    Array(10).fill(width < 600 ? { check: false, placed: true } : { check: true, placed: true }),
+  )
   for (let index = 0; index < 10; index++)
-    expect((await rows.nth(index).locator('> *').first().boundingBox())?.height).toBeGreaterThan(0)
+    expect((await rows.nth(index).locator('> [card="title"]').boundingBox())?.height).toBeGreaterThan(0)
   const first = await rows.first().locator('> *').allTextContents()
   expect(first).toEqual([
     '',
@@ -91,7 +106,7 @@ test('a stored Bangla choice draws Bangla, and ?lang=en beats it', async () => {
 test.for(['', '?lang=bn'])('loading v2.js moves no e-* box (%j)', async (query) => {
   const { page } = await blocked(1280, query)
   const before = await page.evaluate(tagBoxes)
-  expect(before.length).toBe(66)
+  expect(before.length).toBe(67)
   await page.unroute('**/ui/v2.js')
   await page.evaluate(() => {
     const script = document.createElement('script')
@@ -190,31 +205,39 @@ test.for(['', '?lang=bn'])('the markup rows are the ten newest orders of the dat
 test.for([
   ['light', 'rgb(0, 0, 238)'],
   ['dark', 'rgb(158, 158, 255)'],
-] as const)('in %s the order links are not the browser blue, and the focus ring is the kit’s', async ([scheme, blue]) => {
-  const { page } = await pages.open('', 1280, { colorScheme: scheme })
-  const paint = (selector: string) =>
-    page.locator(selector).first().evaluate((link) => {
-      const probe = document.createElement('e-link')
-      probe.innerHTML = '<a href="/">x</a>'
-      document.body.append(probe)
-      const kit = getComputedStyle(probe.firstElementChild!).color
-      probe.remove()
-      return { color: getComputedStyle(link).color, kit }
-    })
-  await page.goto(`${pages.sampleApp}/orders`)
-  await page.getByRole('link', { name: '#1042' }).waitFor()
-  const list = await paint('e-row a[href="/orders/1042"]')
-  expect(list.color).not.toBe(blue)
-  expect(list.color).toBe(list.kit)
-  await page.goto(`${pages.sampleApp}/orders/1042`)
-  await page.getByRole('link', { name: 'All orders' }).waitFor()
-  const back = await paint('a[data-words="back"]')
-  expect(back.color).not.toBe(blue)
-  expect(back.color).toBe(back.kit)
-  await page.getByRole('link', { name: 'All orders' }).focus()
-  const ring = await page.getByRole('link', { name: 'All orders' }).evaluate((link) => getComputedStyle(link).outlineWidth)
-  expect(ring).toBe('2px')
-})
+] as const)(
+  'in %s the order links are not the browser blue, and the focus ring is the kit’s',
+  async ([scheme, blue]) => {
+    const { page } = await pages.open('', 1280, { colorScheme: scheme })
+    const paint = (selector: string) =>
+      page
+        .locator(selector)
+        .first()
+        .evaluate((link) => {
+          const probe = document.createElement('e-link')
+          probe.innerHTML = '<a href="/">x</a>'
+          document.body.append(probe)
+          const kit = getComputedStyle(probe.firstElementChild!).color
+          probe.remove()
+          return { color: getComputedStyle(link).color, kit }
+        })
+    await page.goto(`${pages.sampleApp}/orders`)
+    await page.getByRole('link', { name: '#1042' }).waitFor()
+    const list = await paint('e-row a[href="/orders/1042"]')
+    expect(list.color).not.toBe(blue)
+    expect(list.color).toBe(list.kit)
+    await page.goto(`${pages.sampleApp}/orders/1042`)
+    await page.getByRole('link', { name: 'All orders' }).waitFor()
+    // The back arrow is an icon link in the text's own colour.
+    const back = await paint('e-page > a[slot="back"]')
+    expect(back.color).not.toBe(blue)
+    await page.getByRole('link', { name: 'All orders' }).focus()
+    const ring = await page
+      .getByRole('link', { name: 'All orders' })
+      .evaluate((link) => getComputedStyle(link).outlineWidth)
+    expect(ring).toBe('2px')
+  },
+)
 
 test('the data holds 120 orders, #923 to #1042, with one tab count for each status', async () => {
   const { page } = await pages.open(`${pages.sampleApp}/orders`, 1280)

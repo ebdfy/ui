@@ -43,7 +43,8 @@ test('before the script the buttons sit in one row', async () => {
   await page.viewport(800, 600)
   const buttons = [...mount(group).querySelectorAll('e-button')]
   expect(new Set(buttons.map((button) => box(button).y)).size).toBe(1)
-  expect(box(buttons[1]!).x).toBeGreaterThanOrEqual(box(buttons[0]!).x + box(buttons[0]!).width)
+  // Joined buttons share one border, so each overlaps the one before by 1 px.
+  expect(Math.abs(box(buttons[1]!).x - (box(buttons[0]!).x + box(buttons[0]!).width - 1))).toBeLessThanOrEqual(0.5)
 })
 
 test('the script moves nothing in English or Bangla', async () => {
@@ -99,9 +100,38 @@ test('the app setting pressed on another button updates the group', async () => 
   expect(holder.querySelectorAll('e-button[pressed]')).toHaveLength(1)
 })
 
+test('at 1440 px the buttons join into one control, and the pressed one is a segment, not the primary fill', async () => {
+  await page.viewport(1440, 900)
+  try {
+    const holder = mount(
+      '<e-button-group label="Range"><e-button value="day" pressed>Day</e-button><e-button value="week">Week</e-button></e-button-group>',
+    )
+    const [first, second] = [...holder.querySelectorAll('e-button')] as [Element, Element]
+    expect(Math.abs(box(second).x - (first.getBoundingClientRect().right - 1))).toBeLessThanOrEqual(0.5)
+    const root = getComputedStyle(document.documentElement)
+    const background = getComputedStyle(first).backgroundColor
+    expect(background).toBe(root.getPropertyValue('--e-color-surface-3').trim())
+    expect(background).not.toBe(root.getPropertyValue('--e-color-primary').trim())
+  } finally {
+    await page.viewport(360, 800)
+  }
+})
+
 test('at 360 px each button is at least 44 px tall', async () => {
   await page.viewport(360, 800)
   const holder = mount(group)
   for (const button of holder.querySelectorAll('e-button')) expect(box(button).height).toBeGreaterThanOrEqual(44)
   expect(document.documentElement.scrollWidth).toBe(360)
+})
+
+test('a group with no button pressed, such as Previous and Next, stays plain buttons', async () => {
+  const holder = mount(
+    '<e-button-group label="Pages"><e-button value="previous">Previous</e-button><e-button value="next">Next</e-button></e-button-group>',
+  )
+  const heard: unknown[] = []
+  holder.addEventListener('e-button-group-change', (event) => heard.push((event as CustomEvent).detail))
+  await userEvent.click(page.getByRole('button', { name: 'Next' }))
+  expect(holder.querySelectorAll('e-button[pressed]')).toHaveLength(0)
+  expect(holder.querySelectorAll('[aria-pressed]')).toHaveLength(0)
+  expect(heard).toEqual([])
 })

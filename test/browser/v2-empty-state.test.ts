@@ -42,7 +42,7 @@ const bangla = `<div lang="bn"><e-empty-state heading="কোনো অর্ড
 test('before the script the heading is the ::before, above the text and the action', () => {
   const tag = mount(english).querySelector('e-empty-state')!
   const heading = getComputedStyle(tag, '::before')
-  expect([heading.content, heading.fontWeight, heading.fontSize]).toEqual(['"No orders match"', '600', '15px'])
+  expect([heading.content, heading.fontWeight, heading.fontSize]).toEqual(['"No orders match"', '600', '16px'])
   const text = tag.querySelector('p')!
   const action = tag.querySelector('e-button')!
   expect(box(text).y).toBeGreaterThan(box(tag).y + 20)
@@ -52,8 +52,13 @@ test('before the script the heading is the ::before, above the text and the acti
   )
 })
 
+const withIcon = `<e-empty-state icon="cloud-off" heading="Orders did not load">
+  <p>Check the connection and try again.</p>
+  <e-button slot="action">Try again</e-button>
+</e-empty-state>`
+
 test('the script moves nothing in English or Bangla', () => {
-  const holder = mount(english + bangla)
+  const holder = mount(english + bangla + withIcon)
   const parts = [...holder.querySelectorAll('e-empty-state, p, e-button')]
   const before = parts.map(box)
   defineEmptyState()
@@ -73,4 +78,24 @@ test('hidden hides it', () => {
   const tag = mount(english).querySelector('e-empty-state')!
   tag.setAttribute('hidden', '')
   expect(getComputedStyle(tag).display).toBe('none')
+})
+
+test('an icon sits 40 px square above a 16 px title, in the place the CSS kept for it', async () => {
+  const tag = mount(withIcon).querySelector('e-empty-state')!
+  await expect.element(page.getByRole('heading', { name: 'Orders did not load' })).toBeVisible()
+  const icon = tag.querySelector(':scope > e-icon')!
+  expect(icon.getAttribute('name')).toBe('cloud-off')
+  expect(icon.getAttribute('aria-hidden')).toBe('true')
+  const heading = tag.querySelector('h2')!
+  expect([box(icon).width, box(icon).height]).toEqual([40, 40])
+  expect(box(icon).y + 40).toBeLessThanOrEqual(box(heading).y)
+  expect(Math.abs(box(icon).x + 20 - (box(tag).x + box(tag).width / 2))).toBeLessThanOrEqual(1)
+  expect(getComputedStyle(heading).fontSize).toBe('16px')
+  expect(getComputedStyle(icon).color).toBe(
+    getComputedStyle(document.documentElement).getPropertyValue('--e-color-fg3').trim(),
+  )
+  // The icon belongs to the tag: a second connect builds no second one.
+  tag.remove()
+  document.body.append(tag)
+  expect(tag.querySelectorAll(':scope > e-icon')).toHaveLength(1)
 })

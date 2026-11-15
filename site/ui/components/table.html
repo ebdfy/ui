@@ -47,6 +47,55 @@
           </e-row>
         </e-table>
       </docs-example>
+      <docs-example caption="A selected row, a two-line cell and a clipped name" stack>
+        <e-table label="Customers" style="--e-columns: 2fr 120px 1fr">
+          <e-row head>
+            <span>Customer</span>
+            <span>Name</span>
+            <span align="end">Total</span>
+          </e-row>
+          <e-row selected>
+            <div>
+              <e-stack gap="1">
+                <e-text>Rahima Akter</e-text>
+                <e-text tone="subdued">01711-000000</e-text>
+              </e-stack>
+            </div>
+            <span clip><span>Rahima Akter of Mirpur, Dhaka, near the old market</span></span>
+            <span align="end">৳1,930</span>
+          </e-row>
+        </e-table>
+      </docs-example>
+      <docs-example caption="A cell that wraps onto several lines" stack>
+        <e-table label="Notes" style="--e-columns: 120px 1fr 100px">
+          <e-row head>
+            <span>Order</span>
+            <span>Note</span>
+            <span align="end">Total</span>
+          </e-row>
+          <e-row>
+            <span>#1042</span>
+            <span wrap
+              >Leave the parcel with the guard at gate 2 if nobody answers, and call before the third floor.</span
+            >
+            <span align="end">৳1,930</span>
+          </e-row>
+        </e-table>
+      </docs-example>
+      <docs-example caption="Column widths from the columns attribute" stack>
+        <e-table label="Orders" columns="80px 1fr 120px">
+          <e-row head>
+            <span>Order</span>
+            <span>Customer</span>
+            <span align="end">Total</span>
+          </e-row>
+          <e-row>
+            <span>#1042</span>
+            <span>Rahima Akter</span>
+            <span align="end">৳1,930</span>
+          </e-row>
+        </e-table>
+      </docs-example>
       <docs-example caption="বাংলায়" lang="bn" stack>
         <e-table label="অর্ডার">
           <e-row head>
@@ -63,6 +112,23 @@
             <span>#১০৪১</span>
             <span>সিলেট</span>
             <span align="end">৳৩,২০০</span>
+          </e-row>
+        </e-table>
+        <e-table label="গ্রাহক" style="--e-columns: 2fr 120px 1fr">
+          <e-row head>
+            <span>গ্রাহক</span>
+            <span>নাম</span>
+            <span align="end">মোট</span>
+          </e-row>
+          <e-row selected>
+            <div>
+              <e-stack gap="1">
+                <e-text>রহিমা আক্তার</e-text>
+                <e-text tone="subdued">০১৭১১-০০০০০০</e-text>
+              </e-stack>
+            </div>
+            <span clip><span>রহিমা আক্তার, মিরপুর, ঢাকা, পুরনো বাজারের কাছে</span></span>
+            <span align="end">৳১,৯৩০</span>
           </e-row>
         </e-table>
       </docs-example>

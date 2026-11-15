@@ -125,6 +125,53 @@ test.for([
   expect(rect.left).toBe((window.innerWidth - wide) / 2)
 })
 
+test.for([
+  ['420', 420],
+  ['560', 560],
+  ['720', 720],
+] as const)('at 1440 wide width="%s" is %i px wide', async ([width, wide]) => {
+  await page.viewport(1440, 900)
+  mount(confirm(`width="${width}"`))
+  ebdfy.modal.show('confirm')
+  expect(dialog().getBoundingClientRect().width).toBe(wide)
+})
+
+test('width wins over size when both are set', async () => {
+  await page.viewport(1440, 900)
+  mount(confirm('width="560" size="large"'))
+  ebdfy.modal.show('confirm')
+  expect(dialog().getBoundingClientRect().width).toBe(560)
+})
+
+test('at 360 wide width="560" is the full-width sheet', async () => {
+  mount(confirm('width="560"'))
+  ebdfy.modal.show('confirm')
+  expect(dialog().getBoundingClientRect().width).toBe(360)
+})
+
+test('the title is 16px at 600 and the close button is 32px, 44px on a phone', async () => {
+  await page.viewport(1440, 900)
+  mount(confirm('width="560"'))
+  ebdfy.modal.show('confirm')
+  const title = getComputedStyle(dialog().querySelector('h2')!)
+  expect(title.fontSize).toBe('16px')
+  expect(title.fontWeight).toBe('600')
+  const close = dialog().querySelector('header > button')!
+  expect(close.getBoundingClientRect().width).toBe(32)
+  expect(close.getBoundingClientRect().height).toBe(32)
+  await page.viewport(360, 800)
+  expect(close.getBoundingClientRect().width).toBe(44)
+  expect(close.getBoundingClientRect().height).toBe(44)
+})
+
+test('the open dialog has the line ring and the pop shadow', () => {
+  mount(confirm())
+  ebdfy.modal.show('confirm')
+  const shadow = getComputedStyle(dialog()).boxShadow
+  expect(shadow.match(/\) 0px /g)).toHaveLength(3)
+  expect(shadow).toContain('36px')
+})
+
 test('with lang bn the close button is named in Bangla', async () => {
   document.documentElement.lang = 'bn'
   mount(confirm())

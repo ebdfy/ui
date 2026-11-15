@@ -256,7 +256,7 @@ async function orderAndBack(lang: string, broken?: 'slow order' | 'moved chrome'
     await app.locator('#items-card').waitFor()
     expect(await app.locator('e-page').getAttribute('heading')).toContain('#1042')
     const there = await moveLines(`order, ${where}`, page, app)
-    await app.locator('a[data-words="back"]').tap()
+    await app.locator('e-page > a[slot="back"]').tap()
     await app.getByRole('link', { name: '#1042' }).waitFor()
     rounds.push([...there, ...(await moveLines(`orders list, ${where}`, page, app))])
   }
@@ -295,4 +295,95 @@ test('a chrome that moves as the order loads puts its shift over', async () => {
   const measured = await orderAndBack('en', 'moved chrome')
   console.log(report(measured))
   expect(over(measured).map(({ what }) => what)).toEqual(['chrome shift, to order, en'])
+})
+
+// A move between two of the Admin's own pages swaps the panel under the frame, so no new document
+// paints: the time from the tap until the next page's heading has been painted, and every shift of the
+// chrome since the tap. On a phone Settings' pages are in More's sheet; from 1040 px in the menu.
+async function storeToStaff(lang: string, width = 360, broken?: 'slow panel'): Promise<Line[]> {
+  const { context, page } = await phone(lang)
+  await page.setViewportSize({ width, height: 780 })
+  await context.addInitScript(followMoves)
+  await settle(page, `${site.ui}/playground/settings/store`)
+  await expectThrottled(page.mainFrame())
+  if (broken === 'slow panel')
+    await context.route(/\/playground\/settings\/staff$/, async (route) => {
+      await new Promise((done) => setTimeout(done, budgets.move))
+      await route.continue()
+    })
+  const names =
+    lang === 'bn' ? { store: 'স্টোর', staff: 'স্টাফ', more: 'আরও' } : { store: 'Store', staff: 'Staff', more: 'More' }
+  const where = `Staff, ${width === 360 ? lang : `${lang}, ${width} px`}`
+  const staff = () =>
+    width >= 1040
+      ? page.locator('[slot="menu"] > a').filter({ hasText: new RegExp(`^${names.staff}$`) })
+      : page.locator('#e-more > a').filter({ hasText: new RegExp(`^${names.staff}$`) })
+  await page.evaluate(() => Object.assign(globalThis, { stayed: true }))
+  const rounds: Line[][] = []
+  for (let round = 0; round < 3; round++) {
+    if (width < 1040) {
+      await page.locator('[slot="tabs"] > button').tap()
+      await staff().waitFor()
+    }
+    // The time the next page's heading is first painted: two frames after the panel holding it goes in.
+    await page.evaluate((heading) => {
+      const shown = new Promise<number>((resolve) => {
+        const observer = new MutationObserver(() => {
+          if (document.querySelector('e-admin-panel > header h1')?.textContent !== heading) return
+          observer.disconnect()
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve(performance.timeOrigin + performance.now())))
+        })
+        observer.observe(document.querySelector('e-admin-frame')!, { childList: true })
+      })
+      Object.assign(globalThis, { ebdfyShown: shown })
+    }, names.staff)
+    await staff().tap()
+    const { tap, shown } = await page.evaluate(async () => ({
+      shown: await (globalThis as unknown as { ebdfyShown: Promise<number> }).ebdfyShown,
+      tap: Number(sessionStorage.getItem('ebdfy-tap')),
+    }))
+    await page.waitForTimeout(1000)
+    const chrome = await page.evaluate(
+      (since) =>
+        (globalThis as unknown as { ebdfyShifts: Shift[] }).ebdfyShifts
+          .filter(({ at }) => at >= since)
+          .reduce((sum, { value }) => sum + value, 0),
+      tap,
+    )
+    rounds.push([
+      { what: `tap to ${where}`, value: shown - tap, budget: budgets.move, unit: 'ms' },
+      { what: `chrome shift, to ${where}`, value: chrome, budget: budgets.cls, unit: '' },
+    ])
+    await page.goBack()
+    await expect.poll(() => page.locator('e-admin-panel > header h1').textContent()).toBe(names.store)
+  }
+  // Every move swapped the panel: the page that loaded first is the one still here.
+  expect(await page.evaluate(() => (globalThis as { stayed?: boolean }).stayed)).toBe(true)
+  await context.close()
+  return rounds[0]!.map(({ what, budget, unit }, index) => ({
+    what,
+    value: (unit === 'ms' ? Math.min : Math.max)(...rounds.map((one) => one[index]!.value)),
+    budget,
+    unit,
+  }))
+}
+
+test.for(['en', 'bn'])('moving from Store to Staff in %s is within its budgets', async (lang) => {
+  const measured = await storeToStaff(lang)
+  console.log(report(measured))
+  expect(measured.every(({ value }) => Number.isFinite(value))).toBe(true)
+  expect(over(measured)).toEqual([])
+})
+
+test('moving from Store to Staff at 1280 px is within its budgets', async () => {
+  const measured = await storeToStaff('en', 1280)
+  console.log(report(measured))
+  expect(measured.every(({ value }) => Number.isFinite(value))).toBe(true)
+  expect(over(measured)).toEqual([])
+})
+
+test('a Staff page held back by the move budget puts the move to it over', async () => {
+  const measured = await storeToStaff('en', 360, 'slow panel')
+  console.log(report(measured))
+  expect(over(measured).map(({ what }) => what)).toEqual(['tap to Staff, en'])
 })

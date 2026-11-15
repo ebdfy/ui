@@ -3,7 +3,8 @@
 // to the built h2 or p.
 /**
  * A group of settings: a heading and help text at the left, and the cards that hold the settings at the
- * right. On a phone they stack.
+ * right. The heading column is a third of the width from 600 px and 260 px from 900 px; below 600 px
+ * they stack. Sections that follow each other sit 24 px apart.
  * @tag e-settings-section
  * @attr heading - The section's title, built as its h2.
  * @attr help - A line that says what the section is for, built as a paragraph.

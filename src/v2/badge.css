@@ -1,38 +1,63 @@
-/* e-badge: an order's status as a square-ish tinted tag, its words in the status's own colour on a
-   tint of it. CSS draws it whole; there is no script. The words carry the status and the colour only
-   repeats it. tone names the status: new, confirmed, courier, delivered, returned, or neutral. */
+/* e-badge: a status as a small tinted tag, its words in the status's own colour on a tint of it. CSS
+   draws it whole; there is no script. The words carry the status and the colour only repeats it. tone
+   names the meaning: neutral, info, success, warn or danger. The order statuses new, confirmed,
+   courier, delivered and returned stay as tones with their own colours. dot adds a round dot before
+   the words. */
 e-badge {
   --e-badge-bg: var(--e-color-neutral-bg);
   --e-badge-fg: var(--e-color-neutral-fg);
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   box-sizing: border-box;
   max-width: 100%;
-  padding: 1px var(--e-space-2);
-  border-radius: calc(var(--e-radius-1) / 2);
+  height: 22px;
+  padding: 0 var(--e-space-2);
+  border-radius: var(--e-radius-badge);
   background: var(--e-badge-bg);
   color: var(--e-badge-fg);
-  font-size: var(--e-font-size-meta);
-  font-weight: var(--e-font-weight-semibold);
-  line-height: 20px;
+  font-size: var(--e-font-size-caption);
+  font-weight: 550;
+  line-height: 16px;
   white-space: nowrap;
   vertical-align: middle;
+}
+e-badge:lang(bn) {
+  line-height: 24px;
+}
+e-badge[dot]::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+e-badge[tone='info'],
+e-badge[tone='confirmed'] {
+  --e-badge-bg: var(--e-color-confirmed-bg);
+  --e-badge-fg: var(--e-color-confirmed-fg);
+}
+e-badge[tone='success'],
+e-badge[tone='delivered'] {
+  --e-badge-bg: var(--e-color-delivered-bg);
+  --e-badge-fg: var(--e-color-delivered-fg);
+}
+e-badge[tone='warn'] {
+  --e-badge-bg: var(--e-color-warn-soft);
+  --e-badge-fg: var(--e-color-warn-fg);
+}
+e-badge[tone='danger'] {
+  --e-badge-bg: var(--e-color-danger-soft);
+  --e-badge-fg: var(--e-color-danger);
 }
 e-badge[tone='new'] {
   --e-badge-bg: var(--e-color-new-bg);
   --e-badge-fg: var(--e-color-new-fg);
 }
-e-badge[tone='confirmed'] {
-  --e-badge-bg: var(--e-color-confirmed-bg);
-  --e-badge-fg: var(--e-color-confirmed-fg);
-}
 e-badge[tone='courier'] {
   --e-badge-bg: var(--e-color-courier-bg);
   --e-badge-fg: var(--e-color-courier-fg);
-}
-e-badge[tone='delivered'] {
-  --e-badge-bg: var(--e-color-delivered-bg);
-  --e-badge-fg: var(--e-color-delivered-fg);
 }
 e-badge[tone='returned'] {
   --e-badge-bg: var(--e-color-returned-bg);

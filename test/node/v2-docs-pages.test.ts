@@ -157,3 +157,16 @@ test('the manifest names each attribute v2.css styles on a documented tag, with 
   }
   expect([...new Set(missing)]).toEqual([])
 })
+
+// An English example writes its figures in Latin digits, as the Admin does in English; Bangla digits
+// belong to the examples marked lang="bn".
+test('no English example writes Bangla digits', () => {
+  const found = v2Pages.flatMap(({ path }) =>
+    [...readFileSync(fileOf(path), 'utf8').matchAll(/<docs-example\b([^>]*)>([^]*?)<\/docs-example>/g)]
+      .filter(([, attributes]) => !/\blang="bn"/.test(attributes!))
+      .map(([, , body]) => body!.replaceAll(/<[^>]*>/g, ' '))
+      .flatMap((text) => text.match(/\S*[০-৯]\S*/g) ?? [])
+      .map((word) => `${path}: ${word}`),
+  )
+  expect(found).toEqual([])
+})

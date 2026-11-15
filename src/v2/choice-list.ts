@@ -15,6 +15,8 @@ let count = 0
  * @attr {boolean} disabled - No choice can be changed.
  * @attr error - A message shown under the group, which then reads invalid.
  * @slot - The `<option value>` elements to choose from; add `selected` to one to open on it, or `disabled` to stop one.
+ *   Give an option a `help` attribute for a line under its label, drawn at the caption size. The browser
+ *   does not draw an element written inside an `<option>`, so the help is an attribute.
  */
 export class EChoiceList extends HTMLElement {
   static observedAttributes = ['label', 'error']
@@ -48,6 +50,13 @@ export class EChoiceList extends HTMLElement {
       radio.disabled = this.hasAttribute('disabled') || option.disabled
       const row = document.createElement('label')
       row.append(radio, ...option.childNodes)
+      const help = option.getAttribute('help')
+      if (help) {
+        const line = document.createElement('small')
+        line.dataset.part = 'help'
+        line.textContent = help
+        row.append(line)
+      }
       option.replaceWith(row)
     }
     this.prepend(label)

@@ -80,6 +80,11 @@ test('before the script a labelled tag shows its label beside the box and hide-l
   expect(getComputedStyle(quiet!, '::after').content).toBe('none')
 })
 
+test('before the script the box has 5 px corners, not a disc', () => {
+  const tag = mount('<e-checkbox label="Remember me"></e-checkbox>').firstElementChild!
+  expect(getComputedStyle(tag, '::before').borderTopLeftRadius).toBe('5px')
+})
+
 test('the script builds one input in each tag without moving any box', async () => {
   const holder = mount(variants.join(''))
   const tags = [...holder.querySelectorAll('e-checkbox')]
@@ -119,6 +124,12 @@ test('the hide-label input is a checkbox named by the label, and a click ticks i
   expect(changes).toEqual(['x'])
   expect(holder.querySelector('input')!.checked).toBe(true)
   expect((holder.firstElementChild as Checkbox).checked).toBe(true)
+})
+
+test('the built input has 5 px corners, not a disc', () => {
+  defineCheckbox()
+  const tag = mount('<e-checkbox label="Remember me"></e-checkbox>').firstElementChild!
+  expect(getComputedStyle(tag.querySelector('input')!).borderTopLeftRadius).toBe('5px')
 })
 
 test('a labelled tag builds a label that ticks the input', async () => {

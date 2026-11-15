@@ -12,6 +12,8 @@ e-taka-field > [data-e-prefix] {
   color: var(--e-color-fg);
   pointer-events: none;
 }
+/* The amount starts where the ৳ ends, so they read "৳80" as the markup draws them: the ৳ is Noto Sans
+   Bengali's, 0.64 em wide. */
 e-taka-field > input {
-  padding-left: 28px;
+  padding-left: calc(var(--e-space-3) + 0.64em);
 }

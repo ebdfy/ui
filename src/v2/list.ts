@@ -2,8 +2,8 @@
 // emits no code and src/v2.ts does not import it.
 
 /**
- * A column of cards, one for each child, at any width. An `e-index-table`'s rows take the same look on a phone.
+ * A column of flat rows, one for each child, at any width, split by a 1 px line with no box around each item.
  * @tag e-list
- * @slot - The items, one card each.
+ * @slot - The items, one row each.
  */
 export declare class EList extends HTMLElement {}

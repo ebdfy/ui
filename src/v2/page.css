@@ -1,9 +1,12 @@
-/* e-page: a header row (heading left, slot="actions" right), then the content in a column. Before
-   the script the heading is the ::before; the script puts an h1 in the same grid cell. */
+/* e-page: a header row (back link, heading, status, then previous/next and slot="actions" at the
+   end), a facts line under the heading, then the content in a column. Before the script the heading
+   is the ::before; the script puts an h1 in the same grid cell. Each header slot has its own column,
+   and the gaps are margins, so a slot a page leaves out takes no room. */
 e-page {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: var(--e-space-3);
+  grid-template-columns:
+    [back] auto [title] auto [status] auto auto auto [fill] minmax(0, 1fr) [side] auto [pagination] auto
+    [actions] auto;
   row-gap: var(--e-space-4);
   align-items: center;
   min-width: 0;
@@ -13,9 +16,18 @@ e-page {
 e-page[hidden] {
   display: none;
 }
+/* A record or a form reads best at a set width, centred in the panel, and narrower on a phone. */
+e-page[width='details'] {
+  max-width: var(--e-page-width);
+  margin-inline: auto;
+}
+e-page[width='form'] {
+  max-width: var(--e-page-width-form);
+  margin-inline: auto;
+}
 e-page[heading]::before,
 e-page > h1[slot='heading'] {
-  grid-column: 1;
+  grid-column: title;
   grid-row: 1;
   margin: 0;
   min-width: 0;
@@ -34,13 +46,111 @@ e-page[heading]::before {
 e-page:has(> h1[slot='heading'])::before {
   content: none;
 }
+/* An empty cell at the end of row 1 keeps the side column out of the header row, with or without
+   actions. A page with no header has none, so its content and side column start on row 1. */
+e-page[heading]::after,
+e-page:has(> [slot='back'], > [slot='status'], > [slot='pagination'], > [slot='actions'])::after {
+  content: '';
+  grid-column: side / -1;
+  grid-row: 1;
+}
+e-page > [slot='back'] {
+  grid-column: back;
+  grid-row: 1;
+  display: inline-grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  margin-inline-end: var(--e-space-2);
+  border-radius: var(--e-radius-1);
+  color: var(--e-color-fg);
+  text-decoration: none;
+}
+e-page > [slot='back']:hover {
+  background: var(--e-color-surface-2);
+}
+e-page > [slot='back']:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
+/* Up to three status children, each in the next column after the heading. */
+e-page > [slot='status'] {
+  grid-column: status;
+  grid-row: 1;
+  justify-self: start;
+  margin-inline-start: var(--e-space-2);
+}
+e-page > [slot='status'] ~ [slot='status'] {
+  grid-column: 4;
+}
+e-page > [slot='status'] ~ [slot='status'] ~ [slot='status'] {
+  grid-column: 5;
+}
+e-page > [slot='facts'] {
+  grid-column: title / -1;
+  grid-row: 2;
+  min-width: 0;
+  margin-top: calc(var(--e-space-2) - var(--e-space-4));
+  color: var(--e-color-fg2);
+  font-size: var(--e-font-size-meta);
+  line-height: var(--e-line-height-body);
+  overflow-wrap: anywhere;
+}
+/* Previous and next as one control: two squares whose borders meet in one 1 px divider. */
+e-page > [slot='pagination'] {
+  grid-column: pagination;
+  grid-row: 1;
+  display: flex;
+  margin-inline-start: var(--e-space-3);
+}
+e-page > [slot='pagination'] > a {
+  display: inline-grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--e-color-line-2);
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+  text-decoration: none;
+}
+e-page > [slot='pagination'] > a:first-child {
+  border-start-start-radius: var(--e-radius-1);
+  border-end-start-radius: var(--e-radius-1);
+}
+e-page > [slot='pagination'] > a:last-child {
+  border-start-end-radius: var(--e-radius-1);
+  border-end-end-radius: var(--e-radius-1);
+}
+e-page > [slot='pagination'] > a + a {
+  margin-inline-start: -1px;
+}
+e-page > [slot='pagination'] > a:hover {
+  background: var(--e-color-surface-2);
+}
+e-page > [slot='pagination'] > a:focus-visible {
+  position: relative;
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
 e-page > [slot='actions'] {
-  grid-column: 2;
+  grid-column: actions;
   grid-row: 1;
   display: flex;
   gap: var(--e-space-2);
+  margin-inline-start: var(--e-space-3);
 }
-e-page > :not([slot='actions'], [slot='aside'], [slot='heading']) {
+e-page
+  > :not(
+    [slot='actions'],
+    [slot='aside'],
+    [slot='back'],
+    [slot='facts'],
+    [slot='heading'],
+    [slot='pagination'],
+    [slot='status']
+  ) {
   grid-column: 1 / -1;
   min-width: 0;
 }
@@ -50,30 +160,93 @@ e-page > [slot='aside'] {
   min-width: 0;
 }
 /* The content and the side column each start at the top of their row, not its middle. */
-e-page > :not([slot='actions'], [slot='heading']) {
+e-page > :not([slot='actions'], [slot='back'], [slot='heading'], [slot='pagination'], [slot='status']) {
   align-self: start;
 }
-/* From 600 px the children marked slot="aside" form a 344 px column beside the content. Each column
-   is best one child (an e-stack of cards), as the columns share their rows: nothing at the browser
-   floor lets two columns of cards flow apart. Several aside children stack row by row. */
-@media (min-width: 600px) {
-  e-page:has(> [slot='aside']) {
-    grid-template-columns: minmax(0, 1fr) 344px;
-    column-gap: var(--e-space-4);
+/* Below 600 px each header link is a 44 px target, and the status moves under the heading, which
+   then takes the row up to previous/next. A card marked phone-order leaves its column: its column
+   lays its cards out as the page's own rows, 16 px apart, and order puts a first card before the main
+   column and a last card after every other. The header keeps order 0, so it stays on top. */
+@media (max-width: 599.98px) {
+  e-page > [slot='back'],
+  e-page > [slot='pagination'] > a {
+    width: var(--e-size-control-lg);
+    height: var(--e-size-control-lg);
   }
-  e-page:has(> [slot='aside']) > :not([slot='actions'], [slot='aside'], [slot='heading']) {
-    grid-column: 1;
+  e-page[heading]::before,
+  e-page > h1[slot='heading'] {
+    grid-column: title / pagination;
+  }
+  /* Each status child takes a row of its own, as the heading's row has no room to spare beside it:
+     badges that sit side by side here go in one wrapper, such as an e-stack with direction="row". */
+  e-page > [slot='status'] {
+    grid-column: title / -1;
+    grid-row: 2;
+    margin-top: calc(var(--e-space-2) - var(--e-space-4));
+    margin-inline-start: 0;
+  }
+  e-page > [slot='status'] ~ [slot='status'] {
+    grid-column: title / -1;
+    grid-row: 3;
+  }
+  e-page > [slot='status'] ~ [slot='status'] ~ [slot='status'] {
+    grid-column: title / -1;
+    grid-row: 4;
+  }
+  e-page:has(> [slot='status']) > [slot='facts'] {
+    grid-row: 3;
+  }
+  e-page:has(> [slot='status'] ~ [slot='status']) > [slot='facts'] {
+    grid-row: 4;
+  }
+  e-page:has(> [slot='status'] ~ [slot='status'] ~ [slot='status']) > [slot='facts'] {
+    grid-row: 5;
+  }
+  :where(e-page > :not([slot])),
+  :where(e-page > [slot='aside']) {
+    order: 2;
+  }
+  /* Outside :where(), as it has to beat the column's own display, such as e-stack's flex. */
+  e-page > :has(> [phone-order]) {
+    display: contents;
+  }
+  :where(e-page > :has(> [phone-order]) > *) {
+    grid-column: 1 / -1;
+    align-self: start;
+    min-width: 0;
+    order: 2;
+  }
+  :where(e-page > * > [phone-order='first']) {
+    order: 1;
+  }
+  :where(e-page > * > [phone-order='last']) {
+    order: 3;
+  }
+}
+/* From 600 px the children marked slot="aside" form a 320 px column, 20 px right of the content.
+   The aside spans the header's end columns, and its 340 px goes to the empty side column, so
+   previous/next and the actions stay together at the row's end. Each column is best one child (an
+   e-stack of cards), as the columns share their rows: nothing at the browser floor lets two columns
+   of cards flow apart. Several aside children stack row by row. */
+@media (min-width: 600px) {
+  e-page:has(> [slot='aside'])
+    > :not(
+      [slot='actions'],
+      [slot='aside'],
+      [slot='back'],
+      [slot='facts'],
+      [slot='heading'],
+      [slot='pagination'],
+      [slot='status']
+    ) {
+    grid-column: 1 / side;
   }
   e-page > [slot='aside'] {
-    grid-column: 2;
+    grid-column: side / -1;
+    width: 320px;
+    margin-inline-start: var(--e-space-5);
   }
   e-page:has(> [slot='aside']) > [slot='actions'] {
     justify-self: end;
-  }
-  /* Without actions the heading takes the whole first row, so the side column starts beside the
-     content and not beside the heading. */
-  e-page[heading]:has(> [slot='aside']):not(:has(> [slot='actions']))::before,
-  e-page:has(> [slot='aside']):not(:has(> [slot='actions'])) > h1[slot='heading'] {
-    grid-column: 1 / -1;
   }
 }

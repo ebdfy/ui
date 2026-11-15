@@ -47,13 +47,13 @@ test('the script builds an h2 and the help where v2.css drew them, moving nothin
   }
 })
 
-test('at 1440 px the help sits in the left third and the cards on the right, one under the other', async () => {
+test('at 1440 px the help sits in the left 260 px and the cards on the right, one under the other', async () => {
   await at(1440, () => {
     document.body.innerHTML = section
     defineSettingsSection()
     defineCard()
     const box = rect(document.querySelector('e-settings-section')!)
-    const third = box.left + box.width / 3
+    const third = box.left + 260
     const heading = rect(document.querySelector('e-settings-section > h2')!)
     expect(heading.left).toBe(box.left)
     expect(rect(help()).left).toBe(box.left)
@@ -66,6 +66,32 @@ test('at 1440 px the help sits in the left third and the cards on the right, one
     // The second card follows the first, not the help.
     expect(free!.top - charges!.bottom).toBe(16)
     expect(free!.left).toBe(charges!.left)
+  })
+})
+
+// The section keeps no margin of its own: pages stack sections in a 24 px gap (e-stack gap="6", or the
+// Admin form's grid), which a margin would double.
+test('from 900 px the title column is 260 px, from 600 it is a third, and stacked sections sit 24 px apart', async () => {
+  document.body.innerHTML = `<e-stack gap="6">${section + section}</e-stack>`
+  const tag = document.querySelector('e-settings-section')!
+  const columns = () => getComputedStyle(tag).gridTemplateColumns.split(' ')
+  const column = (width: number) => at(width, () => columns()[0])
+  // Before the script the title is the ::before, so the track is what holds it.
+  expect(await column(1440)).toBe('260px')
+  expect(await column(900)).toBe('260px')
+  // A third of the width left after the 16 px gap.
+  const third = await at(700, () => (rect(tag).width - 16) / 3)
+  expect(Number.parseFloat((await column(700))!)).toBeCloseTo(third, 0)
+  expect(await at(1440, () => rect(document.querySelectorAll('e-settings-section')[1]!).top - rect(tag).bottom)).toBe(
+    24,
+  )
+  defineSettingsSection()
+  await at(1440, () => {
+    expect(rect(document.querySelector('e-settings-section > h2')!).width).toBe(260)
+  })
+  await at(700, () => {
+    const h2 = rect(document.querySelector('e-settings-section > h2')!)
+    expect(h2.width).toBeCloseTo((rect(tag).width - 16) / 3, 0)
   })
 })
 

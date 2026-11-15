@@ -13,6 +13,12 @@
         <code>e-icon</code> draws a small icon from the kit's sprite. Pick it with <code>name</code>. It is 16 px, or 20
         px with <code>size="20"</code>. An icon is decorative, so name the button it sits in.
       </p>
+      <p>
+        <code>v2.js</code> fetches the sprite from beside itself. A page that runs it from somewhere with no folder,
+        such as a <code>blob:</code> URL, names the files instead:
+        <code>&lt;meta name="ebdfy-icons" content="…/icons.svg"&gt;</code> for the sprite and
+        <code>&lt;meta name="ebdfy-areas" content="…/areas.json"&gt;</code> for the district picker's upazilas.
+      </p>
       <docs-example caption="Two sizes">
         <e-stack direction="row" gap="3" align="center">
           <e-icon name="truck"></e-icon>
@@ -20,23 +26,199 @@
         </e-stack>
       </docs-example>
       <docs-example caption="Every icon in the sprite">
-        <e-stack direction="row" gap="3" wrap>
-          <e-icon name="truck" size="20"></e-icon>
-          <e-icon name="search" size="20"></e-icon>
-          <e-icon name="plus" size="20"></e-icon>
-          <e-icon name="x" size="20"></e-icon>
-          <e-icon name="check" size="20"></e-icon>
-          <e-icon name="chevron-left" size="20"></e-icon>
-          <e-icon name="chevron-right" size="20"></e-icon>
-          <e-icon name="chevron-down" size="20"></e-icon>
-          <e-icon name="more-horizontal" size="20"></e-icon>
-          <e-icon name="home" size="20"></e-icon>
-          <e-icon name="shopping-bag" size="20"></e-icon>
-          <e-icon name="package" size="20"></e-icon>
-          <e-icon name="users" size="20"></e-icon>
-          <e-icon name="settings" size="20"></e-icon>
-          <e-icon name="bell" size="20"></e-icon>
-          <e-icon name="help" size="20"></e-icon>
+        <e-stack direction="row" gap="4" wrap>
+          <e-stack align="center" gap="1">
+            <e-icon name="truck" size="20"></e-icon>
+            <e-text tone="subdued">truck</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="search" size="20"></e-icon>
+            <e-text tone="subdued">search</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="plus" size="20"></e-icon>
+            <e-text tone="subdued">plus</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="x" size="20"></e-icon>
+            <e-text tone="subdued">x</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="check" size="20"></e-icon>
+            <e-text tone="subdued">check</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="chevron-left" size="20"></e-icon>
+            <e-text tone="subdued">chevron-left</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="chevron-right" size="20"></e-icon>
+            <e-text tone="subdued">chevron-right</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="chevron-down" size="20"></e-icon>
+            <e-text tone="subdued">chevron-down</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="more-horizontal" size="20"></e-icon>
+            <e-text tone="subdued">more-horizontal</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="home" size="20"></e-icon>
+            <e-text tone="subdued">home</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="shopping-bag" size="20"></e-icon>
+            <e-text tone="subdued">shopping-bag</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="package" size="20"></e-icon>
+            <e-text tone="subdued">package</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="users" size="20"></e-icon>
+            <e-text tone="subdued">users</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="settings" size="20"></e-icon>
+            <e-text tone="subdued">settings</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="bell" size="20"></e-icon>
+            <e-text tone="subdued">bell</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="help" size="20"></e-icon>
+            <e-text tone="subdued">help</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="arrow-left" size="20"></e-icon>
+            <e-text tone="subdued">arrow-left</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="printer" size="20"></e-icon>
+            <e-text tone="subdued">printer</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="phone" size="20"></e-icon>
+            <e-text tone="subdued">phone</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="copy" size="20"></e-icon>
+            <e-text tone="subdued">copy</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="filter" size="20"></e-icon>
+            <e-text tone="subdued">filter</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="arrow-up-down" size="20"></e-icon>
+            <e-text tone="subdued">arrow-up-down</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="external-link" size="20"></e-icon>
+            <e-text tone="subdued">external-link</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="image" size="20"></e-icon>
+            <e-text tone="subdued">image</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="circle-alert" size="20"></e-icon>
+            <e-text tone="subdued">circle-alert</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="pencil" size="20"></e-icon>
+            <e-text tone="subdued">pencil</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="trash" size="20"></e-icon>
+            <e-text tone="subdued">trash</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="grip-vertical" size="20"></e-icon>
+            <e-text tone="subdued">grip-vertical</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="calendar" size="20"></e-icon>
+            <e-text tone="subdued">calendar</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="lock" size="20"></e-icon>
+            <e-text tone="subdued">lock</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="cloud-off" size="20"></e-icon>
+            <e-text tone="subdued">cloud-off</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="upload" size="20"></e-icon>
+            <e-text tone="subdued">upload</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="download" size="20"></e-icon>
+            <e-text tone="subdued">download</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="eye" size="20"></e-icon>
+            <e-text tone="subdued">eye</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="message-circle" size="20"></e-icon>
+            <e-text tone="subdued">message-circle</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="percent" size="20"></e-icon>
+            <e-text tone="subdued">percent</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="file-text" size="20"></e-icon>
+            <e-text tone="subdued">file-text</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="chart-column" size="20"></e-icon>
+            <e-text tone="subdued">chart-column</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="layout-grid" size="20"></e-icon>
+            <e-text tone="subdued">layout-grid</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="store" size="20"></e-icon>
+            <e-text tone="subdued">store</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="credit-card" size="20"></e-icon>
+            <e-text tone="subdued">credit-card</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="map-pin" size="20"></e-icon>
+            <e-text tone="subdued">map-pin</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="languages" size="20"></e-icon>
+            <e-text tone="subdued">languages</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="database" size="20"></e-icon>
+            <e-text tone="subdued">database</e-text>
+          </e-stack>
+          <e-stack align="center" gap="1">
+            <e-icon name="code" size="20"></e-icon>
+            <e-text tone="subdued">code</e-text>
+          </e-stack>
+        </e-stack>
+      </docs-example>
+      <h2>The ebdfy mark</h2>
+      <p>
+        The sign-in pages show ebdfy's own mark, a lowercase e on a lime tile. It is a file beside
+        <code>v2.js</code>, <code>ebdfy-mark.svg</code>, not an icon; the Admin's frame shows the store's own tile.
+      </p>
+      <docs-example caption="At 20, 28 and 40 px">
+        <e-stack direction="row" gap="3" align="center">
+          <img src="%EB_CDN%/ui/ebdfy-mark.svg" width="20" height="20" alt="ebdfy" />
+          <img src="%EB_CDN%/ui/ebdfy-mark.svg" width="28" height="28" alt="ebdfy" />
+          <img src="%EB_CDN%/ui/ebdfy-mark.svg" width="40" height="40" alt="ebdfy" />
         </e-stack>
       </docs-example>
       <docs-example caption="In a button">

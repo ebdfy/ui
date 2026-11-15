@@ -12,6 +12,20 @@ e-link > a {
   text-decoration-color: var(--e-color-line-2);
   text-underline-offset: 2px;
 }
+/* In a table, card or menu the link is a label, not a phrase: no line at rest, one on hover and focus. */
+e-table e-link > a,
+e-card e-link > a,
+e-menu e-link > a,
+e-menu-item e-link > a {
+  font-weight: 550;
+  text-decoration-line: none;
+}
+e-table e-link > a:is(:hover, :focus-visible),
+e-card e-link > a:is(:hover, :focus-visible),
+e-menu e-link > a:is(:hover, :focus-visible),
+e-menu-item e-link > a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+}
 e-link > a:hover {
   text-decoration-color: var(--e-color-fg);
 }

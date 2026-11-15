@@ -5,12 +5,14 @@ import { adminRedirect, createBridge } from './bridge.ts'
 import { digits, phone, taka } from './format.ts'
 import { defineAvatar } from './v2/avatar.ts'
 import { defineBanner } from './v2/banner.ts'
-import { createContext, keepStore, reportModals, reportPage } from './v2/bridge.ts'
+import { createContext, forwardSearch, keepStore, reportModals, reportPage } from './v2/bridge.ts'
 import { defineButtonGroup } from './v2/button-group.ts'
 import { defineButton } from './v2/button.ts'
 import { defineCard } from './v2/card.ts'
 import { defineCheckbox } from './v2/checkbox.ts'
+import { defineChips } from './v2/chips.ts'
 import { defineChoiceList } from './v2/choice-list.ts'
+import { defineContact } from './v2/contact.ts'
 import { defineCourierStatus } from './v2/courier-status.ts'
 import { defineDistrictPicker } from './v2/district-picker.ts'
 import { defineEmptyState } from './v2/empty-state.ts'
@@ -21,6 +23,7 @@ import { defineIcon } from './v2/icon.ts'
 import { defineIndexTable } from './v2/index-table.ts'
 import { defineKbd } from './v2/kbd.ts'
 import { defineMenu } from './v2/menu.ts'
+import { defineMeter } from './v2/meter.ts'
 import { defineModal, hideModal, showModal } from './v2/modal.ts'
 import { definePage } from './v2/page.ts'
 import { definePagination } from './v2/pagination.ts'
@@ -36,6 +39,7 @@ import { defineTable } from './v2/table.ts'
 import { defineTabs } from './v2/tabs.ts'
 import { defineTakaField } from './v2/taka-field.ts'
 import { defineText } from './v2/text.ts'
+import { defineThumbnail } from './v2/thumbnail.ts'
 import { defineTooltip } from './v2/tooltip.ts'
 
 const redirect = adminRedirect(window)
@@ -52,6 +56,10 @@ definePage()
 defineText()
 defineTable()
 defineAvatar()
+defineContact()
+defineMeter()
+defineThumbnail()
+defineChips()
 defineTabs()
 definePagination()
 defineEmptyState()
@@ -84,6 +92,7 @@ keepStore()
 signFetch(window, ebdfy)
 reportPage()
 reportModals()
+forwardSearch()
 
 // The page's ebdfy global, typed for an app that imports the package and calls it by name.
 type Ebdfy = typeof ebdfy

@@ -1,5 +1,5 @@
-/* e-settings-section: a heading and help text in the left third and its cards on the right from
-   600 px, all stacked below. Before the script the heading is the ::before and the help the ::after;
+/* e-settings-section: a heading and help text in the left third (260 px from 900 px) and its cards on
+   the right from 600 px, all stacked below. Before the script the heading is the ::before and the help the ::after;
    the script puts an h2 and a p in the same grid cells. */
 e-settings-section {
   display: grid;
@@ -63,5 +63,11 @@ e-settings-section:has(> p[slot='help'])::after {
   }
   e-settings-section > :not(:nth-child(1 of :not([slot='heading'], [slot='help'])), [slot='heading'], [slot='help']) {
     margin-top: var(--e-space-4);
+  }
+}
+/* From 900 px the title column is 260 px and the cards take the rest. */
+@media (min-width: 900px) {
+  e-settings-section {
+    grid-template-columns: 260px minmax(0, 1fr);
   }
 }

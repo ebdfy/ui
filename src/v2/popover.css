@@ -24,5 +24,10 @@ e-popover > [data-part='panel'] {
   color: var(--e-color-fg);
   font-size: var(--e-font-size-body);
   line-height: var(--e-line-height-body);
-  box-shadow: 0 8px 24px var(--e-color-scrim);
+  box-shadow: var(--e-shadow-pop);
+}
+@media (prefers-reduced-motion: no-preference) {
+  e-popover > [data-part='panel']:not([hidden]) {
+    animation: e-panel-in var(--e-time-1) var(--e-ease);
+  }
 }

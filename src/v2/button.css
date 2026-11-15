@@ -2,20 +2,21 @@
    label into a native <button> that fills the tag, and the tag's side padding moves onto the button,
    so the box never moves. */
 e-button {
-  --e-button-pad: 14px;
+  --e-button-pad: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   box-sizing: border-box;
-  height: var(--e-size-control-md);
+  height: var(--e-size-button);
   padding: 0 var(--e-button-pad);
   border: 1px solid var(--e-color-line-2);
   border-radius: var(--e-radius-1);
   background: var(--e-color-surface);
+  box-shadow: var(--e-shadow-card);
   color: var(--e-color-fg);
   font-size: var(--e-font-size-meta);
-  font-weight: var(--e-font-weight-semibold);
+  font-weight: 550;
   line-height: var(--e-line-height-body);
   white-space: nowrap;
   vertical-align: middle;
@@ -33,11 +34,21 @@ e-button[tone='primary'] {
 e-button[tone='plain'] {
   border-color: transparent;
   background: none;
+  box-shadow: none;
   color: var(--e-color-fg2);
 }
 e-button[tone='plain']:hover {
   background: var(--e-color-surface-2);
   color: var(--e-color-fg);
+}
+/* Danger alone is red text on the default button; with fill it is the solid red of a confirm. */
+e-button[tone='danger'] {
+  color: var(--e-color-danger);
+}
+e-button[tone='danger'][fill] {
+  border-color: transparent;
+  background: var(--e-color-danger);
+  color: var(--e-color-surface);
 }
 e-button[size='sm'] {
   --e-button-pad: 10px;
@@ -45,14 +56,28 @@ e-button[size='sm'] {
 }
 e-button[size='lg'] {
   --e-button-pad: 18px;
-  height: var(--e-size-control-lg);
+  height: 40px;
   font-size: var(--e-font-size-body);
 }
-/* On a phone every button is a 44 px target, sm and the default too. */
+/* An icon button is a square as wide as it is tall, whatever its size. */
+e-button[icon] {
+  --e-button-pad: 0;
+  aspect-ratio: 1;
+}
+/* On a phone every button is a 44 px target with 14 px text, sm and lg too. */
 @media (max-width: 599.98px) {
   e-button,
-  e-button[size='sm'] {
+  e-button[size='sm'],
+  e-button[size='lg'] {
     height: var(--e-size-control-lg);
+    font-size: var(--e-font-size-body);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  e-button {
+    transition:
+      background-color var(--e-time-1) var(--e-ease),
+      color var(--e-time-1) var(--e-ease);
   }
 }
 e-button[disabled] {

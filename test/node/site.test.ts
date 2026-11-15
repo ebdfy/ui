@@ -4,14 +4,16 @@ import { fileURLToPath } from 'node:url'
 import { expect, test } from 'vitest'
 
 const site = fileURLToPath(new URL('../../site/', import.meta.url))
-const viewport = '<meta name="viewport" content="width=device-width, initial-scale=1" />'
+// The Admin's frame pages also let the keyboard shrink them, so the save bar stays above it.
+const viewport =
+  /<meta name="viewport" content="width=device-width, initial-scale=1(, interactive-widget=resizes-content)?" \/>/
 
 // What a page is missing to render right on a phone and to be read by a screen reader.
 function problems(html: string): string[] {
   const found: string[] = []
   if (!/^<!doctype html>/i.test(html)) found.push('doctype')
   if (!/<html[^>]*\slang="[^"]+"/i.test(html)) found.push('html lang')
-  if (!html.includes(viewport)) found.push('viewport')
+  if (!viewport.test(html)) found.push('viewport')
   return found
 }
 

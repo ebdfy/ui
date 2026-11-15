@@ -2,7 +2,8 @@
    the search field, the removable filter chips, Add filter and the sort, wrapping on a phone; then the
    table, and the pager at the foot. The app writes every part in the markup, so the card draws whole
    before the script, and the parts are told apart by their tags: e-tabs, e-table, e-empty-state and
-   e-pagination take a row each, and every other child sits in the toolbar. */
+   e-pagination take a row each, and every other child sits in the toolbar. From 600 px the card pads
+   20 px and its toolbar controls are 32 px; the pager is a surface-2 footer across the card's foot. */
 e-index-table {
   --e-index-pad: var(--e-space-3);
   display: flex;
@@ -10,12 +11,27 @@ e-index-table {
   align-items: center;
   gap: var(--e-space-2);
   min-width: 0;
-  padding: 0 var(--e-index-pad) var(--e-space-2);
+  padding: 0 var(--e-index-pad);
   background: var(--e-color-surface);
   color: var(--e-color-fg);
   border: 1px solid var(--e-color-line);
   border-radius: var(--e-radius-2);
+  box-shadow: var(--e-shadow-card);
   overflow: hidden;
+}
+@media (min-width: 600px) {
+  e-index-table {
+    --e-index-pad: 20px;
+  }
+  e-index-table > e-search-field {
+    height: var(--e-size-button);
+  }
+  e-index-table > e-select {
+    --e-select-height: var(--e-size-button);
+  }
+  e-index-table > e-pagination {
+    --e-pagination-size: var(--e-size-button);
+  }
 }
 /* The tabs, the table and the empty state run edge to edge, past the card's side padding, which keeps
    every toolbar line off the edges. */
@@ -26,7 +42,12 @@ e-index-table > e-empty-state {
   margin: 0 calc(-1 * var(--e-index-pad));
 }
 e-index-table > e-pagination {
-  flex: 1 1 100%;
+  flex: 1 1 calc(100% + 2 * var(--e-index-pad));
+  height: calc(var(--e-pagination-size) + 2 * var(--e-space-2));
+  margin: 0 calc(-1 * var(--e-index-pad));
+  padding: var(--e-space-2) var(--e-index-pad);
+  border-top: 1px solid var(--e-color-line);
+  background: var(--e-color-surface-2);
 }
 e-index-table > e-tabs {
   margin-bottom: var(--e-space-1);
@@ -38,7 +59,19 @@ e-index-table > e-search-field {
 e-index-table > e-table {
   margin-top: var(--e-space-1);
   border-top: 1px solid var(--e-color-line);
-  border-bottom: 1px solid var(--e-color-line);
+}
+/* With no toolbar the table starts right under the tabs' own line, or at the card's top edge with no
+   tabs either; a toolbar with no tabs keeps 12 px above it (review 6.2, request 20). The toolbar is any
+   child that is not one of the card's rows. */
+e-index-table:not(:has(> :not(e-tabs, e-table, e-empty-state, e-pagination, [slot='bulk']))) > e-table {
+  margin-top: calc(-1 * var(--e-space-1) - var(--e-space-2));
+  border-top: 0;
+}
+e-index-table:not(:has(> e-tabs, > :not(e-tabs, e-table, e-empty-state, e-pagination, [slot='bulk']))) > e-table {
+  margin-top: 0;
+}
+e-index-table:not(:has(> e-tabs)):has(> :not(e-tabs, e-table, e-empty-state, e-pagination, [slot='bulk'])) {
+  padding-top: var(--e-space-3);
 }
 
 /* The app's e-empty-state waits until the table has no rows, as after a search that matched none; then
@@ -81,11 +114,12 @@ e-index-table > [slot='filter'] {
   gap: var(--e-space-1);
   box-sizing: border-box;
   max-width: 100%;
-  height: var(--e-size-control-md);
+  height: var(--e-size-button);
   padding: 0 var(--e-space-1) 0 var(--e-space-3);
   border: 1px solid var(--e-color-line-2);
-  border-radius: var(--e-radius-pill);
-  background: var(--e-color-surface-2);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-surface);
+  box-shadow: var(--e-shadow-card);
   color: var(--e-color-fg);
   font-size: var(--e-font-size-meta);
   font-weight: var(--e-font-weight-medium);
@@ -110,7 +144,7 @@ e-index-table > [slot='filter'] > button {
   margin: 0;
   padding: 0;
   border: 0;
-  border-radius: var(--e-radius-pill);
+  border-radius: calc(var(--e-radius-1) - 3px);
   background: none;
   color: var(--e-color-fg2);
   cursor: pointer;
@@ -124,37 +158,82 @@ e-index-table > [slot='filter'] > button:focus-visible {
   outline-offset: -2px;
 }
 
-/* A phone's toolbar: the search field takes its own line, and the chips and controls wrap under it. The
-   remove button keeps its 28 px drawn size and takes a 46 px tall hit area, reaching left over its own
-   chip's words but not right past the chip, so nothing spills sideways. */
+/* A phone's index table pads 16 px and keeps its card: bled past the page's 16 px gutter, it would stick
+   out of the page's own box, which then scrolls sideways. A search field followed by a button, as Add
+   filter, shares its line with it, the search taking the rest; the chips and the sort wrap under them.
+   Alone, the search takes its own line. The remove button is itself a 46 px tall target around its
+   28 px drawn mark, standing out of its 32 px chip, and reaches left over its own chip's words but not
+   right past the chip, so nothing spills sideways. */
 @media (max-width: 599.98px) {
-  e-index-table > [slot='filter'] > button {
-    position: relative;
-  }
-  e-index-table > [slot='filter'] > button::after {
-    content: '';
-    position: absolute;
-    inset: -9px 0 -9px -16px;
+  e-index-table {
+    --e-index-pad: var(--e-space-4);
   }
   e-index-table > e-search-field {
     flex-basis: 100%;
   }
+  /* Two fifths of the line at least, beside Add filter and the kit's 44 px Select, so the chips after
+     them start the next line. */
+  e-index-table > e-search-field:has(+ e-button) {
+    flex: 1 1 0;
+    min-width: 40%;
+  }
+  /* Until the script builds Select, for rows with checkboxes and a bulk bar, its 44 px square and gap
+     are kept free after the search or its Add filter, so the search does not narrow when it comes. */
+  e-index-table:has(> [slot='bulk']):has(> e-table > e-row:not([head]) e-checkbox):not(:has(> e-button[data-select]))
+    > :is(e-search-field:not(:has(+ e-button)), e-search-field + e-button) {
+    margin-inline-end: calc(var(--e-size-control-lg) + var(--e-space-2));
+  }
+  /* A toolbar button with an icon, as Add filter, shows only its icon, a 44 px square, so Add filter and
+     Select fit the search's line; its words stay for a screen reader. */
+  e-index-table > e-button:has(e-icon):not([icon]) {
+    --e-button-pad: 0;
+    aspect-ratio: 1;
+    gap: 0;
+    font-size: 0;
+  }
+  e-index-table > [slot='filter'] > button {
+    position: relative;
+    isolation: isolate;
+    height: 46px;
+    margin-block: -7px;
+    background: none;
+  }
+  e-index-table > [slot='filter'] > button::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 0 -16px;
+  }
+  /* The drawn mark stays 28 px: its hover and focus show on a box behind the icon. */
+  e-index-table > [slot='filter'] > button::before {
+    content: '';
+    position: absolute;
+    inset: 9px 0;
+    z-index: -1;
+    border-radius: calc(var(--e-radius-1) - 3px);
+  }
+  e-index-table > [slot='filter'] > button:hover {
+    background: none;
+  }
+  e-index-table > [slot='filter'] > button:hover::before {
+    background: var(--e-color-line);
+  }
+  /* A toolbar at the card's foot, with no table or pager under it, keeps 12 px under it, room for
+     the remove button's target. */
+  e-index-table:not(:has(> e-table, > e-empty-state, > e-pagination)) {
+    padding-bottom: var(--e-space-3);
+  }
 }
 
-/* Below 600 px each row is a card, as e-list draws one. A cell's card attribute places it: title and
-   status lead the first line and aside ends it, body and end make the second, and meta the third. A
-   cell with no card attribute stays out of the card, the head row goes, and a checkbox cell stands at
-   the start. The order's link covers the whole card, so a tap anywhere opens it, and the checkbox sits
-   above it. */
+/* Below 600 px each row is a flat line of the list, as the Orders phone board draws it. A cell's card
+   attribute places it: title and end make the first line at 15/600, body and status the second, meta
+   and aside the third, the end column hugging the right edge. A cell with no card attribute stays off
+   the line and the head row goes. The order's link covers the whole row, so a tap anywhere opens it. */
 @media (max-width: 599.98px) {
   e-index-table > e-table {
     display: flex;
     flex-direction: column;
-    gap: var(--e-space-2);
-    flex-basis: 100%;
-    margin: var(--e-space-1) 0 0;
+    gap: 0;
     overflow: visible;
-    border: 0;
     background: none;
   }
   e-index-table > e-table > e-row[head] {
@@ -163,23 +242,25 @@ e-index-table > [slot='filter'] > button:focus-visible {
   e-index-table > e-table > e-row {
     position: relative;
     display: grid;
-    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
-      'check title status aside'
-      'check body body end'
-      'check meta meta meta';
+      'title end'
+      'body status'
+      'meta aside';
     align-items: center;
-    column-gap: var(--e-space-2);
+    row-gap: 2px;
+    column-gap: var(--e-space-3);
     box-sizing: border-box;
     min-width: 0;
     min-height: var(--e-size-control-lg);
     padding: var(--e-space-3) var(--e-space-4);
-    border: 1px solid var(--e-color-line);
-    border-radius: var(--e-radius-2);
+    border: 0;
+    border-bottom: 1px solid var(--e-color-line);
+    border-radius: 0;
     background: var(--e-color-surface);
   }
-  e-index-table > e-table > e-row:has(> * > e-checkbox) {
-    padding-left: var(--e-space-1);
+  e-index-table > e-table > e-row:last-child {
+    border-bottom: 0;
   }
   e-index-table > e-table > e-row > * {
     display: none;
@@ -190,37 +271,37 @@ e-index-table > [slot='filter'] > button:focus-visible {
     white-space: normal;
     overflow-wrap: anywhere;
   }
-  e-index-table > e-table > e-row > :has(> e-checkbox) {
-    z-index: 1;
-    display: flex;
-    grid-area: check;
-  }
   e-index-table > e-table > e-row > [card='title'] {
     display: flex;
     grid-area: title;
+    font-size: 15px;
     font-weight: var(--e-font-weight-semibold);
     white-space: nowrap;
   }
   e-index-table > e-table > e-row > [card='status'] {
     display: flex;
     grid-area: status;
+    justify-content: flex-end;
   }
   e-index-table > e-table > e-row > [card='aside'] {
     display: flex;
     grid-area: aside;
     justify-content: flex-end;
-    color: var(--e-color-fg2);
+    color: var(--e-color-fg3);
     font-size: var(--e-font-size-meta);
     white-space: nowrap;
   }
   e-index-table > e-table > e-row > [card='body'] {
     display: flex;
     grid-area: body;
+    color: var(--e-color-fg2);
+    font-size: var(--e-font-size-body);
   }
   e-index-table > e-table > e-row > [card='end'] {
     display: flex;
     grid-area: end;
     justify-content: flex-end;
+    font-size: 15px;
     font-weight: var(--e-font-weight-semibold);
     white-space: nowrap;
   }
@@ -242,13 +323,104 @@ e-index-table > [slot='filter'] > button:focus-visible {
   }
   e-index-table > e-table > e-row:has([card='title'] a:focus-visible) {
     outline: 2px solid var(--e-color-focus);
-    outline-offset: 2px;
+    outline-offset: -2px;
   }
   e-index-table > e-table > e-row[selected] {
-    border-color: var(--e-color-accent);
     background: var(--e-color-accent-soft);
   }
   e-index-table > e-table > e-row[selected] > * {
     background: none;
+  }
+  /* A figures cell, as an Inventory row's on hand, committed, available and incoming, takes a fourth
+     line across the row: a dl of four label and value pairs in one row, each value under its label,
+     with no boxes. Only a row that holds one gets the line, so other rows add no gap. */
+  e-index-table > e-table > e-row:has(> [card='figures']) {
+    grid-template-areas:
+      'title end'
+      'body status'
+      'meta aside'
+      'figures figures';
+  }
+  e-index-table > e-table > e-row > [card='figures'] {
+    display: block;
+    grid-area: figures;
+    margin-top: var(--e-space-1);
+  }
+  e-index-table > e-table > e-row > [card='figures'] > dl {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--e-space-2);
+    margin: 0;
+  }
+  e-index-table > e-table > e-row > [card='figures'] dt {
+    color: var(--e-color-fg2);
+    font-size: var(--e-font-size-meta);
+    line-height: var(--e-line-height-meta);
+  }
+  e-index-table > e-table > e-row > [card='figures'] dd {
+    margin: 0;
+    font-weight: 550;
+    font-variant-numeric: tabular-nums;
+  }
+}
+/* From 600 px the table shows those numbers in its own columns. */
+@media (min-width: 600px) {
+  e-index-table > e-table > e-row > [card='figures'] {
+    display: none;
+  }
+}
+
+/* Select mode. The script builds a Select button into the toolbar, and a select-all checkbox and a
+   Done button into the bulk bar; from 600 px they stay hidden, as the checkboxes always show there. */
+e-index-table > [data-select],
+e-index-table > [slot='bulk'] > [data-select-all],
+e-index-table > [slot='bulk'] > [data-done] {
+  display: none;
+}
+/* Below 600 px Select shows once the rows hold checkboxes. In select mode the bulk bar takes the
+   toolbar's place even with no row ticked: select-all, the count, the app's actions, then Done at the
+   end. Every row's checkbox shows in a column at the row's start, its lines keeping their places. */
+@media (max-width: 599.98px) {
+  e-index-table:has(> e-table > e-row > * > e-checkbox) > [data-select] {
+    display: inline-flex;
+  }
+  e-index-table[select-mode] > :not(e-tabs, e-table, e-empty-state, e-pagination, [slot='bulk']) {
+    display: none;
+  }
+  e-index-table[select-mode] > [slot='bulk'] {
+    display: flex;
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--e-space-2);
+    min-height: var(--e-size-control-lg);
+  }
+  e-index-table[select-mode] > [slot='bulk'] > [data-select-all],
+  e-index-table[select-mode] > [slot='bulk'] > [data-done] {
+    display: inline-flex;
+  }
+  e-index-table > [slot='bulk'] > [data-done] {
+    margin-left: auto;
+  }
+  e-index-table[select-mode] > e-table > e-row {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      'check title end'
+      'check body status'
+      'check meta aside';
+    padding-left: var(--e-space-1);
+  }
+  e-index-table[select-mode] > e-table > e-row:has(> [card='figures']) {
+    grid-template-areas:
+      'check title end'
+      'check body status'
+      'check meta aside'
+      'check figures figures';
+  }
+  /* Above the link's cover, so a tap on the box ticks it rather than opening the order. */
+  e-index-table[select-mode] > e-table > e-row > :has(> e-checkbox) {
+    z-index: 1;
+    display: flex;
+    grid-area: check;
   }
 }

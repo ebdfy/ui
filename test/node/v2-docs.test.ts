@@ -33,7 +33,7 @@ const unstyled = (page: Page) =>
       .map(({ name, display, height }) => `${name}: ${display}, ${height} px tall`),
   )
 
-test('the sidebar lists the 45 components in the spec’s groups, the current one marked', async () => {
+test('the sidebar lists the 53 components in the spec’s groups, the current one marked', async () => {
   expect(v2Groups.map((group) => group.name)).toEqual([
     'Actions',
     'Layout',
@@ -45,7 +45,7 @@ test('the sidebar lists the 45 components in the spec’s groups, the current on
     'Bangladesh',
   ])
   const all = v2Groups.flatMap((group) => group.pages)
-  expect(all).toHaveLength(45)
+  expect(all).toHaveLength(53)
   expect(all.map((page) => page.title)).toEqual(
     expect.arrayContaining(['Index table', 'Metrics', 'Settings section', 'Setup guide', 'Modal', 'Table']),
   )
@@ -134,5 +134,34 @@ test('the overview lists every group and every component', async () => {
   const { page } = await pages.open(`${pages.ui}/`, 360)
   const main = page.locator('main')
   for (const group of v2Groups) expect(await main.getByRole('heading', { name: group.name }).count()).toBe(1)
-  expect(await main.getByRole('link').count()).toBe(45)
+  expect(await main.getByRole('link').count()).toBe(v2Groups.flatMap((group) => group.pages).length)
+})
+
+// The docs page's own heading styles stay out of the examples, so a heading the script builds sits
+// where the CSS drew it.
+test('an example whose heading the script builds does not move when v2.js runs', async () => {
+  const read = (page: Page) =>
+    page.evaluate(() =>
+      [...document.querySelectorAll('.example e-empty-state, .example e-card[heading]')].map((tag) =>
+        Math.round(tag.getBoundingClientRect().height),
+      ),
+    )
+  for (const path of ['/components/empty-state', '/components/card']) {
+    // Each page holds v2.js back until the first read, so that read sees the CSS alone.
+    const { page } = await pages.open('', 1440)
+    let release = () => {}
+    const held = new Promise<void>((done) => (release = done))
+    await page.route(/\/ui\/v2\.js/, async (route) => {
+      await held
+      await route.continue()
+    })
+    const loaded = page.goto(`${pages.ui}${path}`)
+    await page.waitForSelector('.example')
+    const before = await read(page)
+    expect(before.length).toBeGreaterThan(0)
+    release()
+    await loaded
+    await page.waitForFunction(() => customElements.get('e-empty-state') && customElements.get('e-card'))
+    expect(await read(page), path).toEqual(before)
+  }
 })

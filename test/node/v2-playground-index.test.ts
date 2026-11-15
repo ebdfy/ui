@@ -24,6 +24,8 @@ const words = {
     add: 'Add filter',
     sort: 'Sort',
     tick: (n: number) => `Select #${n}`,
+    select: 'Select',
+    done: 'Done',
     selected: '2 selected',
     bulk: ['Confirm', 'Book courier', 'Print labels'],
     none: 'No orders match',
@@ -38,6 +40,8 @@ const words = {
     add: 'ফিল্টার যোগ করুন',
     sort: 'সাজান',
     tick: (n: number) => `অর্ডার #${n} নির্বাচন করুন`,
+    select: 'নির্বাচন করুন',
+    done: 'শেষ',
     selected: '২টি নির্বাচিত',
     bulk: ['কনফার্ম করুন', 'কুরিয়ার বুক করুন', 'লেবেল প্রিন্ট করুন'],
     none: 'কোনো অর্ডার মেলেনি',
@@ -94,20 +98,22 @@ test.for(['en', 'bn'] as const)('in %s at 1440 px the orders page shows the Show
 })
 
 test.for(['en', 'bn'] as const)(
-  'in %s at 360 px the rows are cards with checkboxes, and a card opens its order',
+  'in %s at 360 px the rows are flat lines, Select shows their checkboxes, and a row opens its order',
   async (lang) => {
     const t = words[lang]
     const { page, app } = await playground(lang, 360)
     const first = rows(app).first()
     expect(await first.evaluate((row) => getComputedStyle(row).display)).toBe('grid')
-    // A person ticks two cards by tapping their checkboxes, and the bulk actions show.
+    // A person taps Select, then ticks two rows by tapping their checkboxes, and the bulk actions show.
+    await app.getByRole('button', { name: t.select, exact: true }).tap()
     await app.getByRole('checkbox', { name: t.tick(1042) }).tap()
     await app.getByRole('checkbox', { name: t.tick(1041) }).tap()
     await expect.poll(() => app.getByRole('status').textContent()).toBe(t.selected)
     for (const name of t.bulk) expect(await app.getByRole('button', { name, exact: true }).isVisible()).toBe(true)
     for (const n of [1042, 1041]) await app.getByRole('checkbox', { name: t.tick(n) }).tap()
+    await app.getByRole('button', { name: t.done, exact: true }).tap()
 
-    // A tap on the card, away from its number, opens the order inside the Admin with the store kept.
+    // Out of select mode, a tap on the row, away from its number, opens the order inside the Admin with the store kept.
     const box = (await first.boundingBox())!
     await first.tap({ position: { x: box.width / 2, y: box.height - 14 } })
     await page.waitForURL(/\/playground\/orders\/1042$/)

@@ -101,7 +101,8 @@ test('at 360 px a button at the end of the title bar opens the nav under it, and
 
 test("in Bangla the app's nav reads its Bangla labels", async () => {
   const page = await playground()
-  await page.getByRole('button', { name: 'বাংলা' }).click()
+  await page.getByRole('button', { name: 'Rafiq Ahmed' }).click()
+  await page.locator('#e-user').getByRole('button', { name: 'বাংলা' }).click()
   await expect.poll(() => appNav(page).getByRole('link').allTextContents()).toEqual(['হোম', 'অর্ডার', 'অর্ডার সেটিংস'])
 })
 

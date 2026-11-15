@@ -1,5 +1,5 @@
-// First frame: with v2.js and v2-host.js blocked, every e-* tag on the Button page and the playground
-// orders list is drawn by v2.css alone, and when the scripts then run no tag moves by more than 1 px.
+// First frame: with v2.js and v2-host.js blocked, every e-* tag on the Button page, the playground
+// orders list and Settings > Store is drawn by v2.css alone, and when the scripts then run no tag moves by more than 1 px.
 import { chromium, type Browser, type Frame, type Page } from 'playwright'
 import { afterAll, beforeAll, expect, test } from 'vitest'
 
@@ -133,6 +133,10 @@ const pagesToCheck = [
   { what: 'the Button page', path: '/components/button', lang: 'en' },
   { what: 'the playground orders list, en', path: '/playground', lang: 'en' },
   { what: 'the playground orders list, bn', path: '/playground', lang: 'bn' },
+  { what: 'Settings > Store, en', path: '/playground/settings/store', lang: 'en' },
+  { what: 'Settings > Store, bn', path: '/playground/settings/store', lang: 'bn' },
+  { what: 'order #1042, en', path: '/playground/orders/1042', lang: 'en' },
+  { what: 'order #1042, bn', path: '/playground/orders/1042', lang: 'bn' },
 ]
 
 test.for(pagesToCheck)('$what draws every e-* tag before the scripts and moves none after', async ({ path, lang }) => {

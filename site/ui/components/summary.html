@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Summary · ebdfy design system v2</title>
+  </head>
+  <body>
+    <main>
+      <h1>Summary</h1>
+      <p class="lede">
+        <code>e-summary</code> lists a label and a value on each <code>e-summary-row</code>, such as an order's payment,
+        with the value at the row's end. A child between them, such as an item count, reads quieter.
+        <code>total</code> marks the total row, and <code>e-due</code> says what is still owed in a <code>tone</code>.
+      </p>
+      <docs-example caption="An order's payment" stack>
+        <e-summary>
+          <e-summary-row><span>Subtotal</span><span>2 items</span><span>৳1,810</span></e-summary-row>
+          <e-summary-row><span>Delivery</span><span>৳120</span></e-summary-row>
+          <e-summary-row total><span>Total</span><span>৳1,930</span></e-summary-row>
+          <e-due tone="warning">To collect ৳1,930 on delivery</e-due>
+        </e-summary>
+      </docs-example>
+      <docs-example caption="Paid, and overdue" stack>
+        <e-due tone="success">Paid ৳4,780 by card</e-due>
+        <e-due tone="critical">৳990 overdue since 3 Nov</e-due>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-summary>
+          <e-summary-row><span>সাবটোটাল</span><span>২টি পণ্য</span><span>৳১,৮১০</span></e-summary-row>
+          <e-summary-row><span>ডেলিভারি</span><span>৳১২০</span></e-summary-row>
+          <e-summary-row total><span>মোট</span><span>৳১,৯৩০</span></e-summary-row>
+          <e-due tone="warning">ডেলিভারিতে ৳১,৯৩০ নিতে হবে</e-due>
+        </e-summary>
+      </docs-example>
+    </main>
+  </body>
+</html>

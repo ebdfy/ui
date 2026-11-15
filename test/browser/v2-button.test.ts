@@ -5,6 +5,7 @@ import { page, userEvent } from 'vitest/browser'
 
 import '../../src/v2.css'
 import { defineButton } from '../../src/v2/button.ts'
+import { contrast, inDark } from './colour.ts'
 
 afterEach(() => {
   document.body.replaceChildren()
@@ -57,14 +58,14 @@ test('the script builds exactly one native button, found by role and name, witho
   expect(tags[0]!.querySelectorAll('button')).toHaveLength(1)
 })
 
-test('from 600 px sizes are 28, 36 and 44 px tall, and on a phone every one is a 44 px target', async () => {
+test('from 600 px sizes are 28, 32 and 40 px tall, and on a phone every one is a 44 px target', async () => {
   const holder = mount('<e-button size="sm">A</e-button><e-button>B</e-button><e-button size="lg">C</e-button>')
   defineButton()
   const heights = () => [...holder.querySelectorAll('e-button')].map((tag) => tag.getBoundingClientRect().height)
   expect(heights()).toEqual([44, 44, 44])
   await page.viewport(600, 800)
   try {
-    expect(heights()).toEqual([28, 36, 44])
+    expect(heights()).toEqual([28, 32, 40])
   } finally {
     await page.viewport(360, 800)
   }
@@ -124,6 +125,54 @@ test('an icon button is named by its aria-label, which follows a new one', async
   await expect.element(page.getByRole('button', { name: 'Add view' })).toBeInTheDocument()
   document.querySelector('e-button')!.setAttribute('aria-label', 'ভিউ যোগ করুন')
   await expect.element(page.getByRole('button', { name: 'ভিউ যোগ করুন' })).toBeInTheDocument()
+})
+
+const token = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+
+test('the default button is 32 px with a lift shadow at 1440 px, and 44 px at 360 px', async () => {
+  const tag = mount('<e-button>Export</e-button>').firstElementChild!
+  defineButton()
+  expect(tag.getBoundingClientRect().height).toBe(44)
+  await page.viewport(1440, 900)
+  try {
+    expect(tag.getBoundingClientRect().height).toBe(32)
+    expect(getComputedStyle(tag).boxShadow).not.toBe('none')
+  } finally {
+    await page.viewport(360, 800)
+  }
+})
+
+test('a danger button is red text on the surface, and with fill a solid red whose text holds 4.5:1 in both themes', async () => {
+  const holder = mount('<e-button tone="danger">Delete</e-button><e-button tone="danger" fill>Delete order</e-button>')
+  defineButton()
+  const [plain, filled] = [...holder.querySelectorAll('e-button')] as [Element, Element]
+  expect(getComputedStyle(plain).color).toBe(token('--e-color-danger'))
+  expect(getComputedStyle(plain).backgroundColor).toBe(token('--e-color-surface'))
+  const read = () => {
+    const style = getComputedStyle(filled)
+    return { background: style.backgroundColor, color: style.color, danger: token('--e-color-danger') }
+  }
+  const light = read()
+  const dark = await inDark(async () => read())
+  for (const theme of [light, dark]) {
+    expect(theme.background).toBe(theme.danger)
+    expect(contrast(theme.color, theme.background)).toBeGreaterThanOrEqual(4.5)
+  }
+  expect(dark.danger).not.toBe(light.danger)
+})
+
+test('an icon button is square, 32 px at 1440 px and 44 px at 360 px, and named by its aria-label', async () => {
+  const tag = mount('<e-button icon aria-label="Print"><e-icon name="truck"></e-icon></e-button>').firstElementChild!
+  defineButton()
+  const size = () => [tag.getBoundingClientRect().width, tag.getBoundingClientRect().height]
+  expect(size()).toEqual([44, 44])
+  await expect.element(page.getByRole('button', { name: 'Print' })).toBeInTheDocument()
+  await page.viewport(1440, 900)
+  try {
+    expect(size()).toEqual([32, 32])
+  } finally {
+    await page.viewport(360, 800)
+  }
 })
 
 test('a hidden button takes no room', () => {

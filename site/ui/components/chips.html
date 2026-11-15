@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Chips · ebdfy design system v2</title>
+  </head>
+  <body>
+    <main>
+      <h1>Chips</h1>
+      <p class="lede">
+        <code>e-chips</code> shows tags or collections as a row of <code>e-chip</code>s that wraps. A
+        <code>removable</code> chip gets a × that removes it and fires <code>e-remove</code>. Inside a form, a
+        <code>name</code> gives the row one field holding the chips' values joined by commas, so the save bar counts a
+        removed chip, and Discard brings it back.
+      </p>
+      <docs-example caption="A customer's tags">
+        <e-chips label="Tags">
+          <e-chip value="facebook">Facebook</e-chip>
+          <e-chip value="repeat">Repeat customer</e-chip>
+          <e-chip value="dhaka">Dhaka</e-chip>
+        </e-chips>
+      </docs-example>
+      <docs-example caption="Removable tags in a form">
+        <form data-save-bar>
+          <e-chips name="tags" label="Tags">
+            <e-chip value="facebook" removable>Facebook</e-chip>
+            <e-chip value="repeat" removable>Repeat customer</e-chip>
+            <e-chip value="cod" removable>Cash on delivery</e-chip>
+          </e-chips>
+        </form>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-chips label="ট্যাগ">
+          <e-chip value="facebook" removable>ফেসবুক</e-chip>
+          <e-chip value="repeat" removable>নিয়মিত ক্রেতা</e-chip>
+        </e-chips>
+      </docs-example>
+    </main>
+  </body>
+</html>

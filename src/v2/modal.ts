@@ -32,6 +32,7 @@ function label(made: HTMLElement, text: string): void {
  * @tag e-modal
  * @attr heading - The title in the header.
  * @attr {'small' | 'large'} size - A narrower or wider dialog; none for medium. On a phone every size is a sheet at the bottom.
+ * @attr {'420' | '560' | '720'} width - The dialog's width in px: 420 for a question, 560 for a short form, 720 for a table. It wins over size.
  * @fires e-modal-open - After the modal opens. Bubbles; detail is empty.
  * @fires e-modal-close - After the modal closes, by whatever way. Bubbles; detail is empty.
  * @slot - The modal's content.

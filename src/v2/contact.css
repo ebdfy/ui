@@ -1,0 +1,59 @@
+/* e-contact: a way to reach a person in one row: an optional icon, the link (tel: or mailto:), and
+   the copy button the script adds at the row's end. The row has the button's height from the first
+   frame, so adding it moves nothing. */
+e-contact {
+  display: flex;
+  align-items: center;
+  gap: var(--e-space-2);
+  min-width: 0;
+  min-height: var(--e-size-control-sm);
+  color: var(--e-color-fg);
+}
+e-contact > e-icon {
+  color: var(--e-color-fg2);
+}
+e-contact > a {
+  min-width: 0;
+  color: inherit;
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+e-contact > a:hover {
+  text-decoration: underline;
+}
+e-contact > a:focus-visible,
+e-contact > button:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+  border-radius: var(--e-radius-0);
+}
+e-contact > button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--e-size-control-sm);
+  height: var(--e-size-control-sm);
+  margin: 0 0 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--e-radius-1);
+  background: none;
+  color: var(--e-color-fg2);
+  cursor: pointer;
+}
+e-contact > button:hover {
+  background: var(--e-color-surface-2);
+  color: var(--e-color-fg);
+}
+/* On a phone the row and its button are a 44 px target. */
+@media (max-width: 599.98px) {
+  e-contact {
+    min-height: var(--e-size-control-lg);
+  }
+  e-contact > button {
+    width: var(--e-size-control-lg);
+    height: var(--e-size-control-lg);
+  }
+}

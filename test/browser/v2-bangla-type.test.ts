@@ -9,7 +9,9 @@ import { defineButtonGroup } from '../../src/v2/button-group.ts'
 import { defineButton } from '../../src/v2/button.ts'
 import { defineCard } from '../../src/v2/card.ts'
 import { defineCheckbox } from '../../src/v2/checkbox.ts'
+import { defineChips } from '../../src/v2/chips.ts'
 import { defineChoiceList } from '../../src/v2/choice-list.ts'
+import { defineContact } from '../../src/v2/contact.ts'
 import { defineCourierStatus } from '../../src/v2/courier-status.ts'
 import { defineDistrictPicker } from '../../src/v2/district-picker.ts'
 import { defineEmptyState } from '../../src/v2/empty-state.ts'
@@ -17,6 +19,7 @@ import { defineFields } from '../../src/v2/field.ts'
 import { defineIndexTable } from '../../src/v2/index-table.ts'
 import { defineKbd } from '../../src/v2/kbd.ts'
 import { defineMenu } from '../../src/v2/menu.ts'
+import { defineMeter } from '../../src/v2/meter.ts'
 import { defineModal } from '../../src/v2/modal.ts'
 import { definePage } from '../../src/v2/page.ts'
 import { definePagination } from '../../src/v2/pagination.ts'
@@ -31,6 +34,7 @@ import { defineTable } from '../../src/v2/table.ts'
 import { defineTabs } from '../../src/v2/tabs.ts'
 import { defineTakaField } from '../../src/v2/taka-field.ts'
 import { defineText } from '../../src/v2/text.ts'
+import { defineThumbnail } from '../../src/v2/thumbnail.ts'
 import { defineTooltip } from '../../src/v2/tooltip.ts'
 
 const parts = `<div lang="bn">
@@ -44,6 +48,7 @@ const parts = `<div lang="bn">
       <e-table label="অর্ডার"><e-row head><span>অর্ডার</span><span>মোট</span></e-row><e-row><span>#1042</span><span><e-badge tone="new">নতুন</e-badge></span><span align="end">৳১,৯৩০</span></e-row></e-table>
       <e-tabs label="অর্ডারের ভিউ"><e-tab value="all" count="১২০" selected>সব</e-tab><e-tab value="new" count="১২">নতুন</e-tab></e-tabs>
       <e-metrics><div><span slot="label">আজকের অর্ডার</span> <strong>৩৮</strong> <span slot="change" tone="up">+১২%</span></div><div><span slot="label">কনফার্ম বাকি</span> <strong>১২</strong></div></e-metrics>
+      <e-todo><a href="/orders"><strong>১২</strong> কনফার্ম বাকি</a><a href="/orders"><strong>১৮</strong> পাঠানো বাকি</a></e-todo>
       <e-pagination label="১–১০, মোট ১২০" has-next></e-pagination>
       <e-empty-state heading="কোনো অর্ডার মেলেনি"><p>অন্য শব্দে খুঁজুন</p></e-empty-state>
       <e-avatar name="রহিমা আক্তার"></e-avatar>
@@ -74,6 +79,13 @@ const parts = `<div lang="bn">
       <e-banner tone="critical" heading="পেমেন্ট হয়নি">বিকাশ নম্বর দেখে আবার চেষ্টা করুন</e-banner>
       <e-bottom-bar><e-button>সংরক্ষণ করুন</e-button></e-bottom-bar>
       <e-progress-bar label="ছবি আপলোড হচ্ছে" value="40"></e-progress-bar>
+      <e-summary><e-summary-row><span>সাবটোটাল</span><span>২টি পণ্য</span><span>৳১,৮১০</span></e-summary-row><e-summary-row total><span>মোট</span><span>৳১,৯৩০</span></e-summary-row><e-due tone="warning">ডেলিভারিতে ৳১,৯৩০ নিতে হবে</e-due></e-summary>
+      <e-line-item><e-thumbnail></e-thumbnail><span slot="title">জামদানি শাড়ি, হাতে বোনা</span><span slot="meta">লাল · ফ্রি সাইজ</span><span slot="price">১ × ৳১,৪৫০</span><span slot="amount">৳১,৪৫০</span></e-line-item>
+      <e-person><e-avatar name="রহিমা আক্তার" size="24"></e-avatar><a href="#">রহিমা আক্তার</a><span slot="meta">৪টি অর্ডার · ৳৯,৮৪০ খরচ</span></e-person>
+      <e-contact><e-icon name="phone"></e-icon><a href="tel:01707071042">01707-071042</a></e-contact>
+      <e-meter value="92" label="ডেলিভারি হয়েছে"></e-meter>
+      <e-chips name="tags" label="ট্যাগ"><e-chip value="facebook" removable>ফেসবুক</e-chip><e-chip value="repeat">পুরোনো গ্রাহক</e-chip></e-chips>
+      <e-timeline><e-timeline-day>আজ</e-timeline-day><e-timeline-item kind="comment"><strong slot="actor">রফিক আহমেদ</strong><time slot="time">সকাল ১১:৩১</time><p slot="body">ফোন করেছি, পরে কনফার্ম করবেন</p></e-timeline-item><e-timeline-item><strong slot="actor">রহিমা আক্তার</strong> ফেসবুক থেকে অর্ডার করেছেন <time slot="time">সকাল ১১:২৪</time></e-timeline-item></e-timeline>
     </e-card>
   </e-page>
 </div>`
@@ -114,6 +126,10 @@ function build(): void {
   definePagination()
   defineEmptyState()
   defineAvatar()
+  defineThumbnail()
+  defineContact()
+  defineChips()
+  defineMeter()
   defineCheckbox()
   defineSelect()
   defineFields()
@@ -146,7 +162,7 @@ test('after the script, every Bangla line is at least 13 px and 1.4 times its si
 
 // A tag draws words in ::before or ::after only until the script builds the element that shows them,
 // so a rule that hides a drawn word must outrank every rule that draws it, :lang(bn) ones included.
-// What a tag still draws once built is its own: a tab's count and an avatar's initials.
+// What a tag still draws once built is its own: a tab's count, an avatar's initials and a thumbnail's letter.
 test('once built, no tag still draws words in ::before or ::after, in Bangla or English', () => {
   for (const lang of ['bn', 'en']) {
     document.body.innerHTML = parts.replace('<div lang="bn">', `<div lang="${lang}">`)
@@ -157,6 +173,6 @@ test('once built, no tag still draws words in ::before or ::after, in Bangla or 
         if (/^".*[\p{L}\p{N}].*"$/u.test(getComputedStyle(tag, pseudo).content)) drawn.push(`${tag.localName}${pseudo}`)
       }
     }
-    expect([lang, ...new Set(drawn)]).toEqual([lang, 'e-tab::after', 'e-avatar::before'])
+    expect([lang, ...new Set(drawn)]).toEqual([lang, 'e-tab::after', 'e-avatar::before', 'e-thumbnail::before'])
   }
 })

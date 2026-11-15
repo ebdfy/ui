@@ -18,14 +18,14 @@ const boxes = () =>
   })
 
 test.for([360, 1280])(
-  'at %i px with v2.js blocked the primary button is 44 px on a phone, 36 px wider, with its fill, and the script moves no button',
+  'at %i px with v2.js blocked the primary button is 44 px on a phone, 32 px wider, with its fill, and the script moves no button',
   async (width) => {
     const { page, errors } = await pages.open('', width)
     await page.route('**/ui/v2.js', (route) => route.abort())
     await page.goto(`${pages.ui}/components/button`)
     await page.evaluate(() => document.fonts.ready)
     const primary = page.locator('e-button[tone="primary"]').first()
-    expect((await primary.boundingBox())?.height).toBe(width < 600 ? 44 : 36)
+    expect((await primary.boundingBox())?.height).toBe(width < 600 ? 44 : 32)
     // Midnight's light primary, the navy fill.
     expect(await primary.evaluate((tag) => getComputedStyle(tag).backgroundColor)).toBe('oklch(0.25 0.04 262)')
     expect(await page.locator('e-button button').count()).toBe(0)

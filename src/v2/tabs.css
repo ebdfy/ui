@@ -13,14 +13,18 @@ e-tabs {
 e-tabs::-webkit-scrollbar {
   display: none;
 }
+/* The script sets overflowing while there is more row to scroll to, and the last 24 px fade out. */
+e-tabs[overflowing] {
+  mask-image: linear-gradient(to right, black calc(100% - 24px), transparent);
+}
 e-tab {
   display: inline-flex;
   flex: none;
   align-items: center;
   gap: 6px;
   box-sizing: border-box;
-  height: var(--e-size-control-md);
-  padding: 0 var(--e-space-3);
+  height: var(--e-size-control-lg);
+  padding: 0 10px;
   border-bottom: 2px solid transparent;
   color: var(--e-color-fg2);
   font-size: var(--e-font-size-body);
@@ -34,16 +38,36 @@ e-tab:hover {
   color: var(--e-color-fg);
 }
 e-tab[selected] {
-  border-bottom-color: var(--e-color-primary);
+  border-bottom-color: var(--e-color-fg);
   color: var(--e-color-fg);
+  font-weight: var(--e-font-weight-semibold);
 }
+/* An unselected count is a plain figure; the selected one is a solid pill. */
 e-tab[count]::after {
   content: attr(count);
+  color: var(--e-color-fg3);
+  font-size: 13px;
+  font-weight: var(--e-font-weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+e-tab[selected][count]::after {
+  box-sizing: border-box;
+  min-inline-size: 20px;
   padding: 0 6px;
   border-radius: var(--e-radius-pill);
-  background: var(--e-color-surface-2);
-  font-size: var(--e-font-size-meta);
-  font-weight: var(--e-font-weight-semibold);
+  background: var(--e-color-fg);
+  color: var(--e-color-surface);
+  font-size: var(--e-font-size-caption);
+  line-height: 20px;
+  text-align: center;
+}
+@media (prefers-reduced-motion: no-preference) {
+  e-tab,
+  e-tab[count]::after {
+    transition:
+      color var(--e-time-1) var(--e-ease),
+      background-color var(--e-time-1) var(--e-ease);
+  }
 }
 /* The ring sits inside the tab, because e-tabs clips whatever stands outside its box. */
 e-tab:focus-visible {
@@ -52,10 +76,4 @@ e-tab:focus-visible {
 }
 e-tabs > :not(e-tab) {
   flex: none;
-}
-
-@media (max-width: 599.98px) {
-  e-tab {
-    height: var(--e-size-control-lg);
-  }
 }

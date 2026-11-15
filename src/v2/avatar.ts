@@ -6,6 +6,8 @@
  * A 32 px circle for a person. It draws the first letter of the first and the last word of `name`; an
  * `img` inside covers the initials.
  * @tag e-avatar
+ * @attr {'24'} size - A 24 px circle. Without it the circle is 32 px.
+ * @attr {'lime'} tone - Lime, for the person signed in.
  * @attr name - The person's name. It sets the initials and names the avatar for assistive tech.
  * @attr initials - The letters drawn. The script writes them from `name`; set it only for letters a name does not give.
  * @slot - An optional `img` of the person.

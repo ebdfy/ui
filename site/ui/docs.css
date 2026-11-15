@@ -184,12 +184,13 @@ main {
     padding: var(--e-space-6) var(--e-space-6);
   }
 }
-main h1 {
+/* The page's own headings; a heading inside an example is the kit's to draw. */
+main h1:not(.example *) {
   margin: 0;
   font-size: var(--e-font-size-heading);
   line-height: var(--e-line-height-heading);
 }
-main h2 {
+main h2:not(.example *) {
   margin: var(--e-space-3) 0 0;
   font-size: var(--e-font-size-title);
   line-height: var(--e-line-height-body);

@@ -1,5 +1,5 @@
-/* e-spinner: a 20 px ring that turns while something loads. It keeps turning with reduced motion
-   asked for, as a still ring would say nothing; the script names it for a screen reader. */
+/* e-spinner: a 20 px ring that turns while something loads. With less motion asked for it stands
+   still, its accent arc still drawn, and the script names it Loading for a screen reader. */
 e-spinner {
   display: inline-block;
   box-sizing: border-box;
@@ -9,7 +9,11 @@ e-spinner {
   border: 2px solid var(--e-color-line);
   border-top-color: var(--e-color-accent);
   border-radius: 50%;
-  animation: e-turn 1s linear infinite;
+}
+@media (prefers-reduced-motion: no-preference) {
+  e-spinner {
+    animation: e-turn 1s linear infinite;
+  }
 }
 @keyframes e-turn {
   to {

@@ -11,12 +11,17 @@
       <h1>Avatar</h1>
       <p class="lede">
         <code>e-avatar</code> is a 32 px circle for a person. Give it a <code>name</code> and it draws the first letter
-        of the first and last word. An <code>img</code> inside covers the letters.
+        of the first and last word. An <code>img</code> inside covers the letters. <code>size="24"</code> draws a 24 px
+        circle, and <code>tone="lime"</code> marks the person signed in.
       </p>
       <docs-example caption="From a name">
         <e-avatar name="Rahima Akter"></e-avatar>
         <e-avatar name="Tanvir Hasan"></e-avatar>
         <e-avatar name="Nusrat"></e-avatar>
+      </docs-example>
+      <docs-example caption="Small, and the person signed in">
+        <e-avatar name="Rafiq Ahmed" size="24"></e-avatar>
+        <e-avatar name="Rafiq Ahmed" tone="lime"></e-avatar>
       </docs-example>
       <docs-example caption="With a picture">
         <e-avatar name="Rahima Akter"

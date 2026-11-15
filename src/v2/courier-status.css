@@ -10,15 +10,19 @@ e-courier-status {
   align-items: center;
   box-sizing: border-box;
   max-width: 100%;
-  padding: 1px var(--e-space-2);
-  border-radius: calc(var(--e-radius-1) / 2);
+  height: 22px;
+  padding: 0 var(--e-space-2);
+  border-radius: var(--e-radius-badge);
   background: var(--e-badge-bg);
   color: var(--e-badge-fg);
-  font-size: var(--e-font-size-meta);
-  font-weight: var(--e-font-weight-semibold);
-  line-height: 20px;
+  font-size: var(--e-font-size-caption);
+  font-weight: 550;
+  line-height: 16px;
   white-space: nowrap;
   vertical-align: middle;
+}
+e-courier-status:lang(bn) {
+  line-height: 24px;
 }
 e-courier-status:not(:empty)::before {
   content: none;

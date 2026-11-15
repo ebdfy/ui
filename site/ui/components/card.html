@@ -13,6 +13,11 @@
         <code>e-card</code> groups what belongs together on a surface. Give it a <code>heading</code> to title it, and
         put its actions in the header with <code>slot="actions"</code>.
       </p>
+      <p>
+        In a column of an <code>e-page</code>, <code>phone-order="first"</code> puts a card before every card of the
+        main column on a phone, and <code>phone-order="last"</code> after every other card, 16 px apart. From 600 px the
+        card stays in its column.
+      </p>
       <docs-example caption="Without a heading" stack>
         <e-card>
           <e-text>A card without a heading holds text and actions.</e-text>
@@ -33,10 +38,44 @@
           <e-text><span data-en="Pathao, booked today." data-bn="পাঠাও, আজ বুক করা হয়েছে।">Pathao, booked today.</span></e-text>
         </e-card>
       </docs-example>
+      <docs-example caption="flush: a table runs edge to edge" stack>
+        <e-card heading="Orders" flush>
+          <e-table label="Orders">
+            <e-row head>
+              <span>Order</span>
+              <span align="end">Total</span>
+            </e-row>
+            <e-row>
+              <span>#1042</span>
+              <span align="end">৳1,250</span>
+            </e-row>
+            <e-row>
+              <span>#1041</span>
+              <span align="end">৳980</span>
+            </e-row>
+          </e-table>
+        </e-card>
+      </docs-example>
       <docs-example caption="বাংলায়" lang="bn" stack>
         <e-card heading="অর্ডার #১০৪২">
           <e-button slot="actions" tone="plain">সম্পাদনা</e-button>
           <e-text>দুইটি পণ্য, সিলেটে পাঠাতে হবে।</e-text>
+        </e-card>
+        <e-card heading="অর্ডার" flush>
+          <e-table label="অর্ডার">
+            <e-row head>
+              <span>অর্ডার</span>
+              <span align="end">মোট</span>
+            </e-row>
+            <e-row>
+              <span>#১০৪২</span>
+              <span align="end">৳১,২৫০</span>
+            </e-row>
+            <e-row>
+              <span>#১০৪১</span>
+              <span align="end">৳৯৮০</span>
+            </e-row>
+          </e-table>
         </e-card>
       </docs-example>
     </main>

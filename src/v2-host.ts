@@ -3,8 +3,18 @@
 import './floor.ts'
 import type { BridgeMessage, HostMessage, IdTokenAnswer } from './bridge.ts'
 import { answerSeconds, cut, cutTitle, navLabelLimit, toastLimit, toastSeconds, words } from './host-rules.ts'
+import { guardLeaving } from './v2-host-leave.ts'
 import { followPage } from './v2-host-nav.ts'
-import { phoneWidth, type AppModalMessage, type ContextMessage } from './v2/bridge.ts'
+import { rememberBack, swapPanels } from './v2-host-panel.ts'
+import { mountSaveBar, type SaveBar } from './v2-host-save-bar.ts'
+import { followSearch, openSearch } from './v2-host-search.ts'
+import {
+  phoneWidth,
+  type AppModalMessage,
+  type ContextMessage,
+  type SearchClosedMessage,
+  type SearchMessage,
+} from './v2/bridge.ts'
 import { defineButton } from './v2/button.ts'
 import { defineIcon } from './v2/icon.ts'
 
@@ -29,11 +39,12 @@ function relabel(kit: HTMLElement, label: string): void {
   if (inner) inner.textContent = label
 }
 
-function takeMessages(panel: Element, frame: HTMLIFrameElement): void {
+function takeMessages(panel: Element, frame: HTMLIFrameElement, saveBar: SaveBar | null): void {
   const heading = panel.querySelector('header h1')
   // Only the origin the iframe's URL names may hear the chrome's answers.
   const appOrigin = () => new URL(frame.src, location.href).origin
-  const post = (to: Window | null, message: HostMessage | ContextMessage) => to?.postMessage(message, appOrigin())
+  const post = (to: Window | null, message: HostMessage | ContextMessage | SearchClosedMessage) =>
+    to?.postMessage(message, appOrigin())
 
   const bar = document.createElement('div')
   bar.className = 'e-loading-bar'
@@ -205,7 +216,7 @@ function takeMessages(panel: Element, frame: HTMLIFrameElement): void {
 
   // Only the app's own frame, from the origin its URL names, can change the chrome. Every message it
   // sends counts as an answer, even one this chrome does not act on yet.
-  window.addEventListener('message', (event: MessageEvent<BridgeMessage | AppModalMessage>) => {
+  window.addEventListener('message', (event: MessageEvent<BridgeMessage | AppModalMessage | SearchMessage>) => {
     const app = frame.contentWindow
     if (!app || event.source !== app || event.origin !== appOrigin()) return
     answered = true
@@ -216,6 +227,13 @@ function takeMessages(panel: Element, frame: HTMLIFrameElement): void {
     if (data?.type === 'toast') showToast(data.payload, app)
     if (data?.type === 'idToken') void answerToken(app, Number(data.payload?.id))
     if (data?.type === 'appModal') dim(data.payload?.open === true)
+    if (data?.type === 'saveBar')
+      saveBar?.app(data.payload ?? {}, (action) => post(app, { type: 'saveBar', payload: { action } }))
+    if (data?.type === 'search')
+      openSearch(() => {
+        frame.focus()
+        post(app, { type: 'searchClosed' })
+      })
     if (data?.type === 'ready') {
       dim(false)
       ready = true
@@ -230,10 +248,24 @@ function takeMessages(panel: Element, frame: HTMLIFrameElement): void {
   if (!frame.getAttribute('src') && frame.dataset.src) frame.src = frame.dataset.src
 }
 
+// The one save bar, for the panel's own forms and an app's alike, and the guard that asks before
+// leaving an edit.
+const adminFrame = document.querySelector('e-admin-frame')
+const bar = adminFrame ? mountSaveBar(adminFrame) : null
+const guard = adminFrame && bar ? guardLeaving(adminFrame, bar) : undefined
+
 const appPanel = document.querySelector('e-admin-panel')
 const appFrame = appPanel?.querySelector<HTMLIFrameElement>(':scope > iframe')
 // The address and the app's nav listen first, as the chrome loads the app's page once it listens.
 if (appPanel && appFrame) {
   followPage(appPanel, appFrame)
-  takeMessages(appPanel, appFrame)
+  takeMessages(appPanel, appFrame, bar)
+}
+
+// On the Admin's own pages a move to another of them swaps the panel under the frame, and Settings'
+// Back row leads to the page Settings was opened from.
+if (adminFrame) {
+  followSearch(adminFrame)
+  swapPanels(adminFrame, guard)
+  rememberBack(adminFrame)
 }

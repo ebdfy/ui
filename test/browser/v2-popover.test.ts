@@ -46,6 +46,19 @@ test('the script moves nothing, and wires the native button that appears later',
   expect(document.getElementById(more.element().getAttribute('aria-controls')!)?.textContent).toBe('Print the slip')
 })
 
+test('at 1440 px a trigger in the right half end-aligns its panel, and the panel wears the pop shadow', async () => {
+  await page.viewport(1440, 900)
+  mount(
+    `<e-popover label="Order actions"><e-button slot="trigger" style="position: fixed; top: 100px; left: 1260px; width: 80px">More</e-button><e-text>Print the slip</e-text></e-popover><i data-probe style="box-shadow: var(--e-shadow-pop)"></i>`,
+  )
+  await userEvent.click(page.getByRole('button', { name: 'More' }))
+  const panel = document.querySelector('[role="dialog"]')!
+  expect(Math.abs(panel.getBoundingClientRect().right - 1340)).toBeLessThanOrEqual(1)
+  const probe = getComputedStyle(document.querySelector('[data-probe]')!).boxShadow
+  expect(probe).not.toBe('none')
+  expect(getComputedStyle(panel).boxShadow).toBe(probe)
+})
+
 test('the panel opens below the trigger, start edges aligned, and Escape closes it with focus on the trigger', async () => {
   mount(`<div style="padding: 40px">${popover}</div>`)
   const more = page.getByRole('button', { name: 'More' })

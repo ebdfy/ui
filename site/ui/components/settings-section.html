@@ -11,7 +11,8 @@
       <h1>Settings section</h1>
       <p class="lede">
         <code>e-settings-section</code> groups settings under a <code>heading</code> and a line of <code>help</code>.
-        The cards sit beside them from 600 px and below them on a phone.
+        The cards sit beside them from 600 px, where the heading column is a third wide and from 900 px 260 px wide, and
+        below them on a phone. Stack sections in an <code>e-stack gap="6"</code>, 24 px apart.
       </p>
       <docs-example caption="A section with one card" stack>
         <e-settings-section
@@ -19,7 +20,7 @@
           help="What a customer pays for delivery, inside and outside Dhaka."
         >
           <e-card>
-            <e-text>Inside Dhaka ৳৮০, outside ৳১৩০.</e-text>
+            <e-text>Inside Dhaka ৳80, outside ৳130.</e-text>
           </e-card>
         </e-settings-section>
       </docs-example>
@@ -29,9 +30,23 @@
             <e-text>Call the customer first.</e-text>
           </e-card>
           <e-card>
-            <e-text>Hold orders over ৳১০,০০০.</e-text>
+            <e-text>Hold orders over ৳10,000.</e-text>
           </e-card>
         </e-settings-section>
+      </docs-example>
+      <docs-example caption="Two sections in a row" stack>
+        <e-stack gap="6">
+          <e-settings-section heading="Delivery charges" help="What a customer pays for delivery.">
+            <e-card>
+              <e-text>Inside Dhaka ৳80, outside ৳130.</e-text>
+            </e-card>
+          </e-settings-section>
+          <e-settings-section heading="Confirming orders" help="How your team checks a new order.">
+            <e-card>
+              <e-text>Call the customer first.</e-text>
+            </e-card>
+          </e-settings-section>
+        </e-stack>
       </docs-example>
       <docs-example caption="বাংলায়" lang="bn" stack>
         <e-settings-section heading="ডেলিভারি চার্জ" help="ঢাকার ভেতরে ও বাইরে ডেলিভারির জন্য গ্রাহক কত দেবেন।">
@@ -39,6 +54,63 @@
             <e-text>ঢাকার ভেতরে ৳৮০, বাইরে ৳১৩০।</e-text>
           </e-card>
         </e-settings-section>
+      </docs-example>
+      <h2>Saving with the Admin's bar</h2>
+      <p>
+        Put the sections of a settings page in one <code>&lt;form data-save-bar&gt;</code>. While a named field holds an
+        edit, the Admin shows one save bar in its top band, with Discard and Save; on a phone it takes the whole band.
+        Save submits the form, as do <kbd>Ctrl</kbd>+<kbd>S</kbd> or <kbd>⌘</kbd><kbd>S</kbd> and Enter in a one-line
+        field; Enter in a text area is a new line, and Esc never discards. Leaving the page with an edit asks first. In
+        an app, <code>v2.js</code> tells the Admin through the bridge's <code>saveBar</code> message, and
+        <code>ebdfy.showErrors(form, userErrors)</code> turns the bar to "Not saved: 1 field needs a fix".
+      </p>
+      <p>
+        A form that makes a record names the bar's words: <code>data-save-message</code> is its message, such as Unsaved
+        order, and marks the form as new, so Discard asks first with <code>data-save-discard</code>;
+        <code>data-save-label</code> is Save's word, such as Create order. A hidden
+        <code>&lt;button type="submit" data-save-bar-button&gt;</code> in the form is a second button in the bar from
+        1040 px, such as Save as draft. On the Admin's own pages a save that meets an expired session fires
+        <code>e-session-expired</code> on the form, and the bar sends it again when the page fires
+        <code>e-session-restored</code>.
+      </p>
+      <docs-example caption="A settings form the bar saves" stack>
+        <form data-save-bar>
+          <e-settings-section heading="Delivery charges" help="What a customer pays for delivery.">
+            <e-card>
+              <e-taka-field name="inside" value="80" label="Inside Dhaka"></e-taka-field>
+            </e-card>
+          </e-settings-section>
+        </form>
+      </docs-example>
+      <docs-example caption="A new order, with its own words and Save as draft" stack>
+        <form
+          data-save-bar
+          data-save-message="Unsaved order"
+          data-save-label="Create order"
+          data-save-discard="Discard this new order?"
+        >
+          <e-settings-section heading="Customer" help="Who the order is for.">
+            <e-card>
+              <e-text-field name="customer" label="Name"></e-text-field>
+            </e-card>
+          </e-settings-section>
+          <button type="submit" name="intent" value="draft" data-save-bar-button hidden>Save as draft</button>
+        </form>
+      </docs-example>
+      <docs-example caption="বাংলায়, নতুন অর্ডার" lang="bn" stack>
+        <form
+          data-save-bar
+          data-save-message="অর্ডারটি এখনো সংরক্ষিত হয়নি"
+          data-save-label="অর্ডার তৈরি করুন"
+          data-save-discard="নতুন অর্ডারটি বাদ দেবেন?"
+        >
+          <e-settings-section heading="গ্রাহক" help="অর্ডারটি কার জন্য।">
+            <e-card>
+              <e-text-field name="customer" label="নাম"></e-text-field>
+            </e-card>
+          </e-settings-section>
+          <button type="submit" name="intent" value="draft" data-save-bar-button hidden>খসড়া হিসেবে রাখুন</button>
+        </form>
       </docs-example>
     </main>
   </body>

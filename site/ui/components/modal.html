@@ -26,22 +26,37 @@
         <e-modal id="confirm-modal" heading="Cancel order #1042?" size="small">
           <e-text>The customer in Sylhet will be told.</e-text>
           <e-button slot="footer" data-closes="confirm-modal">Keep order</e-button>
-          <e-button slot="footer" tone="primary" data-closes="confirm-modal">Cancel order</e-button>
+          <e-button slot="footer" tone="danger" fill data-closes="confirm-modal">Cancel order</e-button>
         </e-modal>
       </docs-example>
-      <docs-example caption="Large">
+      <docs-example caption="Width 420, for a question">
+        <e-button data-opens="question-modal">Ask</e-button>
+        <e-modal id="question-modal" heading="Mark order #1042 as paid?" width="420">
+          <e-text>The customer will get a receipt.</e-text>
+          <e-button slot="footer" data-closes="question-modal">Not yet</e-button>
+          <e-button slot="footer" tone="primary" data-closes="question-modal">Mark as paid</e-button>
+        </e-modal>
+      </docs-example>
+      <docs-example caption="Width 560, for a short form">
         <e-button data-opens="address-modal">Edit address</e-button>
-        <e-modal id="address-modal" heading="Delivery address" size="large">
+        <e-modal id="address-modal" heading="Edit address" width="560">
           <e-text>Order #1042 goes to Zindabazar, Sylhet.</e-text>
           <e-button slot="footer" data-closes="address-modal">Close</e-button>
         </e-modal>
       </docs-example>
+      <docs-example caption="Width 720, for a table">
+        <e-button data-opens="items-modal">Items</e-button>
+        <e-modal id="items-modal" heading="Items in order #1042" width="720">
+          <e-text>Three items, shipped from the Sylhet warehouse.</e-text>
+          <e-button slot="footer" data-closes="items-modal">Close</e-button>
+        </e-modal>
+      </docs-example>
       <docs-example caption="বাংলায়" lang="bn">
         <e-button data-opens="bn-modal">অর্ডার বাতিল</e-button>
-        <e-modal id="bn-modal" heading="অর্ডার #১০৪২ বাতিল করবেন?" size="small">
+        <e-modal id="bn-modal" heading="অর্ডার #১০৪২ বাতিল করবেন?" width="420">
           <e-text>সিলেটের গ্রাহককে জানানো হবে।</e-text>
           <e-button slot="footer" data-closes="bn-modal">রাখুন</e-button>
-          <e-button slot="footer" tone="primary" data-closes="bn-modal">বাতিল করুন</e-button>
+          <e-button slot="footer" tone="danger" fill data-closes="bn-modal">বাতিল করুন</e-button>
         </e-modal>
       </docs-example>
       <script type="module">

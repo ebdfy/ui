@@ -1,7 +1,15 @@
 // The app half of the bridge. It talks only to a parent it knows, posts only to that parent's
 // origin, and does nothing on a page that is not framed by one.
 
-import { watchSaveBars, type SaveBarAction } from './save-bar.ts'
+import {
+  clearCorrected,
+  enterForm,
+  isSaveKey,
+  refusal,
+  refused,
+  watchSaveBars,
+  type SaveBarAction,
+} from './save-bar.ts'
 
 // What an app posts to the Admin.
 export type BridgeMessage =
@@ -10,7 +18,8 @@ export type BridgeMessage =
       // menus lines up with actions: an action's menu items, or null for a plain button.
       payload: { title: string; actions: string[]; menus?: (TitleMenuItem[] | null)[]; call: number; back?: string }
     }
-  | { type: 'saveBar'; payload: { visible: boolean } }
+  // From 2.1 a refused save also says how many fields need a fix, or the reason that names none.
+  | { type: 'saveBar'; payload: { visible: boolean; refused?: { fields: number; message?: string } } }
   | { type: 'toast'; payload: { message: string; error: boolean; action?: string; call: number } }
   | { type: 'nav'; payload: { entries: NavEntry[] } }
   | { type: 'loading'; payload: { visible: boolean } }
@@ -177,6 +186,38 @@ export function createBridge(win: Window = window) {
   }
   if (origin) {
     const bar = watchSaveBars(win.document, (visible) => post({ type: 'saveBar', payload: { visible } }))
+    // A refused save, as showErrors marks it, turns the Admin's bar to its refused state, which
+    // follows each field put right until none is left.
+    let shown: HTMLFormElement | null = null
+    const tellRefused = (form: HTMLFormElement) => {
+      const said = refusal(form)
+      const visible = bar.dirty().length > 0
+      shown = said.fields || said.message ? form : null
+      post({ type: 'saveBar', payload: shown ? { visible, refused: said } : { visible } })
+    }
+    win.document.addEventListener(refused, (event) => {
+      const form = event.target
+      // A form in an e-modal saves from the modal's own footer.
+      if (form instanceof HTMLFormElement && form.matches('form[data-save-bar]') && !form.closest('e-modal'))
+        tellRefused(form)
+    })
+    win.document.addEventListener('input', (event) => {
+      if (shown && clearCorrected(event, shown)) tellRefused(shown)
+    })
+    // Ctrl+S and Enter in a one-line field save as they do on the Admin's own pages; a key pressed in
+    // the app's frame never reaches the Admin.
+    win.addEventListener('keydown', (event) => {
+      if (isSaveKey(event)) {
+        if (!bar.dirty().length) return
+        event.preventDefault()
+        bar.act('save')
+        return
+      }
+      const form = enterForm(event)
+      if (!form || form.closest('e-modal')) return
+      event.preventDefault()
+      if (bar.dirty().length) bar.act('save')
+    })
     // A new page starts with the bar down, which lowers one an earlier page left up.
     post({ type: 'saveBar', payload: { visible: false } })
     // Nor does it want the loading bar an earlier page may have asked for.

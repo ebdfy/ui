@@ -28,6 +28,24 @@ test('the link is a real anchor, in the kit text colour, underlined', async () =
   expect(style.fontSize).toBe(getComputedStyle(link.element().closest('p')!).fontSize)
 })
 
+test.each([
+  ['e-table', '<e-table><e-row><span><e-link><a href="/orders/1042">#1042</a></e-link></span></e-row></e-table>'],
+  ['e-card', '<e-card><e-link><a href="/orders/1042">#1042</a></e-link></e-card>'],
+])('a link in %s is 550 weight with no underline until hover', async (_name, html) => {
+  mount(html)
+  const link = page.getByRole('link', { name: '#1042' })
+  const anchor = link.element()
+  expect([getComputedStyle(anchor).textDecorationLine, getComputedStyle(anchor).fontWeight]).toEqual(['none', '550'])
+  await userEvent.hover(link)
+  expect(getComputedStyle(anchor).textDecorationLine).toBe('underline')
+})
+
+test('a link in a sentence keeps its underline', () => {
+  mount('<p>Read the <e-link><a href="/x">guide</a></e-link>.</p>')
+  const anchor = page.getByRole('link', { name: 'guide' }).element()
+  expect(getComputedStyle(anchor).textDecorationLine).toBe('underline')
+})
+
 test('keyboard focus rings the link', async () => {
   mount('<e-link><a href="/orders">Orders</a></e-link>')
   await userEvent.keyboard('{Tab}')

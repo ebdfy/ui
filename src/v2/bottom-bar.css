@@ -17,3 +17,10 @@ e-bottom-bar {
     min-width: 0;
   }
 }
+/* A dock: the record's main actions on a phone, at the bottom of the frame above the Admin's tab bar.
+   From 600 px the page's own header holds them, so the dock is gone. */
+@media (min-width: 600px) {
+  e-bottom-bar[dock] {
+    display: none;
+  }
+}

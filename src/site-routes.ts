@@ -1,7 +1,16 @@
+import { isAdminPage } from './playground-admin.ts'
+
 // The pages that stand for many addresses, as both the dev servers and the hosting Worker serve
 // them: the playground for every app page under it, and the sample app's order page for each order.
+// The Admin's own pages, Settings' and the Orders area's, are files of their own, drawn in the panel.
 export function sitePage(folder: string, path: string): string | null {
-  if (folder === 'ui' && path.startsWith('/playground/')) return '/playground'
+  if (
+    folder === 'ui' &&
+    path.startsWith('/playground/') &&
+    !path.startsWith('/playground/settings/') &&
+    !isAdminPage(path)
+  )
+    return '/playground'
   if (folder === 'sample-app' && /^\/orders\/\d+$/.test(path)) return '/order'
   return null
 }

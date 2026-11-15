@@ -9,7 +9,7 @@
     <title>Order settings · Sample app · ebdfy</title>
     <link
       rel="preload"
-      href="%EB_CDN%/ui/fonts/manrope-latin-wght-normal.woff2"
+      href="%EB_CDN%/ui/fonts/geist-latin-wght-normal.woff2"
       as="font"
       type="font/woff2"
       crossorigin
@@ -46,33 +46,41 @@
   </head>
   <body>
     <e-page heading="Order settings" data-bn-heading="অর্ডার সেটিংস">
-      <e-stack gap="6">
-        <e-settings-section
-          heading="Delivery charges"
-          data-bn-heading="ডেলিভারি চার্জ"
-          help="What a customer pays for delivery, inside and outside Dhaka."
-          data-bn-help="ঢাকার ভেতরে ও বাইরে ডেলিভারির জন্য গ্রাহক কত দেবেন।"
-        >
-          <e-card>
-            <e-stack gap="4">
-              <e-taka-field name="inside" value="80" label="Inside Dhaka" data-bn-label="ঢাকার ভেতরে"></e-taka-field>
-              <e-taka-field name="outside" value="150" label="Outside Dhaka" data-bn-label="ঢাকার বাইরে"></e-taka-field>
-            </e-stack>
-          </e-card>
-        </e-settings-section>
-        <e-settings-section
-          heading="Confirming orders"
-          data-bn-heading="অর্ডার কনফার্ম করা"
-          help="How your team checks a new order before it goes to a courier."
-          data-bn-help="কুরিয়ারে পাঠানোর আগে আপনার টিম কীভাবে নতুন অর্ডার যাচাই করে।"
-        >
-          <e-card>
-            <e-text data-bn="নতুন অর্ডার কনফার্ম করার আগে গ্রাহককে ফোন করুন।"
-              >Call the customer before you confirm a new order.</e-text
-            >
-          </e-card>
-        </e-settings-section>
-      </e-stack>
+      <!-- The Admin's save bar saves this form: an edit raises it, and its Save submits the form. -->
+      <form data-save-bar>
+        <e-stack gap="6">
+          <e-settings-section
+            heading="Delivery charges"
+            data-bn-heading="ডেলিভারি চার্জ"
+            help="What a customer pays for delivery, inside and outside Dhaka."
+            data-bn-help="ঢাকার ভেতরে ও বাইরে ডেলিভারির জন্য গ্রাহক কত দেবেন।"
+          >
+            <e-card>
+              <e-stack gap="4">
+                <e-taka-field name="inside" value="80" label="Inside Dhaka" data-bn-label="ঢাকার ভেতরে"></e-taka-field>
+                <e-taka-field
+                  name="outside"
+                  value="150"
+                  label="Outside Dhaka"
+                  data-bn-label="ঢাকার বাইরে"
+                ></e-taka-field>
+              </e-stack>
+            </e-card>
+          </e-settings-section>
+          <e-settings-section
+            heading="Confirming orders"
+            data-bn-heading="অর্ডার কনফার্ম করা"
+            help="How your team checks a new order before it goes to a courier."
+            data-bn-help="কুরিয়ারে পাঠানোর আগে আপনার টিম কীভাবে নতুন অর্ডার যাচাই করে।"
+          >
+            <e-card>
+              <e-text data-bn="নতুন অর্ডার কনফার্ম করার আগে গ্রাহককে ফোন করুন।"
+                >Call the customer before you confirm a new order.</e-text
+              >
+            </e-card>
+          </e-settings-section>
+        </e-stack>
+      </form>
     </e-page>
     <script>
       // Puts the page's words in a language: before v2.js upgrades the markup when the page is Bangla,
@@ -120,6 +128,23 @@
         name()
       }
       addEventListener('ebdfy:context', ({ detail }) => follow(detail.language))
+      // Saving goes to the sample's backend, which answers after a moment, as a real one would: it
+      // refuses a charge over ৳1,000 with a userError on that field, as the Admin API would.
+      const form = document.querySelector('form[data-save-bar]')
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault()
+        const bn = document.documentElement.lang === 'bn'
+        const charges = new FormData(form)
+        await new Promise((resolve) => setTimeout(resolve, 300))
+        const errors = ['inside', 'outside']
+          .filter((name) => Number(charges.get(name)) > 1000)
+          .map((name) => ({
+            field: [name],
+            message: bn ? 'ডেলিভারি চার্জ সর্বোচ্চ ৳১,০০০।' : 'A delivery charge is at most ৳1,000.',
+          }))
+        if (errors.length) ebdfy.showErrors(form, errors)
+        else ebdfy.toast(bn ? 'ডেলিভারি চার্জ সংরক্ষিত হয়েছে' : 'Delivery charges saved')
+      })
       ebdfy.user().then(
         ({ language }) => follow(language),
         () => {},

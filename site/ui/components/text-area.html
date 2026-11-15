@@ -11,10 +11,13 @@
       <h1>Text area</h1>
       <p class="lede">
         <code>e-text-area</code> takes several lines of text, such as an order note. Its native textarea joins the form,
-        and <code>value</code> is the text it opens with.
+        and <code>value</code> is the text it opens with. It opens four lines tall; <code>rows</code> asks for more.
       </p>
       <docs-example caption="A labelled text area">
         <e-text-area label="Order note" name="note" placeholder="Anything the courier should know"></e-text-area>
+      </docs-example>
+      <docs-example caption="Ten rows, for a policy">
+        <e-text-area label="Refund policy" name="refund" rows="10"></e-text-area>
       </docs-example>
       <docs-example caption="With a value">
         <e-text-area

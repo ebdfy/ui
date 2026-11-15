@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>To-do · ebdfy design system v2</title>
+  </head>
+  <body>
+    <main>
+      <h1>To-do</h1>
+      <p class="lede">
+        <code>e-todo</code> is a row of counts that are links, such as the orders still to confirm or ship. Each child
+        is an <code>a</code> to the list it counts, with the count in a <code>strong</code> and the words after it. The
+        tiles share one row from 600 px and sit two by two below.
+      </p>
+      <docs-example caption="Orders to act on" stack>
+        <e-todo>
+          <a href="/orders"><strong>12</strong> To confirm</a>
+          <a href="/orders"><strong>18</strong> To ship</a>
+          <a href="/orders"><strong>54</strong> With courier</a>
+          <a href="/orders"><strong>6</strong> Returns</a>
+          <a href="/orders"><strong>3</strong> Drafts</a>
+        </e-todo>
+      </docs-example>
+      <docs-example caption="In a card" stack>
+        <e-card heading="To do">
+          <e-todo>
+            <a href="/orders"><strong>12</strong> To confirm</a>
+            <a href="/orders"><strong>18</strong> To ship</a>
+          </e-todo>
+        </e-card>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-todo>
+          <a href="/orders"><strong>১২</strong> কনফার্ম বাকি</a>
+          <a href="/orders"><strong>১৮</strong> পাঠানো বাকি</a>
+          <a href="/orders"><strong>৫৪</strong> কুরিয়ারে</a>
+          <a href="/orders"><strong>৬</strong> ফেরত</a>
+          <a href="/orders"><strong>৩</strong> খসড়া</a>
+        </e-todo>
+      </docs-example>
+    </main>
+  </body>
+</html>

@@ -7,15 +7,27 @@
 e-card {
   display: grid;
   grid-template-columns: minmax(auto, 1fr) repeat(10, auto);
-  row-gap: var(--e-space-3);
+  row-gap: var(--e-space-4);
   align-items: center;
   align-content: start;
   min-width: 0;
-  padding: var(--e-space-3) var(--e-space-4) var(--e-space-4);
+  padding: var(--e-space-4) var(--e-space-5) var(--e-space-5);
   background: var(--e-color-surface);
   color: var(--e-color-fg);
   border: 1px solid var(--e-color-line);
   border-radius: var(--e-radius-2);
+  box-shadow: var(--e-shadow-card);
+}
+/* flush: a table inside runs edge to edge and the corners clip it. The heading and the last action
+   take back the 20 px the padding gave up, the action through an eleventh 20 px column. */
+e-card[flush] {
+  grid-template-columns: minmax(auto, 1fr) repeat(10, auto) var(--e-space-5);
+  padding: var(--e-space-4) 0 0;
+  overflow: hidden;
+}
+e-card[flush][heading]::before,
+e-card[flush] > h2[slot='heading'] {
+  padding-inline-start: var(--e-space-5);
 }
 e-card[heading]::before,
 e-card > h2[slot='heading'] {
@@ -28,7 +40,12 @@ e-card > h2[slot='heading'] {
   font-size: var(--e-font-size-title);
   line-height: var(--e-line-height-body);
   font-weight: var(--e-font-weight-semibold);
+  letter-spacing: -0.005em;
   overflow-wrap: break-word;
+}
+e-card:lang(bn)[heading]::before,
+e-card:lang(bn) > h2[slot='heading'] {
+  letter-spacing: 0;
 }
 e-card[heading]::before {
   content: attr(heading);
@@ -62,13 +79,14 @@ e-card > :not([slot='actions'], [slot='heading'], [data-part='more']) {
     align-items: center;
     box-sizing: border-box;
     height: var(--e-size-control-lg);
-    padding: 0 14px;
+    padding: 0 12px;
     border: 1px solid var(--e-color-line-2);
     border-radius: var(--e-radius-1);
     background: var(--e-color-surface);
+    box-shadow: var(--e-shadow-card);
     color: var(--e-color-fg);
-    font-size: var(--e-font-size-meta);
-    font-weight: var(--e-font-weight-semibold);
+    font-size: var(--e-font-size-body);
+    font-weight: 550;
     line-height: var(--e-line-height-body);
     white-space: nowrap;
   }

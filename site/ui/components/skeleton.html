@@ -12,7 +12,9 @@
       <p class="lede">
         <code>e-skeleton</code> holds the place of text while it loads. Set <code>lines</code> from <code>2</code> to
         <code>8</code> for that many lines of body text, the last one shorter; without it the skeleton is one line. A
-        screen reader finds nothing in it, so say the loading state elsewhere.
+        screen reader finds nothing in it, so say the loading state elsewhere. Set <code>shape="table"</code> for a
+        toolbar, a head row and 8 rows of 44 px, or <code>shape="details"</code> for two cards at their real heights;
+        <code>lines</code> is ignored with a shape.
       </p>
       <docs-example caption="One line" stack>
         <e-skeleton></e-skeleton>
@@ -24,6 +26,12 @@
         <e-card heading="Order #1042">
           <e-skeleton lines="3"></e-skeleton>
         </e-card>
+      </docs-example>
+      <docs-example caption="Table shape" stack>
+        <e-skeleton shape="table"></e-skeleton>
+      </docs-example>
+      <docs-example caption="Details shape" stack>
+        <e-skeleton shape="details"></e-skeleton>
       </docs-example>
       <docs-example caption="বাংলায়" lang="bn" stack>
         <e-card heading="অর্ডার #১০৪২">

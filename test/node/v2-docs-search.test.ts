@@ -119,8 +119,9 @@ test.for(['light', 'dark'] as const)('in %s the pressed language button stands o
     await page.getByRole('button', { name: choice }).click()
     // Move off the buttons so a hover does not colour the unpressed one.
     await page.mouse.move(700, 400)
-    const { bar, pressed, unpressed } = await read()
-    expect(pressed).not.toBe(bar)
-    expect(unpressed).toBe(bar)
+    // A button eases to its new colour, so the check waits out the transition.
+    const { bar } = await read()
+    await expect.poll(async () => (await read()).unpressed).toBe(bar)
+    expect((await read()).pressed).not.toBe(bar)
   }
 })

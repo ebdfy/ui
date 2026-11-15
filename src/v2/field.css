@@ -23,7 +23,7 @@ e-text-area > label {
   overflow-wrap: anywhere;
   color: var(--e-color-fg);
   font-size: var(--e-font-size-meta);
-  font-weight: var(--e-font-weight-semibold);
+  font-weight: var(--e-font-weight-medium);
   line-height: var(--e-line-height-meta);
 }
 e-text-field::after,
@@ -55,11 +55,18 @@ e-text-area > textarea {
     height: var(--e-size-control-lg);
   }
 }
-/* Four 20 px lines inside 8 px padding and the 1 px border. */
+/* Four 20 px lines inside 10 px padding and the 1 px border, or as many as rows asks, so ten rows
+   open a 222 px box, the boards' policy height; the CSS reads
+   rows itself, so the box is that tall before the script. */
+@supports (height: attr(rows type(<number>), 4)) {
+  e-text-area[rows] {
+    --e-rows: attr(rows type(<number>), 4);
+  }
+}
 e-text-area::after,
 e-text-area > textarea {
-  height: calc(4 * var(--e-line-height-body) + 2 * var(--e-space-2) + 2px);
-  padding: var(--e-space-2) var(--e-space-3);
+  height: calc(var(--e-rows, 4) * var(--e-line-height-body) + 2 * 10px + 2px);
+  padding: 10px var(--e-space-3);
   line-height: var(--e-line-height-body);
 }
 e-text-field::before,
@@ -108,18 +115,44 @@ e-text-area > textarea:focus-visible {
   outline: 2px solid var(--e-color-focus);
   outline-offset: 2px;
 }
-e-text-field:has(> input)::before,
-e-date-field:has(> input)::before,
+/* The ::before label stays until the script builds the real one, so a field written with its own
+   input shows its label before the script; the ::after box goes as soon as there is a control. */
+e-text-field:has(> label)::before,
+e-date-field:has(> label)::before,
 e-text-field:has(> input)::after,
 e-date-field:has(> input)::after,
-e-text-area:has(> textarea)::before,
+e-text-area:has(> label)::before,
 e-text-area:has(> textarea)::after {
   content: none;
 }
+/* An error written in the markup, under a written control, before the script builds its line: the
+   ::after shows it in the row the line then takes, drawn as the line is. */
+:is(e-text-field, e-date-field, e-text-area, e-phone-field)[error]:not([error='']):has(> :is(input, textarea)):not(
+    :has(> [data-e-error])
+  )::after {
+  content: attr(error);
+  grid-row: 3;
+  display: block;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  color: var(--e-color-returned-fg);
+  font-size: var(--e-font-size-meta);
+  line-height: var(--e-line-height-meta);
+}
 
-/* A field's error: the control's edge turns red, and the message shows on the row under it. */
-[aria-invalid='true']:is(input, textarea, select) {
+/* A field's error: the control's edge turns red inside a soft red ring, and the message shows on the
+   row under it. A written control under a tag with an error is drawn so before the script marks it. */
+[aria-invalid='true']:is(input, textarea, select),
+:is(e-text-field, e-date-field, e-text-area, e-phone-field)[error]:not([error='']) > :is(input, textarea) {
   border-color: var(--e-color-returned-fg);
+  box-shadow: 0 0 0 3px var(--e-color-danger-soft);
 }
 /* A checkbox or switch is one row, so its message takes a row of its own under it. */
 e-checkbox:has(> [data-e-error]),
@@ -224,4 +257,36 @@ e-search-field:has(> input:focus-visible) {
 e-search-field:has(> e-icon)::before,
 e-search-field:has(> input)::after {
   content: none;
+}
+
+/* e-date-field's day, "1 Nov 2026", in the input's box over the browser's own text, which goes
+   transparent while the field is not focused; the calendar icon stays, and a press anywhere on the box
+   opens the calendar. */
+e-date-field > [data-e-date] {
+  grid-row: 2;
+  grid-column: 1;
+  align-self: center;
+  min-width: 0;
+  /* The input's 1 px border and its padding; the end leaves room for the calendar icon. */
+  padding: 0 calc(var(--e-space-3) + 28px) 0 calc(var(--e-space-3) + 1px);
+  overflow: hidden;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-body);
+  white-space: nowrap;
+  pointer-events: none;
+}
+/* The input names its column too, so it shares the cell the day sits in rather than taking a second. */
+e-date-field > input {
+  grid-column: 1;
+}
+e-date-field:has(> [data-e-date]) > input:not(:focus) {
+  color: transparent;
+}
+/* While the person types a day a part at a time, the browser's own text shows the parts. */
+e-date-field > input:focus + [data-e-date] {
+  visibility: hidden;
+}
+e-date-field > input::-webkit-calendar-picker-indicator {
+  color: var(--e-color-fg2);
+  cursor: pointer;
 }

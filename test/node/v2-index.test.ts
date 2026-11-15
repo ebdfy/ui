@@ -283,29 +283,30 @@ const card = (page: Page, index = 0) =>
       }
     })
 
-test('at 360 x 800 the first card reads #1042 and New, then Rahima Akter and ৳1,930', async () => {
+test('at 360 x 800 the first row reads #1042 and ৳1,930, then Rahima Akter and New', async () => {
   const { page, errors } = await open(360)
   const first = await card(page)
-  expect([first.title.text, first.status.text, first.body.text, first.end.text]).toEqual([
+  expect([first.title.text, first.end.text, first.body.text, first.status.text]).toEqual([
     '#1042',
-    'New',
-    'Rahima Akter',
     '৳1,930',
+    'Rahima Akter',
+    'New',
   ])
-  // The number and its status on the first line, the customer and the total on the next.
-  expect(Math.abs(first.title.top - first.status.top)).toBeLessThanOrEqual(2)
-  expect(first.status.left).toBeGreaterThan(first.title.left)
-  expect(Math.abs(first.body.top - first.end.top)).toBeLessThanOrEqual(2)
+  // The number and the total on the first line, the customer and the status on the next.
+  expect(Math.abs(first.title.top - first.end.top)).toBeLessThanOrEqual(2)
+  expect(first.end.left).toBeGreaterThan(first.title.left)
+  expect(Math.abs(first.body.top - first.status.top)).toBeLessThanOrEqual(2)
   expect(first.body.top).toBeGreaterThan(first.title.top)
-  expect(first.end.left).toBeGreaterThan(first.body.left)
-  // The channel and the items stay off the card.
-  expect(first.hidden).toEqual(['Facebook', '2 items'])
+  expect(first.status.left).toBeGreaterThan(first.body.left)
+  // The checkbox waits for select mode; the channel and the items stay off the row.
+  expect(first.hidden).toEqual(['', 'Facebook', '2 items'])
   expect(await page.locator('e-row[head]').isVisible()).toBe(false)
   expect(errors).toEqual([])
 })
 
-test('at 360 px every card and its checkbox is a target at least 44 px tall', async () => {
+test('at 360 px after Select every row and its checkbox is a target at least 44 px tall', async () => {
   const { page } = await open(360)
+  await page.getByRole('button', { name: 'Select', exact: true }).click()
   const sizes = await rows(page).evaluateAll((all) =>
     all.map((row) => {
       const box = row.querySelector('e-checkbox')!.getBoundingClientRect()
@@ -359,11 +360,12 @@ test.for([
   await first.click({ position: { x: box.width - 30, y: box.height / 2 } })
   await page.waitForURL(new RegExp(`/orders/${number!.slice(1)}$`))
   await expect.poll(() => page.locator('e-page').getAttribute('heading')).toBe(`Order ${number}`)
-  expect(await page.locator('strong').first().textContent()).toBe(status)
+  expect(await page.locator('e-page > [slot="status"] e-badge').first().textContent()).toBe(status)
 })
 
-test('at 360 px a person ticks two cards by their checkboxes and the bulk actions show', async () => {
+test('at 360 px a person taps Select, ticks two rows by their checkboxes and the bulk actions show', async () => {
   const { page } = await open(360, '', true)
+  await page.getByRole('button', { name: 'Select', exact: true }).tap()
   await page.getByRole('checkbox', { name: 'Select #1042' }).tap()
   await page.getByRole('checkbox', { name: 'Select #1041' }).tap()
   await expect.poll(() => page.getByRole('status').textContent()).toBe('2 selected')

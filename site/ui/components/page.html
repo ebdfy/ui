@@ -11,8 +11,15 @@
       <h1>Page</h1>
       <p class="lede">
         <code>e-page</code> lays out a page: a <code>heading</code>, buttons beside it with <code>slot="actions"</code>,
-        then the content. A child with <code>slot="aside"</code> forms a 344 px column beside the content from 600 px,
-        and stacks below it on a phone.
+        then the content. A child with <code>slot="aside"</code> forms a 320 px column, 20 px beside the content, from
+        600 px, and stacks below it on a phone.
+      </p>
+      <p>
+        A record page sets <code>width="details"</code> (1040 px, or <code>width="form"</code> for 960 px), and its
+        header takes a back link in <code>slot="back"</code>, badges in <code>slot="status"</code> on the heading's line
+        (under it on a phone, where several side by side go in one row <code>e-stack</code>), a line of facts under the
+        heading in <code>slot="facts"</code>, and previous and next links joined as one control in
+        <code>slot="pagination"</code>.
       </p>
       <docs-example caption="A heading and an action" stack>
         <e-page heading="Orders">
@@ -32,10 +39,56 @@
           </e-stack>
         </e-page>
       </docs-example>
+      <docs-example caption="A record page" stack>
+        <e-page heading="Order #1042" width="details">
+          <a slot="back" href="#" aria-label="All orders"><e-icon name="arrow-left"></e-icon></a>
+          <e-stack slot="status" direction="row" gap="2" wrap>
+            <e-badge tone="new">New</e-badge>
+            <e-badge tone="warn">Unpaid</e-badge>
+          </e-stack>
+          <e-text slot="facts">11:24 AM · Facebook · 2 items</e-text>
+          <div slot="pagination">
+            <a href="#" aria-label="Previous order"><e-icon name="chevron-left"></e-icon></a>
+            <a href="#" aria-label="Next order"><e-icon name="chevron-right"></e-icon></a>
+          </div>
+          <e-button slot="actions" tone="primary">Confirm</e-button>
+          <e-card heading="Items">
+            <e-text>Two items.</e-text>
+          </e-card>
+          <e-stack slot="aside">
+            <e-card heading="Customer">
+              <e-text>Rahim Uddin, Sylhet</e-text>
+            </e-card>
+          </e-stack>
+        </e-page>
+      </docs-example>
       <docs-example caption="বাংলায়" lang="bn" stack>
         <e-page heading="অর্ডার #১০৪২">
           <e-button slot="actions">সম্পাদনা</e-button>
           <e-text>দুইটি পণ্য, সিলেটে পাঠাতে হবে।</e-text>
+        </e-page>
+      </docs-example>
+      <docs-example caption="রেকর্ডের পাতা, বাংলায়" lang="bn" stack>
+        <e-page heading="অর্ডার #1042" width="details">
+          <a slot="back" href="#" aria-label="সব অর্ডার"><e-icon name="arrow-left"></e-icon></a>
+          <e-stack slot="status" direction="row" gap="2" wrap>
+            <e-badge tone="new">নতুন</e-badge>
+            <e-badge tone="warn">অপরিশোধিত</e-badge>
+          </e-stack>
+          <e-text slot="facts">সকাল ১১:২৪ · ফেসবুক · ২টি পণ্য</e-text>
+          <div slot="pagination">
+            <a href="#" aria-label="আগের অর্ডার"><e-icon name="chevron-left"></e-icon></a>
+            <a href="#" aria-label="পরের অর্ডার"><e-icon name="chevron-right"></e-icon></a>
+          </div>
+          <e-button slot="actions" tone="primary">নিশ্চিত করুন</e-button>
+          <e-card heading="পণ্য">
+            <e-text>দুইটি পণ্য।</e-text>
+          </e-card>
+          <e-stack slot="aside">
+            <e-card heading="গ্রাহক">
+              <e-text>রহিম উদ্দিন, সিলেট</e-text>
+            </e-card>
+          </e-stack>
         </e-page>
       </docs-example>
     </main>

@@ -144,6 +144,31 @@
     return number >= 964 ? t.yesterday : t.nov3
   }
 
+  // A time of day on a 12-hour clock: "11:24 AM", and in Bangla with the time of day as a word,
+  // "সকাল ১১:২৪". Minutes count from midnight.
+  const clockAt = (minutes, lang) => {
+    const hour = Math.floor(minutes / 60) % 24
+    const shown = `${hour % 12 || 12}:${String(minutes % 60).padStart(2, '0')}`
+    if (lang === 'en') return `${shown} ${hour < 12 ? 'AM' : 'PM'}`
+    const word =
+      hour < 4
+        ? 'রাত'
+        : hour < 6
+          ? 'ভোর'
+          : hour < 12
+            ? 'সকাল'
+            : hour < 15
+              ? 'দুপুর'
+              : hour < 18
+                ? 'বিকাল'
+                : hour < 20
+                  ? 'সন্ধ্যা'
+                  : 'রাত'
+    return `${word} ${shown.replace(/\d/g, (d) => '০১২৩৪৫৬৭৮৯'[d])}`
+  }
+  // When an order from today was placed, in minutes from midnight; an older one has no time kept.
+  const placedAt = (number) => (number >= 1005 ? 11 * 60 + 24 - (1042 - number) * 18 : null)
+
   const taka = (amount, lang) => `৳${digits(amount, lang)}`
 
   // An order's words in a language, for a list row or an order's page.
@@ -216,5 +241,5 @@
     return tr
   }
 
-  globalThis.sampleOrders = { orders, words, read, row, digits, taka }
+  globalThis.sampleOrders = { orders, words, read, row, digits, taka, clockAt, placedAt }
 }

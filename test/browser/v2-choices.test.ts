@@ -33,6 +33,32 @@ function near(before: ReturnType<typeof box>, after: ReturnType<typeof box>): st
 
 const payment =
   '<e-choice-list label="Payment" name="payment"><option value="cod" selected>Cash on delivery</option><option value="bkash">bKash</option></e-choice-list>'
+// An option's child elements are not drawn, so the help is an attribute on the option.
+const team = (lang: string) =>
+  `<e-choice-list lang="${lang}" label="Team" name="team-${lang}"><option value="desk" help="Takes orders and calls customers" selected>Order desk</option><option value="pack">Packing</option></e-choice-list>`
+
+// The help line: its words, its size, and whether it sits under the label text beside the radio's row.
+// Before the script it is the option's ::after, which has no box to measure, so its grid row stands in.
+function helpLine(list: Element) {
+  const row = list.querySelector('option, label')!
+  const built = row.querySelector('input')
+  if (!built) {
+    const drawn = getComputedStyle(row, '::after')
+    return { text: drawn.content, size: drawn.fontSize, under: drawn.gridRowStart === '2', aligned: true }
+  }
+  const help = row.querySelector('[data-part="help"]')!
+  const text = document.createRange()
+  text.selectNodeContents(row.childNodes[1]!)
+  const label = text.getBoundingClientRect()
+  const mark = box(built)
+  return {
+    text: help.textContent,
+    size: getComputedStyle(help).fontSize,
+    under: help.getBoundingClientRect().top >= label.bottom - 1,
+    aligned: Math.abs(mark.y + mark.height / 2 - (label.top + label.height / 2)) < 2,
+  }
+}
+
 const sms = '<e-switch label="Text the customer" name="sms" checked></e-switch>'
 const due = '<e-date-field label="Due" name="due" value="2026-11-05"></e-date-field>'
 
@@ -60,8 +86,13 @@ test('before the script the switch shows its track and label, and the date field
 
 // Once defined, a tag upgrades as it is mounted, so both widths are measured before the one define.
 test('at 360 and 1280 px the script builds each control without moving a box', async () => {
-  const holder = mount(payment + sms + due)
+  const holder = mount(payment + sms + due + team('en') + team('bn'))
   const tags = [...holder.children]
+  const teams = tags.filter((tag) => tag.getAttribute('name')?.startsWith('team-'))
+  // The caption size is 12 px, and 13 px in Bangla.
+  const sizes = ['12px', '13px']
+  const helped = { text: '"Takes orders and calls customers"', under: true, aligned: true }
+  expect(teams.map(helpLine)).toEqual(sizes.map((size) => ({ ...helped, size })))
   const measure = () => ({ tags: tags.map(box), rows: [...holder.querySelectorAll('option')].map(box) })
   await page.viewport(1280, 800)
   const wide = measure()
@@ -81,7 +112,10 @@ test('at 360 and 1280 px the script builds each control without moving a box', a
       ...rows.map((row, i) => near(before.rows[i]!, row)).flat(),
     ]
   }
-  expect(page.getByRole('radio').elements()).toHaveLength(2)
+  expect(page.getByRole('radio').elements()).toHaveLength(6)
+  expect(teams.map(helpLine)).toEqual(
+    sizes.map((size) => ({ ...helped, text: 'Takes orders and calls customers', size })),
+  )
   expect(moved(narrow)).toEqual([])
   await page.viewport(1280, 800)
   expect(moved(wide)).toEqual([])

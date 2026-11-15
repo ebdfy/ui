@@ -127,8 +127,8 @@ export function startList(index) {
     draw()
   }
 
-  // Add filter puts back the first filter not in use, as a chip before itself, and rests once every
-  // filter is.
+  // Add filter puts back the first filter not in use, as a chip after the others, which follow Add
+  // filter, and rests once every filter is.
   const offer = () => add.toggleAttribute('disabled', state.filters.size === Object.keys(filters).length)
   const chip = (name) => {
     const tag = document.createElement('span')
@@ -145,7 +145,8 @@ export function startList(index) {
     const name = Object.keys(filters).find((one) => !state.filters.has(one))
     if (!name) return
     state.filters.add(name)
-    add.before(chip(name))
+    const chips = index.querySelectorAll(':scope > [slot="filter"]')
+    ;(chips[chips.length - 1] ?? add).after(chip(name))
     offer()
     restart()
   })
@@ -194,6 +195,8 @@ export function startList(index) {
     const picked = new Set(
       [...table.querySelectorAll(':scope > e-row[selected]')].map((row) => Number(row.dataset.number)),
     )
+    // In a phone's select mode the actions show before any order is ticked; with none they do nothing.
+    if (picked.size === 0) return
     const changed = orders.filter((order) => picked.has(order.number) && act.from.includes(order.status))
     for (const order of changed) order.status = act.to
     const count = act.from.length ? changed.length : picked.size

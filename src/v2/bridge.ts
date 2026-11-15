@@ -103,6 +103,38 @@ export function reportPage(win: Window = window): void {
   win.addEventListener('popstate', tell)
 }
 
+// Ctrl+K, or ⌘K on Apple, opens the Admin's search from anywhere. A key pressed in the app's frame
+// never reaches the Admin's page, so the bridge passes it on.
+export interface SearchMessage {
+  type: 'search'
+}
+
+// The Admin's word that its search has closed, so the app puts focus back on its own element.
+export interface SearchClosedMessage {
+  type: 'searchClosed'
+}
+
+export const isSearchKey = (event: KeyboardEvent): boolean =>
+  event.key.toLowerCase() === 'k' && (event.ctrlKey || event.metaKey) && !event.altKey && !event.shiftKey
+
+export function forwardSearch(win: Window = window): void {
+  const origin = parentOrigin(win)
+  if (!origin) return
+  let had: Element | null = null
+  win.addEventListener('keydown', (event) => {
+    if (!isSearchKey(event)) return
+    event.preventDefault()
+    had = win.document.activeElement
+    const message: SearchMessage = { type: 'search' }
+    win.parent.postMessage(message, origin)
+  })
+  win.addEventListener('message', (event: MessageEvent<SearchClosedMessage>) => {
+    if (event.source !== win.parent || event.origin !== origin || event.data?.type !== 'searchClosed') return
+    if (had instanceof HTMLElement && had.isConnected) had.focus()
+    had = null
+  })
+}
+
 // Whether one of the app's own e-modal dialogs is open, so the Admin can dim its frame and title bar
 // with the same scrim and keep taps off them meanwhile.
 export interface AppModalMessage {

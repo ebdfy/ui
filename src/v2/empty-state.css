@@ -1,5 +1,7 @@
-/* e-empty-state: a centred column, the heading first, then the text, then the action. Before the script
-   the heading is the ::before; the script puts an h2 in the same place. */
+/* e-empty-state: a centred column, an icon when it names one, the heading, then the text, then the
+   action. Before the script the heading is the ::before; the script puts an h2 in the same place. The
+   icon's 40 px square is kept above the heading from the first frame, and the script's e-icon lies in
+   it, so filling it moves nothing. */
 e-empty-state {
   display: flex;
   flex-direction: column;
@@ -20,10 +22,27 @@ e-empty-state > h2[slot='heading'] {
   margin: 0;
   min-width: 0;
   color: var(--e-color-fg);
-  font-size: var(--e-font-size-title);
-  line-height: var(--e-line-height-body);
+  font-size: var(--e-font-size-section);
+  line-height: 22px;
   font-weight: var(--e-font-weight-semibold);
   overflow-wrap: anywhere;
+}
+e-empty-state:lang(bn)[heading]::before,
+e-empty-state:lang(bn) > h2[slot='heading'] {
+  line-height: 24px;
+}
+/* Centred in its card with 48 px above and below when it has an icon. */
+e-empty-state[icon] {
+  position: relative;
+  padding-block: calc(48px + 40px + var(--e-space-3)) 48px;
+}
+e-empty-state > e-icon[data-part='icon'] {
+  position: absolute;
+  inset-block-start: 48px;
+  inset-inline-start: calc(50% - 20px);
+  inline-size: 40px;
+  block-size: 40px;
+  color: var(--e-color-fg3);
 }
 e-empty-state[heading]::before {
   content: attr(heading);

@@ -11,7 +11,8 @@
       <h1>Bottom bar</h1>
       <p class="lede">
         <code>e-bottom-bar</code> holds a page's buttons at the end of a bar that sticks to the bottom of the page. On a
-        phone each button takes an equal share.
+        phone each button takes an equal share. With <code>dock</code> it is a record's dock on a phone, such as Call
+        and Confirm above the Admin's tab bar; from 600 px it is hidden, as the page header holds those actions.
       </p>
       <docs-example caption="Save and discard" stack>
         <e-bottom-bar>
@@ -22,6 +23,12 @@
       <docs-example caption="One button" stack>
         <e-bottom-bar>
           <e-button tone="primary">Book Pathao</e-button>
+        </e-bottom-bar>
+      </docs-example>
+      <docs-example caption="A phone's dock (shown below 600 px)" stack>
+        <e-bottom-bar dock>
+          <e-button>Call</e-button>
+          <e-button tone="primary">Confirm</e-button>
         </e-bottom-bar>
       </docs-example>
       <docs-example caption="বাংলায়" lang="bn" stack>

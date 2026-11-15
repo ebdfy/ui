@@ -1,0 +1,32 @@
+/* e-person: a person in one row, drawn by CSS alone: the avatar, then the name over a line of
+   history, both beside it and centred on it together. */
+e-person {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--e-space-3);
+  align-items: center;
+  min-width: 0;
+  color: var(--e-color-fg);
+}
+e-person > e-avatar {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+e-person > :not(e-avatar, [slot='meta']) {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
+  min-width: 0;
+  font-weight: var(--e-font-weight-medium);
+  overflow-wrap: anywhere;
+}
+e-person > [slot='meta'] {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: start;
+  min-width: 0;
+  color: var(--e-color-fg2);
+  font-size: var(--e-font-size-meta);
+  line-height: var(--e-line-height-meta);
+  overflow-wrap: anywhere;
+}

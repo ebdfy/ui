@@ -61,6 +61,7 @@ export class ETab extends HTMLElement {
  * moves nothing but the selected mark, and a row wider than its box scrolls inside it.
  * @tag e-tabs
  * @attr label - Names the row for assistive tech.
+ * @attr {boolean} overflowing - Set by the script while the row has more to scroll to at its end, which fades the last 24 px. Do not set it.
  * @fires e-tab-change - The person chose a tab that was not selected. `detail` is `{ value }`, the tab's `value`.
  * @slot - Its `e-tab`s.
  */
@@ -72,11 +73,26 @@ export class ETabs extends HTMLElement {
     this.#label()
     this.addEventListener('click', this.#click)
     this.addEventListener('keydown', this.#keydown)
+    this.addEventListener('scroll', this.#edge)
+    this.#size.observe(this)
+    this.#edge()
   }
 
   disconnectedCallback(): void {
     this.removeEventListener('click', this.#click)
     this.removeEventListener('keydown', this.#keydown)
+    this.removeEventListener('scroll', this.#edge)
+    this.#size.disconnect()
+  }
+
+  // Fires when the row's own box changes size, such as on a window resize.
+  #size = new ResizeObserver(() => this.#edge())
+
+  // Abs, because a right-to-left row scrolls through negative offsets. One pixel of slack covers
+  // fractional scroll positions.
+  #edge = (): void => {
+    const more = this.scrollWidth - this.clientWidth - Math.abs(this.scrollLeft) > 1
+    this.toggleAttribute('overflowing', more)
   }
 
   attributeChangedCallback(): void {

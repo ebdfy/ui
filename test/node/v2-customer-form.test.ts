@@ -135,7 +135,8 @@ test.for([
 
 test('switching the Admin to Bangla before an edit opens the form in Bangla, with nothing to save', async () => {
   const { page } = await open('en', 1440)
-  await page.getByRole('button', { name: 'বাংলা' }).click()
+  await page.getByRole('button', { name: 'Rafiq Ahmed' }).click()
+  await page.locator('#e-user').getByRole('button', { name: 'বাংলা' }).click()
   const t = words.bn
   const card = view(page).locator('#customer-card')
   await expect.poll(() => card.textContent()).toContain('রহিমা আক্তার')

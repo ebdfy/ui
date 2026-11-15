@@ -71,7 +71,7 @@ test('the change sits after the number on its line and the label is above', asyn
   expect(Math.round(change.top)).toBeGreaterThanOrEqual(Math.round(number.top))
 })
 
-test('the change takes its tone and the number is large, semibold and tabular', () => {
+test('the change takes its tone and the number is 26 px, 650 weight and tabular', () => {
   render(`<e-metrics>${metric('Orders today', '38', '+12%')}${metric('To confirm', '12')}</e-metrics>`)
   const probe = (name: string) => {
     const p = document.createElement('div')
@@ -88,8 +88,8 @@ test('the change takes its tone and the number is large, semibold and tabular', 
   change.removeAttribute('tone')
   expect(getComputedStyle(change).color).toBe(probe('fg2'))
   const number = getComputedStyle(document.querySelector('e-metrics strong')!)
-  expect(number.fontSize).toBe('22px')
-  expect(number.fontWeight).toBe('600')
+  expect(number.fontSize).toBe('26px')
+  expect(number.fontWeight).toBe('650')
   expect(number.fontVariantNumeric).toBe('tabular-nums')
 })
 
@@ -97,7 +97,7 @@ test('a metric sits on a surface with a line border and the second radius', () =
   render(four())
   const style = getComputedStyle(document.querySelector('e-metrics > div')!)
   expect(style.borderTopWidth).toBe('1px')
-  expect(style.borderTopLeftRadius).toBe('10px')
+  expect(style.borderTopLeftRadius).toBe('12px')
 })
 
 test('a Bangla e-metrics has the same layout', async () => {
@@ -110,4 +110,37 @@ test('a Bangla e-metrics has the same layout', async () => {
   const change = document.querySelector('[slot="change"]')!.getBoundingClientRect()
   expect(change.left).toBeGreaterThanOrEqual(number.right)
   expect(Math.abs(change.bottom - number.bottom)).toBeLessThanOrEqual(6)
+})
+
+const inCard = (tone = 'success') =>
+  `<e-card heading="Today"><e-metrics>
+    <div><span slot="label">Orders</span> <strong>38</strong> <span slot="change" tone="${tone}">+12%</span></div>
+    <div><span slot="label">Sales</span> <strong>৳41,500</strong> <span slot="change" tone="critical">-4%</span></div>
+  </e-metrics></e-card>`
+
+test('inside an e-card a metric draws no border, background or radius, while one outside keeps its border', () => {
+  render(`${inCard()}${four()}`)
+  const inside = getComputedStyle(document.querySelector('e-card e-metrics > div')!)
+  for (const side of ['Top', 'Right', 'Bottom', 'Left'] as const) {
+    expect(inside.getPropertyValue(`border-${side.toLowerCase()}-width`)).toBe('0px')
+  }
+  expect(inside.backgroundColor).toBe('rgba(0, 0, 0, 0)')
+  expect(inside.borderTopLeftRadius).toBe('0px')
+  const outside = getComputedStyle(document.querySelector('e-metrics:not(e-card e-metrics) > div')!)
+  expect(outside.borderTopWidth).toBe('1px')
+})
+
+test('a change in the success and critical tones draws the delivered and returned colours', () => {
+  render(inCard())
+  const probe = (name: string) => {
+    const p = document.createElement('div')
+    p.style.color = `var(--e-color-${name})`
+    document.body.append(p)
+    const c = getComputedStyle(p).color
+    p.remove()
+    return c
+  }
+  const [success, critical] = document.querySelectorAll('[slot="change"]')
+  expect(getComputedStyle(success!).color).toBe(probe('delivered-fg'))
+  expect(getComputedStyle(critical!).color).toBe(probe('returned-fg'))
 })

@@ -46,6 +46,13 @@ async function playground(path: string, width = 1440): Promise<{ page: Page; app
   return { page, app, errors }
 }
 
+// The Admin's language control sits in the user menu, which the staff initials open.
+async function language(page: Page, name: 'বাংলা' | 'English') {
+  const menu = page.locator('#e-user')
+  if (!(await menu.isVisible())) await page.getByRole('button', { name: 'Rafiq Ahmed' }).click()
+  await menu.getByRole('button', { name }).click()
+}
+
 const lastSeen = (app: Frame) => app.evaluate(() => (globalThis as unknown as { seen: Seen[] }).seen.at(-1))
 const kept = (app: Frame) => app.evaluate(() => (globalThis as { mark?: boolean }).mark === true)
 
@@ -59,7 +66,7 @@ test('in the playground the app reads its store, app, language and a desktop', a
 
 test('switching the Admin to বাংলা tells the app, which turns its whole page Bangla with no reload', async () => {
   const { page, app, errors } = await playground('')
-  await page.getByRole('button', { name: 'বাংলা' }).click()
+  await language(page, 'বাংলা')
   await expect
     .poll(() => lastSeen(app))
     .toEqual({
@@ -91,7 +98,7 @@ test('switching the Admin to বাংলা tells the app, which turns its whol
   expect(await kept(app)).toBe(true)
 
   // And back: nothing stays Bangla.
-  await page.getByRole('button', { name: 'English' }).click()
+  await language(page, 'English')
   await expect.poll(() => titleBar(page).textContent()).toBe('Orders')
   expect(await view.getByRole('heading', { level: 1 }).textContent()).toBe('Orders')
   expect(await view.getByRole('button', { name: 'Save' }).count()).toBe(1)
@@ -103,16 +110,16 @@ test('switching the Admin to বাংলা tells the app, which turns its whol
 
 test("the order page follows the switch, and Save's toast speaks the new language", async () => {
   const { page, app } = await playground('/orders/1042')
-  await page.getByRole('button', { name: 'বাংলা' }).click()
+  await language(page, 'বাংলা')
   await expect.poll(() => titleBar(page).textContent()).toBe('অর্ডার #1042')
   const view = page.frameLocator('e-admin-panel iframe')
-  expect(await view.locator('strong').textContent()).toBe('নতুন')
+  expect(await view.locator('e-page > [slot="status"] e-badge').first().textContent()).toBe('নতুন')
   expect(await view.getByRole('button', { name: 'অর্ডার কনফার্ম করুন' }).count()).toBe(1)
-  expect(await view.getByRole('link', { name: '← সব অর্ডার' }).count()).toBe(1)
+  expect(await view.getByRole('link', { name: 'সব অর্ডার' }).count()).toBe(1)
   expect(await kept(app)).toBe(true)
 
   const { page: list } = await playground('')
-  await list.getByRole('button', { name: 'বাংলা' }).click()
+  await language(list, 'বাংলা')
   await expect.poll(() => titleBar(list).textContent()).toBe('অর্ডার')
   await list.frameLocator('e-admin-panel iframe').getByRole('button', { name: 'সংরক্ষণ করুন' }).click()
   await expect.poll(() => list.locator('e-admin-panel').getByRole('status').textContent()).toBe('সংরক্ষিত')
@@ -120,12 +127,16 @@ test("the order page follows the switch, and Save's toast speaks the new languag
 
 test('the Admin keeps its language on reload, and the app opens in it', async () => {
   const { page } = await playground('')
-  await page.getByRole('button', { name: 'বাংলা' }).click()
+  await language(page, 'বাংলা')
   await expect.poll(() => titleBar(page).textContent()).toBe('অর্ডার')
   await page.reload()
   expect(await page.evaluate(() => document.documentElement.lang)).toBe('bn')
   await expect.poll(() => titleBar(page).textContent(), { timeout: 15_000 }).toBe('অর্ডার')
-  expect(await page.getByRole('button', { name: 'English' }).count()).toBe(1)
+  await page.getByRole('button', { name: 'Rafiq Ahmed' }).click()
+  expect(await page.locator('#e-user').getByRole('button', { name: 'English' }).getAttribute('aria-pressed')).toBe(
+    'false',
+  )
+  expect(await page.locator('#e-user').getByRole('button', { name: 'বাংলা' }).getAttribute('aria-pressed')).toBe('true')
 })
 
 test('at 360 px the app is on a phone, and widening the Admin tells it it is not', async () => {

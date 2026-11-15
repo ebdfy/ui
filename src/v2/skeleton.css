@@ -40,7 +40,12 @@ e-skeleton::after {
       transparent 0
     )
     0 0 / 100% calc(var(--line) + var(--e-space-1));
-  animation: e-pulse 1.5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: no-preference) {
+  e-skeleton::before,
+  e-skeleton::after {
+    animation: e-pulse 1.5s ease-in-out infinite;
+  }
 }
 e-skeleton::before {
   height: calc((var(--e-skeleton-lines) - 1) * (var(--line) + var(--e-space-1)));
@@ -51,14 +56,41 @@ e-skeleton::after {
 e-skeleton:is([lines='2'], [lines='3'], [lines='4'], [lines='5'], [lines='6'], [lines='7'], [lines='8'])::after {
   width: 60%;
 }
+/* shape="table" holds a list page's height: a 32 px toolbar bar 240 px wide, 12 px (the index table's
+   gap), a 36 px head row, then 8 rows of 44 px, each ending in a 1 px line with a 12 px bar in it.
+   The ::before is the toolbar and head row (80 px), the ::after the rows (352 px): 432 px in all. */
+e-skeleton[shape='table']::before {
+  height: 80px;
+  background:
+    linear-gradient(var(--e-color-line), var(--e-color-line)) 0 0 / 240px 32px no-repeat,
+    linear-gradient(var(--e-color-surface-2), var(--e-color-surface-2)) 0 44px / 100% 36px no-repeat;
+}
+e-skeleton[shape='table']::after {
+  width: auto;
+  height: calc(8 * 44px);
+  background:
+    linear-gradient(transparent 16px, var(--e-color-line) 0 28px, transparent 0) 0 0 / 60% 44px,
+    linear-gradient(transparent 43px, var(--e-color-line) 0) 0 0 / 100% 44px;
+}
+/* shape="details" holds a details page's cards: one 120 px tall, a 16 px gap, one 200 px tall, each
+   with a 1 px line border on the surface. The ::before is the first card, the ::after the second. */
+e-skeleton[shape='details']::before,
+e-skeleton[shape='details']::after {
+  width: auto;
+  border: 1px solid var(--e-color-line);
+  border-radius: var(--e-radius-2);
+  background: var(--e-color-surface);
+  box-sizing: border-box;
+}
+e-skeleton[shape='details']::before {
+  height: 120px;
+}
+e-skeleton[shape='details']::after {
+  height: 200px;
+  margin-top: 16px;
+}
 @keyframes e-pulse {
   50% {
     opacity: 0.5;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  e-skeleton::before,
-  e-skeleton::after {
-    animation: none;
   }
 }

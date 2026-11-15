@@ -100,10 +100,20 @@ export function watchSaveBars(root: Document | Element, show: (visible: boolean)
     saved.set(form, values)
     update()
   })
-  new MutationObserver(scan).observe(root, { childList: true, subtree: true })
+  // A form that comes in is watched, and one that goes, as a panel swap takes it, no longer counts.
+  new MutationObserver(() => {
+    scan()
+    update()
+  }).observe(root, { childList: true, subtree: true })
   scan()
 
   return {
+    // The forms that hold an edit, in page order.
+    dirty(): HTMLFormElement[] {
+      return [...saved.keys()]
+        .filter((form) => form.isConnected && dirty(form))
+        .sort((one, other) => (one.compareDocumentPosition(other) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1))
+    },
     act(action: SaveBarAction): void {
       if (action === 'discard') {
         // The values go back to the saved ones, so the errors a refused save showed on them go too.
@@ -119,4 +129,47 @@ export function watchSaveBars(root: Document | Element, show: (visible: boolean)
       for (const form of [...saved.keys()].filter(dirty)) form.requestSubmit()
     },
   }
+}
+
+const isError = (name: string) => name === 'error' || name.endsWith('-error')
+
+// The kit tags of a form that show an error now.
+export const inError = (form: HTMLFormElement): Element[] =>
+  [...form.querySelectorAll('*')].filter(
+    (element) => element.localName.startsWith('e-') && element.getAttributeNames().some(isError),
+  )
+
+// What a refused form says now: how many fields show an error, and the banner's first line for an
+// error that names no field.
+export function refusal(form: HTMLFormElement): { fields: number; message?: string } {
+  const message = form.querySelector(':scope > [data-e-form-errors] > p')?.textContent ?? undefined
+  return message ? { fields: inError(form).length, message } : { fields: inError(form).length }
+}
+
+// A field the person typed in loses its error: the nearest kit tag around it drops every error
+// attribute. Only typing counts: a part's own events as it shows an error, and the change that fires
+// as the refusal moves focus away, are no correction.
+export function clearCorrected(event: Event, form: HTMLFormElement): boolean {
+  if (event.type !== 'input' || !event.isTrusted || !(event.target instanceof Element)) return false
+  if (!form.contains(event.target)) return false
+  for (let at = event.target.parentElement; at && at !== form; at = at.parentElement) {
+    if (!at.localName.startsWith('e-')) continue
+    for (const name of at.getAttributeNames().filter(isError)) at.removeAttribute(name)
+    return true
+  }
+  return false
+}
+
+// Ctrl+S, or ⌘S on Apple: Save while the bar shows.
+export const isSaveKey = (event: KeyboardEvent): boolean =>
+  event.key.toLowerCase() === 's' && (event.ctrlKey || event.metaKey) && !event.altKey && !event.shiftKey
+
+// The bar form whose one-line field Enter was pressed in, as Enter there is Save; a text area's Enter
+// is a new line, and a key a part already acted on, as a list's pick, is the part's.
+export function enterForm(event: KeyboardEvent): HTMLFormElement | null {
+  if (event.key !== 'Enter' || event.defaultPrevented || event.isComposing) return null
+  if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return null
+  const field = event.target
+  if (!(field instanceof HTMLInputElement) || ['button', 'submit', 'reset'].includes(field.type)) return null
+  return formOf(field)
 }

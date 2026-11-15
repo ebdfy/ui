@@ -22,6 +22,8 @@ test('the Index table API lists the e-selection-change event and the bulk slot',
 test('ticking two rows of the Index table example shows 2 selected and the bulk actions at 360 px', async () => {
   const { page } = await pages.open(`${pages.ui}/components/index-table`, 360)
   const example = page.locator('figure.example').first()
+  // On a phone the checkboxes show once Select starts select mode.
+  await example.getByRole('button', { name: 'Select', exact: true }).click()
   await example.getByRole('checkbox', { name: 'Select #1042' }).check()
   await example.getByRole('checkbox', { name: 'Select #1041' }).check()
   const bulk = example.locator('[slot="bulk"]')

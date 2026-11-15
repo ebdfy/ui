@@ -15,7 +15,7 @@ e-choice-list > [data-part='label'] {
   margin: 0 0 6px;
   overflow-wrap: anywhere;
   font-size: var(--e-font-size-meta);
-  font-weight: var(--e-font-weight-semibold);
+  font-weight: var(--e-font-weight-medium);
   line-height: var(--e-line-height-meta);
 }
 e-choice-list::before {
@@ -24,11 +24,15 @@ e-choice-list::before {
 e-choice-list:has(> [data-part='label'])::before {
   content: none;
 }
+/* A grid, so a help line sits in the label's column under its text, and the circle stays in the first
+   row beside the label's first line. */
 e-choice-list > option,
 e-choice-list > label {
-  display: flex;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-content: center;
   align-items: center;
-  gap: var(--e-space-2);
+  column-gap: var(--e-space-2);
   min-height: var(--e-size-control-md);
   margin: 0;
   padding: 0;
@@ -42,7 +46,7 @@ e-choice-list > option::before,
 e-choice-list > label > input {
   content: '';
   box-sizing: border-box;
-  flex: none;
+  grid-area: 1 / 1;
   width: 18px;
   height: 18px;
   margin: 0;
@@ -53,6 +57,16 @@ e-choice-list > label > input {
 e-choice-list > label > input {
   appearance: none;
   cursor: pointer;
+}
+e-choice-list > option[help]::after {
+  content: attr(help);
+}
+e-choice-list > option[help]::after,
+e-choice-list > label > [data-part='help'] {
+  grid-area: 2 / 2;
+  color: var(--e-color-fg2);
+  font-size: var(--e-font-size-caption);
+  line-height: var(--e-line-height-meta);
 }
 /* The chosen circle is a 6 px dot in the primary ring. */
 e-choice-list > option[selected]::before,

@@ -11,7 +11,8 @@
       <h1>Empty state</h1>
       <p class="lede">
         <code>e-empty-state</code> fills a page or card that has nothing to show yet. Give it a <code>heading</code>, a
-        line of text in a <code>p</code>, and an action with <code>slot="action"</code>.
+        line of text in a <code>p</code>, and an action with <code>slot="action"</code>. An <code>icon</code> from the
+        sprite sits above the heading: <code>cloud-off</code> for an error, <code>lock</code> for no access.
       </p>
       <docs-example caption="Heading and text" stack>
         <e-empty-state heading="No orders yet">
@@ -24,7 +25,16 @@
           <e-button slot="action" tone="primary">Add product</e-button>
         </e-empty-state>
       </docs-example>
+      <docs-example caption="With an icon" stack>
+        <e-empty-state icon="cloud-off" heading="Orders did not load">
+          <p>Check the connection and try again.</p>
+          <e-button slot="action">Try again</e-button>
+        </e-empty-state>
+      </docs-example>
       <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-empty-state icon="lock" heading="এই পাতা দেখার অনুমতি নেই">
+          <p>দোকানের মালিককে অনুমতি দিতে বলুন।</p>
+        </e-empty-state>
         <e-empty-state heading="এখনও কোনো অর্ডার নেই">
           <p>আপনার দোকানের অর্ডার এখানে দেখা যাবে।</p>
           <e-button slot="action" tone="primary">পণ্য যোগ করুন</e-button>

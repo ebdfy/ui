@@ -4,7 +4,9 @@
 /**
  * A button runs one action. Use one primary button for the main action on a page or card.
  * @tag e-button
- * @attr {'primary' | 'plain'} tone - `primary` for the main action, `plain` for a quiet one; none for the default.
+ * @attr {'primary' | 'plain' | 'danger'} tone - `primary` for the main action, `plain` for a quiet one, `danger` for one that deletes or cancels; none for the default.
+ * @attr {boolean} fill - With `tone="danger"`, a solid red button, for the action that confirms a delete.
+ * @attr {boolean} icon - A square button that shows only an `e-icon`; name it with `aria-label`.
  * @attr {'sm' | 'lg'} size - Small or large; none for medium. Every size is 44 px tall on a phone.
  * @attr {boolean} disabled - Stops presses, and shows it.
  * @attr {'button' | 'submit' | 'reset'} type - What the button does in a form, as a native button's type.

@@ -31,10 +31,10 @@ async function geometry(page: Page) {
 }
 
 function expectInsetGeometry({ panel, title, frame }: Awaited<ReturnType<typeof geometry>>) {
-  expect(panel.x).toBeCloseTo(228, 0)
+  expect(panel.x).toBeCloseTo(232, 0)
   expect(panel.x + panel.width).toBeCloseTo(1430, 0)
   expect(panel.y + panel.height).toBeCloseTo(890, 0)
-  expect(panel.y).toBeCloseTo(58, 0)
+  expect(panel.y).toBeCloseTo(56, 0)
   expect(frame.x).toBeCloseTo(panel.x, 0)
   expect(frame.x + frame.width).toBeCloseTo(panel.x + panel.width, 0)
   expect(frame.y).toBeCloseTo(title.y + title.height, 0)
@@ -70,9 +70,9 @@ test('at 1440 the menu, store and search sit on the navy frame and the panel is 
   const orders = entry('Orders')
   expect(await orders.getAttribute('aria-current')).toBe('page')
   expect(await orders.evaluate((element) => getComputedStyle(element).backgroundColor)).toBe('oklch(0.89 0.17 125)')
-  expect(await page.getByRole('searchbox').isVisible()).toBe(true)
+  expect(await page.locator('[slot="actions"] > .e-search-button').isVisible()).toBe(true)
   expect(await background(page, 'e-admin-frame')).toBe('oklch(0.22 0.03 262)')
-  expect(await background(page, 'e-admin-panel')).toBe('oklch(0.99 0.002 262)')
+  expect(await background(page, 'e-admin-panel')).toBe('oklch(0.968 0.004 262)')
 })
 
 test('the frame draws whole before v2-host.js runs, and the script moves no box', async () => {
@@ -147,22 +147,17 @@ test.for(['en', 'bn'] as const)('at 360 in %s the frame takes the phone layout',
   expect(overflow).toEqual({ scrollWidth: 360, past: [] })
 })
 
-// The top bar's search, language switch and Notifications, and the title bar's chevron.
-const controls = ['[slot="search"]', '[slot="actions"] > [data-language]', '[aria-label="Notifications"]']
+// The top bar's search and Notifications, and the title bar's chevron.
+const controls = ['[slot="actions"] > .e-search-button', '[aria-label="Notifications"]']
 
 const size = (page: Page, selector: string) =>
   box(page, selector).then(({ width, height }) => [Math.round(width), Math.round(height)])
 
-test('at 360 the search, language switch, Notifications and title chevron are 44 px targets', async () => {
+test('at 360 the search, Notifications and title chevron are 44 px targets', async () => {
   const { page } = await pages.open(`${pages.ui}/playground`, 360, phone)
   await page.locator('.e-app-pages-button').waitFor({ state: 'visible' })
-  // The search is a bar as wide as the room allows, so only its height is 44.
-  expect((await size(page, controls[0]!))[1]).toBe(44)
-  // The language switch is a word, as wide as the word needs.
-  const language = await size(page, controls[1]!)
-  expect(language[1]).toBe(44)
-  expect(language[0]).toBeGreaterThanOrEqual(44)
-  expect(await size(page, controls[2]!)).toEqual([44, 44])
+  expect(await size(page, controls[0]!)).toEqual([44, 44])
+  expect(await size(page, controls[1]!)).toEqual([44, 44])
   // The chevron keeps its drawn 36 px and takes 44 px of hit area: taps 21 px from its centre land on it.
   const reach = await page.locator('.e-app-pages-button').evaluate((button) => {
     const { left, top, width, height } = button.getBoundingClientRect()
@@ -179,15 +174,14 @@ test('at 360 the search, language switch, Notifications and title chevron are 44
   expect((await box(page, 'e-admin-panel')).y).toBeCloseTo(56, 0)
 })
 
-test('at 1440 the search, language switch and Notifications keep their 36 px', async () => {
+test('at 1440 the search and Notifications keep their 36 px', async () => {
   const { page } = await pages.open(`${pages.ui}/playground`, 1440, desktop)
-  expect((await size(page, controls[0]!))[1]).toBe(36)
-  expect((await size(page, controls[1]!))[1]).toBe(36)
-  expect(await size(page, controls[2]!)).toEqual([36, 36])
+  expect(await size(page, controls[0]!)).toEqual([36, 36])
+  expect(await size(page, controls[1]!)).toEqual([36, 36])
 })
 
 test('in dark the frame and the panel take their dark values', async () => {
   const { page } = await pages.open(`${pages.ui}/playground`, 1440, { ...desktop, colorScheme: 'dark' })
-  expect(await background(page, 'e-admin-frame')).toBe('oklch(0.13 0.02 262)')
-  expect(await background(page, 'e-admin-panel')).toBe('oklch(0.18 0.02 262)')
+  expect(await background(page, 'e-admin-frame')).toBe('oklch(0.115 0.02 262)')
+  expect(await background(page, 'e-admin-panel')).toBe('oklch(0.165 0.02 262)')
 })

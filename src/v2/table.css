@@ -6,6 +6,8 @@ e-table {
   --e-count: 1;
   display: grid;
   grid-template-columns: var(--e-columns, repeat(var(--e-count), auto));
+  /* The first row is the head, 36 px; a table with no head still gets 44 px from its cells' min-height. */
+  grid-template-rows: minmax(36px, auto);
   grid-auto-rows: minmax(var(--e-size-row), auto);
   min-width: 0;
   overflow-x: auto;
@@ -41,6 +43,13 @@ e-table:has(> e-row > :nth-child(9)) {
 e-table:has(> e-row > :nth-child(10)) {
   --e-count: 10;
 }
+/* A table with a columns attribute reads it here, so its columns are drawn before the script copies it.
+   Only where typed attr() is read: elsewhere the declaration would turn the columns to none. */
+@supports (grid-template-columns: attr(columns type(*))) {
+  e-table[columns] {
+    grid-template-columns: var(--e-columns, attr(columns type(*)));
+  }
+}
 e-row {
   display: contents;
 }
@@ -71,8 +80,47 @@ e-row > [tone='subdued'] {
   color: var(--e-color-fg2);
 }
 e-row[head] > * {
+  min-height: 36px;
+  background: var(--e-color-surface);
+  color: var(--e-color-fg3);
+  font-size: var(--e-font-size-caption);
+  font-weight: 500;
+}
+/* The hover and selected tints carry no weight, so a part built on e-table, such as the index table,
+   keeps its own row look. */
+:where(e-row:not([head]):hover > *) {
   background: var(--e-color-surface-2);
-  color: var(--e-color-fg2);
-  font-size: var(--e-font-size-meta);
-  font-weight: var(--e-font-weight-semibold);
+}
+:where(e-row[selected] > *) {
+  background: var(--e-color-row-selected);
+}
+:where(e-row[selected]:hover > *) {
+  background: var(--e-color-row-selected-hover);
+}
+/* A cell holding a stack of lines starts at the top, so the lines do not centre against single-line cells. */
+e-row > :has(> e-stack) {
+  align-items: flex-start;
+  padding-block: 10px;
+}
+/* A wrap cell lets its text run onto several lines and grows the row; the other cells of the row stretch
+   to the same height, so a selected row's tint covers all of it. */
+e-row > [wrap] {
+  align-items: flex-start;
+  padding-block: 10px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+/* A clip cell holds one span, which the cell cuts with an ellipsis. */
+e-row > [clip] > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (min-width: 600px) {
+  e-row > :first-child {
+    padding-inline-start: 20px;
+  }
+  e-row > :last-child {
+    padding-inline-end: 20px;
+  }
 }

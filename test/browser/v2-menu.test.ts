@@ -35,7 +35,7 @@ const menu = `<e-menu><e-button slot="trigger">More</e-button><e-menu-item>Print
 test('before the script the menu is its trigger, and the items take no room', async () => {
   await page.viewport(800, 600)
   const tag = mount(`<p>Before ${menu}</p>`).querySelector('e-menu')!
-  expect(box(tag).height).toBe(36)
+  expect(box(tag).height).toBe(32)
   for (const item of tag.querySelectorAll('e-menu-item')) expect(box(item).height).toBe(0)
 })
 
@@ -78,6 +78,36 @@ test('the panel sits just below the trigger', async () => {
   expect(panel.y).toBeGreaterThanOrEqual(trigger.y + trigger.height)
   expect(panel.y).toBeLessThan(trigger.y + trigger.height + 12)
   expect(Math.abs(panel.x - trigger.x)).toBeLessThanOrEqual(1)
+})
+
+test('at 1440 px a trigger in the right half end-aligns its panel, one in the left half start-aligns', async () => {
+  await page.viewport(1440, 900)
+  for (const [left, edge] of [
+    [1260, 'right'],
+    [100, 'left'],
+  ] as const) {
+    mount(
+      `<e-menu><e-button slot="trigger" style="position: fixed; top: 100px; left: ${left}px; width: 80px">More</e-button><e-menu-item>Print</e-menu-item></e-menu>`,
+    )
+    await userEvent.click(page.getByRole('button', { name: 'More' }))
+    const trigger = document.querySelector('e-button')!.getBoundingClientRect()
+    const panel = document.querySelector('[role="menu"]')!.getBoundingClientRect()
+    const [panelEdge, triggerEdge, expected] =
+      edge === 'right' ? [panel.right, trigger.right, 1340] : [panel.left, trigger.left, 100]
+    expect(Math.abs(triggerEdge - expected!)).toBeLessThanOrEqual(1)
+    expect(Math.abs(panelEdge! - expected!)).toBeLessThanOrEqual(1)
+    document.body.replaceChildren()
+  }
+})
+
+test('the open panel wears the pop shadow and a danger item is the danger colour', async () => {
+  await page.viewport(800, 600)
+  mount(`${menu}<i data-probe style="box-shadow: var(--e-shadow-pop); color: var(--e-color-danger)"></i>`)
+  await userEvent.click(page.getByRole('button', { name: 'More' }))
+  const probe = getComputedStyle(document.querySelector('[data-probe]')!)
+  expect(probe.boxShadow).not.toBe('none')
+  expect(getComputedStyle(document.querySelector('[role="menu"]')!).boxShadow).toBe(probe.boxShadow)
+  expect(getComputedStyle(document.querySelector('e-menu-item[tone="danger"]')!).color).toBe(probe.color)
 })
 
 test('arrow keys move focus and wrap, Home and End jump', async () => {

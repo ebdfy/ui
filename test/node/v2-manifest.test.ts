@@ -16,7 +16,7 @@ const element = (tag: string) => declarations.find((d) => d.tagName === tag)
 test('e-button names its tones and sizes as the values they allow', () => {
   const button = element('e-button')
   const type = (name: string) => button?.attributes?.find((a) => a.name === name)?.type?.text
-  expect(type('tone')).toBe("'primary' | 'plain'")
+  expect(type('tone')).toBe("'primary' | 'plain' | 'danger'")
   expect(type('size')).toBe("'sm' | 'lg'")
   expect(type('disabled')).toBe('boolean')
   expect(button?.description).toBeTruthy()
@@ -27,7 +27,7 @@ test('e-text-field, e-table and e-row are in the manifest', () => {
     expect.arrayContaining(['label', 'name', 'value', 'type', 'error']),
   )
   expect(element('e-table')?.attributes?.map((a) => a.name)).toEqual(expect.arrayContaining(['label', 'columns']))
-  expect(element('e-row')?.attributes?.map((a) => a.name)).toEqual(['head'])
+  expect(element('e-row')?.attributes?.map((a) => a.name)).toEqual(['head', 'selected'])
 })
 
 test('v1 tags stay out of the v2 manifest', () => {

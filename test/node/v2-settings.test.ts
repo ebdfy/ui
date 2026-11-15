@@ -1,4 +1,4 @@
-// The sample app's v2 order settings: each section's heading and help in the left third and its card
+// The sample app's v2 order settings: each section's heading and help in a 260 px column and its card
 // on the right on a wide screen, the help above the card on a phone, and Bangla help on a tall line.
 import { afterAll, beforeAll, expect, test } from 'vitest'
 
@@ -33,13 +33,13 @@ async function settings(width: number, lang: 'en' | 'bn' = 'en') {
   return { page, errors, section, boxes }
 }
 
-test('at 1440 px Delivery charges shows its help in the left third and its card on the right', async () => {
+test('at 1440 px Delivery charges shows its help in the 260 px column and its card on the right', async () => {
   const { errors, section, boxes } = await settings(1440)
   expect(await section.locator(':scope > h2').textContent()).toBe('Delivery charges')
-  const third = boxes.section.left + boxes.section.width / 3
+  const column = boxes.section.left + 260
   expect(boxes.help.left).toBe(boxes.section.left)
-  expect(boxes.help.right).toBeLessThanOrEqual(third)
-  expect(boxes.card.left).toBeGreaterThan(third)
+  expect(boxes.help.right).toBe(column)
+  expect(boxes.card.left).toBeGreaterThan(column)
   expect(boxes.card.right).toBe(boxes.section.right)
   expect(boxes.card.top).toBe(boxes.heading.top)
   expect(errors).toEqual([])

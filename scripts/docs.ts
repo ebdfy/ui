@@ -1,5 +1,5 @@
 // Puts the docs frame around a docs page's <main>, in development and in the build. Every docs page
-// gets v2's frame; the playground keeps its own.
+// gets v2's frame; the playground and its Admin pages keep their own.
 import { frameV2Page } from './docs-v2.ts'
 
 // The page a site/ui file serves: components/button.html is /components/button, index.html is /.
@@ -8,6 +8,6 @@ export function pathOf(file: string): string {
 }
 
 export function framePage(html: string, path: string): string {
-  if (path === '/playground') return html
+  if (path === '/playground' || path.startsWith('/playground/')) return html
   return frameV2Page(html, path)
 }

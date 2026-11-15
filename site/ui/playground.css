@@ -1,0 +1,28 @@
+/* What the playground's pages add to the Admin's chrome: its Hang link, and the Admin page in the
+   panel. */
+
+/* On a phone the frame's top bar has no room for the Hang link. */
+@media (width < 600px) {
+  #hang {
+    display: none;
+  }
+}
+
+/* An Admin page scrolls inside the panel, under its title bar, at the width of a form. */
+e-admin-panel > .admin-page {
+  overflow: auto;
+  padding: 4px 28px 48px;
+}
+.admin-page > form {
+  display: grid;
+  gap: var(--e-space-6);
+  max-inline-size: var(--e-page-width-form);
+}
+.admin-page e-card {
+  row-gap: var(--e-space-4);
+}
+@media (width < 1040px) {
+  e-admin-panel > .admin-page {
+    padding: 4px 16px 32px;
+  }
+}

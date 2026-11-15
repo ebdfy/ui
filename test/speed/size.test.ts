@@ -1,5 +1,5 @@
 // Size: v2.css and v2.js gzipped against their budgets, and every byte the first Admin screen fetches,
-// the playground with the sample app's orders list, against 120 KB.
+// the playground's Settings > Store, against 120 KB.
 import { randomBytes } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -55,49 +55,48 @@ test('a v2.css padded by 30 KB is over its budget', () => {
   expect(over(lines).map(({ what }) => what)).toEqual(['v2.css, gzipped'])
 })
 
-// Every response the playground and its framed orders page fetch, by its bytes on the wire. Noto Sans
-// Bengali is left out: the phones this counts for draw Bangla in their own copy. The test
-// server caches nothing, so v2.css and Manrope count once for the Admin and again for the app's frame,
-// where a phone's cache would answer the second; the count errs high, never low.
+// Every response the first Admin screen fetches, by its bytes on the wire: the playground's Settings >
+// Store, an Admin page drawn in the panel with no app frame. Noto Sans Bengali is left out: the
+// phones this counts for draw Bangla in their own copy. A file fetched twice counts once, as a
+// phone's cache would answer the second.
 test.for(['en', 'bn'])('the first Admin screen in %s is within 120 KB', async (lang) => {
   const context = await browser.newContext({ viewport: { width: 360, height: 780 } })
-  await context.addInitScript((chosen) => {
-    // The Admin's language, which the app follows, and the app's own for its first paint.
-    localStorage.setItem('ebdfy-playground-lang', chosen)
-    localStorage.setItem('ebdfy-sample-lang', chosen)
-  }, lang)
+  await context.addInitScript((chosen) => localStorage.setItem('ebdfy-playground-lang', chosen), lang)
   const page = await context.newPage()
-  const fetched: { url: string; bytes: number }[] = []
+  const fetched = new Map<string, number>()
   page.on('requestfinished', async (request) => {
     const { responseBodySize } = await request.sizes()
-    fetched.push({ url: request.url(), bytes: responseBodySize })
+    const path = new URL(request.url()).pathname
+    fetched.set(path, Math.max(fetched.get(path) ?? 0, responseBodySize))
   })
-  await page.goto(`${site.ui}/playground`, { waitUntil: 'networkidle' })
+  await page.goto(`${site.ui}/playground/settings/store`, { waitUntil: 'networkidle' })
   await context.close()
-  const counted = fetched.filter(({ url }) => !url.includes('noto-sans-bengali'))
-  const lines: Line[] = counted.map(({ url, bytes }) => ({
-    what: `  ${new URL(url).pathname}`,
+  const counted = [...fetched].filter(([path]) => !path.includes('noto-sans-bengali'))
+  const lines: Line[] = counted.map(([path, bytes]) => ({
+    what: `  ${path}`,
     value: bytes,
     budget: Number.POSITIVE_INFINITY,
     unit: 'bytes',
   }))
   const total: Line = {
-    what: `first Admin screen, ${lang}, ${counted.length} responses`,
-    value: counted.reduce((sum, { bytes }) => sum + bytes, 0),
+    what: `first Admin screen, ${lang}, ${counted.length} files`,
+    value: counted.reduce((sum, [, bytes]) => sum + bytes, 0),
     budget: budgets.firstScreen,
     unit: 'bytes',
   }
   console.log(report([total, ...lines]))
-  expect(counted.map(({ url }) => new URL(url).pathname)).toEqual(
+  const paths = counted.map(([path]) => path)
+  expect(paths).toEqual(
     expect.arrayContaining([
-      '/playground',
+      '/playground/settings/store',
       '/ui/v2.css',
+      '/ui/v2-host.css',
       '/ui/v2-host.js',
-      '/orders',
       '/ui/v2.js',
       '/ui/icons.svg',
-      '/ui/fonts/manrope-latin-wght-normal.woff2',
+      '/ui/fonts/geist-latin-wght-normal.woff2',
     ]),
   )
+  expect(paths.filter((path) => path.includes('manrope'))).toEqual([])
   expect(over([total])).toEqual([])
 })

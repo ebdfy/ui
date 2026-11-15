@@ -11,7 +11,10 @@ import type { Plugin } from 'vite'
 
 import { createPlaygroundApi, type Jwks, verifyIdToken } from '../src/playground-api.ts'
 import { sitePage, siteRedirect } from '../src/site-routes.ts'
+import { panelHeader } from '../src/v2-host-panel.ts'
+import { adminChrome } from './admin-chrome.ts'
 import { framePage, pathOf } from './docs.ts'
+import { storeFake, storePath } from './store-fake.ts'
 
 export interface Origins {
   cdn: string
@@ -28,8 +31,13 @@ export const production: Origins = {
 const uiSite = fileURLToPath(new URL('../site/ui/', import.meta.url))
 
 // file is the page's path on disk; a docs page under site/ui also gets the docs frame.
+// A playground page names the Admin's chrome, drawn for its own address.
 export function fillPage(html: string, origins: Origins, file = ''): string {
-  if (file.startsWith(uiSite)) html = framePage(html, pathOf(file.slice(uiSite.length)))
+  if (file.startsWith(uiSite)) {
+    const path = pathOf(file.slice(uiSite.length))
+    html = framePage(html, path)
+    if (html.includes('%EB_ADMIN_CHROME%')) html = html.replace('%EB_ADMIN_CHROME%', adminChrome(path))
+  }
   return html
     .replaceAll('%EB_CDN%', origins.cdn)
     .replaceAll('%EB_SAMPLE_APP%', origins.sampleApp)
@@ -43,8 +51,8 @@ export function bundleSheet(name: 'v2' | 'v2-host', minify: boolean): Uint8Array
   return bundle({ filename: `${src}${name}.css`, minify }).code
 }
 
-// v2.css and the fonts it names, answered at the paths the CDN has them, so a page's preload names
-// the same URL in development as in production.
+// v2.css, the fonts it names and the ebdfy mark, answered at the paths the CDN has them, so a page
+// names the same URL in development as in production.
 function v2Files(req: IncomingMessage, res: ServerResponse, next: () => void) {
   const path = req.url?.split('?')[0] ?? ''
   const sheet = /^\/ui\/(v2|v2-host)\.css$/.exec(path)?.[1]
@@ -53,11 +61,31 @@ function v2Files(req: IncomingMessage, res: ServerResponse, next: () => void) {
     res.writeHead(200, { 'content-type': 'text/css', 'cache-control': 'no-cache' })
     return res.end(bundleSheet(sheet, false))
   }
+  if (path === '/ui/ebdfy-mark.svg') {
+    res.writeHead(200, { 'content-type': 'image/svg+xml' })
+    return res.end(readFileSync(`${src}v2/ebdfy-mark.svg`))
+  }
   if (font && existsSync(`${src}fonts/${font}`)) {
     res.writeHead(200, { 'content-type': 'font/woff2', 'access-control-allow-origin': '*' })
     return res.end(readFileSync(`${src}fonts/${font}`))
   }
   next()
+}
+
+// The HTML file a page's path names under a site's folder, if there is one.
+function pageFile(root: string, path: string): string | null {
+  if (!path.startsWith('/') || path.includes('..') || /\.\w+$/.test(path)) return null
+  for (const file of [`${root}${path}.html`, `${root}${path.replace(/\/$/, '')}/index.html`]) {
+    if (existsSync(file)) return file
+  }
+  return null
+}
+
+// A page's title and its e-admin-panel, which is all a move between Admin pages takes.
+export function panelOf(html: string): string {
+  const title = /<title>[\s\S]*?<\/title>/.exec(html)?.[0] ?? ''
+  const panel = /<e-admin-panel\b[\s\S]*<\/e-admin-panel>/.exec(html)?.[0] ?? ''
+  return `${title}\n${panel}`
 }
 
 // In development the pages load v2's scripts and stylesheets, which this serves from the source.
@@ -90,13 +118,40 @@ export function pagesPlugin(origins: Origins): Plugin {
           }
         })
       }
+      // The playground's Store page answers a save, as the Admin's Worker will.
+      if (folder === 'ui') {
+        const file = `${server.config.root}${storePath}.html`
+        server.middlewares.use(
+          storeFake(
+            () => server.transformIndexHtml(file.slice(server.config.root.length), readFileSync(file, 'utf8')),
+            panelOf,
+          ),
+        )
+      }
       server.middlewares.use((req, res, next) => {
         const [path = '', query] = (req.url ?? '').split('?')
         const moved = siteRedirect(folder, path, query === undefined ? '' : `?${query}`)
         if (moved) return res.writeHead(301, { location: moved }).end()
         const page = sitePage(folder, path)
         if (page) req.url = `${page}.html${query === undefined ? '' : `?${query}`}`
-        next()
+        // One address answers a whole page or, asked with the panel header, its panel alone.
+        const file = pageFile(server.config.root, page ?? path)
+        if (!file) return next()
+        res.setHeader('vary', panelHeader)
+        if (!req.headers[panelHeader.toLowerCase()]) return next()
+        const answer = async () => {
+          try {
+            const html = await server.transformIndexHtml(
+              file.slice(server.config.root.length),
+              readFileSync(file, 'utf8'),
+            )
+            res.writeHead(200, { 'content-type': 'text/html', 'cache-control': 'no-store', vary: panelHeader })
+            res.end(panelOf(html))
+          } catch (error) {
+            next(error instanceof Error ? error : new Error(String(error)))
+          }
+        }
+        void answer()
       })
     },
     resolveId(id) {

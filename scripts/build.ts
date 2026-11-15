@@ -35,11 +35,12 @@ export async function buildCss(name: 'v2' | 'v2-host', outDir: string): Promise<
 }
 
 // v2.js fetches the icon sprite from icons.svg beside itself, and the district picker's upazilas
-// from areas.json.
+// from areas.json. The ebdfy mark sits beside them for the sign-in pages.
 export async function copySprite(outDir: string): Promise<void> {
   await mkdir(outDir, { recursive: true })
   await cp(`${root}src/v2/icons.svg`, `${outDir}/icons.svg`)
   await cp(`${root}src/v2/areas.json`, `${outDir}/areas.json`)
+  await cp(`${root}src/v2/ebdfy-mark.svg`, `${outDir}/ebdfy-mark.svg`)
 }
 
 // What the three hosts serve, under out/cdn/ui, out/ui and out/sample-app, with the pages naming the

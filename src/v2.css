@@ -15,8 +15,16 @@
 @import 'v2/table.css' layer(e);
 @import 'v2/badge.css' layer(e);
 @import 'v2/metrics.css' layer(e);
+@import 'v2/todo.css' layer(e);
+@import 'v2/summary.css' layer(e);
+@import 'v2/timeline.css' layer(e);
+@import 'v2/chips.css' layer(e);
 @import 'v2/thumbnail.css' layer(e);
+@import 'v2/line-item.css' layer(e);
 @import 'v2/avatar.css' layer(e);
+@import 'v2/person.css' layer(e);
+@import 'v2/contact.css' layer(e);
+@import 'v2/meter.css' layer(e);
 @import 'v2/tabs.css' layer(e);
 @import 'v2/pagination.css' layer(e);
 @import 'v2/empty-state.css' layer(e);
@@ -48,12 +56,14 @@
 /* The fonts. Their url()s sit here, not in a file under v2/, because the build bundles the imports
    without rebasing their url()s, and fonts/ sits beside v2.css in the source and on the CDN. */
 @layer e {
+  /* Geist's figures are even at 13 px and its tabular set has no gaps, where Manrope's had them. The
+     Manrope file stays in fonts/, as the frozen 2.0 pins still name it. */
   @font-face {
-    font-family: 'e Manrope';
+    font-family: 'e Geist';
     font-style: normal;
-    font-weight: 200 800;
+    font-weight: 100 900;
     font-display: swap;
-    src: url(fonts/manrope-latin-wght-normal.woff2) format('woff2');
+    src: url(fonts/geist-latin-wght-normal.woff2) format('woff2');
     unicode-range:
       U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F,
       U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
@@ -66,8 +76,8 @@
     font-style: normal;
     font-weight: 100 900;
     font-display: swap;
-    /* Bangla's headline stands at 0.625 em and Manrope's x-height at 0.547 em, so Bangla reads as
-       large unscaled. Matching them (87.5%) would draw 13 px meta text like 11.4 px. */
+    /* Bangla's headline stands at 0.625 em, above Geist's x-height, so Bangla reads as large
+       unscaled. Matching them would draw 13 px meta text like 11 px. */
     size-adjust: 100%;
     src:
       local('Noto Sans Bengali'),

@@ -11,8 +11,9 @@
       <h1>Metrics</h1>
       <p class="lede">
         <code>e-metrics</code> shows two to four numbers. Each child is one metric: a <code>slot="label"</code>, a
-        <code>strong</code> number, and an optional <code>slot="change"</code> with <code>tone="up"</code> or
-        <code>tone="down"</code>.
+        <code>strong</code> number, and an optional <code>slot="change"</code> with a <code>tone</code> of
+        <code>up</code>, <code>down</code>, <code>success</code> or <code>critical</code>. Inside an
+        <code>e-card</code> the metrics draw no border.
       </p>
       <docs-example caption="Two metrics" stack>
         <e-metrics>
@@ -47,6 +48,27 @@
             <strong>2.1%</strong>
           </div>
         </e-metrics>
+      </docs-example>
+      <docs-example caption="In a card, with tones" stack>
+        <e-card heading="Today">
+          <e-metrics>
+            <div>
+              <span slot="label">Orders</span>
+              <strong>38</strong>
+              <span slot="change" tone="success">+12%</span>
+            </div>
+            <div>
+              <span slot="label">Sales</span>
+              <strong>৳41,500</strong>
+              <span slot="change" tone="critical">-4%</span>
+            </div>
+            <div>
+              <span slot="label">Return rate</span>
+              <strong>2.1%</strong>
+              <span slot="change">7 days</span>
+            </div>
+          </e-metrics>
+        </e-card>
       </docs-example>
       <docs-example caption="বাংলায়" lang="bn" stack>
         <e-metrics>

@@ -1,8 +1,14 @@
 // e-text-field, e-text-area and e-search-field: build the native <input name> or <textarea name>
-// inside the tag, once, so it joins its form. The tag's attributes are the API; they pass to the
-// control when it is built, and a new label or placeholder, as a page switching language sets, passes
-// on after. An error attribute shows its message under the control.
-const passed = ['name', 'value', 'placeholder', 'type', 'inputmode', 'required', 'autocomplete']
+// inside the tag, once, so it joins its form, or adopt the one written inside it, so a form shows its
+// fields and posts before the script and with it off. The tag's attributes are the API; they pass to
+// the control when it is built, or fill what a written one leaves out, and a new label or placeholder,
+// as a page switching language sets, passes on after. An error attribute shows its message under the
+// control, and goes when the person types in it.
+import type { Lang } from '../format.ts'
+import { langOf } from '../lang.ts'
+import { onLangChange } from './speech.ts'
+
+const passed = ['name', 'value', 'placeholder', 'type', 'inputmode', 'required', 'autocomplete', 'rows']
 
 let count = 0
 
@@ -37,7 +43,9 @@ type Control = HTMLInputElement | HTMLTextAreaElement
  * @attr placeholder - A hint shown while the field is empty.
  * @attr {boolean} required - The form will not submit while the field is empty.
  * @attr autocomplete - What the browser may fill in, as a native input's autocomplete.
- * @attr error - A message shown under the field, which then reads invalid.
+ * @attr error - A message shown under the field, which then reads invalid. Typing in the field clears it.
+ * @slot - Optional: the field's own `<input>` (or `<textarea>`), written inside so the form works before
+ *   the script. The script adopts it; the tag's attributes fill only what it leaves out.
  */
 export abstract class EField extends HTMLElement {
   static observedAttributes = ['label', 'placeholder', 'error']
@@ -55,17 +63,24 @@ export abstract class EField extends HTMLElement {
 
   connectedCallback(): void {
     if (this.#input) return
-    const input = this.create()
+    const made = this.create()
+    const written = this.querySelector<Control>(`:scope > ${made.localName}`)
+    const input = written ?? made
     for (const name of passed) {
       const value = this.getAttribute(name)
-      // A textarea holds its value as text, and has no type.
+      // A textarea holds its value as text, and has no type; a written control keeps its own.
       if (value === null || (input instanceof HTMLTextAreaElement && name === 'type')) continue
+      if (written && (input.hasAttribute(name) || (name === 'value' && input instanceof HTMLTextAreaElement))) continue
       if (input instanceof HTMLTextAreaElement && name === 'value') input.value = value
       else input.setAttribute(name, value)
     }
     this.#input = input
     this.build(input, this.getAttribute('label') ?? '')
     markError(this, input)
+    // Typing corrects the field, so its error goes; a script setting the value is no correction.
+    input.addEventListener('input', (event) => {
+      if (event.isTrusted) this.removeAttribute('error')
+    })
   }
 
   attributeChangedCallback(name: string, _old: string | null, value: string | null): void {
@@ -93,11 +108,19 @@ export abstract class EField extends HTMLElement {
  */
 export class ETextField extends EField {
   protected build(input: Control, text: string): void {
-    input.id = `e-field-${++count}`
+    // A written input keeps its id, and a written label stays the one label naming it.
+    if (!input.id) input.id = `e-field-${++count}`
+    const written = this.querySelector<HTMLLabelElement>(':scope > label')
+    if (written) {
+      written.htmlFor = input.id
+      return
+    }
     const label = document.createElement('label')
     label.htmlFor = input.id
     label.textContent = text
-    this.append(label, input)
+    // A written input stays where it is, so it is the same element the page holds.
+    if (input.parentElement === this) input.before(label)
+    else this.append(label, input)
   }
 
   protected relabel(input: Control, text: string): void {
@@ -106,8 +129,27 @@ export class ETextField extends EField {
   }
 }
 
+const months = {
+  en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  bn: ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'],
+}
+
+// Bangla digits are U+09E6 to U+09EF, in order; a year takes no grouping.
+const bangla = (text: string) => text.replace(/\d/g, (d) => String.fromCharCode(0x09e6 + Number(d)))
+
+// A YYYY-MM-DD day as people here write it, day month year: "1 Nov 2026", "১ নভেম্বর ২০২৬".
+export function day(value: string, lang: Lang): string {
+  const parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value)
+  if (!parts) return ''
+  const text = `${Number(parts[3])} ${months[lang][Number(parts[2]) - 1]} ${parts[1]}`
+  return lang === 'bn' ? bangla(text) : text
+}
+
+const own = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!
+
 /**
- * A date field picks a day with the browser's own date control. Its native `<input type="date">` joins the form.
+ * A date field picks a day. It reads day month year in the page's language, "1 Nov 2026", over the
+ * browser's own `<input type="date">`, which joins the form and opens the calendar on a press.
  * @tag e-date-field
  * @attr label - The label above the field.
  * @attr name - The name the field's value has in its form.
@@ -117,10 +159,56 @@ export class ETextField extends EField {
  * @attr error - A message shown under the field, which then reads invalid.
  */
 export class EDateField extends ETextField {
+  #stop: (() => void) | undefined
+  #draw: (() => void) | undefined
+
   protected override create(): Control {
     const input = document.createElement('input')
     input.type = 'date'
     return input
+  }
+
+  protected override build(input: Control, text: string): void {
+    super.build(input, text)
+    if (!(input instanceof HTMLInputElement)) return
+    input.type = 'date'
+    const shown = document.createElement('span')
+    shown.dataset.eDate = ''
+    shown.setAttribute('aria-hidden', 'true')
+    input.after(shown)
+    const draw = () => {
+      shown.textContent = day(own.get!.call(input), langOf(this))
+    }
+    this.#draw = draw
+    // A day set without a pick, as a script or the save bar's Discard sets one, reads afresh too.
+    Object.defineProperty(input, 'value', {
+      get: () => own.get!.call(input),
+      set: (value: string) => {
+        own.set!.call(input, value)
+        draw()
+      },
+    })
+    input.addEventListener('input', draw)
+    input.addEventListener('change', draw)
+    // A press anywhere on the box opens the calendar, not only on its icon.
+    input.addEventListener('click', () => {
+      try {
+        input.showPicker()
+      } catch {}
+    })
+    draw()
+  }
+
+  // The day follows a switch of the page's language while the field is in the page.
+  override connectedCallback(): void {
+    super.connectedCallback()
+    const draw = this.#draw
+    if (draw && !this.#stop) this.#stop = onLangChange(draw)
+  }
+
+  disconnectedCallback(): void {
+    this.#stop?.()
+    this.#stop = undefined
   }
 }
 
@@ -136,6 +224,7 @@ export class EDateField extends ETextField {
  * @attr inputmode - The keyboard a phone shows, as a native textarea's inputmode.
  * @attr {boolean} required - The form will not submit while the field is empty.
  * @attr autocomplete - What the browser may fill in, as a native textarea's autocomplete.
+ * @attr {number} rows - How many lines the field opens tall; 4 when left out.
  * @attr error - A message shown under the field, which then reads invalid.
  */
 export class ETextArea extends ETextField {
@@ -163,7 +252,8 @@ export class ESearchField extends EField {
     input.setAttribute('aria-label', label)
     const icon = document.createElement('e-icon')
     icon.setAttribute('name', 'search')
-    this.append(icon, input)
+    if (input.parentElement === this) input.before(icon)
+    else this.append(icon, input)
   }
 
   protected relabel(input: Control, label: string): void {

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Person · ebdfy design system v2</title>
+  </head>
+  <body>
+    <main>
+      <h1>Person</h1>
+      <p class="lede">
+        <code>e-person</code> shows a person in one row: an <code>e-avatar</code>, the name, and one line of their
+        history in <code>slot="meta"</code>.
+      </p>
+      <docs-example caption="An order's customer" stack>
+        <e-person
+          ><e-avatar name="Rahima Akter"></e-avatar><a href="#rahima">Rahima Akter</a
+          ><span slot="meta">4 orders · ৳9,840 spent</span></e-person
+        >
+      </docs-example>
+      <docs-example caption="Without a link" stack>
+        <e-person
+          ><e-avatar name="Tanvir Hasan"></e-avatar><span>Tanvir Hasan</span
+          ><span slot="meta">First order</span></e-person
+        >
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-person
+          ><e-avatar name="রহিমা আক্তার"></e-avatar><a href="#rahima">রহিমা আক্তার</a
+          ><span slot="meta">৪টি অর্ডার · ৳৯,৮৪০ খরচ</span></e-person
+        >
+      </docs-example>
+    </main>
+  </body>
+</html>

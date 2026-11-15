@@ -78,7 +78,7 @@ test.for(statuses)('/playground/orders/$order opens order #$order, $status', asy
   expect(appFrame(page)?.url()).toBe(`${pages.sampleApp}/orders/${order}?store=demo`)
   const app = page.frameLocator('e-admin-panel iframe')
   expect(await app.getByRole('heading', { level: 1 }).textContent()).toBe(`Order #${order}`)
-  expect(await app.locator('strong').textContent()).toBe(status)
+  expect(await app.locator('e-page > [slot="status"] e-badge').first().textContent()).toBe(status)
   expect(await app.getByRole('button', { name: 'Confirm order' }).count()).toBe(confirm)
   expect(errors).toEqual([])
 })
@@ -87,7 +87,7 @@ test('in Bangla the order page reads its number, status and Confirm in Bangla', 
   const { page } = await playground('/orders/1042', 'bn')
   await expect.poll(() => titleBar(page).textContent(), { timeout: 15_000 }).toBe('অর্ডার #1042')
   const app = page.frameLocator('e-admin-panel iframe')
-  expect(await app.locator('strong').textContent()).toBe('নতুন')
+  expect(await app.locator('e-page > [slot="status"] e-badge').first().textContent()).toBe('নতুন')
   expect(await app.getByRole('button', { name: 'অর্ডার কনফার্ম করুন' }).count()).toBe(1)
 })
 
@@ -113,7 +113,7 @@ test('/playground/home opens the home page', async () => {
 test("the list's back link on an order opens the list with the store kept", async () => {
   const { page } = await playground('/orders/1042')
   await expect.poll(() => titleBar(page).textContent(), { timeout: 15_000 }).toBe('Order #1042')
-  await page.frameLocator('e-admin-panel iframe').getByRole('link', { name: '← All orders' }).click()
+  await page.frameLocator('e-admin-panel iframe').getByRole('link', { name: 'All orders' }).click()
   await expect.poll(() => titleBar(page).textContent()).toBe('Orders')
   expect(appFrame(page)?.url()).toBe(`${pages.sampleApp}/orders?store=demo`)
 })

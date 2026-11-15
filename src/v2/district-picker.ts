@@ -6,6 +6,7 @@
 import { DISTRICTS } from '../geo/districts.ts'
 import { langOf } from '../lang.ts'
 import { markError } from './field.ts'
+import { besideKit } from './icon.ts'
 import { onLangChange } from './speech.ts'
 
 type Areas = Record<string, [string, string][]>
@@ -28,7 +29,7 @@ let areas: Areas | null = null
 
 async function fetchAreas(): Promise<Areas | null> {
   try {
-    const response = await fetch(new URL('areas.json', here))
+    const response = await fetch(besideKit('areas', 'areas.json', here))
     if (response.ok) areas = (await response.json()) as Areas
   } catch {
     // Without the list the upazila keeps its opening value, and the next picker asks again.

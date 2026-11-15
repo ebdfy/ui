@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content" />
+    <link rel="icon" href="data:," />
+    <title>Store · Playground · ebdfy design system v2</title>
+    <link
+      rel="preload"
+      href="%EB_CDN%/ui/fonts/geist-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2.css" />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2-host.css" />
+    <script type="module" src="%EB_CDN%/ui/v2-host.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v2.js"></script>
+    <link rel="stylesheet" href="/playground.css" />
+    <script>
+      // The staff member's language, kept by this browser as the Admin keeps it for them, before
+      // anything draws.
+      try {
+        document.documentElement.lang = localStorage.getItem('ebdfy-playground-lang') === 'bn' ? 'bn' : 'en'
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <e-admin-frame>
+      %EB_ADMIN_CHROME%
+      <!-- An Admin page of the Admin's own: its form sits straight in the panel, with no app frame. -->
+      <e-admin-panel store="demo" menu="settings">
+        <header><h1 data-bn="স্টোর">Store</h1></header>
+        <div class="admin-page">
+          <form method="post" action="/playground/settings/store" data-save-bar>
+            <e-settings-section
+              heading="Store details"
+              data-bn-heading="স্টোরের তথ্য"
+              help="Your store's name, as customers see it."
+              data-bn-help="আপনার স্টোরের নাম, যেমন গ্রাহকেরা দেখেন।"
+            >
+              <e-card>
+                <e-text-field
+                  name="name"
+                  label="Store name"
+                  data-bn-label="স্টোরের নাম"
+                  value="Demo shop"
+                  required
+                ></e-text-field>
+                <e-text tone="subdued"
+                  ><span data-bn="ঠিকানা: demo-shop.ebdfy.com। এটি বদলানো যায় না।"
+                    >Address: demo-shop.ebdfy.com. It cannot be changed.</span
+                  ></e-text
+                >
+              </e-card>
+            </e-settings-section>
+            <e-settings-section
+              heading="Contact"
+              data-bn-heading="যোগাযোগ"
+              help="How customers and ebdfy reach you."
+              data-bn-help="গ্রাহক ও ebdfy যেভাবে আপনার সাথে যোগাযোগ করে।"
+            >
+              <e-card>
+                <e-text-field
+                  name="contactEmail"
+                  type="email"
+                  label="Email"
+                  data-bn-label="ইমেইল"
+                  value="hello@demo-shop.com"
+                ></e-text-field>
+                <e-phone-field
+                  name="contactPhone"
+                  label="Phone"
+                  data-bn-label="ফোন"
+                  value="01819-556680"
+                ></e-phone-field>
+              </e-card>
+            </e-settings-section>
+            <e-settings-section
+              heading="Address"
+              data-bn-heading="ঠিকানা"
+              help="Where your store sends parcels from."
+              data-bn-help="যেখান থেকে আপনার স্টোর পার্সেল পাঠায়।"
+            >
+              <e-card>
+                <e-text-field
+                  name="address1"
+                  label="Street and house"
+                  data-bn-label="রাস্তা ও বাড়ি"
+                  value="House 12, Road 5, Dhanmondi"
+                ></e-text-field>
+                <e-district-picker name="address" district="dhaka" upazila="dhanmondi"></e-district-picker>
+              </e-card>
+            </e-settings-section>
+            <e-settings-section
+              heading="Defaults"
+              data-bn-heading="ডিফল্ট"
+              help="Prices are in taka. Times and weights use these."
+              data-bn-help="দাম টাকায়। সময় ও ওজন এগুলো মেনে চলে।"
+            >
+              <e-card>
+                <e-select name="timezone" label="Time zone" data-bn-label="সময় অঞ্চল">
+                  <option value="Asia/Dhaka" selected>Dhaka (GMT+6)</option>
+                </e-select>
+                <e-select name="weightUnit" label="Weight unit" data-bn-label="ওজনের একক">
+                  <option value="KILOGRAMS" selected>Kilograms (kg)</option>
+                  <option value="GRAMS">Grams (g)</option>
+                </e-select>
+              </e-card>
+            </e-settings-section>
+            <e-settings-section
+              heading="Orders"
+              data-bn-heading="অর্ডার"
+              help="How a new order from your shop is handled."
+              data-bn-help="আপনার শপের নতুন অর্ডার কীভাবে সামলানো হয়।"
+            >
+              <e-card>
+                <e-switch
+                  name="confirmShopOrdersByHand"
+                  value="true"
+                  label="Confirm shop orders by hand"
+                  data-bn-label="শপের অর্ডার নিজে নিশ্চিত করুন"
+                  checked
+                ></e-switch>
+              </e-card>
+            </e-settings-section>
+            <!-- With JavaScript off the form posts itself; with it on, the save bar saves it. -->
+            <button type="submit" class="e-save-native" data-bn="সংরক্ষণ করুন">Save</button>
+          </form>
+        </div>
+      </e-admin-panel>
+    </e-admin-frame>
+    <script src="/playground.js"></script>
+  </body>
+</html>

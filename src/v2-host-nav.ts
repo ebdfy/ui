@@ -17,7 +17,7 @@ export function appPath(page: URL, app: URL): string | null {
 }
 
 // The panel names the app's registered URL and the Admin address that shows its home. From 1040 px
-// the app's nav sits in the menu under the Admin's current entry. Below, it is a menu that a button
+// the app's nav sits in the menu under the app's entry. Below, it is a menu that a button
 // at the end of the title bar opens over the app, so the panel never moves when the app names its
 // pages. Each is hidden while the app names no pages.
 export function followPage(panel: Element, frame: HTMLIFrameElement): void {
@@ -36,8 +36,11 @@ export function followPage(panel: Element, frame: HTMLIFrameElement): void {
   const pages = made('e-app-pages')
   pages.popover = 'auto'
   pages.id = 'e-app-pages'
+  // The app's pages hang under its own entry among the installed apps, or else under the current one.
   const menu = document.querySelector('e-admin-frame > [slot="menu"]')
-  const here = menu?.querySelector(':scope > a[aria-current="page"]')
+  const here =
+    menu?.querySelector(`:scope > a[data-app="${CSS.escape(panel.getAttribute('app') ?? '')}"]`) ??
+    menu?.querySelector(':scope > a[aria-current="page"]')
   if (here) here.after(side)
   else menu?.append(side)
   const header = panel.querySelector(':scope > header')

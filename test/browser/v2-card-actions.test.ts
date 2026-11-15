@@ -92,7 +92,7 @@ test('at 1440 a single action sits on the heading line at the right padding edge
     const h2 = document.querySelector('#one > h2')!
     const edit = actions('one')[0]!
     expect(Math.abs(centre(edit) - centre(h2))).toBeLessThanOrEqual(1)
-    const right = document.querySelector('#one')!.getBoundingClientRect().right - 1 - 16
+    const right = document.querySelector('#one')!.getBoundingClientRect().right - 1 - 20
     expect(Math.abs(edit.getBoundingClientRect().right - right)).toBeLessThanOrEqual(1)
   } finally {
     await page.viewport(360, 800)

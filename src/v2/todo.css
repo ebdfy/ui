@@ -1,0 +1,47 @@
+/* e-todo: a row of counts that are links, such as the orders still to confirm or ship. CSS alone
+   draws it. Each <a> the page wrote is a tile: the count (a strong) at display size on its own line,
+   the words under it. From 600 px the tiles share one row of equal columns, whatever their count;
+   below that they sit two by two. A page that wants the group named wraps it in an element with its
+   own label. */
+e-todo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--e-space-2);
+  min-width: 0;
+  color: var(--e-color-fg);
+}
+@media (min-width: 600px) {
+  e-todo {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+  }
+}
+e-todo > a {
+  box-sizing: border-box;
+  display: block;
+  min-width: 0;
+  min-height: 44px;
+  padding: var(--e-space-3) var(--e-space-4);
+  border-radius: var(--e-radius-2);
+  color: var(--e-color-fg2);
+  font-size: var(--e-font-size-meta);
+  line-height: var(--e-line-height-body);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+e-todo > a > strong {
+  display: block;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-display);
+  line-height: 1.45;
+  font-weight: var(--e-font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+e-todo > a:hover {
+  background: var(--e-color-surface-2);
+}
+e-todo > a:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}

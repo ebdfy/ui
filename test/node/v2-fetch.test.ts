@@ -71,7 +71,8 @@ test("a fetch to the app's own origin carries the ID token and the staff languag
 
 test('after the Admin turns বাংলা the same fetch carries accept-language bn', async () => {
   const { page, app, seen } = await playground()
-  await page.getByRole('button', { name: 'বাংলা' }).click()
+  await page.getByRole('button', { name: 'Rafiq Ahmed' }).click()
+  await page.locator('#e-user').getByRole('button', { name: 'বাংলা' }).click()
   await expect.poll(() => app.evaluate(() => ebdfy.user())).toEqual({ language: 'bn' })
   const got = await send(app, seen)
   expect(got.headers['accept-language']).toBe('bn')

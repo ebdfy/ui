@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Timeline · ebdfy design system v2</title>
+  </head>
+  <body>
+    <main>
+      <h1>Timeline</h1>
+      <p class="lede">
+        <code>e-timeline</code> shows what happened to a record, newest first, on a rail. Each
+        <code>e-timeline-item</code> reads its <code>slot="actor"</code>, the action and its <code>slot="time"</code> on
+        one line; <code>kind="comment"</code> draws a <code>slot="body"</code> as a block.
+        <code>e-timeline-day</code> labels a day. A form with <code>slot="composer"</code> sits at the top; posting is
+        the app's own action, not a save-bar form.
+      </p>
+      <docs-example caption="An order's timeline" stack>
+        <e-timeline>
+          <form slot="composer">
+            <e-avatar name="Rafiq Ahmed"></e-avatar>
+            <e-text-field label="Comment" name="comment"></e-text-field>
+            <e-button type="submit">Post</e-button>
+          </form>
+          <e-timeline-day>Today</e-timeline-day>
+          <e-timeline-item kind="comment"
+            ><strong slot="actor">Rafiq Ahmed</strong><time slot="time">11:31 AM</time>
+            <p slot="body">Called, will confirm after lunch.</p></e-timeline-item
+          >
+          <e-timeline-item
+            ><strong slot="actor">Rahima Akter</strong> placed the order on Facebook
+            <time slot="time">11:24 AM</time></e-timeline-item
+          >
+        </e-timeline>
+      </docs-example>
+      <docs-example caption="Steps over two days" stack>
+        <e-timeline>
+          <e-timeline-day>Today</e-timeline-day>
+          <e-timeline-item
+            ><strong slot="actor">Steadfast</strong> delivered the parcel
+            <time slot="time">2:10 PM</time></e-timeline-item
+          >
+          <e-timeline-day>Yesterday</e-timeline-day>
+          <e-timeline-item
+            ><strong slot="actor">Rafiq Ahmed</strong> booked Steadfast
+            <time slot="time">6:45 PM</time></e-timeline-item
+          >
+        </e-timeline>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-timeline>
+          <e-timeline-day>আজ</e-timeline-day>
+          <e-timeline-item
+            ><strong slot="actor">রহিমা আক্তার</strong> ফেসবুক থেকে অর্ডার করেছেন
+            <time slot="time">সকাল ১১:২৪</time></e-timeline-item
+          >
+        </e-timeline>
+      </docs-example>
+    </main>
+  </body>
+</html>

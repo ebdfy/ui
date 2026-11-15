@@ -10,36 +10,37 @@
     <main>
       <h1>Thumbnail</h1>
       <p class="lede">
-        <code>e-thumbnail</code> is a fixed square for a product picture. Put an <code>img</code> inside, with its own
-        <code>alt</code>. It is 40 px; <code>size</code> makes it small or large.
+        <code>e-thumbnail</code> is a fixed square for a product picture. Give it a <code>src</code> and an
+        <code>alt</code>. With no picture it draws the first letter of the <code>alt</code>, or of its line's title
+        inside an <code>e-line-item</code>, or else an image mark. It is 40 px; <code>size</code> makes it small (32 px)
+        or large (88 px).
       </p>
-      <docs-example caption="Three sizes">
-        <e-thumbnail size="small"
-          ><img
-            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23c8d6e5'/%3E%3C/svg%3E"
-            alt="Cotton panjabi"
-        /></e-thumbnail>
+      <docs-example caption="From src, in three sizes">
         <e-thumbnail
-          ><img
-            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23c8d6e5'/%3E%3C/svg%3E"
-            alt="Cotton panjabi"
-        /></e-thumbnail>
-        <e-thumbnail size="large"
-          ><img
-            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23c8d6e5'/%3E%3C/svg%3E"
-            alt="Cotton panjabi"
-        /></e-thumbnail>
+          size="small"
+          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23c8d6e5'/%3E%3C/svg%3E"
+          alt="Cotton panjabi"
+        ></e-thumbnail>
+        <e-thumbnail
+          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23c8d6e5'/%3E%3C/svg%3E"
+          alt="Cotton panjabi"
+        ></e-thumbnail>
+        <e-thumbnail
+          size="large"
+          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23c8d6e5'/%3E%3C/svg%3E"
+          alt="Cotton panjabi"
+        ></e-thumbnail>
       </docs-example>
-      <docs-example caption="With no image">
+      <docs-example caption="A letter from alt">
+        <e-thumbnail alt="Jamdani saree"></e-thumbnail>
+        <e-thumbnail size="large" alt="Cotton panjabi"></e-thumbnail>
+      </docs-example>
+      <docs-example caption="The image mark, with no src or alt">
         <e-thumbnail></e-thumbnail>
         <e-thumbnail size="large"></e-thumbnail>
       </docs-example>
       <docs-example caption="বাংলায়" lang="bn">
-        <e-thumbnail size="large"
-          ><img
-            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23c8d6e5'/%3E%3C/svg%3E"
-            alt="সুতির পাঞ্জাবি"
-        /></e-thumbnail>
+        <e-thumbnail size="large" alt="রহিমা"></e-thumbnail>
       </docs-example>
     </main>
   </body>

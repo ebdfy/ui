@@ -36,8 +36,26 @@ test('before the script the text area shows its label above a box with its value
   const label = getComputedStyle(field, '::before')
   const text = getComputedStyle(field, '::after')
   expect([label.content, text.content]).toEqual(['"Note for the courier"', '"Ring the bell twice"'])
-  // An 18 px label line, 6 px between, then four 20 px lines inside 8 px padding and a 1 px border.
-  expect(field.getBoundingClientRect().height).toBe(18 + 6 + 98)
+  // An 18 px label line, 6 px between, then four 20 px lines inside 10 px padding and a 1 px border.
+  expect(field.getBoundingClientRect().height).toBe(18 + 6 + 102)
+})
+
+// Request 33: a text area takes rows, so a policy opens tall enough to read.
+test('a text area with rows="10" opens ten lines tall, its box at least 220 px, before the script and after it', async () => {
+  const field = mount(
+    '<form><e-text-area label="Refund policy" name="refund" rows="10"></e-text-area></form>',
+  ).querySelector('e-text-area')!
+  // Ten 20 px lines inside 10 px padding and a 1 px border: the box itself is at least 220 px.
+  const tall = 10 * 20 + 20 + 2
+  expect(Number.parseFloat(getComputedStyle(field, '::after').height)).toBe(tall)
+  expect(tall).toBeGreaterThanOrEqual(220)
+  const before = box(field)
+  defineFields()
+  const textarea = field.querySelector('textarea')!
+  expect(textarea.getBoundingClientRect().height).toBe(tall)
+  expect(textarea.rows).toBe(10)
+  expect(near(before, box(field))).toEqual([])
+  document.body.replaceChildren()
 })
 
 test('the script builds one labelled textarea without moving anything, and it submits by name', async () => {
@@ -50,7 +68,7 @@ test('the script builds one labelled textarea without moving anything, and it su
   expect(textarea.elements()).toHaveLength(1)
   expect(field.querySelector('textarea')!.value).toBe('Ring the bell twice')
   expect(near(before, box(field))).toEqual([])
-  expect(near({ ...before, y: before.y + 24, height: 98 }, box(field.querySelector('textarea')!))).toEqual([])
+  expect(near({ ...before, y: before.y + 24, height: 102 }, box(field.querySelector('textarea')!))).toEqual([])
   expect(getComputedStyle(field, '::after').content).toBe('none')
 
   const form = holder.querySelector('form')!

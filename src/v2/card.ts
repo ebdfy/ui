@@ -6,6 +6,8 @@
  * actions sit at the right of it; on a phone the third and later fold into a More menu.
  * @tag e-card
  * @attr heading - The card's title, built as its h2.
+ * @attr {'first' | 'last'} phone-order - On a phone, in a column of an `e-page`, moves the card before every card of the main column, or after every other card.
+ * @attr {boolean} flush - Takes the card's padding off its sides and bottom, so a table in it runs edge to edge; the heading keeps a 20 px start inset.
  * @slot - What the card holds.
  * @slot actions - Buttons or links in the header, after the heading.
  */

@@ -13,8 +13,8 @@
 
   e-admin-frame {
     display: grid;
-    grid-template-columns: 228px minmax(0, 1fr) auto;
-    grid-template-rows: 58px minmax(0, 1fr);
+    grid-template-columns: 232px minmax(0, 1fr) auto;
+    grid-template-rows: 56px minmax(0, 1fr);
     grid-template-areas:
       'store search actions'
       'menu panel panel';
@@ -42,24 +42,44 @@
     padding: 0 18px;
     font-weight: var(--e-font-weight-semibold);
   }
-  [slot='store'] > :first-child {
-    display: grid;
+  /* A store's or an app's tile: its initial on lime, 28 px by default, 20 px in the menu and 40 px
+     where a page lists stores or apps. */
+  .e-tile {
+    display: inline-grid;
     place-items: center;
-    inline-size: 30px;
-    block-size: 30px;
+    box-sizing: border-box;
+    inline-size: 28px;
+    block-size: 28px;
     flex: none;
     border-radius: var(--e-radius-1);
     background: var(--e-color-side-on-bg);
     color: var(--e-color-side-on-fg);
+    font-size: var(--e-font-size-meta);
     font-weight: var(--e-font-weight-bold);
+    line-height: 1;
   }
-  [slot='store'] > :last-child {
+  .e-tile[data-size='20'] {
+    inline-size: 20px;
+    block-size: 20px;
+    border-radius: var(--e-radius-0);
+    font-size: 11px;
+  }
+  .e-tile[data-size='40'] {
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: var(--e-radius-2);
+    font-size: 16px;
+  }
+  :lang(bn) .e-tile[data-size='20'] {
+    font-size: var(--e-font-size-meta);
+  }
+  e-admin-frame > [slot='store'] > :last-child {
     min-width: 0;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-  [slot='store'] small {
+  e-admin-frame > [slot='store'] small {
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -69,6 +89,12 @@
     line-height: 1.2;
   }
 
+  /* The phone's tab bar shows below 1040 px, in the menu's place. */
+  e-admin-frame > [slot='tabs'] {
+    display: none;
+  }
+
+  /* The menu scrolls when it is taller than the window, and its entries keep their height. */
   e-admin-frame > [slot='menu'] {
     grid-area: menu;
     display: flex;
@@ -78,7 +104,10 @@
     overflow: auto;
     padding: 6px 10px 12px;
   }
-  [slot='menu'] > a {
+  e-admin-frame > [slot='menu'] > * {
+    flex: none;
+  }
+  e-admin-frame > [slot='menu'] > a {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -89,27 +118,66 @@
     font-weight: var(--e-font-weight-medium);
     text-decoration: none;
   }
-  [slot='menu'] > a[aria-current='page'] {
+  e-admin-frame > [slot='menu'] a:not([aria-current]):hover {
+    background: var(--e-color-frame-field);
+  }
+  /* The current entry, or the area the current page belongs to. */
+  e-admin-frame > [slot='menu'] > a[aria-current] {
     background: var(--e-color-side-on-bg);
     color: var(--e-color-side-on-fg);
     font-weight: var(--e-font-weight-semibold);
   }
-  [slot='menu'] > a > span {
+  /* A count, such as new orders, in a lime pill at the entry's end; on the lime current entry a ring
+     in the entry's text colour keeps it apart. */
+  e-admin-frame > [slot='menu'] > a[count]::after {
+    box-sizing: border-box;
+    min-inline-size: 20px;
+    margin-inline-start: auto;
+    padding: 0 6px;
+    border-radius: var(--e-radius-pill);
+    background: var(--e-color-side-on-bg);
+    color: var(--e-color-side-on-fg);
+    font-size: var(--e-font-size-caption);
+    font-weight: var(--e-font-weight-semibold);
+    font-variant-numeric: tabular-nums;
+    line-height: 20px;
+    text-align: center;
+    content: attr(count);
+  }
+  :lang(bn) e-admin-frame > [slot='menu'] > a[count]::after {
+    font-size: var(--e-font-size-meta);
+  }
+  e-admin-frame > [slot='menu'] > a[aria-current][count]::after {
+    box-shadow: 0 0 0 1.5px var(--e-color-side-on-fg);
+  }
+  /* A group's name, such as the installed apps, and the Back row's room above Settings' label. */
+  e-admin-frame > [slot='menu'] > .e-menu-label {
+    margin: 14px 10px 4px;
+    color: var(--e-color-frame-fg2);
+    font-size: var(--e-font-size-caption);
+    font-weight: var(--e-font-weight-semibold);
+  }
+  :lang(bn) e-admin-frame > [slot='menu'] > .e-menu-label {
+    font-size: var(--e-font-size-meta);
+  }
+  e-admin-frame > [slot='menu'] > a > span {
     min-width: 0;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
-  /* The app's own pages, under the Admin's current entry: smaller rows set in past its icon, the
-     current one in the frame's own text colour. Below 1040 px they move to a strip in the panel. */
-  [slot='menu'] > .e-app-nav {
+  /* An area's sub-pages and an app's own pages hang under their entry on a 1 px rail below its
+     icon: smaller rows, the current one on a quiet fill. Below 1040 px they move out of the menu. */
+  e-admin-frame > [slot='menu'] > :is(.e-menu-pages, .e-app-nav) {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding: 2px 0 6px 28px;
+    margin: 2px 0 4px 19px;
+    padding-inline-start: 8px;
+    border-inline-start: 1px solid var(--e-color-frame-line);
   }
-  .e-app-nav > a {
+  :is(.e-menu-pages, .e-app-nav) > a {
     display: flex;
     align-items: center;
     block-size: 32px;
@@ -123,46 +191,14 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .e-app-nav > a[aria-current='page'] {
+  :is(.e-menu-pages, .e-app-nav) > a[aria-current='page'] {
+    background: var(--e-color-frame-field);
     color: var(--e-color-frame-fg);
     font-weight: var(--e-font-weight-semibold);
   }
   e-admin-panel > header > .e-app-pages-button,
-  [slot='menu'] > .e-app-nav[hidden] {
+  e-admin-frame > [slot='menu'] > .e-app-nav[hidden] {
     display: none;
-  }
-
-  e-admin-frame > [slot='search'] {
-    grid-area: search;
-    align-self: center;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-sizing: border-box;
-    inline-size: min(460px, 100% - 18px);
-    block-size: 36px;
-    margin: 0 0 0 18px;
-    padding: 0 12px;
-    border-radius: var(--e-radius-2);
-    background: var(--e-color-frame-field);
-    color: var(--e-color-frame-fg2);
-  }
-  [slot='search'] > input {
-    flex: 1;
-    min-width: 0;
-    block-size: 100%;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    outline: 0;
-    background: none;
-    color: var(--e-color-frame-fg);
-    font: inherit;
-    font-size: var(--e-font-size-meta);
-  }
-  [slot='search'] > input::placeholder {
-    color: var(--e-color-frame-fg2);
-    opacity: 1;
   }
 
   e-admin-frame > [slot='actions'] {
@@ -172,7 +208,7 @@
     gap: 10px;
     padding: 0 14px 0 10px;
   }
-  [slot='actions'] > button {
+  e-admin-frame > [slot='actions'] > button {
     display: grid;
     place-items: center;
     inline-size: 36px;
@@ -184,32 +220,205 @@
     color: inherit;
     cursor: pointer;
   }
-  [slot='actions'] > a {
+  e-admin-frame > [slot='actions'] > a {
     color: var(--e-color-frame-fg2);
     font-size: var(--e-font-size-meta);
     white-space: nowrap;
   }
-  [slot='actions'] > span {
-    display: grid;
-    place-items: center;
+  /* The staff initials, which open the user menu. */
+  e-admin-frame > [slot='actions'] > .e-initials {
     inline-size: 32px;
     block-size: 32px;
     border-radius: 50%;
     background: var(--e-color-side-on-bg);
     color: var(--e-color-side-on-fg);
+    font: inherit;
     font-size: 12px;
     font-weight: var(--e-font-weight-bold);
   }
+  :lang(bn) e-admin-frame > [slot='actions'] > .e-initials {
+    font-size: var(--e-font-size-meta);
+  }
+  /* The user menu opens under the initials at the window's end. */
+  e-admin-frame > [slot='actions'] > .e-user-menu {
+    position: fixed;
+    inset: 50px 10px auto auto;
+    box-sizing: border-box;
+    inline-size: 264px;
+    margin: 0;
+    padding: 6px;
+    border: 1px solid var(--e-color-line);
+    border-radius: var(--e-radius-2);
+    background: var(--e-color-surface);
+    color: var(--e-color-fg);
+    box-shadow: var(--e-shadow-pop);
+  }
+  e-admin-frame > [slot='actions'] > .e-user-menu:popover-open {
+    display: flex;
+    flex-direction: column;
+  }
+  .e-user-menu > a {
+    display: flex;
+    align-items: center;
+    min-block-size: 36px;
+    padding: 0 10px;
+    border-radius: var(--e-radius-1);
+    color: var(--e-color-fg);
+    text-decoration: none;
+  }
+  .e-user-menu > a:is(:hover, :focus-visible) {
+    background: var(--e-color-surface-2);
+  }
+  .e-user-menu > a:focus-visible {
+    outline: 2px solid var(--e-color-focus);
+    outline-offset: -2px;
+  }
+  /* Who is signed in, and their role, at the top of the user menu or More's items. */
+  :is(.e-user-menu, .e-more) > .e-user-name {
+    margin: 6px 10px 8px;
+    font-weight: var(--e-font-weight-semibold);
+  }
+  .e-user-name > small {
+    display: block;
+    color: var(--e-color-fg2);
+    font-size: var(--e-font-size-meta);
+    font-weight: var(--e-font-weight-medium);
+  }
+  /* The language control: two segments, the pressed one raised. */
+  :is(.e-user-menu, .e-more) > .e-language {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin: 0 6px 6px;
+    padding: 2px;
+    border-radius: var(--e-radius-1);
+    background: var(--e-color-surface-2);
+  }
+  .e-language > button {
+    block-size: 32px;
+    margin: 0;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    color: var(--e-color-fg2);
+    font: inherit;
+    font-size: var(--e-font-size-meta);
+    font-weight: var(--e-font-weight-medium);
+    cursor: pointer;
+  }
+  .e-language > button[aria-pressed='true'] {
+    background: var(--e-color-surface);
+    color: var(--e-color-fg);
+    font-weight: var(--e-font-weight-semibold);
+    box-shadow: var(--e-shadow-card);
+  }
+  .e-language > button:focus-visible {
+    outline: 2px solid var(--e-color-focus);
+    outline-offset: -2px;
+  }
 
-  [slot='menu'] > a:focus-visible,
-  .e-app-nav > a:focus-visible,
+  /* On the navy the focus token reads too dark in light, so the ring there takes the frame's text. */
+  e-admin-frame > [slot='menu'] > a:focus-visible,
+  :is(.e-menu-pages, .e-app-nav) > a:focus-visible,
+  e-admin-frame > [slot='actions'] > button:focus-visible,
+  e-admin-frame > [slot='actions'] > a:focus-visible {
+    outline: 2px solid var(--e-color-frame-fg);
+    outline-offset: 2px;
+  }
+  /* The ring passes the entry's edge, so the focused entry paints over its neighbours' fills. */
+  e-admin-frame > [slot='menu'] > a:focus-visible,
+  :is(.e-menu-pages, .e-app-nav) > a:focus-visible {
+    position: relative;
+    z-index: 1;
+  }
   .e-app-pages > a:focus-visible,
-  .e-app-pages-button:focus-visible,
-  [slot='actions'] > button:focus-visible,
-  [slot='actions'] > a:focus-visible,
-  [slot='search']:focus-within {
+  .e-app-pages-button:focus-visible {
     outline: 2px solid var(--e-color-focus);
     outline-offset: 2px;
+  }
+  /* The tab bar clips what passes its edges, so a tab's ring is drawn inside the tab. */
+  e-admin-frame > [slot='tabs'] > :is(a, button):focus-visible {
+    outline: 2px solid var(--e-color-focus);
+    outline-offset: -2px;
+  }
+
+  /* The search modal: a field over rows of results grouped under their kind, near the window's top. */
+  e-admin-frame > dialog.e-search {
+    box-sizing: border-box;
+    inline-size: min(560px, 100% - 32px);
+    max-block-size: min(560px, 100dvh - 96px);
+    margin: 72px auto auto;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: var(--e-radius-2);
+    background: var(--e-color-surface);
+    color: var(--e-color-fg);
+    box-shadow: var(--e-shadow-pop);
+  }
+  e-admin-frame > dialog.e-search[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  dialog.e-search::backdrop {
+    background: var(--e-color-scrim);
+  }
+  .e-search > [role='search'] {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: none;
+    block-size: 52px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--e-color-line);
+    color: var(--e-color-fg2);
+  }
+  .e-search input[type='search'] {
+    flex: 1;
+    min-width: 0;
+    block-size: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: none;
+    color: var(--e-color-fg);
+    font: inherit;
+  }
+  .e-search > .e-search-results {
+    overflow: auto;
+    padding: 4px 8px 8px;
+  }
+  .e-search-results:empty {
+    display: none;
+  }
+  .e-search-group {
+    margin: 10px 8px 4px;
+    color: var(--e-color-fg2);
+    font-size: var(--e-font-size-caption);
+    font-weight: var(--e-font-weight-semibold);
+  }
+  :lang(bn) .e-search-group {
+    font-size: var(--e-font-size-meta);
+  }
+  .e-search-results > a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-block-size: 44px;
+    padding: 4px 8px;
+    border-radius: var(--e-radius-1);
+    color: var(--e-color-fg);
+    text-decoration: none;
+  }
+  .e-search-results > a:is(:hover, :focus-visible) {
+    background: var(--e-color-surface-2);
+    outline: 0;
+  }
+  .e-search-results > a > small {
+    color: var(--e-color-fg2);
+    font-size: var(--e-font-size-meta);
   }
 
   /* The panel is a grid of two rows so the loading bar, the notice and the toast v2-host.js adds
@@ -378,8 +587,247 @@
     e-admin-frame[data-app-modal] {
       grid-template-rows: 56px minmax(0, 1fr) 0;
     }
-    e-admin-frame[data-app-modal] > [slot='menu'] {
+    e-admin-frame[data-app-modal] > [slot='tabs'] {
       display: none;
+    }
+  }
+
+  /* The save bar: from 1040 px a 40 px pill in the band's middle cell, 620 px or the cell less
+     32 px, centred on the panel from 1280 px. It sits over its cell and takes no room of its own, so
+     it moves nothing as it comes and goes. */
+  e-admin-frame > .e-save-bar {
+    grid-area: search;
+    z-index: 2;
+    align-self: center;
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-sizing: border-box;
+    inline-size: min(620px, 100% - 32px);
+    block-size: 40px;
+    padding: 0 4px 0 16px;
+    contain: inline-size;
+    border-radius: 12px;
+    background: var(--e-color-frame-field);
+    box-shadow:
+      inset 0 0 0 1px var(--e-color-frame-line),
+      var(--e-shadow-pop);
+    color: var(--e-color-frame-fg);
+  }
+  /* It fades in over 200 ms and drops 6 px. */
+  @media (prefers-reduced-motion: no-preference) {
+    e-admin-frame > .e-save-bar {
+      transition:
+        opacity var(--e-time-2) var(--e-ease),
+        translate var(--e-time-2) var(--e-ease),
+        display var(--e-time-2) var(--e-ease) allow-discrete;
+    }
+    @starting-style {
+      e-admin-frame > .e-save-bar {
+        opacity: 0;
+        translate: 0 -6px;
+      }
+    }
+  }
+  e-admin-frame > .e-save-bar[hidden] {
+    display: none;
+    opacity: 0;
+  }
+  @media (width >= 1280px) {
+    e-admin-frame > .e-save-bar {
+      grid-column: search / actions;
+    }
+  }
+  .e-save-bar-dot {
+    flex: none;
+    inline-size: 8px;
+    block-size: 8px;
+    border-radius: 50%;
+    background: var(--e-color-lime);
+  }
+  /* A refused save turns the dot orange. */
+  .e-save-bar[data-state='refused'] > .e-save-bar-dot {
+    background: var(--e-color-frame-warn);
+  }
+  .e-save-bar-message {
+    flex: 1;
+    min-inline-size: 0;
+    margin: 0;
+    overflow: hidden;
+    font-weight: var(--e-font-weight-medium);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .e-save-bar > button {
+    flex: none;
+    block-size: 32px;
+    margin: 0;
+    padding: 0 12px;
+    border: 0;
+    border-radius: var(--e-radius-1);
+    font: inherit;
+    font-weight: var(--e-font-weight-semibold);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .e-save-bar > :is(.e-save-bar-discard, .e-save-bar-second) {
+    background: none;
+    color: var(--e-color-frame-fg);
+  }
+  .e-save-bar > .e-save-bar-second {
+    box-shadow: inset 0 0 0 1px var(--e-color-frame-line);
+  }
+  .e-save-bar > .e-save-bar-second[hidden] {
+    display: none;
+  }
+  .e-save-bar > :is(.e-save-bar-discard, .e-save-bar-second):hover {
+    background: var(--e-color-frame-line);
+  }
+  .e-save-bar-discard > e-icon {
+    display: none;
+  }
+  .e-save-bar > .e-save-bar-save {
+    background: var(--e-color-lime);
+    color: var(--e-color-lime-fg);
+  }
+  .e-save-bar > button:focus-visible {
+    outline: 2px solid var(--e-color-frame-fg);
+    outline-offset: 2px;
+  }
+  /* A move the bar stopped nudges it: 5 px each way over 320 ms. */
+  @media (prefers-reduced-motion: no-preference) {
+    e-admin-frame > .e-save-bar.e-save-bar-nudge {
+      animation: e-save-bar-nudge 320ms var(--e-ease);
+    }
+  }
+  @keyframes e-save-bar-nudge {
+    25% {
+      translate: -5px 0;
+    }
+    75% {
+      translate: 5px 0;
+    }
+  }
+  /* The leave dialog: a question, one sentence, then Stay and Leave. */
+  e-admin-frame > dialog.e-leave {
+    box-sizing: border-box;
+    inline-size: min(440px, 100% - 32px);
+    padding: var(--e-space-5);
+    border: 0;
+    border-radius: var(--e-radius-2);
+    background: var(--e-color-surface);
+    color: var(--e-color-fg);
+    box-shadow: var(--e-shadow-pop);
+  }
+  e-admin-frame > dialog.e-leave::backdrop {
+    background: var(--e-color-scrim);
+  }
+  .e-leave > h2 {
+    margin: 0 0 var(--e-space-2);
+    font-size: var(--e-font-size-section);
+    font-weight: var(--e-font-weight-semibold);
+    line-height: 24px;
+  }
+  .e-leave > p:empty {
+    display: none;
+  }
+  .e-leave > p {
+    margin: 0 0 var(--e-space-5);
+    color: var(--e-color-fg2);
+  }
+  .e-leave-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--e-space-2);
+  }
+  .e-save-bar-short {
+    display: none;
+  }
+  /* A form's own Save, for a page with JavaScript off: once the bar is in the frame it saves the
+     form, and this goes. It sits at the form's end, so nothing above it moves. */
+  form[data-save-bar] > .e-save-native {
+    display: block;
+    block-size: var(--e-size-control-md);
+    margin: var(--e-space-5) 0 0 auto;
+    padding: 0 var(--e-space-4);
+    border: 0;
+    border-radius: var(--e-radius-1);
+    background: var(--e-color-primary);
+    color: var(--e-color-primary-fg);
+    font: inherit;
+    font-weight: var(--e-font-weight-semibold);
+    cursor: pointer;
+  }
+  e-admin-frame:has(> .e-save-bar) form[data-save-bar] > .e-save-native {
+    display: none;
+  }
+  /* A sentence too long for the bar below 1040 px, shown in full at the top of its form. */
+  form > .e-save-banner {
+    display: none;
+  }
+
+  /* Below 1040 px the bar is the whole band: a 44 px × that discards, the message, and Save with its
+     word. The store and the icons keep their room unseen. */
+  @media (width < 1040px) {
+    e-admin-frame > .e-save-bar {
+      grid-column: 1 / -1;
+      align-self: stretch;
+      inline-size: 100%;
+      block-size: auto;
+      gap: 4px;
+      padding: 0 12px 0 6px;
+      border-radius: 0;
+      background: var(--e-color-frame);
+      box-shadow: none;
+    }
+    e-admin-frame[data-save-bar] > :is([slot='store'], [slot='actions']) {
+      visibility: hidden;
+    }
+    .e-save-bar-dot {
+      display: none;
+    }
+    .e-save-bar > .e-save-bar-discard {
+      display: grid;
+      place-items: center;
+      inline-size: 44px;
+      block-size: 44px;
+      padding: 0;
+    }
+    .e-save-bar-discard > e-icon {
+      display: block;
+      inline-size: 20px;
+      block-size: 20px;
+    }
+    /* The word stays the button's name for screen readers. */
+    .e-save-bar-discard > span {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .e-save-bar > .e-save-bar-save {
+      block-size: 40px;
+      padding: 0 16px;
+    }
+    .e-save-bar-full,
+    .e-save-bar > .e-save-bar-second {
+      display: none;
+    }
+    .e-save-bar-short {
+      display: inline;
+    }
+    form > .e-save-banner {
+      display: block;
+      margin: 0 0 var(--e-space-4);
+      padding: var(--e-space-3) var(--e-space-4);
+      border-radius: var(--e-radius-1);
+      background: var(--e-color-warn-soft);
+      color: var(--e-color-warn-fg);
+      font-weight: var(--e-font-weight-medium);
     }
   }
 
@@ -388,7 +836,7 @@
   @media (width < 1040px) {
     e-admin-frame {
       grid-template-columns: fit-content(45%) minmax(0, 1fr) auto;
-      grid-template-rows: 56px minmax(0, 1fr) 68px;
+      grid-template-rows: 56px minmax(0, 1fr) 64px;
       grid-template-areas:
         'store search actions'
         'panel panel panel'
@@ -399,19 +847,10 @@
       padding: 0 0 0 16px;
       font-weight: var(--e-font-weight-bold);
     }
-    [slot='store'] > :first-child {
-      inline-size: 28px;
-      block-size: 28px;
-      font-size: var(--e-font-size-meta);
-    }
-    [slot='store'] small,
-    [slot='actions'] > button:first-child,
-    [slot='actions'] > span {
+    e-admin-frame > [slot='store'] small,
+    e-admin-frame > [slot='actions'] > button:first-child,
+    e-admin-frame > [slot='actions'] > .e-initials {
       display: none;
-    }
-    e-admin-frame > [slot='search'] {
-      inline-size: auto;
-      margin-left: 8px;
     }
     e-admin-frame > [slot='actions'] {
       gap: 8px;
@@ -426,7 +865,7 @@
     }
     /* The app's pages: a button at the end of the title bar, its room kept whether or not the app
        names pages, opens them as a menu across the panel just under the title bar. */
-    [slot='menu'] > .e-app-nav {
+    e-admin-frame > [slot='menu'] > .e-app-nav {
       display: none;
     }
     e-admin-panel > header {
@@ -455,17 +894,14 @@
       display: none;
     }
     /* Below 600 px the top bar's controls are 44 px. The buttons draw no box, so growing them moves no
-       icon: the gap closes by what each button gains. The search bar fills the bar's 56 px less 12. The
-       chevron grows to 44 px about the same centre, 4 px nearer the edge, so its icon stays put. */
+       icon: the gap closes by what each button gains. The chevron grows to 44 px about the same centre,
+       4 px nearer the edge, so its icon stays put. */
     @media (width < 600px) {
-      e-admin-frame > [slot='search'] {
-        block-size: 44px;
-      }
       e-admin-frame > [slot='actions'] {
         gap: 0;
         padding: 0 8px 0 0;
       }
-      [slot='actions'] > button {
+      e-admin-frame > [slot='actions'] > button {
         inline-size: 44px;
         block-size: 44px;
       }
@@ -506,33 +942,126 @@
       font-weight: var(--e-font-weight-semibold);
     }
     e-admin-frame > [slot='menu'] {
+      display: none;
+    }
+    e-admin-frame > [slot='tabs'] {
+      grid-area: menu;
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 0;
       overflow: hidden;
-      padding: 0 0 8px;
       border-top: 1px solid var(--e-color-line);
       background: var(--e-color-panel);
     }
-    [slot='menu'] > a,
-    [slot='menu'] > a[aria-current='page'] {
+    e-admin-frame > [slot='tabs'] > :is(a, button) {
+      position: relative;
+      display: flex;
       flex-direction: column;
+      align-items: center;
       justify-content: center;
-      gap: 3px;
+      gap: 4px;
       min-width: 0;
-      block-size: auto;
+      margin: 0;
       padding: 0 4px;
-      border-radius: 0;
+      border: 0;
       background: none;
       color: var(--e-color-fg2);
-      font-size: 11.5px;
+      font: inherit;
+      font-size: var(--e-font-size-caption);
+      font-weight: var(--e-font-weight-medium);
+      line-height: 1.3;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    :lang(bn) e-admin-frame > [slot='tabs'] > :is(a, button) {
+      font-size: var(--e-font-size-meta);
+    }
+    e-admin-frame > [slot='tabs'] > a[aria-current] {
+      color: var(--e-color-fg);
       font-weight: var(--e-font-weight-semibold);
     }
-    [slot='menu'] > a[aria-current='page'] {
-      color: var(--e-color-fg);
+    /* The active tab's 3 px bar along the bar's top edge. */
+    e-admin-frame > [slot='tabs'] > a[aria-current]::before {
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline: 30%;
+      block-size: 3px;
+      border-radius: 0 0 3px 3px;
+      background: var(--e-color-accent);
+      content: '';
     }
-    [slot='menu'] > a > span {
+    e-admin-frame > [slot='tabs'] > :is(a, button) > span {
       max-inline-size: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    /* In a window under 520 px tall, a phone on its side, the panel takes the tab bar's room. */
+    @media (height < 520px) {
+      e-admin-frame {
+        grid-template-rows: 56px minmax(0, 1fr) 0;
+      }
+      e-admin-frame > [slot='tabs'] {
+        display: none;
+      }
+    }
+    /* More's sheet rises from the screen's bottom edge over the page, with the rest of the Admin. */
+    e-admin-frame > [slot='tabs'] > .e-more {
+      position: fixed;
+      inset: auto 0 0;
+      box-sizing: border-box;
+      inline-size: auto;
+      max-block-size: 85dvh;
+      margin: 0;
+      padding: 8px 8px 16px;
+      overflow: auto;
+      border: 0;
+      border-radius: var(--e-radius-3) var(--e-radius-3) 0 0;
+      background: var(--e-color-surface);
+      color: var(--e-color-fg);
+      box-shadow: var(--e-shadow-pop);
+    }
+    e-admin-frame > [slot='tabs'] > .e-more:popover-open {
+      display: flex;
+      flex-direction: column;
+    }
+    .e-more::backdrop {
+      background: var(--e-color-scrim);
+    }
+    .e-more > a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-block-size: 44px;
+      padding: 0 12px;
+      border-radius: var(--e-radius-1);
+      color: var(--e-color-fg);
+      text-decoration: none;
+    }
+    .e-more > a[aria-current='page'] {
+      background: var(--e-color-surface-2);
+      font-weight: var(--e-font-weight-semibold);
+    }
+    .e-more > a:focus-visible {
+      outline: 2px solid var(--e-color-focus);
+      outline-offset: -2px;
+    }
+    .e-more > .e-menu-label {
+      margin: 12px 12px 4px;
+      color: var(--e-color-fg2);
+      font-size: var(--e-font-size-caption);
+      font-weight: var(--e-font-weight-semibold);
+    }
+    :lang(bn) .e-more > .e-menu-label {
+      font-size: var(--e-font-size-meta);
+    }
+    .e-more > .e-language > button {
+      block-size: 40px;
+    }
+    .e-more > hr {
+      inline-size: 100%;
+      margin: 8px 0;
+      border: 0;
+      border-top: 1px solid var(--e-color-line);
     }
   }
 }

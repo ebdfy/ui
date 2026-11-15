@@ -3,10 +3,11 @@
 // adds role=group with the label, keeps aria-pressed on each native button, moves `pressed` on a
 // click and fires a bubbling e-button-group-change with the button's `value` in detail.
 /**
- * A row of buttons where one is chosen, such as a language or a view. The chosen button carries `pressed`.
+ * Buttons joined into one control, such as Previous and Next. With one button `pressed` it is a segmented
+ * control where one is chosen, such as a language or a view.
  * @tag e-button-group
  * @attr label - Names the group for assistive tech, as its aria-label.
- * @fires e-button-group-change - After a press on a button that was not chosen. Bubbles; `detail.value` is that e-button's `value` attribute, or null if it has none.
+ * @fires e-button-group-change - After a press on a button that was not chosen, in a group with one pressed. Bubbles; `detail.value` is that e-button's `value` attribute, or null if it has none.
  * @slot - The `e-button` children. Mark the chosen one with `pressed`.
  */
 export class EButtonGroup extends HTMLElement {
@@ -53,18 +54,26 @@ export class EButtonGroup extends HTMLElement {
     return [...this.querySelectorAll(':scope > e-button')]
   }
 
+  // A group with no button pressed, such as Previous and Next, is plain buttons joined: none chooses.
+  #chooses(): boolean {
+    return this.#buttons().some((tag) => tag.hasAttribute('pressed'))
+  }
+
   #sync(): void {
+    const chooses = this.#chooses()
     for (const tag of this.#buttons()) {
       // A tag whose native button is not built yet carries the state until the button appears.
       const native = tag.querySelector(':scope > button')
       if (native) tag.removeAttribute('aria-pressed')
-      ;(native ?? tag).setAttribute('aria-pressed', String(tag.hasAttribute('pressed')))
+      if (chooses) (native ?? tag).setAttribute('aria-pressed', String(tag.hasAttribute('pressed')))
+      else native?.removeAttribute('aria-pressed')
     }
   }
 
   #click = (event: Event): void => {
     const tag = event.target instanceof Element ? event.target.closest('e-button') : null
     if (!tag || tag.parentElement !== this || tag.hasAttribute('pressed') || tag.hasAttribute('disabled')) return
+    if (!this.#chooses()) return
     for (const other of this.#buttons()) other.toggleAttribute('pressed', other === tag)
     this.#sync()
     this.dispatchEvent(

@@ -27,7 +27,7 @@ test('without the script the page header shows the heading at 22 px with the act
   const el = document.querySelector('e-page')!
   const actions = document.querySelector('button')!
   const before = getComputedStyle(el, '::before')
-  expect([before.content, before.fontSize, before.fontWeight]).toEqual(['"Orders"', '22px', '700'])
+  expect([before.content, before.fontSize, before.fontWeight]).toEqual(['"Orders"', '22px', '650'])
   const a = actions.getBoundingClientRect()
   const p = el.getBoundingClientRect()
   expect(a.right).toBeCloseTo(p.right, 0)
@@ -96,12 +96,12 @@ async function at<T>(width: number, run: () => T | Promise<T>): Promise<T> {
   }
 }
 
-test('at 1440 px the side column is 344 px wide, 16 px right of the order, and its cards keep their own spacing', async () => {
+test('at 1440 px the side column is 320 px wide, 20 px right of the order, and its cards keep their own spacing', async () => {
   await at(1440, () => {
     render(orderPage)
     const aside = document.querySelector('[slot="aside"]')!
-    expect(rect(aside).width).toBe(344)
-    expect(rect(card('Customer')).left - rect(card('Items')).right).toBe(16)
+    expect(rect(aside).width).toBe(320)
+    expect(rect(card('Customer')).left - rect(card('Items')).right).toBe(20)
     expect(rect(card('Customer')).top).toBe(rect(card('Items')).top)
     // The tall Items card does not push Delivery down: the columns share no rows.
     expect(rect(card('Delivery')).top - rect(card('Customer')).bottom).toBe(16)

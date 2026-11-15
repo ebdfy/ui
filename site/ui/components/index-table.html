@@ -13,7 +13,24 @@
         <code>e-index-table</code> holds many records in one card: view tabs, a toolbar, a table and a pager. It also
         keeps the selection. Put an <code>e-checkbox</code> in each row's first cell and one in the head row. Ticking
         rows shows how many are selected and your <code>slot="bulk"</code> actions in place of the toolbar. Below 600 px
-        each row becomes a card. When the table has no rows, an <code>e-empty-state</code> you add takes its place.
+        the rows are flat lines: a cell's <code>card</code> attribute puts <code>title</code> and <code>end</code> on
+        the first line, <code>body</code> and <code>status</code> on the second, <code>meta</code> and
+        <code>aside</code> on the third. When the table has no rows, an <code>e-empty-state</code> you add takes its
+        place.
+      </p>
+      <h2>Select mode on a phone</h2>
+      <p>
+        Below 600 px no checkbox shows until the list is in select mode. The index table adds a Select button to the
+        toolbar once its rows hold checkboxes, and a long press on a row also starts select mode and ticks that row. In
+        select mode every row shows its checkbox, and the bulk bar takes the toolbar's place with a Select all checkbox,
+        the count, your actions and a Done button. Done, or removing the <code>select-mode</code> attribute, unticks
+        every row and hides the checkboxes again. From 600 px the checkboxes always show.
+      </p>
+      <p>
+        On a phone the search field shares its line with the button written right after it and the kit's Select, so
+        write Add filter straight after the search field, with an <code>e-icon</code>, and the chips after Add filter. A
+        toolbar button with an icon shows only its icon on a phone, its words kept for screen readers. In select mode a
+        tap on a row ticks it.
       </p>
       <docs-example caption="Search, a filter, rows to tick and bulk actions" stack>
         <e-index-table label="Orders">
@@ -74,6 +91,46 @@
             </e-row>
           </e-table>
           <e-pagination label="1 of 120" has-next></e-pagination>
+        </e-index-table>
+      </docs-example>
+      <docs-example caption='Four figures on a fourth line: a cell with card="figures"' stack>
+        <e-index-table label="Inventory">
+          <e-table label="Inventory" style="--e-columns: 1fr auto auto auto auto">
+            <e-row head>
+              <span>Product</span>
+              <span align="end">On hand</span>
+              <span align="end">Committed</span>
+              <span align="end">Available</span>
+              <span align="end">Incoming</span>
+            </e-row>
+            <e-row>
+              <span card="title"><a href="#tee">Cotton tee</a></span>
+              <span align="end">24</span>
+              <span align="end">6</span>
+              <span align="end">18</span>
+              <span align="end">40</span>
+              <span card="figures"
+                ><dl>
+                  <div>
+                    <dt>On hand</dt>
+                    <dd>24</dd>
+                  </div>
+                  <div>
+                    <dt>Committed</dt>
+                    <dd>6</dd>
+                  </div>
+                  <div>
+                    <dt>Available</dt>
+                    <dd>18</dd>
+                  </div>
+                  <div>
+                    <dt>Incoming</dt>
+                    <dd>40</dd>
+                  </div>
+                </dl></span
+              >
+            </e-row>
+          </e-table>
         </e-index-table>
       </docs-example>
       <docs-example caption="বাংলায়" lang="bn" stack>

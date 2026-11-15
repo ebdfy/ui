@@ -76,12 +76,13 @@ test('at 360 px a tap 22 px above or below the filter chip remove button removes
   }
 })
 
-test('at 360 px the row checkbox is a 44 px target and a tap on it does not open the order', async () => {
+// On a phone the row checkboxes show in select mode, which Select or a long press starts.
+test('at 360 px in select mode the row checkbox is a 44 px target and a tap on it does not open the order', async () => {
   await page.viewport(360, 800)
   defineCheckbox()
   defineTable()
   defineIndexTable()
-  document.body.innerHTML = `<div style="padding: 16px"><e-index-table label="Orders">
+  document.body.innerHTML = `<div style="padding: 16px"><e-index-table label="Orders" select-mode>
     <e-table label="Orders" style="--e-columns: 44px 80px 1fr auto">
       <e-row head><span><e-checkbox label="Select all" hide-label></e-checkbox></span><span>Order</span><span>Customer</span><span align="end">Total</span></e-row>
       <e-row><span><e-checkbox label="Select #1042" hide-label></e-checkbox></span><span card="title"><a href="#1042">#1042</a></span><span card="body">Rahima Akter</span><span align="end" card="end">৳1,930</span></e-row>

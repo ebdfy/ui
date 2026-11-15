@@ -48,7 +48,7 @@ e-district-picker > div > label {
   overflow-wrap: anywhere;
   color: var(--e-color-fg);
   font-size: var(--e-font-size-meta);
-  font-weight: var(--e-font-weight-semibold);
+  font-weight: var(--e-font-weight-medium);
   line-height: var(--e-line-height-meta);
 }
 e-district-picker::before {

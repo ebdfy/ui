@@ -2,12 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content" />
     <link rel="icon" href="data:," />
     <title>Playground · ebdfy design system v2</title>
     <link
       rel="preload"
-      href="%EB_CDN%/ui/fonts/manrope-latin-wght-normal.woff2"
+      href="%EB_CDN%/ui/fonts/geist-latin-wght-normal.woff2"
       as="font"
       type="font/woff2"
       crossorigin
@@ -15,22 +15,7 @@
     <link rel="stylesheet" href="%EB_CDN%/ui/v2.css" />
     <link rel="stylesheet" href="%EB_CDN%/ui/v2-host.css" />
     <script type="module" src="%EB_CDN%/ui/v2-host.js"></script>
-    <style>
-      /* The playground's language switch, a word among the frame's icon buttons. */
-      [slot='actions'] > button[data-language] {
-        inline-size: auto;
-        padding: 0 8px;
-        font: inherit;
-        font-size: var(--e-font-size-meta);
-        font-weight: var(--e-font-weight-semibold);
-      }
-      /* On a phone the frame's top bar has room for the switch or the Hang link, not both. */
-      @media (width < 600px) {
-        #hang {
-          display: none;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="/playground.css" />
     <script>
       // The staff member's language, kept by this browser as the Admin keeps it for them, before
       // anything draws.
@@ -41,28 +26,7 @@
   </head>
   <body>
     <e-admin-frame>
-      <div slot="store">
-        <span aria-hidden="true">D</span>
-        <span>Demo shop<small>demo-shop.ebdfy.com</small></span>
-      </div>
-      <!-- A merchant's own Admin pages, which the playground does not have, all lead back to it. -->
-      <nav slot="menu" aria-label="Main">
-        <a href="/playground"><e-icon name="home"></e-icon><span>Home</span></a>
-        <a href="/playground" aria-current="page"><e-icon name="shopping-bag"></e-icon><span>Orders</span></a>
-        <a href="/playground"><e-icon name="package"></e-icon><span>Products</span></a>
-        <a href="/playground"><e-icon name="users"></e-icon><span>Customers</span></a>
-      </nav>
-      <form slot="search" role="search">
-        <e-icon name="search"></e-icon>
-        <input type="search" name="q" aria-label="Search" placeholder="Search orders, products, customers" />
-      </form>
-      <div slot="actions">
-        <button type="button" aria-label="Help"><e-icon name="help"></e-icon></button>
-        <button type="button" data-language></button>
-        <button type="button" aria-label="Notifications"><e-icon name="bell"></e-icon></button>
-        <span aria-hidden="true">RA</span>
-        <a href="/playground?hang" id="hang">Hang the app</a>
-      </div>
+      %EB_ADMIN_CHROME%
       <e-admin-panel
         store="demo"
         app="sample"
@@ -72,7 +36,7 @@
         api-url="/dev/graphql"
       >
         <header><h1>Sample app</h1></header>
-        <iframe title="Sample app"></iframe>
+        <iframe title="Sample app" allow="clipboard-write"></iframe>
       </e-admin-panel>
     </e-admin-frame>
     <script>
@@ -97,28 +61,12 @@
       if (named?.origin === app.origin) page = named
       page.searchParams.set('store', panel.getAttribute('store'))
       panel.querySelector(':scope > iframe').dataset.src = hang ? '%EB_SAMPLE_APP%/hang?store=demo' : page.href
-      // The switch names the other language in that language, and turns the Admin to it; v2-host.js
-      // tells the app.
-      const switcher = document.querySelector('[data-language]')
-      const label = () => {
-        const bn = document.documentElement.lang === 'bn'
-        switcher.textContent = bn ? 'English' : 'বাংলা'
-        switcher.lang = bn ? 'en' : 'bn'
-      }
-      label()
-      switcher.addEventListener('click', () => {
-        const next = document.documentElement.lang === 'bn' ? 'en' : 'bn'
-        document.documentElement.lang = next
-        try {
-          localStorage.setItem('ebdfy-playground-lang', next)
-        } catch {}
-        label()
-      })
       if (hang) {
         const toggle = document.querySelector('#hang')
         toggle.href = '/playground'
         toggle.textContent = 'Stop hanging'
       }
     </script>
+    <script src="/playground.js"></script>
   </body>
 </html>

@@ -9,7 +9,7 @@
     <title>Orders · Sample app · ebdfy</title>
     <link
       rel="preload"
-      href="%EB_CDN%/ui/fonts/manrope-latin-wght-normal.woff2"
+      href="%EB_CDN%/ui/fonts/geist-latin-wght-normal.woff2"
       as="font"
       type="font/woff2"
       crossorigin
@@ -122,8 +122,8 @@
             data-bn-label="অর্ডার খুঁজুন"
             data-bn-placeholder="অর্ডার খুঁজুন"
           ></e-search-field>
+          <e-button><e-icon name="filter"></e-icon><span data-bn="ফিল্টার যোগ করুন">Add filter</span></e-button>
           <span slot="filter" name="date"><span data-bn="তারিখ: গত ৩০ দিন">Date: Last 30 days</span></span>
-          <e-button data-bn="ফিল্টার যোগ করুন">Add filter</e-button>
           <e-select label="Sort" hide-label data-bn-label="সাজান">
             <option value="newest" selected data-bn="নতুন আগে">Newest first</option>
             <option value="oldest" data-bn="পুরোনো আগে">Oldest first</option>

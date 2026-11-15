@@ -36,11 +36,18 @@ export class EPhoneField extends EField {
     if (!(input instanceof HTMLInputElement)) return
     input.type = 'tel'
     input.inputMode = 'tel'
-    input.id = `e-phone-${++count}`
-    const label = document.createElement('label')
-    label.htmlFor = input.id
-    label.textContent = text
-    this.append(label, input)
+    // A written input keeps its id, and a written label stays the one label naming it.
+    if (!input.id) input.id = `e-phone-${++count}`
+    const written = this.querySelector<HTMLLabelElement>(':scope > label')
+    if (written) written.htmlFor = input.id
+    else {
+      const label = document.createElement('label')
+      label.htmlFor = input.id
+      label.textContent = text
+      // A written input stays where it is, so it is the same element the page holds.
+      if (input.parentElement === this) input.before(label)
+      else this.append(label, input)
+    }
 
     const check = () => {
       const valid = input.value === '' || mobile.test(input.value)
@@ -56,7 +63,10 @@ export class EPhoneField extends EField {
         if (check()) this.removeAttribute('error')
       },
     })
-    input.value = own.get!.call(input)
+    // The markup's number turns Latin and is checked, but an error the markup wrote stays: it is the
+    // server's word on this number, which only typing corrects.
+    own.set!.call(input, latin(own.get!.call(input)))
+    check()
     // The caret stays after the digit just typed, wherever in the number that was.
     input.addEventListener('input', () => {
       const typed = own.get!.call(input)

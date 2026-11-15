@@ -1,4 +1,4 @@
-/* e-avatar: a 32 px circle. The initials are the ::before, read from the initials attribute that
+/* e-avatar: a 32 px circle, 24 px with size="24". The initials are the ::before, read from the initials attribute that
    avatar.ts sets from the name. The box is fixed, so the script only fills a circle that was
    already drawn empty. An <img> child covers the circle and the initials go. */
 e-avatar {
@@ -17,6 +17,21 @@ e-avatar {
   line-height: var(--e-line-height-body);
   font-weight: var(--e-font-weight-semibold);
   vertical-align: middle;
+}
+/* 24 px for a person named inline, such as a comment's writer. Bangla initials keep the 13 px floor
+   in the circle; Latin ones go to 11 px. */
+e-avatar[size='24'] {
+  width: 24px;
+  height: 24px;
+  font-size: 11px;
+}
+e-avatar[size='24']:lang(bn) {
+  font-size: var(--e-font-size-meta);
+}
+/* The person signed in, such as the writer of a new comment. */
+e-avatar[tone='lime'] {
+  background: var(--e-color-lime);
+  color: var(--e-color-lime-fg);
 }
 e-avatar[initials]:not(:has(> img))::before {
   content: attr(initials);

@@ -1,0 +1,28 @@
+/* e-meter: a thin track filled to a share, such as a customer's delivered rate. The fill is the
+   ::before, as wide as --e-meter, which the script reads from value. */
+e-meter {
+  display: block;
+  position: relative;
+  height: 6px;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--e-color-line);
+}
+e-meter::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--e-meter, 0%);
+  border-radius: inherit;
+  background: var(--e-color-accent);
+}
+e-meter[tone='success']::before {
+  background: var(--e-color-delivered-fg);
+}
+e-meter[tone='warning']::before {
+  background: var(--e-color-warn-fg);
+}
+e-meter[tone='critical']::before {
+  background: var(--e-color-returned-fg);
+}

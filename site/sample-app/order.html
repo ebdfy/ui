@@ -9,7 +9,7 @@
     <title>Order · Sample app · ebdfy</title>
     <link
       rel="preload"
-      href="%EB_CDN%/ui/fonts/manrope-latin-wght-normal.woff2"
+      href="%EB_CDN%/ui/fonts/geist-latin-wght-normal.woff2"
       as="font"
       type="font/woff2"
       crossorigin
@@ -26,12 +26,20 @@
           padding: 24px 28px;
         }
       }
-      /* The link back to the list stands on its own line, so on a phone it is a 44 px target. */
+      /* The kit's display rules would beat the browser's own for hidden. */
+      [hidden] {
+        display: none !important;
+      }
+      /* On a phone the dock holds Confirm, so the header does not say it twice; the dock ends the page. */
       @media (max-width: 599.98px) {
-        a[data-words='back'] {
-          display: inline-flex;
-          align-items: center;
-          min-height: 44px;
+        e-page > e-button[slot='actions'] {
+          display: none;
+        }
+        body:has(> e-bottom-bar[dock]:not([hidden])) {
+          padding-bottom: 0;
+        }
+        e-bottom-bar[dock] {
+          margin: 16px -16px 0;
         }
       }
     </style>
@@ -56,30 +64,42 @@
   <body>
     <!-- Hidden until the script below has put the order in place: a browser may paint before it
          reaches that script, and would show these cards empty, then move them. -->
-    <e-page hidden>
+    <e-page hidden width="details">
+      <a slot="back" href="/orders"><e-icon name="arrow-left"></e-icon></a>
+      <e-stack slot="status" direction="row" gap="2" wrap
+        ><e-badge data-badge="status"></e-badge><e-badge data-badge="payment"></e-badge
+      ></e-stack>
+      <span slot="facts" data-order="facts"></span>
       <e-stack gap="4">
-        <e-text>
-          <span data-words="status"></span>: <strong data-order="status"></strong> ·
-          <span data-order="placed"></span>
-        </e-text>
         <e-card id="items-card">
           <e-button slot="actions" data-words="edit" data-toast="itemsEdited"></e-button>
-          <e-stack gap="1" data-items></e-stack>
+          <div data-items></div>
         </e-card>
         <e-card id="payment-card">
-          <e-stack gap="1">
-            <e-text data-order="payment"></e-text>
-            <e-text><span data-words="total"></span>: <span data-order="total"></span></e-text>
-          </e-stack>
+          <e-summary data-payment></e-summary>
         </e-card>
-        <e-text><e-link><a href="/orders" data-words="back"></a></e-link></e-text>
+        <!-- Last on a phone, after the side column's cards. Posting a comment is its own action, so
+             its form is no save-bar form. -->
+        <e-card id="timeline-card" phone-order="last">
+          <e-timeline>
+            <form slot="composer">
+              <e-avatar tone="lime" data-staff></e-avatar>
+              <e-text-field name="comment" data-label="comment"></e-text-field>
+              <e-button type="submit" data-words="post"></e-button>
+            </form>
+          </e-timeline>
+        </e-card>
       </e-stack>
       <e-stack gap="4" slot="aside">
-        <e-card id="customer-card">
+        <e-card id="customer-card" phone-order="first">
           <e-button slot="actions" data-words="edit"></e-button>
           <e-stack gap="1">
-            <e-text data-customer="name"></e-text>
-            <e-text data-customer="phone"></e-text>
+            <e-person>
+              <e-avatar data-customer-avatar></e-avatar>
+              <span data-customer="name"></span>
+              <span slot="meta" data-words="history"></span>
+            </e-person>
+            <e-contact><e-icon name="phone"></e-icon><a data-customer="phone"></a></e-contact>
             <e-text data-customer="line"></e-text>
             <e-text data-customer="area"></e-text>
             <e-text tone="subdued" data-customer="charge"></e-text>
@@ -95,17 +115,25 @@
           <e-stack gap="1">
             <e-text data-words="riskLow"></e-text>
             <e-text tone="subdued" data-words="riskWhy"></e-text>
+            <e-meter value="92" tone="success" data-label="delivered"></e-meter>
           </e-stack>
         </e-card>
         <e-card id="tags-card">
-          <e-button slot="actions" data-words="edit" data-toast="tagsEdited"></e-button>
-          <e-stack direction="row" gap="1" wrap>
-            <e-badge data-order="channel"></e-badge>
-            <e-badge data-words="repeat"></e-badge>
-          </e-stack>
+          <form data-save-bar>
+            <e-chips name="tags" data-label="tags">
+              <e-chip removable data-chip="channel"><span data-order="channel"></span></e-chip>
+              <e-chip value="repeat" removable><span data-words="repeat"></span></e-chip>
+            </e-chips>
+          </form>
         </e-card>
       </e-stack>
     </e-page>
+    <!-- On a phone the order's main actions sit in a dock above the Admin's tab bar; hidden, as the page is,
+         until the script below has said which of them the order has. -->
+    <e-bottom-bar dock hidden>
+      <e-button data-words="call" data-call></e-button>
+      <e-button tone="primary" data-words="confirmIt" data-confirm></e-button>
+    </e-bottom-bar>
     <e-modal id="confirm">
       <e-stack gap="3">
         <e-text data-order="summary"></e-text>
@@ -137,9 +165,15 @@
           en: {
             heading: (n) => `Order #${n}`,
             missing: 'Order not found',
-            status: 'Status',
+            subtotal: 'Subtotal',
+            deliveryCharge: 'Delivery',
             total: 'Total',
-            back: '← All orders',
+            back: 'All orders',
+            unpaid: 'Unpaid',
+            paid: 'Paid',
+            toCollect: (amount) => `To collect ${amount} on delivery`,
+            paidBy: (amount, method) => `Paid ${amount} by ${method}`,
+            paidWith: { bkash: 'bKash', nagad: 'Nagad', card: 'card' },
             confirm: 'Confirm order',
             confirmHeading: (n) => `Confirm order #${n}`,
             notNow: 'Not now',
@@ -174,10 +208,23 @@
               returned: 'Returned by Steadfast',
             },
             riskLow: 'Low risk',
-            riskWhy: 'Every past order from this phone was delivered',
+            riskWhy: '11 of 12 past orders from this phone were delivered',
+            delivered: 'Delivered',
             repeat: 'Repeat customer',
+            history: '12 orders · ৳18,460 spent',
+            timeline: 'Timeline',
+            comment: 'Comment',
+            post: 'Post',
+            justNow: 'Just now',
+            staff: 'Rafiq Ahmed',
+            steps: {
+              asked: 'Asked to deliver after 5 PM, she is at work until then.',
+              checked: 'checked the phone: 11 of 12 orders delivered',
+              placed: (channel) => `placed the order on ${channel}`,
+            },
+            fraudCheck: 'Fraud check',
+            call: 'Call',
             itemsEdited: 'The sample does not edit items',
-            tagsEdited: 'The sample does not edit tags',
             booked: 'The sample does not book couriers',
             printed: 'The sample does not print labels',
             tracked: 'The sample does not track parcels',
@@ -185,9 +232,15 @@
           bn: {
             heading: (n) => `অর্ডার #${n}`,
             missing: 'অর্ডারটি পাওয়া যায়নি',
-            status: 'অবস্থা',
+            subtotal: 'সাবটোটাল',
+            deliveryCharge: 'ডেলিভারি',
             total: 'মোট',
-            back: '← সব অর্ডার',
+            back: 'সব অর্ডার',
+            unpaid: 'অপরিশোধিত',
+            paid: 'পরিশোধিত',
+            toCollect: (amount) => `ডেলিভারিতে ${amount} নিতে হবে`,
+            paidBy: (amount, method) => `${method} ${amount} পরিশোধ হয়েছে`,
+            paidWith: { bkash: 'বিকাশে', nagad: 'নগদে', card: 'কার্ডে' },
             confirm: 'অর্ডার কনফার্ম করুন',
             confirmHeading: (n) => `অর্ডার #${n} কনফার্ম করুন`,
             notNow: 'এখন না',
@@ -222,10 +275,23 @@
               returned: 'স্টেডফাস্ট ফেরত দিয়েছে',
             },
             riskLow: 'কম ঝুঁকি',
-            riskWhy: 'এই ফোন থেকে আগের সব অর্ডার ডেলিভারি হয়েছে',
+            riskWhy: 'এই ফোন থেকে আগের ১২টির মধ্যে ১১টি অর্ডার ডেলিভারি হয়েছে',
+            delivered: 'ডেলিভারি হয়েছে',
             repeat: 'পুরোনো গ্রাহক',
+            history: '১২টি অর্ডার · ৳১৮,৪৬০ খরচ',
+            timeline: 'টাইমলাইন',
+            comment: 'মন্তব্য',
+            post: 'পোস্ট করুন',
+            justNow: 'এইমাত্র',
+            staff: 'রফিক আহমেদ',
+            steps: {
+              asked: 'বিকাল ৫টার পরে ডেলিভারি দিতে বলেছেন, তার আগে উনি অফিসে থাকেন।',
+              checked: 'ফোন যাচাই করেছে: ১২টির মধ্যে ১১টি অর্ডার ডেলিভারি হয়েছে',
+              placed: (channel) => `${channel} থেকে অর্ডার করেছেন`,
+            },
+            fraudCheck: 'ফ্রড চেক',
+            call: 'কল করুন',
             itemsEdited: 'স্যাম্পলে পণ্য এডিট করা যায় না',
-            tagsEdited: 'স্যাম্পলে ট্যাগ এডিট করা যায় না',
             booked: 'স্যাম্পলে কুরিয়ার বুক করা যায় না',
             printed: 'স্যাম্পলে লেবেল প্রিন্ট করা যায় না',
             tracked: 'স্যাম্পলে পার্সেল ট্র্যাক করা যায় না',
@@ -235,14 +301,17 @@
         const order = sampleOrders.orders.find((one) => String(one.number) === number)
         // The order's customer as the sample's backend holds them: in Kaliakair, Gazipur, until a save
         // puts what the form sent in saved.
+        // #1034's customer gave no phone number, so the page has no contact row and no Call.
         const customer = {
-          phone: `0170707${number.padStart(4, '0')}`,
+          phone: number === '1034' ? '' : `0170707${number.padStart(4, '0')}`,
           district: 'gazipur',
           upazila: 'kaliakair',
           area: { en: 'Kaliakair, Gazipur', bn: 'কালিয়াকৈর, গাজীপুর' },
           charge: 120,
           saved: null,
         }
+        // The comments posted on this page, newest first: the sample keeps them only while it is open.
+        const posted = []
         // An e-button's label sits in the button it built, once v2.js has upgraded it.
         const label = (tag, text) => ((tag.querySelector(':scope > button') ?? tag).textContent = text)
         const render = (lang) => {
@@ -263,6 +332,7 @@
             'delivery-card': t.delivery,
             'risk-card': t.risk,
             'tags-card': t.tags,
+            'timeline-card': t.timeline,
           })) {
             document.getElementById(id).setAttribute('heading', heading)
           }
@@ -272,23 +342,80 @@
           }
           renderCustomer(lang)
           const said = sampleOrders.read(order, lang)
+          const at = sampleOrders.placedAt(order.number)
+          const placed =
+            at === null ? said.placed : `${sampleOrders.words[lang].today} ${sampleOrders.clockAt(at, lang)}`
+          const back = document.querySelector('e-page > a[slot="back"]')
+          back.setAttribute('aria-label', t.back)
+          const [status, paid] = document.querySelectorAll('e-page > [slot="status"] e-badge')
+          status.setAttribute('tone', order.status)
+          status.textContent = said.status
+          paid.setAttribute('tone', order.payment === 'cod' ? 'warn' : 'success')
+          paid.textContent = order.payment === 'cod' ? t.unpaid : t.paid
           const fill = {
-            status: said.status,
-            placed: `${said.placed} · ${said.channel}`,
-            payment: said.payment,
-            total: said.total,
+            facts: `${placed} · ${said.channel}`,
             courier: t.courier[order.status],
             channel: said.channel,
             summary: `${said.customer} · ${said.total} · ${said.payment}`,
           }
-          // The order's items, one a line, the same every load.
+          // The order's items, one a line, the same every load: the total less the delivery charge, shared
+          // between them in round tens, the last taking what is left.
+          const taka = (amount) => sampleOrders.taka(amount, lang)
+          const subtotal = order.total - customer.charge
+          const each = Math.round(subtotal / order.items / 10) * 10
           const items = Array.from({ length: order.items }, (_, i) => {
-            const line = document.createElement('e-text')
-            line.textContent = `${t.products[(order.number + i) % t.products.length]} × 1`
+            const price = i < order.items - 1 ? each : subtotal - each * (order.items - 1)
+            const line = document.createElement('e-line-item')
+            const part = (slot, text) => {
+              const span = document.createElement('span')
+              span.slot = slot
+              span.textContent = text
+              return span
+            }
+            line.append(
+              document.createElement('e-thumbnail'),
+              part('title', t.products[(order.number + i) % t.products.length]),
+              part('price', `${sampleOrders.digits(1, lang)} × ${taka(price)}`),
+              part('amount', taka(price)),
+            )
             return line
           })
           document.querySelector('[data-items]').replaceChildren(...items)
+          // The payment: the subtotal, the delivery charge and the total, then what is still to collect or
+          // how it was paid.
+          const row = (cells, total) => {
+            const tag = document.createElement('e-summary-row')
+            if (total) tag.setAttribute('total', '')
+            tag.append(
+              ...cells.map((text) => {
+                const span = document.createElement('span')
+                span.textContent = text
+                return span
+              }),
+            )
+            return tag
+          }
+          const due = document.createElement('e-due')
+          due.setAttribute('tone', order.payment === 'cod' ? 'warning' : 'success')
+          due.textContent =
+            order.payment === 'cod' ? t.toCollect(said.total) : t.paidBy(said.total, t.paidWith[order.payment])
+          document
+            .querySelector('[data-payment]')
+            .replaceChildren(
+              row([t.subtotal, said.items, taka(subtotal)]),
+              row([t.deliveryCharge, taka(customer.charge)]),
+              row([t.total, said.total], true),
+              due,
+            )
           for (const tag of document.querySelectorAll('[data-order]')) tag.textContent = fill[tag.dataset.order]
+          // The channel's tag stands for the channel, set once: the chips keep their values from the first
+          // look.
+          const channel = document.querySelector('[data-chip="channel"]')
+          if (channel && !channel.hasAttribute('value')) channel.setAttribute('value', order.channel)
+          renderTimeline(lang, said)
+          document.querySelector('[data-confirm]').hidden = order.status !== 'new'
+          const dock = document.querySelector('e-bottom-bar[dock]')
+          dock.hidden = [...dock.children].every((button) => button.hidden)
           let confirm = page.querySelector(':scope > e-button[slot="actions"]')
           if (order.status !== 'new') {
             confirm?.remove()
@@ -301,6 +428,52 @@
             page.prepend(confirm)
           }
           label(confirm, t.confirm)
+        }
+        // The timeline, newest first: the comments posted here, then the sample's own steps, which end at
+        // the order being placed. Only today's orders carry a time.
+        const renderTimeline = (lang, said) => {
+          const t = words[lang]
+          document.querySelector('[data-staff]').setAttribute('name', t.staff)
+          const at = sampleOrders.placedAt(order.number)
+          const clock = (minutes) => (at === null ? '' : sampleOrders.clockAt(at + minutes, lang))
+          const step = (actor, action, time, body) => {
+            const item = document.createElement('e-timeline-item')
+            const who = document.createElement('strong')
+            who.slot = 'actor'
+            who.textContent = actor
+            const when = document.createElement('time')
+            when.slot = 'time'
+            when.textContent = time
+            item.append(who)
+            if (action) item.append(` ${action} `)
+            item.append(when)
+            if (body !== undefined) {
+              item.setAttribute('kind', 'comment')
+              const p = document.createElement('p')
+              p.slot = 'body'
+              p.textContent = body
+              item.append(p)
+            }
+            return item
+          }
+          const day = document.createElement('e-timeline-day')
+          day.textContent = at === null ? said.placed : sampleOrders.words[lang].today
+          const timeline = document.querySelector('#timeline-card e-timeline')
+          for (const old of timeline.querySelectorAll(':scope > e-timeline-day, :scope > e-timeline-item')) old.remove()
+          timeline
+            .querySelector('form')
+            .after(
+              day,
+              ...posted.map((text) => step(t.staff, '', t.justNow, text)),
+              step(t.staff, '', clock(6), t.steps.asked),
+              step(t.fraudCheck, t.steps.checked, clock(1)),
+              step(order.customer[lang], t.steps.placed(said.channel), clock(0)),
+            )
+        }
+        // Puts a comment at the top of the timeline.
+        const post = (text) => {
+          posted.unshift(text)
+          render(document.documentElement.lang)
         }
         // The customer card and its form in the page's language. The form's opening values are in place
         // before v2.js builds the fields; after, they are the person's to change. Until anything is saved
@@ -341,6 +514,13 @@
           }
           const fill = { ...shown, charge: t.chargeIs(sampleOrders.taka(shown.charge, lang)) }
           for (const tag of document.querySelectorAll('[data-customer]')) tag.textContent = fill[tag.dataset.customer]
+          document.querySelector('[data-customer-avatar]').setAttribute('name', shown.name)
+          // With no phone number there is no one to call: no contact row, and no Call in the dock.
+          document.querySelector('[data-customer="phone"]').setAttribute('href', `tel:${shown.phone}`)
+          document.querySelector('#customer-card e-contact').hidden = !shown.phone
+          document.querySelector('[data-call]').hidden = !shown.phone
+          const dock = document.querySelector('e-bottom-bar[dock]')
+          dock.hidden = [...dock.children].every((button) => button.hidden)
         }
         const confirm = () => {
           order.status = 'confirmed'
@@ -357,7 +537,14 @@
           }
           renderCustomer(document.documentElement.lang)
         }
-        return { render, confirm, saveCustomer, words: () => words[document.documentElement.lang] }
+        return {
+          render,
+          confirm,
+          saveCustomer,
+          post,
+          phone: () => (customer.saved ?? customer).phone,
+          words: () => words[document.documentElement.lang],
+        }
       })()
       sample.render(document.documentElement.lang === 'bn' ? 'bn' : 'en')
       document.querySelector('e-page').hidden = false
@@ -389,6 +576,25 @@
       )
       // Confirm opens the modal, whose own buttons close it or confirm the order; Edit on the customer
       // opens their form.
+      // The dock's Confirm is the header's; its Call rings the customer.
+      document.querySelector('e-bottom-bar[dock]').addEventListener('click', (event) => {
+        if (event.target.closest('[data-confirm]')) ebdfy.modal.show('confirm')
+        if (event.target.closest('[data-call]')) {
+          const call = document.createElement('a')
+          call.href = `tel:${sample.phone()}`
+          call.click()
+        }
+      })
+      // Posting a comment adds it to the top of the timeline; it is no edit for the save bar.
+      const composer = document.querySelector('#timeline-card form')
+      composer.addEventListener('submit', (event) => {
+        event.preventDefault()
+        const field = composer.querySelector('input[name="comment"]')
+        const text = field.value.trim()
+        if (!text) return
+        sample.post(text)
+        field.value = ''
+      })
       document.querySelector('e-page').addEventListener('click', (event) => {
         if (event.target.closest('e-page > e-button[slot="actions"]')) ebdfy.modal.show('confirm')
         if (event.target.closest('#customer-card > e-button[slot="actions"]')) ebdfy.modal.show('customer')
@@ -407,6 +613,12 @@
         const area = [upazila, district].map((select) => select.selectedOptions[0]?.text ?? '').join(', ')
         await new Promise((resolve) => setTimeout(resolve, 400))
         sample.saveCustomer(data, area)
+        ebdfy.toast(document.documentElement.lang === 'bn' ? 'সংরক্ষিত' : 'Saved')
+      })
+      // Saving the tags keeps them with the order, which the sample only says it did: the chips stay
+      // as they are.
+      document.querySelector('#tags-card form').addEventListener('submit', (event) => {
+        event.preventDefault()
         ebdfy.toast(document.documentElement.lang === 'bn' ? 'সংরক্ষিত' : 'Saved')
       })
       // Saving the note keeps it with the order, which the sample only says it did.

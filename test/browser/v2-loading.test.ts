@@ -1,4 +1,4 @@
-// The v2 loading parts: e-spinner turns and says Loading, e-skeleton holds the height of the text it
+// The v2 loading parts: e-spinner says Loading and turns unless less motion is asked for, e-skeleton holds the height of the text it
 // stands in for, and e-progress-bar fills to its value and says it.
 import { expect, test } from 'vitest'
 import { page } from 'vitest/browser'
@@ -11,12 +11,13 @@ import { defineText } from '../../src/v2/text.ts'
 
 const height = (el: Element) => el.getBoundingClientRect().height
 
-test('e-spinner is a 20 px ring that turns, and a screen reader hears Loading in the page language', async () => {
+test('e-spinner is a 20 px ring that stands still with reduced motion, and a screen reader hears Loading in the page language', async () => {
+  // The browser project runs with reduced motion (vitest.config.ts).
   document.body.innerHTML = '<e-spinner></e-spinner><div lang="bn"><e-spinner></e-spinner></div>'
   const [en, bn] = document.querySelectorAll('e-spinner')
   const box = en!.getBoundingClientRect()
   expect([box.width, box.height]).toEqual([20, 20])
-  expect(getComputedStyle(en!).animationName).not.toBe('none')
+  expect(getComputedStyle(en!).animationName).toBe('none')
   defineSpinner()
   await expect.element(page.getByRole('status', { name: 'Loading' })).toBeInTheDocument()
   await expect.element(page.getByRole('status', { name: 'লোড হচ্ছে' })).toBeInTheDocument()
@@ -64,6 +65,22 @@ test('with reduced motion asked for, e-skeleton does not pulse', () => {
     getComputedStyle(skeleton, '::before').animationName,
     getComputedStyle(skeleton, '::after').animationName,
   ]).toEqual(['none', 'none'])
+})
+
+test('e-skeleton shape="table" holds 32 + 12 + 36 + 8 rows of 44 px, and shape="details" holds 120 + 16 + 200', () => {
+  document.body.innerHTML = '<e-skeleton shape="table"></e-skeleton><e-skeleton shape="details"></e-skeleton>'
+  const [table, details] = document.querySelectorAll('e-skeleton')
+  expect(height(table!)).toBe(432)
+  expect(height(details!)).toBe(336)
+})
+
+test('with reduced motion asked for, the table and details shapes do not pulse', () => {
+  document.body.innerHTML = '<e-skeleton shape="table"></e-skeleton><e-skeleton shape="details"></e-skeleton>'
+  const names = [...document.querySelectorAll('e-skeleton')].flatMap((el) => [
+    getComputedStyle(el, '::before').animationName,
+    getComputedStyle(el, '::after').animationName,
+  ])
+  expect(names).toEqual(['none', 'none', 'none', 'none'])
 })
 
 test('e-progress-bar fills to its value out of 100 and says it, named by its label', async () => {

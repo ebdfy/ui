@@ -1,0 +1,58 @@
+/* e-summary: rows of a label and a value, such as an order's payment. CSS alone draws it. Each
+   e-summary-row puts its first child at the start and its last at the end; a child between them,
+   such as an item count, reads quieter. A total row is heavier, under a line. e-due says what is
+   still owed, as a block in a tone, inside the summary or on its own. */
+e-summary {
+  display: grid;
+  gap: var(--e-space-2);
+  min-width: 0;
+  color: var(--e-color-fg);
+}
+e-summary-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e-space-3);
+  min-width: 0;
+}
+e-summary-row > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+e-summary-row > :last-child:not(:first-child) {
+  flex: none;
+  margin-inline-start: auto;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+e-summary-row > :not(:first-child, :last-child) {
+  color: var(--e-color-fg2);
+}
+e-summary-row[total] {
+  padding-top: var(--e-space-2);
+  border-top: 1px solid var(--e-color-line);
+  font-weight: var(--e-font-weight-semibold);
+}
+e-due {
+  display: block;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--e-space-3) var(--e-space-4);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-neutral-bg);
+  color: var(--e-color-neutral-fg);
+  font-weight: var(--e-font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+e-due[tone='warning'] {
+  background: var(--e-color-warn-soft);
+  color: var(--e-color-warn-fg);
+}
+e-due[tone='success'] {
+  background: var(--e-color-delivered-bg);
+  color: var(--e-color-delivered-fg);
+}
+e-due[tone='critical'] {
+  background: var(--e-color-danger-soft);
+  color: var(--e-color-danger);
+}

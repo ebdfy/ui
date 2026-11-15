@@ -18,7 +18,9 @@ e-modal > dialog {
   border-radius: var(--e-radius-3);
   background: var(--e-color-surface);
   color: var(--e-color-fg);
-  box-shadow: 0 0 0 1px var(--e-color-line-2);
+  box-shadow:
+    0 0 0 1px var(--e-color-line),
+    var(--e-shadow-pop);
   overflow: hidden;
 }
 e-modal[size='small'] > dialog {
@@ -26,6 +28,26 @@ e-modal[size='small'] > dialog {
 }
 e-modal[size='large'] > dialog {
   width: min(100% - 32px, 980px);
+}
+e-modal[width='420'] > dialog {
+  width: min(100% - 32px, 420px);
+}
+e-modal[width='560'] > dialog {
+  width: min(100% - 32px, 560px);
+}
+e-modal[width='720'] > dialog {
+  width: min(100% - 32px, 720px);
+}
+/* A fade only: a scale in flight made the phone sheet measure under the screen's width. */
+@media (prefers-reduced-motion: no-preference) {
+  e-modal > dialog[open] {
+    animation: e-modal-in var(--e-time-2) var(--e-ease);
+  }
+}
+@keyframes e-modal-in {
+  from {
+    opacity: 0;
+  }
 }
 e-modal > dialog[open] {
   display: flex;
@@ -46,17 +68,20 @@ e-modal > dialog > header > h2 {
   flex: 1;
   min-width: 0;
   margin: 0;
-  font-size: var(--e-font-size-title);
-  line-height: var(--e-line-height-body);
+  font-size: var(--e-font-size-section);
+  line-height: 22px;
   font-weight: var(--e-font-weight-semibold);
   overflow-wrap: anywhere;
+}
+e-modal:lang(bn) > dialog > header > h2 {
+  line-height: 24px;
 }
 e-modal > dialog > header > button {
   flex: none;
   display: grid;
   place-items: center;
-  width: var(--e-size-control-md);
-  height: var(--e-size-control-md);
+  width: var(--e-size-button);
+  height: var(--e-size-button);
   padding: 0;
   border: 0;
   border-radius: var(--e-radius-1);
@@ -67,15 +92,14 @@ e-modal > dialog > header > button {
   line-height: var(--e-line-height-heading);
   cursor: pointer;
 }
-/* On a phone the close button keeps its drawn size and takes a 44 px hit area around it. */
+e-modal > dialog > header > button:hover {
+  background: var(--e-color-surface-2);
+}
+/* On a phone the close button is a real 44 px box. */
 @media (max-width: 599.98px) {
   e-modal > dialog > header > button {
-    position: relative;
-  }
-  e-modal > dialog > header > button::before {
-    content: '';
-    position: absolute;
-    inset: calc((var(--e-size-control-md) - var(--e-size-control-lg)) / 2);
+    width: var(--e-size-control-lg);
+    height: var(--e-size-control-lg);
   }
 }
 e-modal > dialog > header > button:focus-visible {
@@ -112,7 +136,8 @@ e-modal > dialog > footer > [data-part='ask'] {
 }
 @media (max-width: 599.98px) {
   e-modal > dialog,
-  e-modal[size] > dialog {
+  e-modal[size] > dialog,
+  e-modal[width] > dialog {
     width: 100%;
     margin: auto 0 0;
     border-radius: var(--e-radius-3) var(--e-radius-3) 0 0;

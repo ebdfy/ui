@@ -1,4 +1,4 @@
-// v2's type: Manrope is self-hosted and preloaded for Latin; Bangla uses the device's own Noto Sans
+// v2's type: Geist is self-hosted and preloaded for Latin; Bangla uses the device's own Noto Sans
 // Bengali through local() and downloads the self-hosted copy only on a device without it.
 import { mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -10,7 +10,7 @@ import { afterAll, beforeAll, expect, test } from 'vitest'
 import { startPages } from './pages.ts'
 
 const bangla = 'noto-sans-bengali-bangla.woff2'
-const manrope = 'manrope-latin-wght-normal.woff2'
+const geist = 'geist-latin-wght-normal.woff2'
 
 // A fontconfig setup that hides Noto Sans Bengali, as on a phone that does not carry it.
 const fontsConf = join(mkdtempSync(join(tmpdir(), 'ebdfy-v2-fonts-')), 'fonts.conf')
@@ -89,7 +89,7 @@ test('a Bangla page on a device without Noto Sans Bengali downloads the Bangla f
   }
 })
 
-test('each v2 page preloads Manrope at the URL its stylesheet asks for, so it is fetched once and used', async () => {
+test('each v2 page preloads Geist at the URL its stylesheet asks for, so it is fetched once and used', async () => {
   const urls = [`${pages.ui}/components/button`, `${pages.ui}/playground`, `${pages.sampleApp}/orders`]
   const results = await Promise.all(
     urls.map(async (url) => {
@@ -97,7 +97,7 @@ test('each v2 page preloads Manrope at the URL its stylesheet asks for, so it is
       const requests: string[] = []
       page.on('request', (request) => {
         // The playground's framed sample app loads its own copy from its own origin.
-        if (request.frame() === page.mainFrame() && request.url().endsWith(`/${manrope}`))
+        if (request.frame() === page.mainFrame() && request.url().endsWith(`/${geist}`))
           requests.push(new URL(request.url()).pathname)
       })
       await page.goto(url)
@@ -109,7 +109,7 @@ test('each v2 page preloads Manrope at the URL its stylesheet asks for, so it is
         return {
           preload: link?.getAttribute('href'),
           crossorigin: link?.hasAttribute('crossorigin'),
-          face: [...document.fonts].find((font) => font.family === 'e Manrope')?.status,
+          face: [...document.fonts].find((font) => font.family === 'e Geist')?.status,
         }
       })
       return { url, ...found, requests }
@@ -118,10 +118,10 @@ test('each v2 page preloads Manrope at the URL its stylesheet asks for, so it is
   expect(results).toEqual(
     urls.map((url) => ({
       url,
-      preload: `/ui/fonts/${manrope}`,
+      preload: `/ui/fonts/${geist}`,
       crossorigin: true,
       face: 'loaded',
-      requests: [`/ui/fonts/${manrope}`],
+      requests: [`/ui/fonts/${geist}`],
     })),
   )
 })
@@ -131,7 +131,7 @@ test('both faces swap in rather than hide text while they load', async () => {
   const display = await page.evaluate(() =>
     Object.fromEntries([...document.fonts].map((font) => [font.family, font.display])),
   )
-  expect(display).toEqual({ 'e Manrope': 'swap', 'e Bangla': 'swap' })
+  expect(display).toEqual({ 'e Geist': 'swap', 'e Bangla': 'swap' })
 })
 
 test('body text in Bangla is at least 13 px with a line height of at least 1.4', async () => {
@@ -145,16 +145,16 @@ test('body text in Bangla is at least 13 px with a line height of at least 1.4',
       family: style.fontFamily,
     }
   })
-  expect(family).toMatch(/^"e Manrope", "e Bangla"/)
+  expect(family).toMatch(/^"e Geist", "e Bangla"/)
   expect(size).toBeGreaterThanOrEqual(13)
   expect(lineHeight / size).toBeGreaterThanOrEqual(1.4)
 })
 
-test("letters in Bangla draw at least as tall as Manrope's x-height at the same size", async () => {
+test("letters in Bangla draw at least as tall as Geist's x-height at the same size", async () => {
   const { page } = await pages.open('')
   await openBangla(page)
   const { sizeAdjust, ratio } = await page.evaluate(async () => {
-    await document.fonts.load('14px "e Manrope"', 'x')
+    await document.fonts.load('14px "e Geist"', 'x')
     await document.fonts.load('14px "e Bangla"', 'ক')
     const context = document.createElement('canvas').getContext('2d')!
     const height = (font: string, text: string) => {
@@ -169,7 +169,7 @@ test("letters in Bangla draw at least as tall as Manrope's x-height at the same 
       sizeAdjust: (rule as CSSFontFaceRule | undefined)?.style.getPropertyValue('size-adjust'),
       // The top of Bangla's headline against the top of Manrope's x. The canvas rounds heights to
       // whole pixels, 9 against 8 at 14 px, so this measures at 1400 px.
-      ratio: height('1400px "e Bangla"', 'ক') / height('1400px "e Manrope"', 'x'),
+      ratio: height('1400px "e Bangla"', 'ক') / height('1400px "e Geist"', 'x'),
     }
   })
   // At 100% the headline stands at 0.625 em against Manrope's 0.547 em x-height, so Bangla already

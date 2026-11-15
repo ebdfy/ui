@@ -71,6 +71,14 @@ export const v2Groups: { name: string; pages: V2Page[] }[] = [
       component('table', 'Table', ['e-table', 'e-row']),
       component('index-table', 'Index table'),
       component('metrics', 'Metrics'),
+      component('todo', 'To-do'),
+      component('summary', 'Summary', ['e-summary', 'e-summary-row', 'e-due']),
+      component('timeline', 'Timeline', ['e-timeline', 'e-timeline-day', 'e-timeline-item']),
+      component('line-item', 'Line item'),
+      component('person', 'Person'),
+      component('contact', 'Contact'),
+      component('meter', 'Meter'),
+      component('chips', 'Chips', ['e-chips', 'e-chip']),
       component('tabs', 'Tabs', ['e-tabs', 'e-tab']),
       component('pagination', 'Pagination'),
       component('thumbnail', 'Thumbnail'),
@@ -115,7 +123,7 @@ const language = `<script>
 
 // The kit first, so every e-* tag is drawn in the first frame, then the docs' own sheet and script.
 const head = `${language}
-    <link rel="preload" href="%EB_CDN%/ui/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="%EB_CDN%/ui/fonts/geist-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="%EB_CDN%/ui/v2.css" />
     <link rel="stylesheet" href="/docs.css" />
     <script type="module" src="%EB_CDN%/ui/v2.js"></script>

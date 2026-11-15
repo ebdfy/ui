@@ -39,9 +39,9 @@ e-metrics > * > [slot='label'] {
   overflow-wrap: anywhere;
 }
 e-metrics > * > strong {
-  font-size: var(--e-font-size-heading);
-  line-height: var(--e-line-height-heading);
-  font-weight: var(--e-font-weight-semibold);
+  font-size: var(--e-font-size-display);
+  line-height: 1.45;
+  font-weight: var(--e-font-weight-bold);
   font-variant-numeric: tabular-nums;
 }
 e-metrics > * > [slot='change'] {
@@ -53,6 +53,17 @@ e-metrics > * > [slot='change'] {
 e-metrics > * > [slot='change'][tone='up'] {
   color: var(--e-color-delivered-fg);
 }
-e-metrics > * > [slot='change'][tone='down'] {
+e-metrics > * > [slot='change'][tone='down'],
+e-metrics > * > [slot='change'][tone='critical'] {
   color: var(--e-color-returned-fg);
+}
+e-metrics > * > [slot='change'][tone='success'] {
+  color: var(--e-color-delivered-fg);
+}
+/* Inside a card the metrics are not tiles: no border, background or radius, side by side with space. */
+e-card e-metrics > * {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding-inline: 0;
 }

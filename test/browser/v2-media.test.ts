@@ -16,7 +16,7 @@ const image =
 const sizes = [
   ['small', 32],
   ['medium', 40],
-  ['large', 56],
+  ['large', 88],
 ] as const
 
 for (const [size, px] of sizes) {

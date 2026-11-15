@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Meter · ebdfy design system v2</title>
+  </head>
+  <body>
+    <main>
+      <h1>Meter</h1>
+      <p class="lede">
+        <code>e-meter</code> is a thin bar filled to a share out of 100, such as a customer's delivered rate. Name it
+        with <code>label</code>, write the share in words beside it, and colour it with <code>tone</code>.
+      </p>
+      <docs-example caption="A delivered rate" stack>
+        <e-text>Delivered 11 of 12</e-text>
+        <e-meter value="92" tone="success" label="Delivered"></e-meter>
+      </docs-example>
+      <docs-example caption="Tones" stack>
+        <e-meter value="60" label="Stock left"></e-meter>
+        <e-meter value="35" tone="warning" label="Courier load"></e-meter>
+        <e-meter value="15" tone="critical" label="Returned"></e-meter>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-text>১২টির মধ্যে ১১টি ডেলিভারি হয়েছে</e-text>
+        <e-meter value="92" tone="success" label="ডেলিভারি হয়েছে"></e-meter>
+      </docs-example>
+    </main>
+  </body>
+</html>

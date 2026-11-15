@@ -1,0 +1,103 @@
+/* e-timeline: what happened to a record, newest first. CSS alone draws it. A composer form
+   (slot="composer") sits at the top in one row: the writer's avatar, a field and its button. Under it,
+   e-timeline-day labels and e-timeline-item steps sit on a rail: each step's dot is its ::before, and
+   the rail is each part's ::after, running its whole height to meet the next, so it stops at the
+   last. A step reads actor, action, time on one line: the actor in the first column, the action
+   wrapping in the second, the time at the end; a comment's body is a block under them. */
+e-timeline {
+  display: block;
+  min-width: 0;
+  color: var(--e-color-fg);
+}
+e-timeline > form[slot='composer'] {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: end;
+  column-gap: var(--e-space-3);
+  margin: 0 0 var(--e-space-4);
+}
+/* The avatar is centred on the field's box, under its label. */
+e-timeline > form[slot='composer'] > e-avatar {
+  margin-block-end: calc((var(--e-size-control-md) - 32px) / 2);
+}
+@media (max-width: 599.98px) {
+  e-timeline > form[slot='composer'] > e-avatar {
+    margin-block-end: calc((var(--e-size-control-lg) - 32px) / 2);
+  }
+}
+e-timeline-day,
+e-timeline-item {
+  position: relative;
+  display: block;
+  min-width: 0;
+  padding-inline-start: var(--e-space-6);
+}
+e-timeline-day {
+  padding-block: var(--e-space-1) var(--e-space-2);
+  color: var(--e-color-fg2);
+  font-size: var(--e-font-size-meta);
+  line-height: var(--e-line-height-meta);
+  font-weight: var(--e-font-weight-semibold);
+}
+e-timeline-item {
+  display: grid;
+  grid-template-columns: fit-content(50%) minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: 0.3em;
+  padding-block-end: var(--e-space-3);
+  line-height: var(--e-line-height-body);
+  overflow-wrap: anywhere;
+}
+e-timeline-item::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: calc((var(--e-line-height-body) - 8px) / 2);
+  box-sizing: border-box;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--e-color-surface);
+  border: 2px solid var(--e-color-line-2);
+}
+e-timeline-item[kind='comment']::before {
+  border-color: var(--e-color-fg2);
+}
+:is(e-timeline-day, e-timeline-item)::after {
+  content: '';
+  position: absolute;
+  left: 3.5px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--e-color-line);
+}
+:is(e-timeline-day, e-timeline-item):last-child::after {
+  content: none;
+}
+e-timeline-item > [slot='actor'] {
+  grid-column: 1;
+  grid-row: 1;
+  font-weight: var(--e-font-weight-semibold);
+}
+e-timeline-item > [slot='time'] {
+  grid-column: 3;
+  grid-row: 1;
+  margin-inline-start: var(--e-space-3);
+  color: var(--e-color-fg2);
+  font-size: var(--e-font-size-meta);
+  line-height: var(--e-line-height-body);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+e-timeline-item > [slot='body'] {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin: var(--e-space-1) 0 0;
+  padding: var(--e-space-2) var(--e-space-3);
+  border: 1px solid var(--e-color-line);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-surface-2);
+  white-space: pre-line;
+}

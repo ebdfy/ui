@@ -9,7 +9,7 @@
     <title>Home · Sample app · ebdfy</title>
     <link
       rel="preload"
-      href="%EB_CDN%/ui/fonts/manrope-latin-wght-normal.woff2"
+      href="%EB_CDN%/ui/fonts/geist-latin-wght-normal.woff2"
       as="font"
       type="font/woff2"
       crossorigin
@@ -55,6 +55,49 @@
   </head>
   <body>
     <e-page heading="Home" data-bn-heading="হোম">
+      <e-card heading="To do" data-bn-heading="করণীয়">
+        <e-todo>
+          <a href="/orders">
+            <strong data-bn="১২">12</strong>
+            <span data-bn="কনফার্ম বাকি">To confirm</span>
+          </a>
+          <a href="/orders">
+            <strong data-bn="১৮">18</strong>
+            <span data-bn="পাঠানো বাকি">To ship</span>
+          </a>
+          <a href="/orders">
+            <strong data-bn="৫৪">54</strong>
+            <span data-bn="কুরিয়ারে">With courier</span>
+          </a>
+          <a href="/orders">
+            <strong data-bn="৬">6</strong>
+            <span data-bn="ফেরত">Returns</span>
+          </a>
+          <a href="/orders">
+            <strong data-bn="৩">3</strong>
+            <span data-bn="খসড়া">Drafts</span>
+          </a>
+        </e-todo>
+      </e-card>
+      <e-card heading="Today" data-bn-heading="আজ">
+        <e-metrics>
+          <div>
+            <span slot="label" data-bn="অর্ডার">Orders</span>
+            <strong data-bn="৩৮">38</strong>
+            <span slot="change" tone="success" data-bn="+১২%">+12%</span>
+          </div>
+          <div>
+            <span slot="label" data-bn="বিক্রি">Sales</span>
+            <strong data-bn="৳৪১,৫০০">৳41,500</strong>
+            <span slot="change" tone="critical" data-bn="-৪%">-4%</span>
+          </div>
+          <div>
+            <span slot="label" data-bn="রিটার্নের হার">Return rate</span>
+            <strong data-bn="২.১%">2.1%</strong>
+            <span slot="change" data-bn="৭ দিন">7 days</span>
+          </div>
+        </e-metrics>
+      </e-card>
       <e-setup-guide heading="Set up your store" data-bn-heading="স্টোর সেট আপ করুন">
         <e-setup-step done data-bn="প্রথম পণ্য যোগ করুন">Add your first product</e-setup-step>
         <e-setup-step done data-bn="ডেলিভারি চার্জ ঠিক করুন">Set delivery charges</e-setup-step>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Line item · ebdfy design system v2</title>
+  </head>
+  <body>
+    <main>
+      <h1>Line item</h1>
+      <p class="lede">
+        <code>e-line-item</code> draws one order line: an optional <code>e-thumbnail</code>, the product as
+        <code>slot="title"</code>, its variant as <code>slot="meta"</code>, the quantity and price as
+        <code>slot="price"</code> and the line's amount as <code>slot="amount"</code>. Where the box holding the lines
+        is 480 px or wider it is one row, and amounts line up down consecutive lines. Narrower, as on a phone or beside
+        a record's side column, the amount ends the title's line and the variant and price go under it. A long title
+        wraps.
+      </p>
+      <docs-example caption="Two lines" stack>
+        <e-line-item>
+          <e-thumbnail></e-thumbnail>
+          <a slot="title" href="#">Jamdani saree</a>
+          <span slot="meta">Red, free size</span>
+          <span slot="price">1 × ৳1,450</span>
+          <span slot="amount">৳1,450</span>
+        </e-line-item>
+        <e-line-item>
+          <e-thumbnail></e-thumbnail>
+          <span slot="title">Cotton panjabi</span>
+          <span slot="meta">Blue, L · SKU CP-204</span>
+          <span slot="price">12 × ৳380</span>
+          <span slot="amount">৳4,560</span>
+        </e-line-item>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-line-item>
+          <e-thumbnail alt="জামদানি"></e-thumbnail>
+          <span slot="title">জামদানি শাড়ি, হাতে বোনা, লাল ও সোনালি পাড়</span>
+          <span slot="meta">লাল, ফ্রি সাইজ</span>
+          <span slot="price">১ × ৳১,৪৫০</span>
+          <span slot="amount">৳১,৪৫০</span>
+        </e-line-item>
+      </docs-example>
+    </main>
+  </body>
+</html>

@@ -127,3 +127,20 @@ test('with the save bar, a new amount raises the bar, Discard puts ৳80 back, a
   bar.act('discard')
   expect(shown(tag)).toBe('৳৮০')
 })
+
+// The ৳ sits right against the amount, as the markup draws "৳80" before the script.
+test.for(['en', 'bn'] as const)('in %s the ৳ and the amount sit with no gap between them', async (lang) => {
+  defineTakaField()
+  const tag = mount(`<div lang="${lang}">${charge}</div>`).querySelector('e-taka-field')!
+  await document.fonts.ready
+  const prefix = tag.querySelector('[data-e-prefix]')!
+  const input = tag.querySelector<HTMLInputElement>('input:not([type="hidden"])')!
+  const style = getComputedStyle(input)
+  const text =
+    input.getBoundingClientRect().left + Number.parseFloat(style.borderLeftWidth) + Number.parseFloat(style.paddingLeft)
+  const range = document.createRange()
+  range.selectNodeContents(prefix)
+  const glyph = range.getBoundingClientRect()
+  expect(input.value).toBe(lang === 'bn' ? '৮০' : '80')
+  expect(Math.abs(text - glyph.right)).toBeLessThanOrEqual(1)
+})

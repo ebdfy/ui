@@ -1,6 +1,6 @@
 {
   "name": "@ebdfy/ui",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "The ebdfy design system: custom elements, one stylesheet and the bridge for apps in the ebdfy Admin.",
   "license": "MIT",
   "files": [

@@ -21,7 +21,7 @@ e-taka-field > label {
   overflow-wrap: anywhere;
   color: var(--e-color-fg);
   font-size: var(--e-font-size-meta);
-  font-weight: var(--e-font-weight-semibold);
+  font-weight: var(--e-font-weight-medium);
   line-height: var(--e-line-height-meta);
 }
 e-phone-field::before,
@@ -77,7 +77,7 @@ e-taka-field > input:focus-visible {
   outline: 2px solid var(--e-color-focus);
   outline-offset: 2px;
 }
-e-phone-field:has(> input)::before,
+e-phone-field:has(> label)::before,
 e-phone-field:has(> input)::after,
 e-taka-field:has(> input)::before,
 e-taka-field:has(> input)::after {

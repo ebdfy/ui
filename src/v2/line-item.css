@@ -1,0 +1,78 @@
+/* e-line-item: one order line, drawn by CSS alone. Where the lines' box is 480 px or wider it is one
+   row: thumbnail, title over meta, price, amount. Narrower, as on a phone or in a record's main
+   column beside its side column, the amount ends the title's line and the meta and price go under
+   the title. The box holding the lines is a container for that, so its width must not come from its
+   content. Gaps are margins on the parts, so a line with no thumbnail has no empty indent. The
+   amount column has a minimum width, so amounts line up down consecutive lines. A long title wraps
+   and never pushes the amount. */
+:where(:has(> e-line-item)) {
+  container-type: inline-size;
+}
+e-line-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  box-sizing: border-box;
+  min-width: 0;
+  padding-block: var(--e-space-3);
+  color: var(--e-color-fg);
+}
+e-line-item + e-line-item {
+  border-top: 1px solid var(--e-color-line);
+}
+e-line-item > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+e-line-item > e-thumbnail {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  margin-inline-end: var(--e-space-3);
+}
+e-line-item > [slot='title'] {
+  grid-column: 2;
+  grid-row: 1;
+}
+e-line-item > [slot='amount'] {
+  grid-column: 3;
+  grid-row: 1;
+  margin-inline-start: var(--e-space-3);
+  white-space: nowrap;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+e-line-item > [slot='meta'] {
+  grid-column: 2 / -1;
+  grid-row: 2;
+  color: var(--e-color-fg2);
+  font-size: 13px;
+}
+e-line-item > [slot='price'] {
+  grid-column: 2 / -1;
+  grid-row: 3;
+  font-variant-numeric: tabular-nums;
+}
+@container (min-width: 480px) {
+  e-line-item {
+    grid-template-columns: auto 1fr auto minmax(6rem, auto);
+    align-items: center;
+  }
+  e-line-item > [slot='title'] {
+    grid-row: 1;
+    align-self: end;
+  }
+  e-line-item > [slot='meta'] {
+    grid-column: 2;
+    align-self: start;
+  }
+  e-line-item > [slot='price'] {
+    grid-column: 3;
+    grid-row: 1 / span 3;
+    margin-inline-start: var(--e-space-4);
+    white-space: nowrap;
+  }
+  e-line-item > [slot='amount'] {
+    grid-column: 4;
+    grid-row: 1 / span 3;
+  }
+}

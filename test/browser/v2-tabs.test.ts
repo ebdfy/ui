@@ -54,19 +54,18 @@ test('before the script the tabs sit in a row, the selected one underlined, with
   await page.viewport(800, 600)
   const holder = mount(three)
   const [all, fresh] = holder.querySelectorAll('e-tab')
-  const primary = getComputedStyle(document.documentElement).getPropertyValue('--e-color-primary').trim()
   const fg = getComputedStyle(document.documentElement).getPropertyValue('--e-color-fg').trim()
   const fg2 = getComputedStyle(document.documentElement).getPropertyValue('--e-color-fg2').trim()
 
   expect(box(all!).y).toBe(box(fresh!).y)
   expect(box(fresh!).x).toBeGreaterThanOrEqual(box(all!).x + box(all!).width)
-  expect(box(all!).height).toBe(36)
+  expect(box(all!).height).toBe(44)
   expect(getComputedStyle(fresh!, '::after').content).toBe('"12"')
   expect([
     getComputedStyle(all!).borderBottomWidth,
     getComputedStyle(all!).borderBottomColor,
     getComputedStyle(all!).color,
-  ]).toEqual(['2px', primary, fg])
+  ]).toEqual(['2px', fg, fg])
   expect([getComputedStyle(fresh!).borderBottomColor, getComputedStyle(fresh!).color]).toEqual([
     'rgba(0, 0, 0, 0)',
     fg2,
@@ -80,6 +79,61 @@ test('below 600 px each tab is 44 px tall, and six tabs scroll inside e-tabs at 
   expect(getComputedStyle(tabs).overflowX).toBe('auto')
   expect(tabs.scrollWidth).toBeGreaterThan(tabs.clientWidth)
   expect(document.documentElement.scrollWidth).toBe(360)
+})
+
+test('a tab is 44 px tall at 1440 px and at 360 px', async () => {
+  const tabs = mount(three).querySelectorAll('e-tab')
+  for (const width of [1440, 360]) {
+    await page.viewport(width, 800)
+    for (const tab of tabs) expect(box(tab).height).toBe(44)
+  }
+})
+
+test('the selected count is a solid pill and the other count a plain figure', async () => {
+  await page.viewport(800, 600)
+  const holder = mount(
+    '<e-tabs><e-tab selected count="3">Unfulfilled</e-tab><e-tab count="2">Unpaid</e-tab></e-tabs>' +
+      '<div lang="bn"><e-tabs><e-tab selected count="৩">অপূর্ণ</e-tab></e-tabs></div>',
+  )
+  const [selected, plain, banglaSelected] = holder.querySelectorAll('e-tab')
+  const probe = document.createElement('span')
+  holder.append(probe)
+  const resolve = (name: string, property: 'color' | 'backgroundColor') => {
+    probe.style[property] = `var(${name})`
+    return getComputedStyle(probe)[property]
+  }
+
+  const pill = getComputedStyle(selected!, '::after')
+  expect(pill.backgroundColor).toBe(resolve('--e-color-fg', 'backgroundColor'))
+  expect(pill.backgroundColor).not.toBe('rgba(0, 0, 0, 0)')
+  expect(pill.color).toBe(resolve('--e-color-surface', 'color'))
+  expect(pill.fontSize).toBe('12px')
+  expect(pill.lineHeight).toBe('20px')
+
+  const figure = getComputedStyle(plain!, '::after')
+  expect(figure.backgroundColor).toBe('rgba(0, 0, 0, 0)')
+  expect(figure.color).toBe(resolve('--e-color-fg3', 'color'))
+  expect(figure.fontSize).toBe('13px')
+
+  expect(getComputedStyle(banglaSelected!, '::after').fontSize).toBe('13px')
+})
+
+test('a row wider than e-tabs fades its end until scrolled to it, and a row that fits never fades', async () => {
+  await page.viewport(800, 600)
+  defineTabs()
+  const holder = mount(six)
+  const tabs = holder.querySelector<HTMLElement>('e-tabs')!
+  tabs.style.width = '200px'
+  await expect.poll(() => tabs.hasAttribute('overflowing')).toBe(true)
+  expect(getComputedStyle(tabs).maskImage).not.toBe('none')
+
+  tabs.scrollLeft = tabs.scrollWidth
+  await expect.poll(() => tabs.hasAttribute('overflowing')).toBe(false)
+  expect(getComputedStyle(tabs).maskImage).toBe('none')
+
+  tabs.style.width = '1200px'
+  await new Promise((done) => setTimeout(done, 100))
+  expect(tabs.hasAttribute('overflowing')).toBe(false)
 })
 
 test('the script moves nothing in English or Bangla', async () => {

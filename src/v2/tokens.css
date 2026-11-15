@@ -10,18 +10,20 @@
   --e-color-frame-fg: oklch(0.93 0.01 262);
   --e-color-frame-fg2: oklch(0.72 0.02 262);
   --e-color-frame-field: oklch(0.29 0.03 262);
+  --e-color-frame-warn: oklch(0.8 0.15 65);
   --e-color-side-fg: oklch(0.82 0.02 262);
   --e-color-side-on-bg: oklch(0.89 0.17 125);
   --e-color-side-on-fg: oklch(0.24 0.05 130);
-  --e-color-panel: oklch(0.99 0.002 262);
+  --e-color-panel: oklch(0.968 0.004 262);
   --e-color-surface: oklch(1 0 0);
-  --e-color-surface-2: oklch(0.973 0.004 262);
+  --e-color-surface-2: oklch(0.975 0.004 262);
+  --e-color-surface-3: oklch(0.95 0.006 262);
   --e-color-scrim: oklch(0.2 0.03 262 / 0.45);
-  --e-color-line: oklch(0.92 0.006 262);
-  --e-color-line-2: oklch(0.85 0.012 262);
+  --e-color-line: oklch(0.912 0.007 262);
+  --e-color-line-2: oklch(0.84 0.012 262);
   --e-color-fg: oklch(0.21 0.025 262);
-  --e-color-fg2: oklch(0.46 0.02 262);
-  --e-color-fg3: oklch(0.54 0.02 262);
+  --e-color-fg2: oklch(0.43 0.02 262);
+  --e-color-fg3: oklch(0.5 0.02 262);
   --e-color-primary: oklch(0.25 0.04 262);
   --e-color-primary-fg: oklch(0.98 0 0);
   --e-color-accent: oklch(0.47 0.11 140);
@@ -39,28 +41,46 @@
   --e-color-returned-fg: oklch(0.5 0.17 27);
   --e-color-neutral-bg: oklch(0.95 0.004 260);
   --e-color-neutral-fg: oklch(0.46 0.01 260);
+  --e-color-danger: oklch(0.5 0.17 27);
+  --e-color-danger-soft: oklch(0.96 0.03 25);
+  --e-color-warn-fg: oklch(0.45 0.11 70);
+  --e-color-warn-soft: oklch(0.96 0.05 88);
+  /* Lime is ebdfy's signal colour: where you are and what to press, on the frame and off it. */
+  --e-color-lime: oklch(0.89 0.17 125);
+  --e-color-lime-fg: oklch(0.24 0.05 130);
+  /* A selected table row: a lime tint, stronger on hover; less so in dark, so fg2 keeps 4.5:1. */
+  --e-color-row-selected: color-mix(in oklab, var(--e-color-lime) 22%, var(--e-color-surface));
+  --e-color-row-selected-hover: color-mix(in oklab, var(--e-color-lime) 30%, var(--e-color-surface));
+  --e-color-frame-line: oklch(0.31 0.03 262);
+  /* A 1 px shadow under a hairline sets a white card on the tinted panel; menus, modals and the save
+     bar stand higher. */
+  --e-shadow-card: 0 1px 2px oklch(0.2 0.03 262 / 0.05);
+  --e-shadow-raised: 0 1px 2px oklch(0.2 0.03 262 / 0.08), 0 0 0 1px oklch(0.2 0.03 262 / 0.04);
+  --e-shadow-pop: 0 14px 36px -10px oklch(0.2 0.03 262 / 0.28), 0 2px 8px oklch(0.2 0.03 262 / 0.08);
 }
 
 /* The same names in dark, written twice: once for a dark device, once for data-theme="dark". */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     color-scheme: dark;
-    --e-color-frame: oklch(0.13 0.02 262);
+    --e-color-frame: oklch(0.115 0.02 262);
     --e-color-frame-fg: oklch(0.93 0.01 262);
     --e-color-frame-fg2: oklch(0.7 0.02 262);
     --e-color-frame-field: oklch(0.21 0.02 262);
+    --e-color-frame-warn: oklch(0.8 0.15 65);
     --e-color-side-fg: oklch(0.78 0.02 262);
     --e-color-side-on-bg: oklch(0.89 0.17 125);
     --e-color-side-on-fg: oklch(0.24 0.05 130);
-    --e-color-panel: oklch(0.18 0.02 262);
+    --e-color-panel: oklch(0.165 0.02 262);
     --e-color-surface: oklch(0.205 0.02 262);
-    --e-color-surface-2: oklch(0.225 0.02 262);
+    --e-color-surface-2: oklch(0.23 0.02 262);
+    --e-color-surface-3: oklch(0.26 0.02 262);
     --e-color-scrim: oklch(0.1 0.02 262 / 0.6);
-    --e-color-line: oklch(0.29 0.02 262);
-    --e-color-line-2: oklch(0.37 0.02 262);
+    --e-color-line: oklch(0.285 0.02 262);
+    --e-color-line-2: oklch(0.38 0.02 262);
     --e-color-fg: oklch(0.95 0.008 262);
     --e-color-fg2: oklch(0.76 0.015 262);
-    --e-color-fg3: oklch(0.67 0.015 262);
+    --e-color-fg3: oklch(0.7 0.015 262);
     --e-color-primary: oklch(0.89 0.17 125);
     --e-color-primary-fg: oklch(0.22 0.05 130);
     --e-color-accent: oklch(0.86 0.15 125);
@@ -78,26 +98,40 @@
     --e-color-returned-fg: oklch(0.84 0.09 25);
     --e-color-neutral-bg: oklch(0.28 0.01 260);
     --e-color-neutral-fg: oklch(0.8 0.01 260);
+    --e-color-danger: oklch(0.78 0.12 25);
+    --e-color-danger-soft: oklch(0.29 0.06 25);
+    --e-color-warn-fg: oklch(0.87 0.11 85);
+    --e-color-warn-soft: oklch(0.3 0.05 80);
+    --e-color-lime: oklch(0.89 0.17 125);
+    --e-color-lime-fg: oklch(0.24 0.05 130);
+    --e-color-row-selected: color-mix(in oklab, var(--e-color-lime) 22%, var(--e-color-surface));
+    --e-color-row-selected-hover: color-mix(in oklab, var(--e-color-lime) 25%, var(--e-color-surface));
+    --e-color-frame-line: oklch(0.25 0.02 262);
+    --e-shadow-card: 0 1px 2px oklch(0 0 0 / 0.3);
+    --e-shadow-raised: 0 1px 2px oklch(0 0 0 / 0.4);
+    --e-shadow-pop: 0 14px 36px -10px oklch(0 0 0 / 0.6), 0 2px 8px oklch(0 0 0 / 0.3);
   }
 }
 [data-theme='dark'] {
   color-scheme: dark;
-  --e-color-frame: oklch(0.13 0.02 262);
+  --e-color-frame: oklch(0.115 0.02 262);
   --e-color-frame-fg: oklch(0.93 0.01 262);
   --e-color-frame-fg2: oklch(0.7 0.02 262);
   --e-color-frame-field: oklch(0.21 0.02 262);
+  --e-color-frame-warn: oklch(0.8 0.15 65);
   --e-color-side-fg: oklch(0.78 0.02 262);
   --e-color-side-on-bg: oklch(0.89 0.17 125);
   --e-color-side-on-fg: oklch(0.24 0.05 130);
-  --e-color-panel: oklch(0.18 0.02 262);
+  --e-color-panel: oklch(0.165 0.02 262);
   --e-color-surface: oklch(0.205 0.02 262);
-  --e-color-surface-2: oklch(0.225 0.02 262);
+  --e-color-surface-2: oklch(0.23 0.02 262);
+  --e-color-surface-3: oklch(0.26 0.02 262);
   --e-color-scrim: oklch(0.1 0.02 262 / 0.6);
-  --e-color-line: oklch(0.29 0.02 262);
-  --e-color-line-2: oklch(0.37 0.02 262);
+  --e-color-line: oklch(0.285 0.02 262);
+  --e-color-line-2: oklch(0.38 0.02 262);
   --e-color-fg: oklch(0.95 0.008 262);
   --e-color-fg2: oklch(0.76 0.015 262);
-  --e-color-fg3: oklch(0.67 0.015 262);
+  --e-color-fg3: oklch(0.7 0.015 262);
   --e-color-primary: oklch(0.89 0.17 125);
   --e-color-primary-fg: oklch(0.22 0.05 130);
   --e-color-accent: oklch(0.86 0.15 125);
@@ -115,34 +149,60 @@
   --e-color-returned-fg: oklch(0.84 0.09 25);
   --e-color-neutral-bg: oklch(0.28 0.01 260);
   --e-color-neutral-fg: oklch(0.8 0.01 260);
+  --e-color-danger: oklch(0.78 0.12 25);
+  --e-color-danger-soft: oklch(0.29 0.06 25);
+  --e-color-warn-fg: oklch(0.87 0.11 85);
+  --e-color-warn-soft: oklch(0.3 0.05 80);
+  --e-color-lime: oklch(0.89 0.17 125);
+  --e-color-lime-fg: oklch(0.24 0.05 130);
+  --e-color-row-selected: color-mix(in oklab, var(--e-color-lime) 22%, var(--e-color-surface));
+  --e-color-row-selected-hover: color-mix(in oklab, var(--e-color-lime) 25%, var(--e-color-surface));
+  --e-color-frame-line: oklch(0.25 0.02 262);
+  --e-shadow-card: 0 1px 2px oklch(0 0 0 / 0.3);
+  --e-shadow-raised: 0 1px 2px oklch(0 0 0 / 0.4);
+  --e-shadow-pop: 0 14px 36px -10px oklch(0 0 0 / 0.6), 0 2px 8px oklch(0 0 0 / 0.3);
 }
 
-/* Shape and size: radii 8, 10 and 16 px plus pill; controls 28, 36 and 44 px; 42 px table rows;
-   a 4 px grid; 14 px body type. */
+/* Shape, size and motion: radii 5, 8, 12 and 16 px plus pill; 32 px buttons and 36 px fields from
+   600 px (each part makes them 44 px below); 44 px table rows; a 4 px grid; 14 px body type. */
 :root {
+  --e-radius-0: 5px;
   --e-radius-1: 8px;
-  --e-radius-2: 10px;
+  --e-radius-2: 12px;
   --e-radius-3: 16px;
+  --e-radius-badge: 6px;
   --e-radius-pill: 999px;
   --e-size-control-sm: 28px;
   --e-size-control-md: 36px;
   --e-size-control-lg: 44px;
-  --e-size-row: 42px;
+  --e-size-button: 32px;
+  --e-size-row: 44px;
   --e-space-1: 4px;
   --e-space-2: 8px;
   --e-space-3: 12px;
   --e-space-4: 16px;
   --e-space-5: 20px;
   --e-space-6: 24px;
+  --e-space-8: 32px;
+  --e-font-size-caption: 12px;
   --e-font-size-meta: 13px;
   --e-font-size-body: 14px;
-  --e-font-size-title: 15px;
+  --e-font-size-title: 14px;
+  --e-font-size-section: 16px;
   --e-font-size-heading: 22px;
+  --e-font-size-display: 26px;
   --e-line-height-meta: 18px;
   --e-line-height-body: 20px;
   --e-line-height-heading: 28px;
   --e-font-weight-regular: 400;
   --e-font-weight-medium: 500;
   --e-font-weight-semibold: 600;
-  --e-font-weight-bold: 700;
+  --e-font-weight-bold: 650;
+  /* A details page is its content and a 320 px side column; a form page is narrower. */
+  --e-page-width: 1040px;
+  --e-page-width-form: 960px;
+  /* Hover, press and colour take time 1; menus, modals, toasts and the save bar take time 2. */
+  --e-ease: cubic-bezier(0.2, 0, 0, 1);
+  --e-time-1: 120ms;
+  --e-time-2: 200ms;
 }

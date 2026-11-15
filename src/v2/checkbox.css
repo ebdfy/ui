@@ -38,7 +38,7 @@ e-checkbox > input {
   height: 18px;
   margin: 0;
   border: 1px solid var(--e-color-line-2);
-  border-radius: var(--e-radius-1);
+  border-radius: var(--e-radius-0);
   background: var(--e-color-surface);
 }
 e-checkbox::before {

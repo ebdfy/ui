@@ -1,0 +1,65 @@
+/* e-chips: tags or collections as a row of small grey chips that wraps. A removable chip keeps room
+   at its end for the × the script builds there, so nothing moves when it runs; without the script
+   the room stays empty. Long words wrap inside the chip, so the row never scrolls sideways. */
+e-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--e-space-2);
+  min-width: 0;
+}
+e-chip {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 24px;
+  padding: 3px var(--e-space-2);
+  border-radius: var(--e-radius-badge);
+  background: var(--e-color-neutral-bg);
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-meta);
+  line-height: var(--e-line-height-meta);
+  overflow-wrap: anywhere;
+}
+e-chip[removable] {
+  padding-inline-end: 24px;
+}
+e-chip > button {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 24px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--e-radius-badge);
+  background: none;
+  color: var(--e-color-fg2);
+  font: inherit;
+  cursor: pointer;
+}
+e-chip > button:hover {
+  color: var(--e-color-fg);
+}
+e-chip > button:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: -2px;
+}
+
+/* On a phone the × takes a 44 px tall touch, 10 px above and below the chip. The rows sit 20 px
+   apart so one chip's touch never reaches the × of the chip above or below it. */
+@media (max-width: 599.98px) {
+  e-chips {
+    row-gap: var(--e-space-5);
+  }
+  e-chip > button::before {
+    content: '';
+    position: absolute;
+    inset: -10px 0;
+  }
+}

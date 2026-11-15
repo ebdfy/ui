@@ -43,6 +43,26 @@ test('no source, site or script names a v1 eb-* element or --eb- token', () => {
   expect(found).toEqual([])
 })
 
+// The ebdfy mark for the sign-in pages: a lowercase e drawn in one stroke on a lime tile.
+test('the ebdfy mark sits beside v2.js as an SVG tile with one stroke', () => {
+  const mark = readFileSync(join(out, 'ebdfy-mark.svg'), 'utf8')
+  expect(mark).toMatch(/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 40 40"/)
+  expect(mark.match(/<rect /g)).toHaveLength(1)
+  expect(mark.match(/<path /g)).toHaveLength(1)
+  expect(mark).toContain('fill="#c1ee66"')
+  expect(readFileSync(join(root, 'site/ui/components/icon.html'), 'utf8')).toContain(
+    '<img src="%EB_CDN%/ui/ebdfy-mark.svg"',
+  )
+})
+
+// cf deploy uploads the whole folder, and the frozen v2.0.css loads Manrope from it, so the file stays
+// though no rule of 2.1 names it.
+test("the fonts folder keeps Manrope for the frozen v2.0.css beside 2.1's Geist", () => {
+  expect(readdirSync(join(out, 'fonts'))).toEqual(
+    expect.arrayContaining(['manrope-latin-wght-normal.woff2', 'geist-latin-wght-normal.woff2']),
+  )
+})
+
 test('icons.svg sits beside v2.js, with a symbol for the truck', () => {
   expect(readFileSync(join(out, 'icons.svg'), 'utf8')).toContain('<symbol id="e-icon-truck"')
 })

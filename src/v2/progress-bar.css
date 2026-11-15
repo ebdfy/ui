@@ -15,8 +15,11 @@ e-progress-bar::before {
   width: var(--e-progress, 40%);
   background: var(--e-color-accent);
 }
-e-progress-bar:not([aria-valuenow])::before {
-  animation: e-slide 1.2s ease-in-out infinite;
+/* With less motion asked for, the fill stands still: the bar's role still says it is busy. */
+@media (prefers-reduced-motion: no-preference) {
+  e-progress-bar:not([aria-valuenow])::before {
+    animation: e-slide 1.2s ease-in-out infinite;
+  }
 }
 @keyframes e-slide {
   from {
@@ -24,11 +27,5 @@ e-progress-bar:not([aria-valuenow])::before {
   }
   to {
     transform: translateX(250%);
-  }
-}
-/* With less motion asked for, the fill stands still: the bar's role still says it is busy. */
-@media (prefers-reduced-motion: reduce) {
-  e-progress-bar:not([aria-valuenow])::before {
-    animation: none;
   }
 }

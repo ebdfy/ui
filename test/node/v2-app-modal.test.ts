@@ -57,7 +57,7 @@ test('tapping Confirm on #1042 opens the modal, and the Admin dims its menu and 
   await expect.poll(() => dialog(page).isVisible()).toBe(true)
   await expect.poll(() => tapLands(page, '[slot="menu"] > a')).not.toBe('itself')
   expect(await tapLands(page, 'e-admin-panel > header h1')).not.toBe('itself')
-  expect(await tapLands(page, '[slot="search"]')).not.toBe('itself')
+  expect(await tapLands(page, '.e-search-button')).not.toBe('itself')
   expect(await scrimColour(page)).toBe(await appScrimColour(page))
   // A tap on the Admin's Home entry goes nowhere while the modal is open.
   const home = await page.locator('[slot="menu"] > a').first().boundingBox()
@@ -82,7 +82,8 @@ test.for(phones)(
   'on a $width x $height phone the modal is a sheet on the screen bottom edge',
   async ({ width, height }) => {
     const page = await order(width, height)
-    await view(page).getByRole('button', { name: 'Confirm order' }).click()
+    // On a phone the order's Confirm sits in its dock.
+    await view(page).locator('e-bottom-bar[dock]').getByRole('button', { name: 'Confirm' }).click()
     await expect.poll(() => dialog(page).isVisible()).toBe(true)
     const frame = await page.locator('e-admin-panel > iframe').boundingBox()
     await expect
@@ -96,13 +97,13 @@ test.for(phones)(
     expect(sheet!.width).toBeCloseTo(width, 0)
     expect(frame!.y + frame!.height).toBeCloseTo(height, 0)
     // The top bar and the title bar sit under the scrim; the tab bar has folded away.
-    expect(await tapLands(page, '[slot="search"]')).not.toBe('itself')
+    expect(await tapLands(page, '.e-search-button')).not.toBe('itself')
     expect(await tapLands(page, 'e-admin-panel > header h1')).not.toBe('itself')
-    expect(await page.locator('[slot="menu"]').isVisible()).toBe(false)
+    expect(await page.locator('[slot="tabs"]').isVisible()).toBe(false)
 
     await page.keyboard.press('Escape')
-    await expect.poll(() => page.locator('[slot="menu"]').isVisible()).toBe(true)
-    expect(await tapLands(page, '[slot="menu"] > a')).toBe('itself')
+    await expect.poll(() => page.locator('[slot="tabs"]').isVisible()).toBe(true)
+    expect(await tapLands(page, '[slot="tabs"] > a')).toBe('itself')
   },
 )
 
@@ -111,7 +112,7 @@ test("the modal's buttons run the app's code: Confirm in the modal confirms #104
   await view(page).getByRole('button', { name: 'Confirm order' }).click()
   await dialog(page).getByRole('button', { name: 'Confirm' }).click()
   await expect.poll(() => dialog(page).isVisible()).toBe(false)
-  expect(await view(page).locator('e-page strong').textContent()).toBe('Confirmed')
+  expect(await view(page).locator('e-page > [slot="status"] e-badge').first().textContent()).toBe('Confirmed')
   expect(await view(page).getByRole('button', { name: 'Confirm order' }).count()).toBe(0)
   await expect.poll(() => tapLands(page, '[slot="menu"] > a')).toBe('itself')
 })

@@ -11,31 +11,46 @@
       <h1>Text field</h1>
       <p class="lede">
         <code>e-text-field</code> takes one line of text. Its native input joins the form it sits in. Set
-        <code>type</code> and <code>inputmode</code> for email, phone or URL keyboards.
+        <code>type</code> and <code>inputmode</code> for email, phone or URL keyboards. Write the
+        <code>input</code> inside the tag and the form shows its fields and posts before the script, and with it off;
+        the script adopts it. Write a <code>label for</code> the input too and the field is named before the script; the
+        script keeps that label and the input's id. Typing in a field clears its error.
       </p>
       <docs-example caption="A labelled field">
-        <e-text-field label="Customer name" name="customer" placeholder="Rahim Uddin"></e-text-field>
+        <e-text-field label="Customer name"><input name="customer" placeholder="Rahim Uddin" /></e-text-field>
       </docs-example>
       <docs-example caption="Email, required, with a value">
-        <e-text-field label="Email" name="email" type="email" required value="rahim@example.com"></e-text-field>
+        <e-text-field label="Email"
+          ><input name="email" type="email" required value="rahim@example.com"
+        /></e-text-field>
       </docs-example>
       <docs-example caption="With an error">
-        <e-text-field
-          label="Shipping city"
-          name="city"
-          value="Sylhet"
-          error="Enter a city we deliver to."
-        ></e-text-field>
+        <e-text-field label="Shipping city" error="Enter a city we deliver to."
+          ><input name="city" value="Sylhet"
+        /></e-text-field>
+      </docs-example>
+      <docs-example caption="A sign-in form that works before the script" stack>
+        <form method="post" action="/sign-in">
+          <e-text-field label="Email"
+            ><label for="signin-email">Email</label
+            ><input id="signin-email" name="email" type="email" autocomplete="email" required
+          /></e-text-field>
+          <e-text-field label="Password"
+            ><label for="signin-password">Password</label
+            ><input id="signin-password" name="password" type="password" autocomplete="current-password" required
+          /></e-text-field>
+          <e-button type="submit" tone="primary"><button type="submit">Log in</button></e-button>
+        </form>
       </docs-example>
       <docs-example caption="In a form with a submit button" stack>
         <form>
-          <e-text-field label="Customer name" name="customer" required></e-text-field>
-          <e-text-field label="Email" name="email" type="email" autocomplete="email"></e-text-field>
-          <e-button type="submit" tone="primary">Save customer</e-button>
+          <e-text-field label="Customer name"><input name="customer" required /></e-text-field>
+          <e-text-field label="Email"><input name="email" type="email" autocomplete="email" /></e-text-field>
+          <e-button type="submit" tone="primary"><button type="submit">Save customer</button></e-button>
         </form>
       </docs-example>
       <docs-example caption="বাংলায়" lang="bn">
-        <e-text-field label="গ্রাহকের নাম" name="customer" placeholder="রহিম উদ্দিন"></e-text-field>
+        <e-text-field label="গ্রাহকের নাম"><input name="customer" placeholder="রহিম উদ্দিন" /></e-text-field>
       </docs-example>
     </main>
   </body>

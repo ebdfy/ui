@@ -22,7 +22,18 @@ e-menu > [data-part='panel'] {
   border: 1px solid var(--e-color-line-2);
   border-radius: var(--e-radius-2);
   background: var(--e-color-surface);
-  box-shadow: 0 8px 24px var(--e-color-scrim);
+  box-shadow: var(--e-shadow-pop);
+}
+@media (prefers-reduced-motion: no-preference) {
+  e-menu > [data-part='panel']:not([hidden]) {
+    animation: e-panel-in var(--e-time-1) var(--e-ease);
+  }
+  @keyframes e-panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+  }
 }
 /* The panel's display would beat the browser's own for hidden, so a hidden panel says it again. */
 e-menu > [data-part='panel'][hidden] {
@@ -52,7 +63,7 @@ e-menu-item:focus-visible {
   outline-offset: -2px;
 }
 e-menu-item[tone='danger'] {
-  color: var(--e-color-returned-fg);
+  color: var(--e-color-danger);
 }
 
 @media (max-width: 599.98px) {
