@@ -141,11 +141,15 @@ export function renderExamples(html: string): string {
     const layout = read('stack') ? 'demo stack' : 'demo'
     // An example in another language says so, so it takes that language's type and words.
     const lang = read('lang')?.[1]
+    // An example of a printed part, such as the A5 sheet, has a Print button that prints it alone.
+    const print = read('print')
+      ? '<button type="button" class="print" data-en="Print" data-bn="প্রিন্ট" hidden>Print</button>'
+      : ''
     return `<figure class="example"${lang ? ` lang="${lang}"` : ''}>
         <figcaption${words}>${caption}</figcaption>
         <div class="frame">
           <div class="${layout}">${markup}</div>
-          <div class="code"><pre><code>${highlighted(markup)}</code></pre><button type="button" class="copy">Copy</button></div>
+          <div class="code"><pre><code>${highlighted(markup)}</code></pre><button type="button" class="copy">Copy</button>${print}</div>
         </div>
       </figure>`
   })

@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Report builder · ebdfy design system v2</title>
+    <!-- The builder asks for its result and draws its chips with v2-host.js, so this page loads it beside the kit. -->
+    <script type="module" src="%EB_CDN%/ui/v2-host.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>Report builder</h1>
+      <p class="lede">
+        <code>e-report-builder</code> lets a staff member build a report from a metric, a group-by, filters and a date
+        range, and shows the result as a table or a chart as soon as a choice changes. It holds two cards: Build it,
+        marked <code>data-part="build"</code>, and Result, marked <code>data-part="result"</code>. When there is room
+        they sit side by side, Result on the left; when there is not, Build it comes first.
+      </p>
+      <p>
+        Each filter is an <code>e-report-filter</code> whose <code>name</code> is the field it posts and whose
+        <code>label</code> names the dimension. It holds one hidden checkbox per value, ticked when the value is in the
+        filter, so the form posts the ticked values as repeated fields and a page without JavaScript still reads them. A
+        filter with a ticked value shows as a chip, "Channel is Facebook, Messenger"; pressing the chip opens its values
+        again and its x clears them. The button marked <code>data-part="add-filter"</code> opens a picker of the
+        dimensions with nothing ticked and goes when every one is used. The div marked <code>data-part="custom"</code>
+        holds From and To, shown only while the range is Custom; a range over 366 days, or a To before From, is refused
+        under To before anything is asked.
+      </p>
+      <p>
+        On each change to a choice other than the name, the builder asks the address in <code>result</code> with the
+        form's fields as a query and puts the answer in place of its <code>e-report-result</code>. A later change wins
+        over an earlier answer; while it waits the old result stays under a loading bar, and a failed answer keeps it
+        with Try again. Chart and Table write the hidden field <code>view</code>, which the address reads to answer with
+        an <code>e-chart</code> or an <code>e-table</code>. Inside a save bar form, Discard puts the choices back and
+        asks again.
+      </p>
+      <docs-example caption="Net sales by district for Facebook and Messenger: change a choice" stack>
+        <form>
+          <e-report-builder result="/dev/reports/result">
+            <e-card data-part="build" heading="Build it">
+              <e-text-field
+                name="name"
+                label="Name"
+                maxlength="60"
+                required
+                value="Facebook by district"
+              ></e-text-field>
+              <e-select name="metric" label="Metric">
+                <option value="NET_SALES" selected>Net sales</option>
+                <option value="ORDERS">Orders</option>
+                <option value="UNITS_SOLD">Units sold</option>
+                <option value="GROSS_PROFIT">Gross profit</option>
+              </e-select>
+              <e-select name="groupBy" label="Group by">
+                <option value="DAY">Day</option>
+                <option value="CHANNEL">Channel</option>
+                <option value="DISTRICT" selected>District</option>
+                <option value="PAYMENT_METHOD">Payment method</option>
+                <option value="PRODUCT">Product</option>
+                <option value="COURIER">Courier</option>
+              </e-select>
+              <div data-part="filters" role="group" aria-label="Filters">
+                <e-report-filter name="channel" label="Channel">
+                  <span
+                    ><input type="checkbox" name="channel" value="ONLINE_STORE" hidden /><span>Online store</span></span
+                  >
+                  <span
+                    ><input type="checkbox" name="channel" value="FACEBOOK" checked hidden /><span>Facebook</span></span
+                  >
+                  <span
+                    ><input type="checkbox" name="channel" value="MESSENGER" checked hidden /><span
+                      >Messenger</span
+                    ></span
+                  >
+                  <span><input type="checkbox" name="channel" value="WHATSAPP" hidden /><span>WhatsApp</span></span>
+                  <span><input type="checkbox" name="channel" value="PHONE" hidden /><span>Phone</span></span>
+                </e-report-filter>
+                <e-report-filter name="district" label="District">
+                  <span><input type="checkbox" name="district" value="Dhaka" hidden /><span>Dhaka</span></span>
+                  <span
+                    ><input type="checkbox" name="district" value="Chattogram" hidden /><span>Chattogram</span></span
+                  >
+                  <span><input type="checkbox" name="district" value="Gazipur" hidden /><span>Gazipur</span></span>
+                  <span><input type="checkbox" name="district" value="Sylhet" hidden /><span>Sylhet</span></span>
+                </e-report-filter>
+                <e-report-filter name="paymentMethod" label="Payment method">
+                  <span
+                    ><input type="checkbox" name="paymentMethod" value="COD" hidden /><span
+                      >Cash on delivery</span
+                    ></span
+                  >
+                  <span><input type="checkbox" name="paymentMethod" value="BKASH" hidden /><span>bKash</span></span>
+                  <span><input type="checkbox" name="paymentMethod" value="NAGAD" hidden /><span>Nagad</span></span>
+                </e-report-filter>
+                <e-report-filter name="courier" label="Courier">
+                  <span><input type="checkbox" name="courier" value="PATHAO" hidden /><span>Pathao</span></span>
+                  <span><input type="checkbox" name="courier" value="STEADFAST" hidden /><span>Steadfast</span></span>
+                </e-report-filter>
+                <e-button type="button" data-part="add-filter"><e-icon name="plus"></e-icon>Add filter</e-button>
+              </div>
+              <e-select name="range" label="Date range">
+                <option value="TODAY">Today</option>
+                <option value="YESTERDAY">Yesterday</option>
+                <option value="LAST_7_DAYS">Last 7 days</option>
+                <option value="LAST_30_DAYS" selected>Last 30 days</option>
+                <option value="LAST_90_DAYS">Last 90 days</option>
+                <option value="CUSTOM">Custom</option>
+              </e-select>
+              <div data-part="custom">
+                <e-date-field name="from" label="From"></e-date-field>
+                <e-date-field name="to" label="To"></e-date-field>
+              </div>
+            </e-card>
+            <e-card data-part="result" heading="Result">
+              <e-button-group slot="actions" label="View">
+                <e-button type="button" value="CHART">Chart</e-button>
+                <e-button type="button" value="TABLE" pressed>Table</e-button>
+              </e-button-group>
+              <input type="hidden" name="view" value="TABLE" />
+              <e-report-result view="TABLE"
+                ><e-table label="Net sales by district" style="--e-columns: minmax(0, 1fr) repeat(2, max-content)"
+                  ><e-row head
+                    ><span>District</span><span align="end">Orders</span><span align="end">Net sales</span></e-row
+                  ><e-row><span>Dhaka</span><span align="end">93</span><span align="end">৳1,81,025</span></e-row
+                  ><e-row><span>Chattogram</span><span align="end">32</span><span align="end">৳63,359</span></e-row
+                  ><e-row><span>Gazipur</span><span align="end">21</span><span align="end">৳40,731</span></e-row
+                  ><e-row><span>Narayanganj</span><span align="end">16</span><span align="end">৳31,679</span></e-row
+                  ><e-row><span>Sylhet</span><span align="end">14</span><span align="end">৳27,154</span></e-row
+                  ><e-row><span>Cumilla</span><span align="end">12</span><span align="end">৳22,628</span></e-row
+                  ><e-row><span>Rajshahi</span><span align="end">12</span><span align="end">৳22,628</span></e-row
+                  ><e-row><span>Khulna</span><span align="end">9</span><span align="end">৳18,102</span></e-row
+                  ><e-row><span>Bogura</span><span align="end">7</span><span align="end">৳13,577</span></e-row
+                  ><e-row><span>Mymensingh</span><span align="end">7</span><span align="end">৳13,577</span></e-row
+                  ><e-row><span>Barishal</span><span align="end">5</span><span align="end">৳9,051</span></e-row
+                  ><e-row><span>Rangpur</span><span align="end">5</span><span align="end">৳9,051</span></e-row
+                  ><e-row total
+                    ><span>Total</span><span align="end">233</span><span align="end">৳4,52,562</span></e-row
+                  ></e-table
+                ></e-report-result
+              >
+            </e-card>
+          </e-report-builder>
+          <output name="posted"></output>
+        </form>
+      </docs-example>
+      <docs-example caption="The same rows as a chart" stack>
+        <form>
+          <e-report-builder result="/dev/reports/result">
+            <e-card data-part="build" heading="Build it">
+              <e-text-field name="name" label="Name" maxlength="60" required></e-text-field>
+              <e-select name="metric" label="Metric">
+                <option value="NET_SALES" selected>Net sales</option>
+                <option value="ORDERS">Orders</option>
+                <option value="UNITS_SOLD">Units sold</option>
+                <option value="GROSS_PROFIT">Gross profit</option>
+              </e-select>
+              <e-select name="groupBy" label="Group by">
+                <option value="DAY">Day</option>
+                <option value="CHANNEL">Channel</option>
+                <option value="DISTRICT" selected>District</option>
+                <option value="PAYMENT_METHOD">Payment method</option>
+                <option value="PRODUCT">Product</option>
+                <option value="COURIER">Courier</option>
+              </e-select>
+              <div data-part="filters" role="group" aria-label="Filters">
+                <e-report-filter name="channel" label="Channel">
+                  <span
+                    ><input type="checkbox" name="channel" value="ONLINE_STORE" hidden /><span>Online store</span></span
+                  >
+                  <span
+                    ><input type="checkbox" name="channel" value="FACEBOOK" checked hidden /><span>Facebook</span></span
+                  >
+                  <span
+                    ><input type="checkbox" name="channel" value="MESSENGER" checked hidden /><span
+                      >Messenger</span
+                    ></span
+                  >
+                  <span><input type="checkbox" name="channel" value="WHATSAPP" hidden /><span>WhatsApp</span></span>
+                  <span><input type="checkbox" name="channel" value="PHONE" hidden /><span>Phone</span></span>
+                </e-report-filter>
+                <e-report-filter name="district" label="District">
+                  <span><input type="checkbox" name="district" value="Dhaka" hidden /><span>Dhaka</span></span>
+                  <span
+                    ><input type="checkbox" name="district" value="Chattogram" hidden /><span>Chattogram</span></span
+                  >
+                  <span><input type="checkbox" name="district" value="Gazipur" hidden /><span>Gazipur</span></span>
+                  <span><input type="checkbox" name="district" value="Sylhet" hidden /><span>Sylhet</span></span>
+                </e-report-filter>
+                <e-report-filter name="paymentMethod" label="Payment method">
+                  <span
+                    ><input type="checkbox" name="paymentMethod" value="COD" hidden /><span
+                      >Cash on delivery</span
+                    ></span
+                  >
+                  <span><input type="checkbox" name="paymentMethod" value="BKASH" hidden /><span>bKash</span></span>
+                  <span><input type="checkbox" name="paymentMethod" value="NAGAD" hidden /><span>Nagad</span></span>
+                </e-report-filter>
+                <e-report-filter name="courier" label="Courier">
+                  <span><input type="checkbox" name="courier" value="PATHAO" hidden /><span>Pathao</span></span>
+                  <span><input type="checkbox" name="courier" value="STEADFAST" hidden /><span>Steadfast</span></span>
+                </e-report-filter>
+                <e-button type="button" data-part="add-filter"><e-icon name="plus"></e-icon>Add filter</e-button>
+              </div>
+              <e-select name="range" label="Date range">
+                <option value="TODAY">Today</option>
+                <option value="YESTERDAY">Yesterday</option>
+                <option value="LAST_7_DAYS">Last 7 days</option>
+                <option value="LAST_30_DAYS" selected>Last 30 days</option>
+                <option value="LAST_90_DAYS">Last 90 days</option>
+                <option value="CUSTOM">Custom</option>
+              </e-select>
+              <div data-part="custom">
+                <e-date-field name="from" label="From"></e-date-field>
+                <e-date-field name="to" label="To"></e-date-field>
+              </div>
+            </e-card>
+            <e-card data-part="result" heading="Result">
+              <e-button-group slot="actions" label="View">
+                <e-button type="button" value="CHART" pressed>Chart</e-button>
+                <e-button type="button" value="TABLE">Table</e-button>
+              </e-button-group>
+              <input type="hidden" name="view" value="CHART" />
+              <e-report-result view="CHART"
+                ><e-chart label="Net sales by district" total="৳4,52,562"
+                  ><span slot="key">Net sales</span><e-chart-step>৳2,00,000</e-chart-step
+                  ><e-chart-step>৳1,50,000</e-chart-step><e-chart-step>৳1,00,000</e-chart-step
+                  ><e-chart-step>৳50,000</e-chart-step
+                  ><e-chart-bar label="Dhaka" tick style="--e-share: 0.9051">৳1,81,025</e-chart-bar
+                  ><e-chart-bar label="Chattogram" tick style="--e-share: 0.3168">৳63,359</e-chart-bar
+                  ><e-chart-bar label="Gazipur" tick style="--e-share: 0.2037">৳40,731</e-chart-bar
+                  ><e-chart-bar label="Narayanganj" tick style="--e-share: 0.1584">৳31,679</e-chart-bar
+                  ><e-chart-bar label="Sylhet" tick style="--e-share: 0.1358">৳27,154</e-chart-bar
+                  ><e-chart-bar label="Cumilla" tick style="--e-share: 0.1131">৳22,628</e-chart-bar
+                  ><e-chart-bar label="Rajshahi" tick style="--e-share: 0.1131">৳22,628</e-chart-bar
+                  ><e-chart-bar label="Khulna" tick style="--e-share: 0.0905">৳18,102</e-chart-bar
+                  ><e-chart-bar label="Bogura" tick style="--e-share: 0.0679">৳13,577</e-chart-bar
+                  ><e-chart-bar label="Mymensingh" tick style="--e-share: 0.0679">৳13,577</e-chart-bar
+                  ><e-chart-bar label="Barishal" tick style="--e-share: 0.0453">৳9,051</e-chart-bar
+                  ><e-chart-bar label="Rangpur" tick style="--e-share: 0.0453">৳9,051</e-chart-bar></e-chart
+                ><e-text tone="subdued" data-part="total">Total: 233 orders, ৳4,52,562</e-text></e-report-result
+              >
+            </e-card>
+          </e-report-builder>
+          <output name="posted"></output>
+        </form>
+      </docs-example>
+      <docs-example caption="No orders match: an empty result" stack>
+        <form>
+          <e-report-builder result="/dev/reports/result">
+            <e-card data-part="build" heading="Build it">
+              <e-text-field name="name" label="Name" maxlength="60" required></e-text-field>
+              <e-select name="metric" label="Metric">
+                <option value="NET_SALES" selected>Net sales</option>
+                <option value="ORDERS">Orders</option>
+                <option value="UNITS_SOLD">Units sold</option>
+                <option value="GROSS_PROFIT">Gross profit</option>
+              </e-select>
+              <e-select name="groupBy" label="Group by">
+                <option value="DAY">Day</option>
+                <option value="CHANNEL">Channel</option>
+                <option value="DISTRICT" selected>District</option>
+                <option value="PAYMENT_METHOD">Payment method</option>
+                <option value="PRODUCT">Product</option>
+                <option value="COURIER">Courier</option>
+              </e-select>
+              <div data-part="filters" role="group" aria-label="Filters">
+                <e-report-filter name="channel" label="Channel">
+                  <span
+                    ><input type="checkbox" name="channel" value="ONLINE_STORE" hidden /><span>Online store</span></span
+                  >
+                  <span><input type="checkbox" name="channel" value="FACEBOOK" hidden /><span>Facebook</span></span>
+                  <span><input type="checkbox" name="channel" value="MESSENGER" hidden /><span>Messenger</span></span>
+                  <span><input type="checkbox" name="channel" value="WHATSAPP" hidden /><span>WhatsApp</span></span>
+                  <span><input type="checkbox" name="channel" value="PHONE" hidden /><span>Phone</span></span>
+                </e-report-filter>
+                <e-report-filter name="district" label="District">
+                  <span><input type="checkbox" name="district" value="Dhaka" hidden /><span>Dhaka</span></span>
+                  <span
+                    ><input type="checkbox" name="district" value="Chattogram" hidden /><span>Chattogram</span></span
+                  >
+                  <span><input type="checkbox" name="district" value="Gazipur" hidden /><span>Gazipur</span></span>
+                  <span
+                    ><input type="checkbox" name="district" value="Sylhet" checked hidden /><span>Sylhet</span></span
+                  >
+                </e-report-filter>
+                <e-report-filter name="paymentMethod" label="Payment method">
+                  <span
+                    ><input type="checkbox" name="paymentMethod" value="COD" hidden /><span
+                      >Cash on delivery</span
+                    ></span
+                  >
+                  <span><input type="checkbox" name="paymentMethod" value="BKASH" hidden /><span>bKash</span></span>
+                  <span><input type="checkbox" name="paymentMethod" value="NAGAD" hidden /><span>Nagad</span></span>
+                </e-report-filter>
+                <e-report-filter name="courier" label="Courier">
+                  <span><input type="checkbox" name="courier" value="PATHAO" hidden /><span>Pathao</span></span>
+                  <span
+                    ><input type="checkbox" name="courier" value="STEADFAST" checked hidden /><span
+                      >Steadfast</span
+                    ></span
+                  >
+                </e-report-filter>
+                <e-button type="button" data-part="add-filter"><e-icon name="plus"></e-icon>Add filter</e-button>
+              </div>
+              <e-select name="range" label="Date range">
+                <option value="TODAY" selected>Today</option>
+                <option value="YESTERDAY">Yesterday</option>
+                <option value="LAST_7_DAYS">Last 7 days</option>
+                <option value="LAST_30_DAYS">Last 30 days</option>
+                <option value="LAST_90_DAYS">Last 90 days</option>
+                <option value="CUSTOM">Custom</option>
+              </e-select>
+              <div data-part="custom">
+                <e-date-field name="from" label="From"></e-date-field>
+                <e-date-field name="to" label="To"></e-date-field>
+              </div>
+            </e-card>
+            <e-card data-part="result" heading="Result">
+              <e-button-group slot="actions" label="View">
+                <e-button type="button" value="CHART">Chart</e-button>
+                <e-button type="button" value="TABLE" pressed>Table</e-button>
+              </e-button-group>
+              <input type="hidden" name="view" value="TABLE" />
+              <e-report-result view="TABLE"
+                ><e-empty-state heading="No orders match these choices"
+                  ><e-text tone="subdued">Pick a longer range or fewer filters.</e-text></e-empty-state
+                ></e-report-result
+              >
+            </e-card>
+          </e-report-builder>
+          <output name="posted"></output>
+        </form>
+      </docs-example>
+      <docs-example
+        caption="A result address that fails: change a choice, and the last result stays with Try again"
+        stack
+      >
+        <form>
+          <e-report-builder result="/dev/reports/down">
+            <e-card data-part="build" heading="Build it">
+              <e-text-field name="name" label="Name" maxlength="60" required></e-text-field>
+              <e-select name="metric" label="Metric">
+                <option value="NET_SALES">Net sales</option>
+                <option value="ORDERS" selected>Orders</option>
+                <option value="UNITS_SOLD">Units sold</option>
+                <option value="GROSS_PROFIT">Gross profit</option>
+              </e-select>
+              <e-select name="groupBy" label="Group by">
+                <option value="DAY">Day</option>
+                <option value="CHANNEL" selected>Channel</option>
+                <option value="DISTRICT">District</option>
+                <option value="PAYMENT_METHOD">Payment method</option>
+                <option value="PRODUCT">Product</option>
+                <option value="COURIER">Courier</option>
+              </e-select>
+              <div data-part="filters" role="group" aria-label="Filters">
+                <e-report-filter name="channel" label="Channel">
+                  <span
+                    ><input type="checkbox" name="channel" value="ONLINE_STORE" hidden /><span>Online store</span></span
+                  >
+                  <span><input type="checkbox" name="channel" value="FACEBOOK" hidden /><span>Facebook</span></span>
+                  <span><input type="checkbox" name="channel" value="MESSENGER" hidden /><span>Messenger</span></span>
+                  <span><input type="checkbox" name="channel" value="WHATSAPP" hidden /><span>WhatsApp</span></span>
+                  <span><input type="checkbox" name="channel" value="PHONE" hidden /><span>Phone</span></span>
+                </e-report-filter>
+                <e-report-filter name="district" label="District">
+                  <span><input type="checkbox" name="district" value="Dhaka" hidden /><span>Dhaka</span></span>
+                  <span
+                    ><input type="checkbox" name="district" value="Chattogram" hidden /><span>Chattogram</span></span
+                  >
+                  <span><input type="checkbox" name="district" value="Gazipur" hidden /><span>Gazipur</span></span>
+                  <span><input type="checkbox" name="district" value="Sylhet" hidden /><span>Sylhet</span></span>
+                </e-report-filter>
+                <e-report-filter name="paymentMethod" label="Payment method">
+                  <span
+                    ><input type="checkbox" name="paymentMethod" value="COD" hidden /><span
+                      >Cash on delivery</span
+                    ></span
+                  >
+                  <span><input type="checkbox" name="paymentMethod" value="BKASH" hidden /><span>bKash</span></span>
+                  <span><input type="checkbox" name="paymentMethod" value="NAGAD" hidden /><span>Nagad</span></span>
+                </e-report-filter>
+                <e-report-filter name="courier" label="Courier">
+                  <span><input type="checkbox" name="courier" value="PATHAO" hidden /><span>Pathao</span></span>
+                  <span><input type="checkbox" name="courier" value="STEADFAST" hidden /><span>Steadfast</span></span>
+                </e-report-filter>
+                <e-button type="button" data-part="add-filter"><e-icon name="plus"></e-icon>Add filter</e-button>
+              </div>
+              <e-select name="range" label="Date range">
+                <option value="TODAY" selected>Today</option>
+                <option value="YESTERDAY">Yesterday</option>
+                <option value="LAST_7_DAYS">Last 7 days</option>
+                <option value="LAST_30_DAYS">Last 30 days</option>
+                <option value="LAST_90_DAYS">Last 90 days</option>
+                <option value="CUSTOM">Custom</option>
+              </e-select>
+              <div data-part="custom">
+                <e-date-field name="from" label="From"></e-date-field>
+                <e-date-field name="to" label="To"></e-date-field>
+              </div>
+            </e-card>
+            <e-card data-part="result" heading="Result">
+              <e-button-group slot="actions" label="View">
+                <e-button type="button" value="CHART">Chart</e-button>
+                <e-button type="button" value="TABLE" pressed>Table</e-button>
+              </e-button-group>
+              <input type="hidden" name="view" value="TABLE" />
+              <e-report-result view="TABLE"
+                ><e-table label="Orders by channel" style="--e-columns: minmax(0, 1fr) repeat(1, max-content)"
+                  ><e-row head><span>Channel</span><span align="end">Orders</span></e-row
+                  ><e-row><span>Facebook</span><span align="end">3</span></e-row
+                  ><e-row><span>Online store</span><span align="end">2</span></e-row
+                  ><e-row><span>Messenger</span><span align="end">1</span></e-row
+                  ><e-row><span>Phone</span><span align="end">1</span></e-row
+                  ><e-row><span>WhatsApp</span><span align="end">1</span></e-row
+                  ><e-row total><span>Total</span><span align="end">8</span></e-row></e-table
+                ></e-report-result
+              >
+            </e-card>
+          </e-report-builder>
+          <output name="posted"></output>
+        </form>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <form>
+          <e-report-builder result="/dev/reports/result">
+            <e-card data-part="build" heading="তৈরি করুন">
+              <e-text-field name="name" label="নাম" maxlength="60" required value="জেলাভিত্তিক ফেসবুক"></e-text-field>
+              <e-select name="metric" label="মেট্রিক">
+                <option value="NET_SALES" selected>নিট বিক্রি</option>
+                <option value="ORDERS">অর্ডার</option>
+                <option value="UNITS_SOLD">বিক্রিত ইউনিট</option>
+                <option value="GROSS_PROFIT">মোট লাভ</option>
+              </e-select>
+              <e-select name="groupBy" label="যেভাবে ভাগ করবেন">
+                <option value="DAY">দিন</option>
+                <option value="CHANNEL">চ্যানেল</option>
+                <option value="DISTRICT" selected>জেলা</option>
+                <option value="PAYMENT_METHOD">পেমেন্ট পদ্ধতি</option>
+                <option value="PRODUCT">পণ্য</option>
+                <option value="COURIER">কুরিয়ার</option>
+              </e-select>
+              <div data-part="filters" role="group" aria-label="ফিল্টার">
+                <e-report-filter name="channel" label="চ্যানেল">
+                  <span
+                    ><input type="checkbox" name="channel" value="ONLINE_STORE" hidden /><span>অনলাইন স্টোর</span></span
+                  >
+                  <span
+                    ><input type="checkbox" name="channel" value="FACEBOOK" checked hidden /><span>ফেসবুক</span></span
+                  >
+                  <span
+                    ><input type="checkbox" name="channel" value="MESSENGER" checked hidden /><span
+                      >মেসেঞ্জার</span
+                    ></span
+                  >
+                  <span><input type="checkbox" name="channel" value="WHATSAPP" hidden /><span>হোয়াটসঅ্যাপ</span></span>
+                  <span><input type="checkbox" name="channel" value="PHONE" hidden /><span>ফোন</span></span>
+                </e-report-filter>
+                <e-report-filter name="district" label="জেলা">
+                  <span><input type="checkbox" name="district" value="Dhaka" hidden /><span>ঢাকা</span></span>
+                  <span><input type="checkbox" name="district" value="Chattogram" hidden /><span>চট্টগ্রাম</span></span>
+                  <span><input type="checkbox" name="district" value="Gazipur" hidden /><span>গাজীপুর</span></span>
+                  <span><input type="checkbox" name="district" value="Sylhet" hidden /><span>সিলেট</span></span>
+                </e-report-filter>
+                <e-report-filter name="paymentMethod" label="পেমেন্ট পদ্ধতি">
+                  <span
+                    ><input type="checkbox" name="paymentMethod" value="COD" hidden /><span
+                      >ক্যাশ অন ডেলিভারি</span
+                    ></span
+                  >
+                  <span><input type="checkbox" name="paymentMethod" value="BKASH" hidden /><span>বিকাশ</span></span>
+                  <span><input type="checkbox" name="paymentMethod" value="NAGAD" hidden /><span>নগদ</span></span>
+                </e-report-filter>
+                <e-report-filter name="courier" label="কুরিয়ার">
+                  <span><input type="checkbox" name="courier" value="PATHAO" hidden /><span>পাঠাও</span></span>
+                  <span><input type="checkbox" name="courier" value="STEADFAST" hidden /><span>স্টেডফাস্ট</span></span>
+                </e-report-filter>
+                <e-button type="button" data-part="add-filter"><e-icon name="plus"></e-icon>ফিল্টার যোগ করুন</e-button>
+              </div>
+              <e-select name="range" label="সময়">
+                <option value="TODAY">আজ</option>
+                <option value="YESTERDAY">গতকাল</option>
+                <option value="LAST_7_DAYS">গত ৭ দিন</option>
+                <option value="LAST_30_DAYS" selected>গত ৩০ দিন</option>
+                <option value="LAST_90_DAYS">গত ৯০ দিন</option>
+                <option value="CUSTOM">নিজে বাছুন</option>
+              </e-select>
+              <div data-part="custom">
+                <e-date-field name="from" label="শুরু"></e-date-field>
+                <e-date-field name="to" label="শেষ"></e-date-field>
+              </div>
+            </e-card>
+            <e-card data-part="result" heading="ফলাফল">
+              <e-button-group slot="actions" label="দেখার ধরন">
+                <e-button type="button" value="CHART">চার্ট</e-button>
+                <e-button type="button" value="TABLE" pressed>টেবিল</e-button>
+              </e-button-group>
+              <input type="hidden" name="view" value="TABLE" />
+              <e-report-result view="TABLE"
+                ><e-table label="জেলাভিত্তিক নিট বিক্রি" style="--e-columns: minmax(0, 1fr) repeat(2, max-content)"
+                  ><e-row head
+                    ><span>জেলা</span><span align="end">অর্ডার</span><span align="end">নিট বিক্রি</span></e-row
+                  ><e-row><span>ঢাকা</span><span align="end">৯৩</span><span align="end">৳১,৮১,০২৫</span></e-row
+                  ><e-row><span>চট্টগ্রাম</span><span align="end">৩২</span><span align="end">৳৬৩,৩৫৯</span></e-row
+                  ><e-row><span>গাজীপুর</span><span align="end">২১</span><span align="end">৳৪০,৭৩১</span></e-row
+                  ><e-row><span>নারায়ণগঞ্জ</span><span align="end">১৬</span><span align="end">৳৩১,৬৭৯</span></e-row
+                  ><e-row><span>সিলেট</span><span align="end">১৪</span><span align="end">৳২৭,১৫৪</span></e-row
+                  ><e-row><span>কুমিল্লা</span><span align="end">১২</span><span align="end">৳২২,৬২৮</span></e-row
+                  ><e-row><span>রাজশাহী</span><span align="end">১২</span><span align="end">৳২২,৬২৮</span></e-row
+                  ><e-row><span>খুলনা</span><span align="end">৯</span><span align="end">৳১৮,১০২</span></e-row
+                  ><e-row><span>বগুড়া</span><span align="end">৭</span><span align="end">৳১৩,৫৭৭</span></e-row
+                  ><e-row><span>ময়মনসিংহ</span><span align="end">৭</span><span align="end">৳১৩,৫৭৭</span></e-row
+                  ><e-row><span>বরিশাল</span><span align="end">৫</span><span align="end">৳৯,০৫১</span></e-row
+                  ><e-row><span>রংপুর</span><span align="end">৫</span><span align="end">৳৯,০৫১</span></e-row
+                  ><e-row total
+                    ><span>মোট</span><span align="end">২৩৩</span><span align="end">৳৪,৫২,৫৬২</span></e-row
+                  ></e-table
+                ></e-report-result
+              >
+            </e-card>
+          </e-report-builder>
+          <output name="posted"></output>
+        </form>
+      </docs-example>
+    </main>
+  </body>
+</html>

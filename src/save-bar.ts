@@ -12,6 +12,9 @@ export type SaveBarAction = 'save' | 'discard'
 // What showErrors raises on a form when the API refused its save.
 export const refused = 'e-save-refused'
 
+// What Discard fires on each form once its values are back, so a part drawn from them draws again.
+export const discarded = 'e-save-discarded'
+
 // The properties that hold what a person entered: a native control's value, and a checkbox's checked.
 interface Entered {
   value?: string
@@ -24,9 +27,13 @@ function snapshot({ value, checked }: Field): Entered {
   return { value, checked }
 }
 
-function restore(field: Field, state: Entered): void {
+// Whether the field took its saved state back. A script may set a file input only to '', so the
+// file chosen when the form was saved cannot come back.
+function restore(field: Field, state: Entered): boolean {
+  if (field instanceof HTMLInputElement && field.type === 'file' && state.value) return false
   if (state.value !== undefined) field.value = state.value
   if (state.checked !== undefined) field.checked = state.checked
+  return true
 }
 
 function counts(element: Element): boolean {
@@ -65,8 +72,10 @@ export function watchSaveBars(root: Document | Element, show: (visible: boolean)
     for (const form of root.querySelectorAll<HTMLFormElement>('form[data-save-bar]')) if (owns(form)) watch(form)
   }
 
-  const dirty = (form: HTMLFormElement) =>
+  const edited = (form: HTMLFormElement) =>
     [...(saved.get(form) ?? [])].some(([field, values]) => field.isConnected && !same(values, snapshot(field)))
+  // A record not saved yet, marked data-save-new, holds an edit from the start.
+  const dirty = (form: HTMLFormElement) => form.hasAttribute('data-save-new') || edited(form)
 
   const update = () => {
     for (const form of saved.keys()) if (!form.isConnected) saved.delete(form)
@@ -74,7 +83,7 @@ export function watchSaveBars(root: Document | Element, show: (visible: boolean)
     if (now !== visible) show((visible = now))
   }
 
-  const edited = (event: Event) => {
+  const onEdit = (event: Event) => {
     const form = formOf(event.target)
     if (!form || !owns(form) || !(event.target instanceof Element) || !counts(event.target)) return
     watch(form)
@@ -82,8 +91,8 @@ export function watchSaveBars(root: Document | Element, show: (visible: boolean)
   }
 
   // On the way up, once the field has taken the new value.
-  root.addEventListener('input', edited)
-  root.addEventListener('change', edited)
+  root.addEventListener('input', onEdit)
+  root.addEventListener('change', onEdit)
   // A submitted form's values are its new saved ones, whichever way it was submitted.
   root.addEventListener('submit', (event) => {
     const form = event.target
@@ -106,6 +115,7 @@ export function watchSaveBars(root: Document | Element, show: (visible: boolean)
     update()
   }).observe(root, { childList: true, subtree: true })
   scan()
+  update()
 
   return {
     // The forms that hold an edit, in page order.
@@ -114,14 +124,21 @@ export function watchSaveBars(root: Document | Element, show: (visible: boolean)
         .filter((form) => form.isConnected && dirty(form))
         .sort((one, other) => (one.compareDocumentPosition(other) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1))
     },
+    // Whether a field of this form, or of any, differs from its saved value: a record not saved yet
+    // holds an edit from the start, but leaving it, or its saved answer, loses only what was typed.
+    edited(only?: HTMLFormElement): boolean {
+      return [...saved.keys()].some((form) => form.isConnected && (!only || form === only) && edited(form))
+    },
     act(action: SaveBarAction): void {
       if (action === 'discard') {
         // The values go back to the saved ones, so the errors a refused save showed on them go too.
         for (const [form, values] of saved) {
+          // A file that cannot come back is the saved one from now, so the bar does not stay up.
           for (const [field, state] of values) {
-            restore(field, state)
+            if (!restore(field, state)) values.set(field, snapshot(field))
           }
           clearErrors(form)
+          form.dispatchEvent(new Event(discarded, { bubbles: true }))
         }
         update()
         return

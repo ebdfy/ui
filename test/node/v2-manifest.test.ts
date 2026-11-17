@@ -27,7 +27,7 @@ test('e-text-field, e-table and e-row are in the manifest', () => {
     expect.arrayContaining(['label', 'name', 'value', 'type', 'error']),
   )
   expect(element('e-table')?.attributes?.map((a) => a.name)).toEqual(expect.arrayContaining(['label', 'columns']))
-  expect(element('e-row')?.attributes?.map((a) => a.name)).toEqual(['head', 'selected'])
+  expect(element('e-row')?.attributes?.map((a) => a.name)).toEqual(['head', 'selected', 'total'])
 })
 
 test('v1 tags stay out of the v2 manifest', () => {

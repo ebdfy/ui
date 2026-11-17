@@ -48,6 +48,8 @@
   /* Lime is ebdfy's signal colour: where you are and what to press, on the frame and off it. */
   --e-color-lime: oklch(0.89 0.17 125);
   --e-color-lime-fg: oklch(0.24 0.05 130);
+  /* A chart's bars: a quiet ink in light, a lighter one in dark that keeps 3:1 on a card. */
+  --e-color-chart-bar: oklch(0.45 0.05 262);
   /* A selected table row: a lime tint, stronger on hover; less so in dark, so fg2 keeps 4.5:1. */
   --e-color-row-selected: color-mix(in oklab, var(--e-color-lime) 22%, var(--e-color-surface));
   --e-color-row-selected-hover: color-mix(in oklab, var(--e-color-lime) 30%, var(--e-color-surface));
@@ -57,6 +59,11 @@
   --e-shadow-card: 0 1px 2px oklch(0.2 0.03 262 / 0.05);
   --e-shadow-raised: 0 1px 2px oklch(0.2 0.03 262 / 0.08), 0 0 0 1px oklch(0.2 0.03 262 / 0.04);
   --e-shadow-pop: 0 14px 36px -10px oklch(0.2 0.03 262 / 0.28), 0 2px 8px oklch(0.2 0.03 262 / 0.08);
+  /* Paper: a printed sheet is black on white in every theme, so dark does not set these again. */
+  --e-color-paper: oklch(1 0 0);
+  --e-color-paper-ink: oklch(0.2 0 0);
+  --e-color-paper-ink-2: oklch(0.43 0.02 262);
+  --e-color-paper-line: oklch(0.7 0.015 262);
 }
 
 /* The same names in dark, written twice: once for a dark device, once for data-theme="dark". */
@@ -104,6 +111,7 @@
     --e-color-warn-soft: oklch(0.3 0.05 80);
     --e-color-lime: oklch(0.89 0.17 125);
     --e-color-lime-fg: oklch(0.24 0.05 130);
+    --e-color-chart-bar: oklch(0.62 0.04 262);
     --e-color-row-selected: color-mix(in oklab, var(--e-color-lime) 22%, var(--e-color-surface));
     --e-color-row-selected-hover: color-mix(in oklab, var(--e-color-lime) 25%, var(--e-color-surface));
     --e-color-frame-line: oklch(0.25 0.02 262);
@@ -155,6 +163,7 @@
   --e-color-warn-soft: oklch(0.3 0.05 80);
   --e-color-lime: oklch(0.89 0.17 125);
   --e-color-lime-fg: oklch(0.24 0.05 130);
+  --e-color-chart-bar: oklch(0.62 0.04 262);
   --e-color-row-selected: color-mix(in oklab, var(--e-color-lime) 22%, var(--e-color-surface));
   --e-color-row-selected-hover: color-mix(in oklab, var(--e-color-lime) 25%, var(--e-color-surface));
   --e-color-frame-line: oklch(0.25 0.02 262);

@@ -7,14 +7,28 @@ import { expect, test } from 'vitest'
 const read = (path: string) => readFileSync(new URL(path, import.meta.url), 'utf8')
 
 // Parts that hold no words of their own: the tokens and base type, an icon, a thumbnail, a stack, a
-// divider, a grid, a spinner and a skeleton.
-const wordless = new Set(['tokens', 'type', 'icon', 'thumbnail', 'stack', 'divider', 'grid', 'spinner', 'skeleton'])
+// divider, a grid, a spinner, a skeleton and an app's tile, which holds one letter.
+const wordless = new Set([
+  'tokens',
+  'type',
+  'icon',
+  'thumbnail',
+  'stack',
+  'divider',
+  'grid',
+  'spinner',
+  'skeleton',
+  'tile',
+])
 
 // The tags a part's file draws, where they are not simply e-<file>.
 const tags: Record<string, string[]> = {
   field: ['e-text-field', 'e-date-field', 'e-text-area', 'e-search-field'],
   text: ['e-text', 'e-heading'],
   table: ['e-table', 'e-row'],
+  chart: ['e-chart', 'e-chart-step', 'e-chart-bar'],
+  'report-builder': ['e-report-builder', 'e-report-filter'],
+  'menu-tree': ['e-menu-tree', 'e-menu-tree-item'],
   tabs: ['e-tabs', 'e-tab'],
   menu: ['e-menu', 'e-menu-item'],
   'setup-guide': ['e-setup-guide', 'e-setup-step'],

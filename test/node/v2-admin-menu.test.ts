@@ -125,8 +125,10 @@ test("a focused entry's ring is whole above the lime current entry", async () =>
 test('on the orders page Drafts, Returns and Parcels hang under Orders on a 1 px rail', async () => {
   const { page } = await open('/playground/orders')
   const orders = await menu(page).locator(':scope > a', { hasText: 'Orders' }).boundingBox()
-  const rail = menu(page).locator('.e-menu-pages')
+  // Orders' rail is the first; Content's holds Menus.
+  const rail = menu(page).locator('.e-menu-pages').first()
   expect(await rail.locator('a').allTextContents()).toEqual(['Drafts', 'Returns', 'Parcels'])
+  expect(await menu(page).locator('.e-menu-pages').nth(1).locator('a').allTextContents()).toEqual(['Menus'])
   const box = await rail.boundingBox()
   expect(box!.y).toBeGreaterThanOrEqual(orders!.y + orders!.height)
   expect((await style(page, '[slot="menu"] .e-menu-pages')).borderInlineStartWidth).toBe('1px')

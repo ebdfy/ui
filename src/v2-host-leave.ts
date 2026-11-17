@@ -61,7 +61,14 @@ export function askToLeave(frame: Element, question: Question): Promise<boolean>
       left = true
       shown.close()
     })
-    shown.addEventListener('close', () => answer(left), { once: true })
+    // A close event Chromium delivers late, from the last question's Stay, finds the dialog open
+    // again for this one: it is not this question's answer.
+    const closed = () => {
+      if (shown.open) return
+      shown.removeEventListener('close', closed)
+      answer(left)
+    }
+    shown.addEventListener('close', closed)
     shown.showModal()
     // Staying is the safe answer, so it has focus.
     stay.querySelector('button')?.focus()
@@ -80,10 +87,11 @@ function leaving(frame: Element): Question {
   }
 }
 
-// Asks before going, and goes once the bar is clean, so no browser prompt follows the dialog.
-export async function leaveThen(frame: Element, bar: Guarded, go: () => void): Promise<void> {
+// Asks before going, and goes once the bar is clean, so no browser prompt follows the dialog. stay
+// runs when the staff member stays.
+export async function leaveThen(frame: Element, bar: Guarded, go: () => void, stay?: () => void): Promise<void> {
   bar.nudge()
-  if (!(await askToLeave(frame, leaving(frame)))) return
+  if (!(await askToLeave(frame, leaving(frame)))) return stay?.()
   bar.discard()
   go()
 }
@@ -91,7 +99,7 @@ export async function leaveThen(frame: Element, bar: Guarded, go: () => void): P
 // The guard a move asks: whether the page holds an edit, and leave, which asks and then goes.
 export interface Guard {
   readonly dirty: boolean
-  leave(go: () => void): void
+  leave(go: () => void, stay?: () => void): void
 }
 
 export function guardLeaving(frame: Element, bar: Guarded): Guard {
@@ -104,6 +112,8 @@ export function guardLeaving(frame: Element, bar: Guarded): Guard {
       const link = event.target instanceof Element ? event.target.closest('a[href]') : null
       if (!(link instanceof HTMLAnchorElement) || !frame.contains(link)) return
       if ((link.target && link.target !== '_self') || link.hasAttribute('download')) return
+      // A link in text being edited, as in e-rich-text's body, takes the caret and goes nowhere.
+      if (link.isContentEditable) return
       // A move within the page, such as to a section, leaves nothing.
       const url = new URL(link.href)
       if (
@@ -115,6 +125,8 @@ export function guardLeaving(frame: Element, bar: Guarded): Guard {
         return
       event.preventDefault()
       event.stopImmediatePropagation()
+      // A row picked in the search modal closes it, so the question never opens over it.
+      link.closest('dialog')?.close()
       void leaveThen(frame, bar, () => link.click())
     },
     true,
@@ -126,6 +138,6 @@ export function guardLeaving(frame: Element, bar: Guarded): Guard {
     get dirty() {
       return bar.dirty
     },
-    leave: (go) => void leaveThen(frame, bar, go),
+    leave: (go, stay) => void leaveThen(frame, bar, go, stay),
   }
 }

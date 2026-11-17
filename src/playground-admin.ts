@@ -1,5 +1,5 @@
-// The playground's own Admin pages, drawn straight in the panel: Settings' pages and the Orders
-// area's sub-pages. Every other address under /playground is a page of the sample app.
+// The playground's own Admin pages, drawn straight in the panel: Settings' pages, the Orders area's
+// sub-pages, Reports, Products' import and a product, and Content's page and menu. Every other address under /playground is a page of the sample app.
 export interface AdminPage {
   path: string
   en: string
@@ -27,5 +27,24 @@ export const ordersPages: AdminPage[] = [
   { path: '/playground/orders/parcels', en: 'Parcels', bn: 'পার্সেল' },
 ]
 
+export const reportsPath = '/playground/reports'
+
+// Products' playground pages, and Content's: a page's body and a menu, the menu under Content.
+export const productsImportPath = '/playground/products/import'
+// A product's page, whose More actions holds the sample app's Translate.
+export const productPath = '/playground/products/7'
+export const contentPagePath = '/playground/content/pages/delivery'
+export const contentPages: AdminPage[] = [{ path: '/playground/content/menus/main', en: 'Menus', bn: 'মেনু' }]
+
+export const isContentPage = (path: string): boolean =>
+  path === contentPagePath || contentPages.some((page) => page.path === path)
+
+// Reports and each report under it, such as /playground/reports/new.
+export const isReportsPage = (path: string): boolean => path === reportsPath || path.startsWith(`${reportsPath}/`)
+
 export const isAdminPage = (path: string): boolean =>
+  isReportsPage(path) ||
+  isContentPage(path) ||
+  path === productsImportPath ||
+  path === productPath ||
   [...settingsPages, ...ordersPages].some((page) => page.path === path)

@@ -84,6 +84,7 @@
     <e-page heading="Orders" data-bn-heading="অর্ডার">
       <e-button slot="actions" tone="primary" data-bn="সংরক্ষণ করুন">Save</e-button>
       <e-stack gap="4">
+        <p id="pressed" role="status" hidden></p>
         <e-metrics label="Today" data-bn-label="আজ">
           <div>
             <span slot="label" data-bn="আজকের অর্ডার">Orders today</span>
@@ -322,8 +323,23 @@
       // After v2.js, which holds the bridge: the page names itself in the Admin's title bar, and Save
       // tells the Admin to show that it saved, each in the page's language at the time.
       const bn = () => document.documentElement.lang === 'bn'
+      // Export and the primary Create order sit in the Admin's title bar; a press says so on the page.
+      const said = document.querySelector('#pressed')
+      const pressed = (en, bangla) => () => {
+        said.hidden = false
+        said.textContent = bn() ? bangla : en
+      }
       const name = () => {
-        ebdfy.title(bn() ? 'অর্ডার' : 'Orders')
+        ebdfy.title(bn() ? 'অর্ডার' : 'Orders', {
+          actions: [
+            { label: bn() ? 'এক্সপোর্ট' : 'Export', onAction: pressed('Export pressed', 'এক্সপোর্ট চাপা হয়েছে') },
+            {
+              label: bn() ? 'অর্ডার তৈরি করুন' : 'Create order',
+              primary: true,
+              onAction: pressed('Create order pressed', 'অর্ডার তৈরি করুন চাপা হয়েছে'),
+            },
+          ],
+        })
         showNav()
       }
       name()

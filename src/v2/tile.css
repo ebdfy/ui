@@ -1,0 +1,45 @@
+/* .e-tile: a store's or an app's tile, its initial on lime, 28 px by default, 20 px in a menu and
+   40 px where a page lists stores or apps. An app's icon, an img inside it, covers the initial;
+   v2-host.js hides an icon that fails to load, so the initial shows. */
+.e-tile {
+  display: inline-grid;
+  place-items: center;
+  box-sizing: border-box;
+  inline-size: 28px;
+  block-size: 28px;
+  flex: none;
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-side-on-bg);
+  color: var(--e-color-side-on-fg);
+  font-size: var(--e-font-size-meta);
+  font-weight: var(--e-font-weight-bold);
+  line-height: 1;
+  position: relative;
+  overflow: hidden;
+}
+.e-tile > img {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  background: var(--e-color-surface);
+}
+.e-tile > img[hidden] {
+  display: none;
+}
+.e-tile[data-size='20'] {
+  inline-size: 20px;
+  block-size: 20px;
+  border-radius: var(--e-radius-0);
+  font-size: 11px;
+}
+.e-tile[data-size='40'] {
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: var(--e-radius-2);
+  font-size: 16px;
+}
+:lang(bn) .e-tile[data-size='20'] {
+  font-size: var(--e-font-size-meta);
+}

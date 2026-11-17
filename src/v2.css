@@ -5,6 +5,8 @@
 @import 'v2/button.css' layer(e);
 @import 'v2/icon.css' layer(e);
 @import 'v2/field.css' layer(e);
+@import 'v2/file-field.css' layer(e);
+@import 'v2/rich-text.css' layer(e);
 @import 'v2/choice-list.css' layer(e);
 @import 'v2/switch.css' layer(e);
 @import 'v2/card.css' layer(e);
@@ -13,6 +15,10 @@
 @import 'v2/stack.css' layer(e);
 @import 'v2/text.css' layer(e);
 @import 'v2/table.css' layer(e);
+@import 'v2/chart.css' layer(e);
+@import 'v2/arranged-cards.css' layer(e);
+@import 'v2/report-builder.css' layer(e);
+@import 'v2/menu-tree.css' layer(e);
 @import 'v2/badge.css' layer(e);
 @import 'v2/metrics.css' layer(e);
 @import 'v2/todo.css' layer(e);
@@ -37,6 +43,8 @@
 @import 'v2/list.css' layer(e);
 @import 'v2/index-table.css' layer(e);
 @import 'v2/menu.css' layer(e);
+@import 'v2/tile.css' layer(e);
+@import 'v2/app-card.css' layer(e);
 @import 'v2/button-group.css' layer(e);
 @import 'v2/link.css' layer(e);
 @import 'v2/kbd.css' layer(e);
@@ -46,6 +54,7 @@
 @import 'v2/tooltip.css' layer(e);
 @import 'v2/banner.css' layer(e);
 @import 'v2/divider.css' layer(e);
+@import 'v2/print-sheet.css' layer(e);
 @import 'v2/grid.css' layer(e);
 @import 'v2/bottom-bar.css' layer(e);
 @import 'v2/spinner.css' layer(e);

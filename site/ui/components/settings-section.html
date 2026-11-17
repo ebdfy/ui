@@ -69,9 +69,11 @@
         order, and marks the form as new, so Discard asks first with <code>data-save-discard</code>;
         <code>data-save-label</code> is Save's word, such as Create order. A hidden
         <code>&lt;button type="submit" data-save-bar-button&gt;</code> in the form is a second button in the bar from
-        1040 px, such as Save as draft. On the Admin's own pages a save that meets an expired session fires
-        <code>e-session-expired</code> on the form, and the bar sends it again when the page fires
-        <code>e-session-restored</code>.
+        1040 px, such as Save as draft. A form for a record that is not saved yet, such as a new report the page filled
+        in, carries <code>data-save-new</code>: the bar shows from the first frame and Save sends the form as it is.
+        Discard puts the form's values back and fires <code>e-save-discarded</code> on it. On the Admin's own pages a
+        save that meets an expired session fires <code>e-session-expired</code> on the form, and the bar sends it again
+        when the page fires <code>e-session-restored</code>.
       </p>
       <docs-example caption="A settings form the bar saves" stack>
         <form data-save-bar>

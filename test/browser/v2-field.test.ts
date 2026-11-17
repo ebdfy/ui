@@ -210,3 +210,12 @@ test('from 600 px the text, date and search fields are 36 px tall, and on a phon
     await page.viewport(360, 800)
   }
 })
+
+test('maxlength reaches the input, so a typed name stops at 60 letters', async () => {
+  const holder = mount('<form><e-text-field label="Name" name="name" maxlength="60"></e-text-field></form>')
+  defineFields()
+  const input = holder.querySelector('input')!
+  expect(input.getAttribute('maxlength')).toBe('60')
+  await userEvent.type(input, 'a'.repeat(61))
+  expect(input.value).toBe('a'.repeat(60))
+})

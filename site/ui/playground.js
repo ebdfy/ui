@@ -61,6 +61,20 @@
       [1039, 'Arif Chowdhury', 'আরিফ চৌধুরী', 12500],
       [1038, 'Sumaiya Islam', 'সুমাইয়া ইসলাম', 4780],
     ],
+    // Settings' pages, as the playground's Settings menu names them.
+    settings: [
+      ['store', 'Store', 'স্টোর'],
+      ['staff', 'Staff', 'স্টাফ'],
+      ['payments', 'Payments', 'পেমেন্ট'],
+      ['delivery', 'Delivery', 'ডেলিভারি'],
+      ['locations', 'Locations', 'লোকেশন'],
+      ['languages', 'Languages', 'ভাষা'],
+      ['policies', 'Policies', 'নীতিমালা'],
+      ['custom-data', 'Custom data', 'কাস্টম ডেটা'],
+      ['developers', 'Developers', 'ডেভেলপার'],
+      ['exports', 'Exports', 'এক্সপোর্ট'],
+      ['account', 'Account and security', 'অ্যাকাউন্ট ও নিরাপত্তা'],
+    ],
     products: [
       ['Jamdani saree', 'জামদানি শাড়ি'],
       ['Cotton panjabi', 'সুতি পাঞ্জাবি'],
@@ -107,6 +121,12 @@
               .map(([en, bangla]) => row('/playground', bn ? bangla : en)),
           ],
           [
+            bn ? 'সেটিংস' : 'Settings',
+            sample.settings
+              .filter(([, en, bangla]) => has(en, bangla))
+              .map(([path, en, bangla]) => row(`/playground/settings/${path}`, bn ? bangla : en)),
+          ],
+          [
             bn ? 'গ্রাহক' : 'Customers',
             sample.orders
               .filter(([, en, bangla]) => has(en, bangla))
@@ -129,5 +149,71 @@
       none.textContent = bn ? 'কিছু পাওয়া যায়নি' : 'No results'
       results.append(none)
     }
+  })
+
+  // Image in a page's editor opens the store's Files, as the Admin's does, and the image picked goes
+  // in at the caret with its alt text.
+  let insertImage = null
+  document.addEventListener('e-rich-text-image', (event) => {
+    const files = document.getElementById('files')
+    if (!files) return
+    event.preventDefault()
+    insertImage = event.detail.insert
+    files.show()
+  })
+  document.addEventListener('click', (event) => {
+    const target = event.target instanceof Element ? event.target : null
+    const files = target?.closest('#files')
+    if (!files) return
+    const picked = target.closest('[data-src]')
+    if (!picked && !target.closest('[data-close]')) return
+    files.hide()
+    if (picked) insertImage?.({ src: picked.dataset.src, alt: picked.dataset.alt })
+    insertImage = null
+  })
+
+  // Add and Edit in a menu's tree open the page's modal; Add, or Save on an edit, hands the item back.
+  let menuDone = null
+  const menuWords = (edit) => {
+    const bn = document.documentElement.lang === 'bn'
+    if (edit) return bn ? ['মেনু আইটেম সম্পাদনা করুন', 'সংরক্ষণ করুন'] : ['Edit menu item', 'Save']
+    return bn ? ['মেনু আইটেম যোগ করুন', 'যোগ করুন'] : ['Add menu item', 'Add']
+  }
+  const openMenuItem = (item, done) => {
+    const modal = document.getElementById('menu-item')
+    if (!modal) return
+    const [heading, action] = menuWords(item)
+    modal.setAttribute('heading', heading)
+    const button = modal.querySelector('[data-done] button')
+    if (button) button.textContent = action
+    const label = modal.querySelector('e-text-field')
+    label.removeAttribute('error')
+    label.value = item?.title ?? ''
+    modal.querySelector('e-select').value = item
+      ? item.url === undefined
+        ? `resource:${item.resourceId}`
+        : `url:${item.url}`
+      : modal.querySelector('option').value
+    menuDone = done
+    modal.show()
+    label.querySelector('input')?.focus()
+  }
+  document.addEventListener('e-menu-tree-add', (event) => openMenuItem(null, event.detail.done))
+  document.addEventListener('e-menu-tree-edit', (event) => openMenuItem(event.detail.item, event.detail.done))
+  document.addEventListener('click', (event) => {
+    const target = event.target instanceof Element ? event.target : null
+    const modal = target?.closest('#menu-item')
+    if (!modal) return
+    if (target.closest('[data-close]')) return modal.hide()
+    if (!target.closest('[data-done]')) return
+    const label = modal.querySelector('e-text-field')
+    const title = label.value.trim()
+    if (!title)
+      return label.setAttribute('error', document.documentElement.lang === 'bn' ? 'একটি লেবেল লিখুন' : 'Enter a label')
+    const [kind, ...rest] = modal.querySelector('e-select').value.split(':')
+    const link = rest.join(':')
+    modal.hide()
+    menuDone?.(kind === 'url' ? { title, url: link } : { title, resourceId: link })
+    menuDone = null
   })
 }

@@ -1,0 +1,152 @@
+/* e-rich-text. Before the script, and with it off, the label draws as ::before over the written text
+   area, which holds the body's HTML. The script draws the label above one bordered box: a toolbar of
+   36 px icon buttons, 44 px on a phone, that scrolls sideways rather than wrap, over a body that
+   grows from 240 px. Show HTML puts the text area in the body's place. */
+e-rich-text {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 6px;
+  min-width: 0;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-body);
+}
+e-rich-text:not(:has(> [data-part='label']))::before,
+e-rich-text > [data-part='label'] {
+  overflow-wrap: anywhere;
+  font-size: var(--e-font-size-meta);
+  font-weight: var(--e-font-weight-medium);
+  line-height: var(--e-line-height-meta);
+}
+e-rich-text:not(:has(> [data-part='label']))::before {
+  content: attr(label);
+}
+e-rich-text textarea,
+e-rich-text > [data-part='box'] {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--e-color-line-2);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+}
+/* Before the script the text area stands as tall as the box will: the toolbar's 45 px, 53 px on a
+   phone, over the 240 px body, inside the 1 px border. */
+e-rich-text > textarea {
+  min-height: calc(45px + 240px + 2px);
+}
+e-rich-text textarea {
+  margin: 0;
+  padding: 10px var(--e-space-3);
+  font:
+    13px / 20px ui-monospace,
+    monospace;
+  resize: vertical;
+}
+e-rich-text > [data-part='box'] {
+  overflow: hidden;
+}
+e-rich-text > [data-part='box'] > textarea {
+  min-height: 240px;
+  display: none;
+  border: 0;
+  border-radius: 0;
+}
+e-rich-text > [data-part='box'][data-mode='html'] > textarea {
+  display: block;
+}
+e-rich-text > [data-part='box'][data-mode='html'] > [data-part='body'] {
+  display: none;
+}
+e-rich-text [data-part='tools'] {
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--e-color-line);
+  background: var(--e-color-surface-2);
+  scrollbar-width: none;
+}
+e-rich-text [data-part='tools'] > button {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--e-radius-1);
+  background: none;
+  color: var(--e-color-fg);
+  cursor: pointer;
+}
+e-rich-text [data-part='tools'] > button:last-child {
+  margin-inline-start: auto;
+}
+e-rich-text [data-part='tools'] > button:hover:not(:disabled) {
+  background: var(--e-color-line);
+}
+e-rich-text [data-part='tools'] > button[aria-pressed='true'] {
+  background: var(--e-color-line-2);
+}
+e-rich-text [data-part='tools'] > button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+e-rich-text [data-part='tools'] > button:focus-visible,
+e-rich-text > [data-part='box']:has([data-part='body']:focus-visible) {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 1px;
+}
+e-rich-text [data-part='body'] {
+  min-height: 240px;
+  box-sizing: border-box;
+  padding: 10px var(--e-space-3);
+  line-height: var(--e-line-height-body);
+  overflow-wrap: anywhere;
+  outline: none;
+}
+e-rich-text [data-part='body'] > :first-child {
+  margin-top: 0;
+}
+e-rich-text [data-part='body'] > * {
+  margin: 0 0 var(--e-space-3);
+}
+e-rich-text [data-part='body'] h2 {
+  font-size: var(--e-font-size-heading);
+  line-height: 28px;
+}
+e-rich-text [data-part='body'] blockquote {
+  padding-inline-start: var(--e-space-3);
+  border-inline-start: 3px solid var(--e-color-line-2);
+  color: var(--e-color-fg2);
+}
+e-rich-text [data-part='body'] ul {
+  padding-inline-start: 20px;
+}
+e-rich-text [data-part='body'] img {
+  max-width: 100%;
+  height: auto;
+}
+e-rich-text > [data-part='box']:has([aria-invalid='true']) {
+  border-color: var(--e-color-returned-fg);
+  box-shadow: 0 0 0 3px var(--e-color-danger-soft);
+}
+@media (max-width: 599.98px) {
+  e-rich-text [data-part='tools'] > button {
+    width: 44px;
+    height: 44px;
+  }
+  e-rich-text > textarea {
+    min-height: calc(53px + 240px + 2px);
+  }
+}
+/* An error written in the markup shows under the text area before the script builds its line. */
+e-rich-text[error]:not([error='']):not(:has(> [data-e-error]))::after {
+  content: attr(error);
+  overflow-wrap: anywhere;
+  color: var(--e-color-returned-fg);
+  font-size: var(--e-font-size-meta);
+  line-height: var(--e-line-height-meta);
+}

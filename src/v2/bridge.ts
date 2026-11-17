@@ -22,16 +22,19 @@ export function keepStore(win: Window = window): void {
 }
 
 // What the Admin tells the app about where it runs: the store and app, the staff member's language
-// and whether the Admin's window is a phone's. It sends it once the app is ready and again on change.
+// and whether the Admin's window is a phone's, and on a page opened from a placement, the placement
+// and the record's id. It sends it once the app is ready and again on change.
 export interface ContextMessage {
   type: 'context'
-  payload: { store: string; app: string; language: 'bn' | 'en'; mobile: boolean }
+  payload: { store: string; app: string; language: 'bn' | 'en'; mobile: boolean; placement?: string; id?: string }
 }
 
 // What an ebdfy:context event carries.
 export interface AppContext {
   store: string
   app: string
+  placement: string
+  id: string
   language: 'bn' | 'en'
   embedded: boolean
   mobile: boolean
@@ -40,14 +43,18 @@ export interface AppContext {
 // The width under which the Admin is on a phone, where modals are sheets and tables cards.
 export const phoneWidth = '(width < 600px)'
 
-// ebdfy.config, ebdfy.user() and ebdfy.environment. Until the Admin speaks, the store comes from the
-// address it opened the app at and the app from <meta name="ebdfy-app">; then the Admin's word holds,
-// and each time it speaks the bridge fires ebdfy:context.
+// ebdfy.config, ebdfy.user() and ebdfy.environment. Until the Admin speaks, the store and a
+// record's id come from the address it opened the app at and the app from <meta name="ebdfy-app">;
+// then the Admin's word holds, and each time it speaks the bridge fires ebdfy:context. The placement
+// a page was opened from, such as PRODUCT_MORE_ACTIONS, comes only from the Admin.
 export function createContext(win: Window = window) {
   const origin = parentOrigin(win)
+  const query = new URLSearchParams(win.location.search)
   const config = {
-    store: new URLSearchParams(win.location.search).get('store') ?? '',
+    store: query.get('store') ?? '',
     app: win.document.querySelector<HTMLMetaElement>('meta[name="ebdfy-app"]')?.content ?? '',
+    placement: '',
+    id: query.get('id') ?? '',
   }
   const environment = { embedded: origin !== null, mobile: win.matchMedia(phoneWidth).matches }
   let language: AppContext['language'] | null = null
@@ -56,9 +63,12 @@ export function createContext(win: Window = window) {
   if (origin) {
     win.addEventListener('message', (event: MessageEvent<ContextMessage>) => {
       if (event.source !== win.parent || event.origin !== origin || event.data?.type !== 'context') return
-      const { store, app, mobile } = event.data.payload ?? {}
+      const { store, app, mobile, placement, id } = event.data.payload ?? {}
       config.store = String(store ?? '')
       config.app = String(app ?? '')
+      // An Admin before 2.2 names neither, so the address's id stands.
+      if (placement !== undefined) config.placement = String(placement)
+      if (id !== undefined) config.id = String(id)
       environment.mobile = mobile === true
       language = event.data.payload?.language === 'bn' ? 'bn' : 'en'
       heard()
@@ -152,4 +162,26 @@ export function reportModals(win: Window = window): void {
   }
   win.addEventListener('e-modal-open', tell)
   win.addEventListener('e-modal-close', tell)
+}
+
+// The height of the app's page, which an app's card in an order's side column takes for its frame.
+// The bridge reports it each time it changes, measured from the page's own box, which shrinks as
+// the page does, where the scroll height never drops below the frame's.
+export interface HeightMessage {
+  type: 'height'
+  payload: { height: number }
+}
+
+export function reportHeight(win: Window = window): void {
+  const origin = parentOrigin(win)
+  if (!origin) return
+  const root = win.document.documentElement
+  let told = -1
+  new ResizeObserver(() => {
+    const height = Math.ceil(root.getBoundingClientRect().height)
+    if (height === told) return
+    told = height
+    const message: HeightMessage = { type: 'height', payload: { height } }
+    win.parent.postMessage(message, origin)
+  }).observe(root)
 }

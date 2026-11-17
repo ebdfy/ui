@@ -11,6 +11,8 @@ export const toastSeconds = 5
 export const words = {
   bn: {
     loading: 'লোড হচ্ছে',
+    moreActions: 'আরও অ্যাকশন',
+    noAccess: '{app}-এ আপনার অ্যাক্সেস নেই',
     stalled: 'অ্যাপটি সাড়া দিচ্ছে না',
     reload: 'আবার লোড করুন',
     unsaved: 'অসংরক্ষিত পরিবর্তন',
@@ -51,6 +53,8 @@ export const words = {
   },
   en: {
     loading: 'Loading',
+    moreActions: 'More actions',
+    noAccess: "You don't have access to {app}",
     stalled: "This app isn't responding",
     reload: 'Reload',
     unsaved: 'Unsaved changes',

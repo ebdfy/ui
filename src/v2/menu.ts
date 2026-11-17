@@ -7,12 +7,31 @@ import { place } from './place.ts'
  * One choice in an `e-menu`. Listen for `click` on it; the menu closes after a press.
  * @tag e-menu-item
  * @attr {'danger'} tone - Draws the item in the danger colour, for an action such as Delete.
- * @slot - The item's label.
+ * @attr href - An address the item follows when picked, as a link does: Ctrl or ⌘ opens it in a new tab.
+ * @slot - The item's label, after an optional 20 px `e-icon` or an app's `.e-tile` with `data-size="20"`.
  */
 export class EMenuItem extends HTMLElement {
   connectedCallback(): void {
     this.setAttribute('role', 'menuitem')
     this.tabIndex = -1
+    this.addEventListener('click', this.#follow)
+  }
+
+  disconnectedCallback(): void {
+    this.removeEventListener('click', this.#follow)
+  }
+
+  // The press passes to a link made for the moment, so the page's own handling of links, such as
+  // the Admin's leave guard, and Ctrl or ⌘ for a new tab apply to the item too.
+  #follow = (event: MouseEvent): void => {
+    const href = this.getAttribute('href')
+    if (href === null || event.target instanceof HTMLAnchorElement) return
+    const link = document.createElement('a')
+    link.href = href
+    link.hidden = true
+    this.append(link)
+    link.dispatchEvent(new MouseEvent('click', event))
+    link.remove()
   }
 }
 

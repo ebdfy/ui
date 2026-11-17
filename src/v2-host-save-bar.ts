@@ -69,10 +69,12 @@ const isError = (name: string) => !name.startsWith('data-') && (name === 'error'
 // gives its control (a tag's upazila-error names its control <name>.upazila), and the banner's lines.
 function errorsOf(form: Element): UserError[] {
   const errors: UserError[] = []
-  for (const tag of form.querySelectorAll('[name]')) {
-    if (!tag.localName.startsWith('e-')) continue
-    const name = tag.getAttribute('name') ?? ''
-    for (const attribute of tag.getAttributeNames().filter(isError)) {
+  // A tag's name is its own, or its control's, as e-rich-text's text area carries it.
+  for (const tag of form.querySelectorAll('*')) {
+    const attributes = tag.localName.startsWith('e-') ? tag.getAttributeNames().filter(isError) : []
+    const name = attributes.length && (tag.getAttribute('name') ?? tag.querySelector('[name]')?.getAttribute('name'))
+    if (!name) continue
+    for (const attribute of attributes) {
       const field = attribute === 'error' ? [name] : [name, attribute.slice(0, -'-error'.length)]
       errors.push({ field, message: tag.getAttribute(attribute) ?? '' })
     }
@@ -217,6 +219,8 @@ export function mountSaveBar(frame: Element): SaveBar {
     if (!edited) become({ name: 'clean' })
     else if (state.name === 'clean') become({ name: 'dirty' })
   }
+  // A record not saved yet shows the bar from the first frame.
+  edits(forms.dirty().length > 0)
 
   // The forms still to send, in page order: two bar forms on a page save one after the other.
   let queue: HTMLFormElement[] = []
@@ -322,12 +326,15 @@ export function mountSaveBar(frame: Element): SaveBar {
     if (response.ok && answer) {
       // With one form the saved page takes its place; beside another, or with typing done while it
       // saved, the form stays as it is.
-      const alone =
-        document.querySelectorAll('e-admin-panel form[data-save-bar]').length === 1 && !forms.dirty().includes(form)
+      const alone = document.querySelectorAll('e-admin-panel form[data-save-bar]').length === 1 && !forms.edited(form)
       // The Admin puts the answer in the staff member's language before its toast is read.
       let panel = form.closest('e-admin-panel')
-      if (alone) panel = putPanel(frame, answer, page.title)
-      else document.dispatchEvent(new CustomEvent(panelEvent, { detail: { panel: answer } }))
+      if (alone) {
+        // A create the Admin answered by a redirect, as /orders/new to the order it made, shows the
+        // address it landed on, in the same history entry.
+        if (response.redirected) history.replaceState(history.state, '', response.url)
+        panel = putPanel(frame, answer, page.title)
+      } else document.dispatchEvent(new CustomEvent(panelEvent, { detail: { panel: answer } }))
       showToast(answer.getAttribute('toast') ?? '', panel)
       next()
       return
@@ -365,6 +372,11 @@ export function mountSaveBar(frame: Element): SaveBar {
     if (inError(state.form).length === 0) become({ name: forms.dirty().length ? 'dirty' : 'clean' })
     else draw()
   })
+  // A part may clear an error itself as a choice changes, as the report builder clears a range's.
+  document.addEventListener('change', (event) => {
+    if (state.name !== 'refused' || !(event.target instanceof Node) || !state.form?.contains(event.target)) return
+    if (inError(state.form).length === 0) become({ name: forms.dirty().length ? 'dirty' : 'clean' })
+  })
 
   // Ctrl+S or ⌘S saves while the bar shows; Enter in a one-line field of a bar form saves it. Esc
   // never discards.
@@ -387,7 +399,8 @@ export function mountSaveBar(frame: Element): SaveBar {
     pressed = null
     appActs?.('discard')
     forms.act('discard')
-    become({ name: 'clean' })
+    // A form not saved yet still has nothing saved, so its bar stays.
+    become({ name: forms.dirty().length ? 'dirty' : 'clean' })
   }
   // On a create form Discard throws the whole record away, so it asks first.
   discard.addEventListener('click', () => {
@@ -413,8 +426,9 @@ export function mountSaveBar(frame: Element): SaveBar {
 
   return {
     element: bar,
+    // An untouched record not saved yet loses nothing on leaving; an app's edit is not in this page's forms.
     get dirty() {
-      return !bar.hidden
+      return !bar.hidden && !(state.name === 'dirty' && forms.dirty().length > 0 && !forms.edited())
     },
     discard: discardAll,
     app(said, act) {

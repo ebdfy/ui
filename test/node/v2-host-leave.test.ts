@@ -82,6 +82,24 @@ test('a move between Settings pages asks too, and Leave swaps in the page it poi
   await expect.poll(() => bar(page).isVisible()).toBe(false)
 })
 
+test('on a dirty Store, picking Staff in the search closes it and asks; Leave shows Staff with no dialog open', async () => {
+  const { page } = await open()
+  await edit(page)
+  await page.keyboard.press('Control+k')
+  const search = page.locator('dialog.e-search')
+  await search.locator('input[type="search"]').fill('staff')
+  await search.getByRole('link', { name: 'Staff', exact: true }).click()
+  await expect.poll(() => dialog(page).isVisible()).toBe(true)
+  // The search fades out as the question opens over the page.
+  await expect.poll(() => search.isVisible()).toBe(false)
+  expect(await search.evaluate((modal) => (modal as HTMLDialogElement).open)).toBe(false)
+  expect(await heading(page)).toBe('Store')
+  await dialog(page).getByRole('button', { name: 'Leave' }).click()
+  await expect.poll(() => heading(page)).toBe('Staff')
+  expect(await page.evaluate(() => document.querySelectorAll('dialog[open]').length)).toBe(0)
+  await expect.poll(() => bar(page).isVisible()).toBe(false)
+})
+
 test('browser Back with the form dirty asks, and the address stays on Store', async () => {
   const { page } = await open('/playground/settings/payments')
   await settingsLink(page, 'Staff').click()
@@ -153,4 +171,217 @@ test('a reload of a dirty page asks the browser to prompt, and of a clean page d
   expect(await prompts()).toBe(false)
   await edit(page)
   expect(await prompts()).toBe(true)
+})
+
+// A promise the test lets go of when it says.
+function gate() {
+  const opener: { release?: () => void } = {}
+  const shut = new Promise<undefined>((resolve) => {
+    opener.release = () => resolve(undefined)
+  })
+  return { shut, release: () => opener.release?.() }
+}
+
+// A move whose page is held back, and let go when the test says.
+async function holdStaff(page: Page) {
+  const { shut: held, release } = gate()
+  let asked = false
+  await page.route(/\/playground\/settings\/staff$/, async (route) => {
+    asked = true
+    await held
+    await route.continue()
+  })
+  return { release, asked: () => asked }
+}
+
+test('a phone typed on Store while a move to Staff waits asks when Staff arrives, and Stay keeps it', async () => {
+  const { page } = await open()
+  await phone(page).waitFor()
+  const staff = await holdStaff(page)
+  await settingsLink(page, 'Staff').click()
+  await expect.poll(staff.asked).toBe(true)
+  await edit(page)
+  staff.release()
+  await expect.poll(() => dialog(page).isVisible()).toBe(true)
+  expect(await heading(page)).toBe('Store')
+  await dialog(page).getByRole('button', { name: 'Stay on this page' }).click()
+  await expect.poll(() => dialog(page).isVisible()).toBe(false)
+  expect(await heading(page)).toBe('Store')
+  expect(path(page)).toBe('/playground/settings/store')
+  expect(await phone(page).inputValue()).toBe('01819556699')
+})
+
+test('a phone typed while Back to Staff waits asks when Staff arrives, and Stay puts the address back on Store', async () => {
+  const { page } = await open('/playground/settings/staff')
+  await settingsLink(page, 'Store').click()
+  await expect.poll(() => heading(page)).toBe('Store')
+  await phone(page).waitFor()
+  const staff = await holdStaff(page)
+  await page.goBack()
+  await expect.poll(staff.asked).toBe(true)
+  await edit(page)
+  staff.release()
+  await expect.poll(() => dialog(page).isVisible()).toBe(true)
+  await dialog(page).getByRole('button', { name: 'Stay on this page' }).click()
+  await expect.poll(() => path(page)).toBe('/playground/settings/store')
+  expect(await heading(page)).toBe('Store')
+  expect(await phone(page).inputValue()).toBe('01819556699')
+  // Back once more asks, as from any dirty page, and Leave goes to Staff.
+  await page.goBack()
+  await expect.poll(() => dialog(page).isVisible()).toBe(true)
+  await dialog(page).getByRole('button', { name: 'Leave' }).click()
+  await expect.poll(() => heading(page)).toBe('Staff')
+})
+
+test('pressing Ctrl+S while a move to Staff waits: the refusal stays on Store, and Staff arrives with no Not saved', async () => {
+  const { page } = await open()
+  await phone(page).waitFor()
+  // A form the browser does not check, so only the Admin can refuse it.
+  await page.evaluate(() =>
+    document.querySelector<HTMLFormElement>('form[data-save-bar]')!.setAttribute('novalidate', ''),
+  )
+  const staff = await holdStaff(page)
+  await settingsLink(page, 'Staff').click()
+  await expect.poll(staff.asked).toBe(true)
+  await phone(page).fill('0181955669')
+  await page.keyboard.press('Control+s')
+  const said = () => bar(page).locator('.e-save-bar-message > span:visible').textContent()
+  await expect.poll(said).toBe('Not saved: 1 field needs a fix')
+  staff.release()
+  await expect.poll(() => dialog(page).isVisible()).toBe(true)
+  await dialog(page).getByRole('button', { name: 'Stay on this page' }).click()
+  expect(await heading(page)).toBe('Store')
+  expect(await said()).toBe('Not saved: 1 field needs a fix')
+  expect(await page.locator('e-phone-field').getAttribute('error')).toBe(
+    'Enter an 11-digit mobile number that starts with 01.',
+  )
+  await settingsLink(page, 'Staff').click()
+  await dialog(page).getByRole('button', { name: 'Leave' }).click()
+  await expect.poll(() => heading(page)).toBe('Staff')
+  await expect.poll(() => bar(page).isVisible()).toBe(false)
+})
+
+test('pressing Ctrl+S while a move waits, its refusal coming after Leave: Staff shows no Not saved', async () => {
+  const { page } = await open()
+  await phone(page).waitFor()
+  await page.evaluate(() =>
+    document.querySelector<HTMLFormElement>('form[data-save-bar]')!.setAttribute('novalidate', ''),
+  )
+  const staff = await holdStaff(page)
+  const { shut: held, release: answer } = gate()
+  await page.route(/\/playground\/settings\/store$/, async (route) => {
+    if (route.request().method() !== 'POST') return route.continue()
+    await held
+    await route.continue()
+  })
+  await settingsLink(page, 'Staff').click()
+  await expect.poll(staff.asked).toBe(true)
+  await phone(page).fill('0181955669')
+  await page.keyboard.press('Control+s')
+  staff.release()
+  await expect.poll(() => dialog(page).isVisible()).toBe(true)
+  await dialog(page).getByRole('button', { name: 'Leave' }).click()
+  await expect.poll(() => heading(page)).toBe('Staff')
+  answer()
+  await page.waitForTimeout(500)
+  expect(await bar(page).isVisible()).toBe(false)
+  expect(await heading(page)).toBe('Staff')
+})
+
+// A link to a place in a page adds an entry of its own; Back onto it from a dirty page asks, as Back
+// onto any other page's entry does.
+test('browser Back onto an entry a link to a place on Staff made asks on a dirty Store, and Stay keeps the phone', async () => {
+  const { page } = await open('/playground/settings/staff')
+  await page.evaluate(() => {
+    const link = Object.assign(document.createElement('a'), { href: '#team', textContent: 'To the team' })
+    document.querySelector('e-admin-panel > header')!.append(link)
+  })
+  await page.getByText('To the team').click()
+  await expect.poll(() => new URL(page.url()).hash).toBe('#team')
+  await settingsLink(page, 'Store').click()
+  await expect.poll(() => heading(page)).toBe('Store')
+  await edit(page)
+  await page.goBack()
+  await expect.poll(() => dialog(page).isVisible()).toBe(true)
+  await expect.poll(() => path(page)).toBe('/playground/settings/store')
+  await dialog(page).getByRole('button', { name: 'Stay on this page' }).click()
+  expect(await heading(page)).toBe('Store')
+  expect(await phone(page).inputValue()).toBe('01819556699')
+  // Leave on a second Back goes to Staff at its place, and Forward returns to Store with no reload.
+  await page.evaluate(() => Object.assign(globalThis, { stayed: true }))
+  await page.goBack()
+  await expect.poll(() => dialog(page).isVisible()).toBe(true)
+  await dialog(page).getByRole('button', { name: 'Leave' }).click()
+  await expect.poll(() => heading(page)).toBe('Staff')
+  expect(new URL(page.url()).hash).toBe('#team')
+  await page.goForward()
+  await expect.poll(() => heading(page)).toBe('Store')
+  expect(await page.evaluate(() => (globalThis as { stayed?: boolean }).stayed)).toBe(true)
+})
+
+// Two Backs whose pages are both held: the first move is overtaken, and the second arrives after a
+// phone was typed. Stay must put the address back on Store, two entries on, with no reload.
+test('two Backs held while a phone is typed: Stay returns the address to Store with no reload', async () => {
+  const { page } = await open('/playground/settings/payments')
+  await settingsLink(page, 'Staff').click()
+  await expect.poll(() => heading(page)).toBe('Staff')
+  await settingsLink(page, 'Store').click()
+  await expect.poll(() => heading(page)).toBe('Store')
+  await phone(page).waitFor()
+  await page.evaluate(() => Object.assign(globalThis, { stayed: true }))
+  const { shut, release } = gate()
+  const asked: string[] = []
+  await page.route(/\/playground\/settings\/(staff|payments)$/, async (route) => {
+    asked.push(new URL(route.request().url()).pathname)
+    await shut
+    await route.continue()
+  })
+  await page.goBack()
+  await expect.poll(() => asked.length).toBe(1)
+  await page.goBack()
+  await expect.poll(() => asked.length).toBe(2)
+  await edit(page)
+  release()
+  await expect.poll(() => dialog(page).isVisible()).toBe(true)
+  await dialog(page).getByRole('button', { name: 'Stay on this page' }).click()
+  await expect.poll(() => path(page)).toBe('/playground/settings/store')
+  await page.waitForTimeout(300)
+  expect(path(page)).toBe('/playground/settings/store')
+  expect(await dialog(page).isVisible()).toBe(false)
+  expect(await heading(page)).toBe('Store')
+  expect(await phone(page).inputValue()).toBe('01819556699')
+  expect(await page.evaluate(() => (globalThis as { stayed?: boolean }).stayed)).toBe(true)
+})
+
+test('a Back overtaken by a tap on the menu, a phone typed meanwhile: Stay returns the address to Store', async () => {
+  const { page } = await open('/playground/settings/payments')
+  await settingsLink(page, 'Staff').click()
+  await expect.poll(() => heading(page)).toBe('Staff')
+  await settingsLink(page, 'Store').click()
+  await expect.poll(() => heading(page)).toBe('Store')
+  await phone(page).waitFor()
+  const { shut, release } = gate()
+  const asked: string[] = []
+  await page.route(/\/playground\/settings\/(staff|delivery)$/, async (route) => {
+    asked.push(new URL(route.request().url()).pathname)
+    await shut
+    await route.continue()
+  })
+  await page.goBack()
+  await expect.poll(() => asked.length).toBe(1)
+  await settingsLink(page, 'Delivery').click()
+  await expect.poll(() => asked.length).toBe(2)
+  await edit(page)
+  release()
+  await expect.poll(() => dialog(page).isVisible()).toBe(true)
+  await dialog(page).getByRole('button', { name: 'Stay on this page' }).click()
+  await expect.poll(() => path(page)).toBe('/playground/settings/store')
+  expect(await heading(page)).toBe('Store')
+  expect(await phone(page).inputValue()).toBe('01819556699')
+  // Back from here asks, and Leave lands on Staff, the entry before Store.
+  await page.goBack()
+  await expect.poll(() => dialog(page).isVisible()).toBe(true)
+  await dialog(page).getByRole('button', { name: 'Leave' }).click()
+  await expect.poll(() => heading(page)).toBe('Staff')
+  expect(path(page)).toBe('/playground/settings/staff')
 })

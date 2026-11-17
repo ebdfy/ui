@@ -1,107 +1,46 @@
 // The v2 Admin chrome, which the playground and the Admin load and apps never do. Like the kit, it
 // draws in light DOM with no framework.
 import './floor.ts'
-import type { BridgeMessage, HostMessage, IdTokenAnswer } from './bridge.ts'
-import { answerSeconds, cut, cutTitle, navLabelLimit, toastLimit, toastSeconds, words } from './host-rules.ts'
+import type { BridgeMessage } from './bridge.ts'
+import { cut, cutTitle, navLabelLimit, toastLimit, toastSeconds } from './host-rules.ts'
+import { button, say, serveApp } from './v2-host-app.ts'
 import { guardLeaving } from './v2-host-leave.ts'
 import { followPage } from './v2-host-nav.ts'
 import { rememberBack, swapPanels } from './v2-host-panel.ts'
 import { mountSaveBar, type SaveBar } from './v2-host-save-bar.ts'
+import { keepTileInitials } from './v2-host-tile.ts'
+import { titleBar } from './v2-host-title.ts'
 import { followSearch, openSearch } from './v2-host-search.ts'
-import {
-  phoneWidth,
-  type AppModalMessage,
-  type ContextMessage,
-  type SearchClosedMessage,
-  type SearchMessage,
-} from './v2/bridge.ts'
+import { defineAppCard } from './v2/app-card.ts'
+import { defineArrangedCards } from './v2/arranged-cards.ts'
+import type { AppModalMessage, SearchMessage } from './v2/bridge.ts'
 import { defineButton } from './v2/button.ts'
 import { defineIcon } from './v2/icon.ts'
+import { defineMenu } from './v2/menu.ts'
+import { defineMenuTree } from './v2/menu-tree.ts'
+import { defineReportBuilder } from './v2/report-builder.ts'
 
 // The playground does not load v2.js, so the frame's icons and the notice's buttons are built here.
+// A page's arranged cards, its report builder, a menu's tree and an app's card are the Admin's alone,
+// so only this script runs them.
 defineIcon()
 defineButton()
-
-// The chrome's own words, in the language of the page at the moment it shows them.
-const language = () => (document.documentElement.lang.startsWith('bn') ? 'bn' : 'en')
-const say = () => words[language()]
-
-function button(tag: 'button' | 'e-button', label: string): HTMLElement {
-  const made = document.createElement(tag)
-  made.setAttribute('type', 'button')
-  made.textContent = label
-  return made
-}
-
-// e-button holds its label in the native button it built inside itself.
-function relabel(kit: HTMLElement, label: string): void {
-  const inner = kit.querySelector('button')
-  if (inner) inner.textContent = label
-}
+defineArrangedCards()
+defineReportBuilder()
+defineMenuTree()
+defineMenu()
+defineAppCard()
+keepTileInitials()
 
 function takeMessages(panel: Element, frame: HTMLIFrameElement, saveBar: SaveBar | null): void {
   const heading = panel.querySelector('header h1')
-  // Only the origin the iframe's URL names may hear the chrome's answers.
-  const appOrigin = () => new URL(frame.src, location.href).origin
-  const post = (to: Window | null, message: HostMessage | ContextMessage | SearchClosedMessage) =>
-    to?.postMessage(message, appOrigin())
-
-  const bar = document.createElement('div')
-  bar.className = 'e-loading-bar'
-  bar.setAttribute('role', 'progressbar')
-
-  // The notice is built once and its words filled as it shows.
-  const notice = document.createElement('div')
-  notice.className = 'e-notice'
-  notice.setAttribute('role', 'alert')
-  notice.hidden = true
-  const said = document.createElement('p')
-  const help = document.createElement('p')
-  const reload = button('e-button', '')
-  reload.setAttribute('tone', 'primary')
-  const keepWaiting = button('e-button', '')
-  const actions = document.createElement('div')
-  actions.append(reload, keepWaiting)
-  notice.append(said, help, actions)
-  panel.append(bar, notice)
-
-  let answered = false
-  let ready = false
-  let busy = false
-  let answerTimer = 0
-  const draw = () => {
-    bar.hidden = !notice.hidden || (ready && !busy)
-    bar.setAttribute('aria-label', say().loading)
-  }
-
-  const showNotice = () => {
-    const copy = say()
-    said.textContent = copy.stalled
-    help.textContent = copy.stalledHelp
-    relabel(reload, copy.reload)
-    relabel(keepWaiting, copy.keepWaiting)
-    notice.hidden = false
-  }
-
-  // Every page the chrome loads has 15 s to answer before the notice covers it.
-  const waitForAnswer = () => {
-    answered = false
-    ready = false
-    busy = false
-    notice.hidden = true
-    clearTimeout(answerTimer)
-    answerTimer = window.setTimeout(() => {
-      if (!answered) showNotice()
-      draw()
-    }, answerSeconds * 1000)
-    draw()
-  }
-
-  reload.addEventListener('click', () => {
-    waitForAnswer()
-    frame.setAttribute('src', frame.getAttribute('src') ?? '')
-  })
-  keepWaiting.addEventListener('click', waitForAnswer)
+  const served = serveApp(panel, frame)
+  const post = served.post
+  const title =
+    heading &&
+    titleBar(heading, (call, index, item) =>
+      post(frame.contentWindow, { type: 'titleAction', payload: item === undefined ? { call, index } : { call, index, item } }),
+    )
 
   let toast: HTMLElement | null = null
   let toastTimer = 0
@@ -142,63 +81,6 @@ function takeMessages(panel: Element, frame: HTMLIFrameElement, saveBar: SaveBar
     if (!error) toastTimer = window.setTimeout(hideToast, toastSeconds * 1000)
   }
 
-  // The app wears the Admin's theme: it hears it when it is ready, and again whenever the device's
-  // theme or the Admin's own data-theme changes it.
-  const tellTheme = () => {
-    if (!ready) return
-    const theme = getComputedStyle(panel).colorScheme === 'dark' ? 'dark' : 'light'
-    post(frame.contentWindow, { type: 'theme', payload: { theme } })
-  }
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', tellTheme)
-  new MutationObserver(tellTheme).observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['data-theme'],
-  })
-
-  // The app hears where it runs when it is ready, and again whenever the Admin's language or width
-  // class changes. The panel names the store and the app.
-  const phone = matchMedia(phoneWidth)
-  const tellContext = () => {
-    if (!ready) return
-    const store = panel.getAttribute('store') ?? ''
-    const app = panel.getAttribute('app') ?? ''
-    post(frame.contentWindow, { type: 'context', payload: { store, app, language: language(), mobile: phone.matches } })
-  }
-  phone.addEventListener('change', tellContext)
-  new MutationObserver(tellContext).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] })
-
-  // One token serves every call until 10 s before it dies. Its lifetime is timed from the mint by
-  // this page's clock, never by its exp, so a server clock out of step cannot keep a dead token.
-  let token: { value: string; until: number } | null = null
-  let minting: Promise<string> | null = null
-  const mint = async (): Promise<string> => {
-    const minted = Date.now()
-    const response = await fetch(new URL(panel.getAttribute('token-url') ?? '', location.href), { method: 'POST' })
-    if (!response.ok) throw new Error(response.status === 403 ? 'ACCESS_ENDED' : `HTTP ${response.status}`)
-    // SAFETY: the token endpoint answers a 2xx with {token}, a JWT whose claims hold iat and exp.
-    const { token: value } = (await response.json()) as { token: string }
-    const segment = value.split('.')[1] ?? ''
-    // SAFETY: as above, the second segment of the JWT is its claims as base64url JSON.
-    const claims = JSON.parse(atob(segment.replaceAll('-', '+').replaceAll('_', '/'))) as { iat: number; exp: number }
-    token = { value, until: minted + (claims.exp - claims.iat - 10) * 1000 }
-    return value
-  }
-  const idToken = (): Promise<string> => {
-    if (token && Date.now() < token.until) return Promise.resolve(token.value)
-    minting ??= mint().finally(() => (minting = null))
-    return minting
-  }
-  const answerToken = async (from: Window, id: number) => {
-    const reply: IdTokenAnswer = { id }
-    try {
-      reply.token = await idToken()
-      reply.api = new URL(panel.getAttribute('api-url') ?? '', location.href).href
-    } catch (error) {
-      reply.error = error instanceof Error ? error.message : String(error)
-    }
-    post(from, { type: 'idToken', payload: reply })
-  }
-
   // While the app shows a modal of its own, the Admin's frame and the app's title bar sit under the
   // scrim and take no taps or focus; a page that loads has none open.
   const admin = panel.closest('e-admin-frame')
@@ -214,18 +96,18 @@ function takeMessages(panel: Element, frame: HTMLIFrameElement, saveBar: SaveBar
     }
   }
 
-  // Only the app's own frame, from the origin its URL names, can change the chrome. Every message it
-  // sends counts as an answer, even one this chrome does not act on yet.
+  // Only the app's own frame, from the origin its URL names, can change the chrome.
   window.addEventListener('message', (event: MessageEvent<BridgeMessage | AppModalMessage | SearchMessage>) => {
-    const app = frame.contentWindow
-    if (!app || event.source !== app || event.origin !== appOrigin()) return
-    answered = true
-    notice.hidden = true
+    const app = served.heard(event)
+    if (!app) return
     const data = event.data
-    if (data?.type === 'title' && heading) heading.textContent = cutTitle(String(data.payload?.title ?? ''))
-    if (data?.type === 'loading') busy = data.payload?.visible === true
+    if (data?.type === 'title' && heading) {
+      heading.textContent = cutTitle(String(data.payload?.title ?? ''))
+      title?.show(data.payload)
+    }
+    if (data?.type === 'loading') served.busy(data.payload?.visible === true)
     if (data?.type === 'toast') showToast(data.payload, app)
-    if (data?.type === 'idToken') void answerToken(app, Number(data.payload?.id))
+    if (data?.type === 'idToken') void served.answerToken(app, Number(data.payload?.id))
     if (data?.type === 'appModal') dim(data.payload?.open === true)
     if (data?.type === 'saveBar')
       saveBar?.app(data.payload ?? {}, (action) => post(app, { type: 'saveBar', payload: { action } }))
@@ -234,16 +116,16 @@ function takeMessages(panel: Element, frame: HTMLIFrameElement, saveBar: SaveBar
         frame.focus()
         post(app, { type: 'searchClosed' })
       })
+    // A page that loads draws its own actions, if any: the last page's are gone with it.
     if (data?.type === 'ready') {
+      title?.show(undefined)
       dim(false)
-      ready = true
-      tellTheme()
-      tellContext()
+      served.ready(data.payload?.page)
     }
-    draw()
+    served.draw()
   })
 
-  waitForAnswer()
+  served.waitForAnswer()
   // The app says ready once, as it loads, so its page loads only now that the chrome listens.
   if (!frame.getAttribute('src') && frame.dataset.src) frame.src = frame.dataset.src
 }

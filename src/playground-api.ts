@@ -1,6 +1,9 @@
 // The playground's stand-in for the Admin API until the real one mints ID tokens: it signs ES256
 // ID tokens for the sample app, publishes their key as a JWKS, and answers two GraphQL operations
-// for a bearer of such a token. It uses only WebCrypto, so the Worker and the Node servers share it.
+// for a bearer of such a token, and a report builder's results. It uses only WebCrypto, so the Worker
+// and the Node servers share it.
+
+import { reportResult } from './playground-reports.ts'
 
 export interface IdTokenClaims {
   iss: string
@@ -160,6 +163,15 @@ export function createPlaygroundApi(key?: JsonWebKey, clock: () => number = Date
         return Response.json({ data: { shop: { name: store.name } } }, { headers: cors })
       }
       return graphqlError(400, 'BAD_REQUEST', 'The playground API answers only shop name and orderCancel.')
+    }
+
+    // A report builder's result, as the Admin's Worker answers it: HTML holding an e-report-result.
+    if (url.pathname === '/dev/reports/result') {
+      const result = reportResult(url.searchParams)
+      if (!result) return new Response('Pick at most 366 days', { status: 400 })
+      return new Response(result, {
+        headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' },
+      })
     }
 
     return null

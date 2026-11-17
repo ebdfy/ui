@@ -1,0 +1,115 @@
+/* e-menu-tree. Before the script each item draws its label as ::before, at its row's height and
+   indent, so the tree stands where its rows will. The script builds each row: the drag handle, the
+   label, which wraps, and Edit and Delete, each 32 px, 44 px on a phone. Children sit 28 px in. */
+e-menu-tree,
+e-menu-tree-item {
+  display: grid;
+  min-width: 0;
+}
+e-menu-tree {
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-body);
+  line-height: var(--e-line-height-body);
+}
+e-menu-tree-item > :is(e-menu-tree-item, [data-part='add']) {
+  margin-inline-start: 28px;
+}
+e-menu-tree-item:not(:has(> [data-part='row']))::before {
+  content: attr(label);
+  min-height: 40px;
+  padding: 10px 0 10px 40px;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--e-color-line);
+  overflow-wrap: anywhere;
+}
+e-menu-tree [data-part='row'] {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0 4px;
+  min-height: 40px;
+  border-bottom: 1px solid var(--e-color-line);
+}
+e-menu-tree [data-part='label'] {
+  overflow-wrap: anywhere;
+}
+e-menu-tree button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e-space-2);
+  min-width: 32px;
+  min-height: 32px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--e-radius-1);
+  background: none;
+  color: var(--e-color-fg2);
+  font: inherit;
+  cursor: pointer;
+}
+e-menu-tree button:hover {
+  background: var(--e-color-surface-2);
+  color: var(--e-color-fg);
+}
+e-menu-tree button:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 1px;
+}
+e-menu-tree [data-part='handle'] {
+  cursor: grab;
+  touch-action: none;
+}
+e-menu-tree [data-part='add'] {
+  justify-self: start;
+  min-height: 40px;
+  padding: 0 var(--e-space-2);
+  color: var(--e-color-accent);
+  font-weight: var(--e-font-weight-medium);
+}
+e-menu-tree [data-part='note'] {
+  grid-column: 2 / -1;
+  margin: 0 0 var(--e-space-2);
+  color: var(--e-color-returned-fg);
+  font-size: var(--e-font-size-meta);
+  line-height: var(--e-line-height-meta);
+}
+e-menu-tree [data-part='note']:empty {
+  display: none;
+}
+e-menu-tree [data-part='row'][data-dragging] {
+  opacity: 0.5;
+}
+e-menu-tree [data-part='row'][data-drop='before'] {
+  box-shadow: inset 0 2px 0 var(--e-color-focus);
+}
+e-menu-tree [data-part='row'][data-drop='after'] {
+  box-shadow: inset 0 -2px 0 var(--e-color-focus);
+}
+e-menu-tree [data-part='row'][data-drop='under'] {
+  background: var(--e-color-surface-2);
+  box-shadow: inset 2px 0 0 var(--e-color-focus);
+}
+@media (max-width: 599.98px) {
+  e-menu-tree button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  e-menu-tree [data-part='row'],
+  e-menu-tree [data-part='add'],
+  e-menu-tree-item:not(:has(> [data-part='row']))::before {
+    min-height: 44px;
+  }
+}
+/* A refused save's error, under the tree; written in the markup it shows before the script too. */
+e-menu-tree > [data-e-error],
+e-menu-tree[error]:not([error='']):not(:has(> [data-e-error]))::after {
+  margin: var(--e-space-2) 0 0;
+  color: var(--e-color-returned-fg);
+  font-size: var(--e-font-size-meta);
+  line-height: var(--e-line-height-meta);
+}
+e-menu-tree[error]:not([error='']):not(:has(> [data-e-error]))::after {
+  content: attr(error);
+}

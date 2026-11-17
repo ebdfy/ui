@@ -194,3 +194,74 @@ test('a menu of one short item is still a 160 px panel, its item a 44 px target'
   expect([box.width >= 44, box.height >= 44]).toEqual([true, true])
   expect(document.querySelector('e-menu > [data-part="panel"]')!.getBoundingClientRect().width).toBe(160)
 })
+
+// An item with an address follows it as a link does. The page here keeps the click from leaving it,
+// and records where it would go and whether it asked for a new tab.
+function followed(): string[] {
+  const went: string[] = []
+  const hear = (event: MouseEvent) => {
+    const link = event.target instanceof Element ? event.target.closest('a[href]') : null
+    if (!(link instanceof HTMLAnchorElement)) return
+    event.preventDefault()
+    went.push(`${new URL(link.href).pathname}${new URL(link.href).search}${event.ctrlKey ? ' new tab' : ''}`)
+  }
+  document.addEventListener('click', hear)
+  return went
+}
+
+const translate = `<e-menu><e-button slot="trigger">More actions</e-button
+  ><e-menu-item><e-icon name="copy" size="20"></e-icon>Duplicate</e-menu-item
+  ><e-menu-item href="/playground/translate?id=prod_7"
+    ><span class="e-tile" data-size="20" aria-hidden="true">S</span>Translate</e-menu-item
+  ></e-menu>`
+
+test('an item with an address keeps its menuitem role and follows it on a press, Enter and Ctrl+press', async () => {
+  defineButton()
+  defineMenu()
+  const went = followed()
+  const holder = mount(translate)
+  const trigger = page.getByRole('button', { name: 'More actions' })
+  const item = page.getByRole('menuitem', { name: 'Translate' })
+
+  await trigger.click()
+  expect(holder.querySelector('e-menu-item[href]')!.getAttribute('role')).toBe('menuitem')
+  await item.click()
+  expect(went).toEqual(['/playground/translate?id=prod_7'])
+
+  await trigger.click()
+  await userEvent.keyboard('{ArrowDown}{Enter}')
+  expect(went).toEqual(['/playground/translate?id=prod_7', '/playground/translate?id=prod_7'])
+
+  await trigger.click()
+  await item.click({ modifiers: ['Control'] })
+  expect(went.at(-1)).toBe('/playground/translate?id=prod_7 new tab')
+  // The link made for the moment is gone again.
+  expect(holder.querySelectorAll('a')).toHaveLength(0)
+})
+
+test('an item with no address follows nothing', async () => {
+  defineButton()
+  defineMenu()
+  const went = followed()
+  mount(translate)
+  await page.getByRole('button', { name: 'More actions' }).click()
+  await page.getByRole('menuitem', { name: 'Duplicate' }).click()
+  expect(went).toEqual([])
+})
+
+test("an app's 20 px tile sits at an icon's place, so the labels line up", async () => {
+  defineButton()
+  defineMenu()
+  const holder = mount(translate)
+  await page.getByRole('button', { name: 'More actions' }).click()
+  const [duplicate, app] = [...holder.querySelectorAll('e-menu-item')]
+  const labelLeft = (item: Element) => {
+    const range = document.createRange()
+    range.selectNode([...item.childNodes].find((node) => node.nodeType === Node.TEXT_NODE)!)
+    return Math.round(range.getBoundingClientRect().left)
+  }
+  const tile = app!.querySelector('.e-tile')!
+  expect([box(tile).width, box(tile).height]).toEqual([20, 20])
+  expect(box(tile).x).toBe(box(duplicate!.querySelector('e-icon')!).x)
+  expect(labelLeft(app!)).toBe(labelLeft(duplicate!))
+})

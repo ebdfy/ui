@@ -28,11 +28,28 @@
           <e-menu-item tone="danger">Cancel order</e-menu-item>
         </e-menu>
       </docs-example>
+      <p>
+        An item with <code>href</code> follows it when picked, as a link does: a press or Enter opens it, and Ctrl or ⌘
+        opens it in a new tab. A record's More actions lists an app's action this way, after the record's own, with the
+        app's 20 px tile, <code>&lt;span class="e-tile" data-size="20"&gt;</code>, where an item's 20 px icon sits.
+      </p>
+      <docs-example caption="A product's More actions, with an app's Translate">
+        <e-menu>
+          <e-button slot="trigger">More actions<e-icon name="chevron-down"></e-icon></e-button>
+          <e-menu-item><e-icon name="copy" size="20"></e-icon>Duplicate</e-menu-item>
+          <e-menu-item href="/playground/translate?id=prod_7"
+            ><span class="e-tile" data-size="20" aria-hidden="true">S</span>Translate</e-menu-item
+          >
+        </e-menu>
+      </docs-example>
       <docs-example caption="বাংলায়" lang="bn">
         <e-menu>
           <e-button slot="trigger">কাজ</e-button>
           <e-menu-item>লেবেল প্রিন্ট</e-menu-item>
           <e-menu-item tone="danger">অর্ডার বাতিল</e-menu-item>
+          <e-menu-item href="/playground/translate?id=prod_7"
+            ><span class="e-tile" data-size="20" aria-hidden="true">S</span>Translate</e-menu-item
+          >
         </e-menu>
       </docs-example>
     </main>

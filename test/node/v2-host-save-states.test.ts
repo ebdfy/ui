@@ -202,3 +202,41 @@ test('leaving while a save waits drops its answer, so a late refusal raises no b
   expect(await bar(page).isVisible()).toBe(false)
   expect(await page.locator('e-admin-panel > header h1').textContent()).toBe('Staff')
 })
+
+// A create form posts to /orders/new, and the Admin answers by redirecting to the record it made. The
+// playground has no order pages in its panel, so the record here is Staff, which the dev server
+// answers with its panel; Playwright routes only the first request of a redirect.
+test('a save answered by a redirect from /orders/new leaves the address where the redirect landed', async () => {
+  const { page } = await open()
+  await page.route(/\/playground\/orders\/new$/, (route) =>
+    route.fulfill({ status: 303, headers: { location: '/playground/settings/staff?order=1043' } }),
+  )
+  await page.evaluate(() => {
+    history.replaceState(history.state, '', '/playground/orders/new')
+    document.querySelector('form[data-save-bar]')!.setAttribute('action', '/playground/orders/new')
+  })
+  await page.evaluate(() => Object.assign(globalThis, { stayed: true }))
+  await phone(page).fill('01819556690')
+  await primary(page).click()
+  await expect.poll(() => page.locator('e-admin-panel > header h1').textContent()).toBe('Staff')
+  const address = () => new URL(page.url()).pathname + new URL(page.url()).search
+  expect(address()).toBe('/playground/settings/staff?order=1043')
+  // The menu marks the page the address now names.
+  expect(await page.locator('[slot="menu"] a[aria-current="page"]').textContent()).toBe('Staff')
+  // The record's entry keeps its place in the tab's history: a link to a place on it, and Back from
+  // there, stay on the record with no move and no fetch.
+  const fetched: string[] = []
+  page.on('request', (request) => fetched.push(request.url()))
+  await page.evaluate(() => {
+    const link = Object.assign(document.createElement('a'), { href: '#team', textContent: 'To the team' })
+    document.querySelector('e-admin-panel > header')!.append(link)
+  })
+  await page.getByText('To the team').click()
+  await expect.poll(() => new URL(page.url()).hash).toBe('#team')
+  await page.goBack()
+  await expect.poll(() => new URL(page.url()).hash).toBe('')
+  expect(address()).toBe('/playground/settings/staff?order=1043')
+  expect(await page.locator('e-admin-panel > header h1').textContent()).toBe('Staff')
+  expect(await page.evaluate(() => (globalThis as { stayed?: boolean }).stayed)).toBe(true)
+  expect(fetched).toEqual([])
+})

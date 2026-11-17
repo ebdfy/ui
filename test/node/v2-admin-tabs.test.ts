@@ -60,7 +60,7 @@ test('in Bangla the tab labels and the staff initials are 13 px', async () => {
   expect(await fontSizes(page, '[slot="actions"] > .e-initials')).toEqual(['13px'])
 })
 
-test('the More tab opens a sheet with Customers, the sample app, the sub-pages and Settings, then the user items', async () => {
+test('the More tab opens a sheet with Customers, Content, Reports, the sample app, the sub-pages and Settings, then the user items', async () => {
   const { page } = await open('/playground')
   await tabs(page).getByRole('button', { name: 'More' }).click()
   const sheet = page.locator('#e-more')
@@ -71,10 +71,13 @@ test('the More tab opens a sheet with Customers, the sample app, the sub-pages a
     .evaluateAll((found) => found.map((row) => row.querySelector('[data-bn]')?.textContent ?? row.textContent))
   expect(rows).toEqual([
     'Customers',
+    'Content',
+    'Reports',
     'Sample app',
     'Drafts',
     'Returns',
     'Parcels',
+    'Menus',
     'Settings',
     'English',
     'বাংলা',

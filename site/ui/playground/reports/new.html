@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content" />
+    <link rel="icon" href="data:," />
+    <title>New report · Playground · ebdfy design system v2</title>
+    <link
+      rel="preload"
+      href="%EB_CDN%/ui/fonts/geist-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2.css" />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2-host.css" />
+    <script type="module" src="%EB_CDN%/ui/v2-host.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v2.js"></script>
+    <link rel="stylesheet" href="/playground.css" />
+    <script>
+      // The staff member's language, kept by this browser as the Admin keeps it for them, before
+      // anything draws.
+      try {
+        document.documentElement.lang = localStorage.getItem('ebdfy-playground-lang') === 'bn' ? 'bn' : 'en'
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <e-admin-frame>
+      %EB_ADMIN_CHROME%
+      <!-- A new report, under Reports: the builder asks the result address on each change and saves
+           with the bar. The page arrives filled in, so the bar shows before any change. -->
+      <e-admin-panel store="demo">
+        <header><h1 data-bn="নতুন রিপোর্ট">New report</h1></header>
+        <div class="admin-page report">
+          <form
+            method="post"
+            action="/playground/reports/new"
+            data-save-bar
+            data-save-new
+            data-save-message="Not saved yet"
+            data-bn-data-save-message="এখনো সংরক্ষিত হয়নি"
+            data-save-label="Save report"
+            data-bn-data-save-label="রিপোর্ট সংরক্ষণ করুন"
+          >
+            <e-report-builder result="/dev/reports/result">
+              <e-card data-part="build" heading="Build it" data-bn-heading="তৈরি করুন">
+                <e-text-field name="name" label="Name" data-bn-label="নাম" maxlength="60" required></e-text-field>
+                <e-select name="metric" label="Metric" data-bn-label="মেট্রিক">
+                  <option value="NET_SALES" selected data-bn="নিট বিক্রি">Net sales</option>
+                  <option value="ORDERS" data-bn="অর্ডার">Orders</option>
+                  <option value="UNITS_SOLD" data-bn="বিক্রিত ইউনিট">Units sold</option>
+                  <option value="GROSS_PROFIT" data-bn="মোট লাভ">Gross profit</option>
+                </e-select>
+                <e-select name="groupBy" label="Group by" data-bn-label="যেভাবে ভাগ করবেন">
+                  <option value="DAY" selected data-bn="দিন">Day</option>
+                  <option value="CHANNEL" data-bn="চ্যানেল">Channel</option>
+                  <option value="DISTRICT" data-bn="জেলা">District</option>
+                  <option value="PAYMENT_METHOD" data-bn="পেমেন্ট পদ্ধতি">Payment method</option>
+                  <option value="PRODUCT" data-bn="পণ্য">Product</option>
+                  <option value="COURIER" data-bn="কুরিয়ার">Courier</option>
+                </e-select>
+                <div data-part="filters" role="group" aria-label="Filters" data-bn-aria-label="ফিল্টার">
+                  <e-report-filter name="channel" label="Channel" data-bn-label="চ্যানেল">
+                    <span
+                      ><input type="checkbox" name="channel" value="ONLINE_STORE" hidden /><span data-bn="অনলাইন স্টোর"
+                        >Online store</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="channel" value="FACEBOOK" hidden /><span data-bn="ফেসবুক"
+                        >Facebook</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="channel" value="MESSENGER" hidden /><span data-bn="মেসেঞ্জার"
+                        >Messenger</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="channel" value="WHATSAPP" hidden /><span data-bn="হোয়াটসঅ্যাপ"
+                        >WhatsApp</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="channel" value="INSTAGRAM" hidden /><span data-bn="ইনস্টাগ্রাম"
+                        >Instagram</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="channel" value="PHONE" hidden /><span data-bn="ফোন"
+                        >Phone</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="channel" value="IN_PERSON" hidden /><span data-bn="সরাসরি"
+                        >In person</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="channel" value="OTHER" hidden /><span data-bn="অন্যান্য"
+                        >Other</span
+                      ></span
+                    >
+                  </e-report-filter>
+                  <e-report-filter name="district" label="District" data-bn-label="জেলা">
+                    <span
+                      ><input type="checkbox" name="district" value="Bagerhat" hidden /><span data-bn="বাগেরহাট"
+                        >Bagerhat</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Bandarban" hidden /><span data-bn="বান্দরবান"
+                        >Bandarban</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Barguna" hidden /><span data-bn="বরগুনা"
+                        >Barguna</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Barishal" hidden /><span data-bn="বরিশাল"
+                        >Barishal</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Bhola" hidden /><span data-bn="ভোলা"
+                        >Bhola</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Bogura" hidden /><span data-bn="বগুড়া"
+                        >Bogura</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Brahmanbaria" hidden /><span
+                        data-bn="ব্রাহ্মণবাড়িয়া"
+                        >Brahmanbaria</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Chandpur" hidden /><span data-bn="চাঁদপুর"
+                        >Chandpur</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Chapai Nawabganj" hidden /><span
+                        data-bn="চাঁপাইনবাবগঞ্জ"
+                        >Chapai Nawabganj</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Chattogram" hidden /><span data-bn="চট্টগ্রাম"
+                        >Chattogram</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Chuadanga" hidden /><span data-bn="চুয়াডাঙ্গা"
+                        >Chuadanga</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Cox's Bazar" hidden /><span data-bn="কক্সবাজার"
+                        >Cox's Bazar</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Cumilla" hidden /><span data-bn="কুমিল্লা"
+                        >Cumilla</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Dhaka" hidden /><span data-bn="ঢাকা"
+                        >Dhaka</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Dinajpur" hidden /><span data-bn="দিনাজপুর"
+                        >Dinajpur</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Faridpur" hidden /><span data-bn="ফরিদপুর"
+                        >Faridpur</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Feni" hidden /><span data-bn="ফেনী"
+                        >Feni</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Gaibandha" hidden /><span data-bn="গাইবান্ধা"
+                        >Gaibandha</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Gazipur" hidden /><span data-bn="গাজীপুর"
+                        >Gazipur</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Gopalganj" hidden /><span data-bn="গোপালগঞ্জ"
+                        >Gopalganj</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Habiganj" hidden /><span data-bn="হবিগঞ্জ"
+                        >Habiganj</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Jamalpur" hidden /><span data-bn="জামালপুর"
+                        >Jamalpur</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Jashore" hidden /><span data-bn="যশোর"
+                        >Jashore</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Jhalokati" hidden /><span data-bn="ঝালকাঠি"
+                        >Jhalokati</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Jhenaidah" hidden /><span data-bn="ঝিনাইদহ"
+                        >Jhenaidah</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Joypurhat" hidden /><span data-bn="জয়পুরহাট"
+                        >Joypurhat</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Khagrachhari" hidden /><span data-bn="খাগড়াছড়ি"
+                        >Khagrachhari</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Khulna" hidden /><span data-bn="খুলনা"
+                        >Khulna</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Kishoreganj" hidden /><span data-bn="কিশোরগঞ্জ"
+                        >Kishoreganj</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Kurigram" hidden /><span data-bn="কুড়িগ্রাম"
+                        >Kurigram</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Kushtia" hidden /><span data-bn="কুষ্টিয়া"
+                        >Kushtia</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Lakshmipur" hidden /><span data-bn="লক্ষ্মীপুর"
+                        >Lakshmipur</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Lalmonirhat" hidden /><span data-bn="লালমনিরহাট"
+                        >Lalmonirhat</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Madaripur" hidden /><span data-bn="মাদারীপুর"
+                        >Madaripur</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Magura" hidden /><span data-bn="মাগুরা"
+                        >Magura</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Manikganj" hidden /><span data-bn="মানিকগঞ্জ"
+                        >Manikganj</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Meherpur" hidden /><span data-bn="মেহেরপুর"
+                        >Meherpur</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Moulvibazar" hidden /><span data-bn="মৌলভীবাজার"
+                        >Moulvibazar</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Munshiganj" hidden /><span data-bn="মুন্সীগঞ্জ"
+                        >Munshiganj</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Mymensingh" hidden /><span data-bn="ময়মনসিংহ"
+                        >Mymensingh</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Naogaon" hidden /><span data-bn="নওগাঁ"
+                        >Naogaon</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Narail" hidden /><span data-bn="নড়াইল"
+                        >Narail</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Narayanganj" hidden /><span data-bn="নারায়ণগঞ্জ"
+                        >Narayanganj</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Narsingdi" hidden /><span data-bn="নরসিংদী"
+                        >Narsingdi</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Natore" hidden /><span data-bn="নাটোর"
+                        >Natore</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Netrokona" hidden /><span data-bn="নেত্রকোণা"
+                        >Netrokona</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Nilphamari" hidden /><span data-bn="নীলফামারী"
+                        >Nilphamari</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Noakhali" hidden /><span data-bn="নোয়াখালী"
+                        >Noakhali</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Pabna" hidden /><span data-bn="পাবনা"
+                        >Pabna</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Panchagarh" hidden /><span data-bn="পঞ্চগড়"
+                        >Panchagarh</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Patuakhali" hidden /><span data-bn="পটুয়াখালী"
+                        >Patuakhali</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Pirojpur" hidden /><span data-bn="পিরোজপুর"
+                        >Pirojpur</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Rajbari" hidden /><span data-bn="রাজবাড়ী"
+                        >Rajbari</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Rajshahi" hidden /><span data-bn="রাজশাহী"
+                        >Rajshahi</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Rangamati" hidden /><span data-bn="রাঙ্গামাটি"
+                        >Rangamati</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Rangpur" hidden /><span data-bn="রংপুর"
+                        >Rangpur</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Satkhira" hidden /><span data-bn="সাতক্ষীরা"
+                        >Satkhira</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Shariatpur" hidden /><span data-bn="শরীয়তপুর"
+                        >Shariatpur</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Sherpur" hidden /><span data-bn="শেরপুর"
+                        >Sherpur</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Sirajganj" hidden /><span data-bn="সিরাজগঞ্জ"
+                        >Sirajganj</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Sunamganj" hidden /><span data-bn="সুনামগঞ্জ"
+                        >Sunamganj</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Sylhet" hidden /><span data-bn="সিলেট"
+                        >Sylhet</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Tangail" hidden /><span data-bn="টাঙ্গাইল"
+                        >Tangail</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="district" value="Thakurgaon" hidden /><span data-bn="ঠাকুরগাঁও"
+                        >Thakurgaon</span
+                      ></span
+                    >
+                  </e-report-filter>
+                  <e-report-filter name="paymentMethod" label="Payment method" data-bn-label="পেমেন্ট পদ্ধতি">
+                    <span
+                      ><input type="checkbox" name="paymentMethod" value="COD" hidden /><span
+                        data-bn="ক্যাশ অন ডেলিভারি"
+                        >Cash on delivery</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="paymentMethod" value="BKASH" hidden /><span data-bn="বিকাশ"
+                        >bKash</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="paymentMethod" value="NAGAD" hidden /><span data-bn="নগদ"
+                        >Nagad</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="paymentMethod" value="CASH" hidden /><span data-bn="ক্যাশ"
+                        >Cash</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="paymentMethod" value="BANK" hidden /><span data-bn="ব্যাংক"
+                        >Bank</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="paymentMethod" value="OTHER" hidden /><span data-bn="অন্যান্য"
+                        >Other</span
+                      ></span
+                    >
+                  </e-report-filter>
+                  <e-report-filter name="courier" label="Courier" data-bn-label="কুরিয়ার">
+                    <span
+                      ><input type="checkbox" name="courier" value="PATHAO" hidden /><span data-bn="পাঠাও"
+                        >Pathao</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="courier" value="STEADFAST" hidden /><span data-bn="স্টেডফাস্ট"
+                        >Steadfast</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="courier" value="REDX" hidden /><span data-bn="রেডএক্স"
+                        >RedX</span
+                      ></span
+                    >
+                    <span
+                      ><input type="checkbox" name="courier" value="PAPERFLY" hidden /><span data-bn="পেপারফ্লাই"
+                        >Paperfly</span
+                      ></span
+                    >
+                  </e-report-filter>
+                  <e-button type="button" data-part="add-filter"
+                    ><e-icon name="plus"></e-icon><span data-bn="ফিল্টার যোগ করুন">Add filter</span></e-button
+                  >
+                </div>
+                <e-select name="range" label="Date range" data-bn-label="সময়">
+                  <option value="TODAY" data-bn="আজ">Today</option>
+                  <option value="YESTERDAY" data-bn="গতকাল">Yesterday</option>
+                  <option value="LAST_7_DAYS" data-bn="গত ৭ দিন">Last 7 days</option>
+                  <option value="LAST_30_DAYS" selected data-bn="গত ৩০ দিন">Last 30 days</option>
+                  <option value="LAST_90_DAYS" data-bn="গত ৯০ দিন">Last 90 days</option>
+                  <option value="CUSTOM" data-bn="নিজে বাছুন">Custom</option>
+                </e-select>
+                <div data-part="custom">
+                  <e-date-field name="from" label="From" data-bn-label="শুরু"></e-date-field>
+                  <e-date-field name="to" label="To" data-bn-label="শেষ"></e-date-field>
+                </div>
+              </e-card>
+              <e-card data-part="result" heading="Result" data-bn-heading="ফলাফল">
+                <e-button-group slot="actions" label="View" data-bn-label="দেখার ধরন">
+                  <e-button type="button" value="CHART"><span data-bn="চার্ট">Chart</span></e-button>
+                  <e-button type="button" value="TABLE" pressed><span data-bn="টেবিল">Table</span></e-button>
+                </e-button-group>
+                <input type="hidden" name="view" value="TABLE" />
+                <e-report-result view="TABLE"
+                  ><e-table
+                    label="Net sales by day"
+                    data-bn-label="দিনভিত্তিক নিট বিক্রি"
+                    style="--e-columns: minmax(0, 1fr) repeat(2, max-content)"
+                    ><e-row head
+                      ><span data-bn="দিন">Day</span><span align="end" data-bn="অর্ডার">Orders</span
+                      ><span align="end" data-bn="নিট বিক্রি">Net sales</span></e-row
+                    ><e-row
+                      ><span data-bn="১৫ অক্টো">15 Oct</span><span align="end" data-bn="১৭">17</span
+                      ><span align="end" data-bn="৳৩৬,০৪০">৳36,040</span></e-row
+                    ><e-row
+                      ><span data-bn="১৬ অক্টো">16 Oct</span><span align="end" data-bn="১৯">19</span
+                      ><span align="end" data-bn="৳৩৯,১৫০">৳39,150</span></e-row
+                    ><e-row
+                      ><span data-bn="১৭ অক্টো">17 Oct</span><span align="end" data-bn="১৯">19</span
+                      ><span align="end" data-bn="৳৩৯,৪৫০">৳39,450</span></e-row
+                    ><e-row
+                      ><span data-bn="১৮ অক্টো">18 Oct</span><span align="end" data-bn="১৭">17</span
+                      ><span align="end" data-bn="৳৩৬,৩৯০">৳36,390</span></e-row
+                    ><e-row
+                      ><span data-bn="১৯ অক্টো">19 Oct</span><span align="end" data-bn="১৭">17</span
+                      ><span align="end" data-bn="৳৩৪,৮২০">৳34,820</span></e-row
+                    ><e-row
+                      ><span data-bn="২০ অক্টো">20 Oct</span><span align="end" data-bn="১৪">14</span
+                      ><span align="end" data-bn="৳২৮,৬২০">৳28,620</span></e-row
+                    ><e-row
+                      ><span data-bn="২১ অক্টো">21 Oct</span><span align="end" data-bn="১৪">14</span
+                      ><span align="end" data-bn="৳২৮,৬২০">৳28,620</span></e-row
+                    ><e-row
+                      ><span data-bn="২২ অক্টো">22 Oct</span><span align="end" data-bn="১৫">15</span
+                      ><span align="end" data-bn="৳৩১,৩০০">৳31,300</span></e-row
+                    ><e-row
+                      ><span data-bn="২৩ অক্টো">23 Oct</span><span align="end" data-bn="১৬">16</span
+                      ><span align="end" data-bn="৳৩৪,২২০">৳34,220</span></e-row
+                    ><e-row
+                      ><span data-bn="২৪ অক্টো">24 Oct</span><span align="end" data-bn="১৭">17</span
+                      ><span align="end" data-bn="৳৩৪,৯৬০">৳34,960</span></e-row
+                    ><e-row
+                      ><span data-bn="২৫ অক্টো">25 Oct</span><span align="end" data-bn="১২">12</span
+                      ><span align="end" data-bn="৳২৫,৮৫৬">৳25,856</span></e-row
+                    ><e-row
+                      ><span data-bn="২৬ অক্টো">26 Oct</span><span align="end" data-bn="১৬">16</span
+                      ><span align="end" data-bn="৳৩২,৯৬০">৳32,960</span></e-row
+                    ><e-row
+                      ><span data-bn="২৭ অক্টো">27 Oct</span><span align="end" data-bn="১৪">14</span
+                      ><span align="end" data-bn="৳২৮,৬২০">৳28,620</span></e-row
+                    ><e-row
+                      ><span data-bn="২৮ অক্টো">28 Oct</span><span align="end" data-bn="১৫">15</span
+                      ><span align="end" data-bn="৳৩০,৪৯০">৳30,490</span></e-row
+                    ><e-row
+                      ><span data-bn="২৯ অক্টো">29 Oct</span><span align="end" data-bn="১৭">17</span
+                      ><span align="end" data-bn="৳৩৪,৭৫০">৳34,750</span></e-row
+                    ><e-row
+                      ><span data-bn="৩০ অক্টো">30 Oct</span><span align="end" data-bn="১৯">19</span
+                      ><span align="end" data-bn="৳৩৮,৭৫০">৳38,750</span></e-row
+                    ><e-row
+                      ><span data-bn="৩১ অক্টো">31 Oct</span><span align="end" data-bn="১৯">19</span
+                      ><span align="end" data-bn="৳৩৯,৯৩০">৳39,930</span></e-row
+                    ><e-row
+                      ><span data-bn="১ নভে">1 Nov</span><span align="end" data-bn="১৮">18</span
+                      ><span align="end" data-bn="৳৩৭,৭১০">৳37,710</span></e-row
+                    ><e-row
+                      ><span data-bn="২ নভে">2 Nov</span><span align="end" data-bn="১৮">18</span
+                      ><span align="end" data-bn="৳৩৬,৮৭০">৳36,870</span></e-row
+                    ><e-row
+                      ><span data-bn="৩ নভে">3 Nov</span><span align="end" data-bn="১৫">15</span
+                      ><span align="end" data-bn="৳৩১,২১০">৳31,210</span></e-row
+                    ><e-row
+                      ><span data-bn="৪ নভে">4 Nov</span><span align="end" data-bn="১৫">15</span
+                      ><span align="end" data-bn="৳৩১,৪৩০">৳31,430</span></e-row
+                    ><e-row
+                      ><span data-bn="৫ নভে">5 Nov</span><span align="end" data-bn="১৬">16</span
+                      ><span align="end" data-bn="৳৩৩,৮৭০">৳33,870</span></e-row
+                    ><e-row
+                      ><span data-bn="৬ নভে">6 Nov</span><span align="end" data-bn="১৭">17</span
+                      ><span align="end" data-bn="৳৩৬,১২০">৳36,120</span></e-row
+                    ><e-row
+                      ><span data-bn="৭ নভে">7 Nov</span><span align="end" data-bn="১৭">17</span
+                      ><span align="end" data-bn="৳৩৫,৮৯০">৳35,890</span></e-row
+                    ><e-row
+                      ><span data-bn="৮ নভে">8 Nov</span><span align="end" data-bn="১৬">16</span
+                      ><span align="end" data-bn="৳৩২,৮২০">৳32,820</span></e-row
+                    ><e-row
+                      ><span data-bn="৯ নভে">9 Nov</span><span align="end" data-bn="১৫">15</span
+                      ><span align="end" data-bn="৳৩১,৮৩০">৳31,830</span></e-row
+                    ><e-row
+                      ><span data-bn="১০ নভে">10 Nov</span><span align="end" data-bn="১৩">13</span
+                      ><span align="end" data-bn="৳২৬,৭৪০">৳26,740</span></e-row
+                    ><e-row
+                      ><span data-bn="১১ নভে">11 Nov</span><span align="end" data-bn="১৪">14</span
+                      ><span align="end" data-bn="৳২৮,১৪০">৳28,140</span></e-row
+                    ><e-row
+                      ><span data-bn="১২ নভে">12 Nov</span><span align="end" data-bn="১৫">15</span
+                      ><span align="end" data-bn="৳৩২,১৮০">৳32,180</span></e-row
+                    ><e-row
+                      ><span data-bn="১৩ নভে">13 Nov</span><span align="end" data-bn="৮">8</span
+                      ><span align="end" data-bn="৳১৭,৪২০">৳17,420</span></e-row
+                    ><e-row total
+                      ><span data-bn="মোট">Total</span><span align="end" data-bn="৪৭৪">474</span
+                      ><span align="end" data-bn="৳৯,৮৭,১৫৬">৳9,87,156</span></e-row
+                    ></e-table
+                  ></e-report-result
+                >
+              </e-card>
+            </e-report-builder>
+          </form>
+        </div>
+      </e-admin-panel>
+    </e-admin-frame>
+    <script src="/playground.js"></script>
+  </body>
+</html>

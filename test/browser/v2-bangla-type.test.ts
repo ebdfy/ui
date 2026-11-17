@@ -3,6 +3,7 @@
 import { expect, test } from 'vitest'
 
 import '../../src/v2.css'
+import { defineAppCard } from '../../src/v2/app-card.ts'
 import { defineAvatar } from '../../src/v2/avatar.ts'
 import { defineBanner } from '../../src/v2/banner.ts'
 import { defineButtonGroup } from '../../src/v2/button-group.ts'
@@ -16,8 +17,10 @@ import { defineCourierStatus } from '../../src/v2/courier-status.ts'
 import { defineDistrictPicker } from '../../src/v2/district-picker.ts'
 import { defineEmptyState } from '../../src/v2/empty-state.ts'
 import { defineFields } from '../../src/v2/field.ts'
+import { defineFileField } from '../../src/v2/file-field.ts'
 import { defineIndexTable } from '../../src/v2/index-table.ts'
 import { defineKbd } from '../../src/v2/kbd.ts'
+import { defineMenuTree } from '../../src/v2/menu-tree.ts'
 import { defineMenu } from '../../src/v2/menu.ts'
 import { defineMeter } from '../../src/v2/meter.ts'
 import { defineModal } from '../../src/v2/modal.ts'
@@ -26,6 +29,7 @@ import { definePagination } from '../../src/v2/pagination.ts'
 import { definePhoneField } from '../../src/v2/phone-field.ts'
 import { definePopover } from '../../src/v2/popover.ts'
 import { defineProgressBar } from '../../src/v2/progress-bar.ts'
+import { defineRichText } from '../../src/v2/rich-text.ts'
 import { defineSelect } from '../../src/v2/select.ts'
 import { defineSettingsSection } from '../../src/v2/settings-section.ts'
 import { defineSetupGuide } from '../../src/v2/setup-guide.ts'
@@ -56,6 +60,9 @@ const parts = `<div lang="bn">
       <e-courier-status status="IN_TRANSIT"></e-courier-status>
       <e-text-field label="কুরিয়ারের জন্য নোট" value="দুইবার বেল বাজান"></e-text-field>
       <e-text-area label="ঠিকানা" value="বাড়ি ১২, রোড ৫" error="ঠিকানা লিখুন"></e-text-area>
+      <e-menu-tree label="মেনু আইটেম"><e-menu-tree-item label="মেয়েদের" resource-id="21"><e-menu-tree-item label="৳২,০০০-এর নিচে শাড়ি" resource-id="22"></e-menu-tree-item></e-menu-tree-item></e-menu-tree>
+      <e-rich-text label="কনটেন্ট"><textarea name="body">&lt;p&gt;ঢাকার ভেতরে &lt;b&gt;১-২ দিনে&lt;/b&gt; ডেলিভারি&lt;/p&gt;</textarea></e-rich-text>
+      <e-file-field label="পণ্যের CSV" error="একটি .csv ফাইল বাছাই করুন"><input type="file" name="file" /></e-file-field>
       <e-checkbox label="উপহার হিসেবে পাঠান"></e-checkbox>
       <e-phone-field label="গ্রাহকের ফোন" placeholder="০১৭০৭০৭১৫৯১" error="01 দিয়ে শুরু ১১ অঙ্কের নম্বর লিখুন"></e-phone-field>
       <e-taka-field label="ডেলিভারি চার্জ" value="80"></e-taka-field>
@@ -79,9 +86,14 @@ const parts = `<div lang="bn">
       <e-banner tone="critical" heading="পেমেন্ট হয়নি">বিকাশ নম্বর দেখে আবার চেষ্টা করুন</e-banner>
       <e-bottom-bar><e-button>সংরক্ষণ করুন</e-button></e-bottom-bar>
       <e-progress-bar label="ছবি আপলোড হচ্ছে" value="40"></e-progress-bar>
+      <e-arranged-cards name="cards" default="sales"><e-card card="sales" span="2" heading="বিক্রি"><e-text>আজকের বিক্রি</e-text></e-card></e-arranged-cards>
+      <e-chart label="দিনভিত্তিক নিট বিক্রি" total="৳৯,৮৭,১৫৬"><span slot="key">নিট বিক্রি</span><e-chart-step>৳৪০,০০০</e-chart-step><e-chart-step>৳২০,০০০</e-chart-step><e-chart-bar label="১২ নভে" tick style="--e-share: 0.8">৳৩২,১৮০</e-chart-bar><e-chart-bar label="১৩ নভে" tick today style="--e-share: 0.44">৳১৭,৪২০</e-chart-bar></e-chart>
+      <e-report-builder><e-card data-part="build" heading="তৈরি করুন"><div data-part="filters"><e-report-filter name="channel" label="চ্যানেল"><span><input type="checkbox" name="channel" value="FACEBOOK" checked hidden /><span>ফেসবুক</span></span><span><input type="checkbox" name="channel" value="MESSENGER" checked hidden /><span>মেসেঞ্জার</span></span></e-report-filter></div></e-card></e-report-builder>
+      <e-print-sheet><div><div><b slot="shop">ডেমো শপ</b><small>০১৭১১-২২৩৩৪৪</small></div><div><h2>ইনভয়েস #1042</h2></div></div><div><div><h3>প্রাপক</h3><span slot="recipient">রহিমা আক্তার</span><span slot="address">ধানমন্ডি, ঢাকা</span></div><div slot="due">আদায় করতে হবে <b>৳১,৯৩০</b></div></div><table><tr><th>পণ্য</th><th align="end">মোট</th></tr><tr><td>সুতি শাড়ি</td><td align="end">৳১,২৫০</td></tr></table><p slot="cut">এখানে ভাঁজ করুন বা কাটুন</p></e-print-sheet>
       <e-summary><e-summary-row><span>সাবটোটাল</span><span>২টি পণ্য</span><span>৳১,৮১০</span></e-summary-row><e-summary-row total><span>মোট</span><span>৳১,৯৩০</span></e-summary-row><e-due tone="warning">ডেলিভারিতে ৳১,৯৩০ নিতে হবে</e-due></e-summary>
       <e-line-item><e-thumbnail></e-thumbnail><span slot="title">জামদানি শাড়ি, হাতে বোনা</span><span slot="meta">লাল · ফ্রি সাইজ</span><span slot="price">১ × ৳১,৪৫০</span><span slot="amount">৳১,৪৫০</span></e-line-item>
       <e-person><e-avatar name="রহিমা আক্তার" size="24"></e-avatar><a href="#">রহিমা আক্তার</a><span slot="meta">৪টি অর্ডার · ৳৯,৮৪০ খরচ</span></e-person>
+      <e-app-card app="স্যাম্পল অ্যাপ" tile="S" no-access></e-app-card>
       <e-contact><e-icon name="phone"></e-icon><a href="tel:01707071042">01707-071042</a></e-contact>
       <e-meter value="92" label="ডেলিভারি হয়েছে"></e-meter>
       <e-chips name="tags" label="ট্যাগ"><e-chip value="facebook" removable>ফেসবুক</e-chip><e-chip value="repeat">পুরোনো গ্রাহক</e-chip></e-chips>
@@ -105,9 +117,12 @@ function lowLines(): string[] {
       if (/^".*[\p{L}\p{N}].*"$/u.test(style.content)) check(`${tag.localName}${pseudo}`, style)
     }
   }
-  for (const element of document.querySelectorAll('[lang="bn"] *')) {
+  // An app's tile holds one letter centred in its square, not a line of words.
+  for (const element of document.querySelectorAll('[lang="bn"] :not(.e-tile)')) {
     const words = [...element.childNodes].some((node) => node.nodeType === Node.TEXT_NODE && node.textContent?.trim())
-    if (words) check(element.localName, getComputedStyle(element))
+    // A chart bar's value is for a screen reader alone, drawn at no size at all.
+    const style = getComputedStyle(element)
+    if (words && style.fontSize !== '0px') check(element.localName, style)
   }
   return low
 }
@@ -119,6 +134,7 @@ test('before the script, every Bangla line is at least 13 px and 1.4 times its s
 
 function build(): void {
   definePage()
+  defineAppCard()
   defineCard()
   defineText()
   defineTable()
@@ -133,6 +149,9 @@ function build(): void {
   defineCheckbox()
   defineSelect()
   defineFields()
+  defineFileField()
+  defineRichText()
+  defineMenuTree()
   defineChoiceList()
   defineSwitch()
   defineButton()
@@ -162,7 +181,8 @@ test('after the script, every Bangla line is at least 13 px and 1.4 times its si
 
 // A tag draws words in ::before or ::after only until the script builds the element that shows them,
 // so a rule that hides a drawn word must outrank every rule that draws it, :lang(bn) ones included.
-// What a tag still draws once built is its own: a tab's count, an avatar's initials and a thumbnail's letter.
+// What a tag still draws once built is its own: a tab's count, an avatar's initials, a thumbnail's letter, and
+// a chart's name, total and bar labels, and a report filter's name, which only CSS draws.
 test('once built, no tag still draws words in ::before or ::after, in Bangla or English', () => {
   for (const lang of ['bn', 'en']) {
     document.body.innerHTML = parts.replace('<div lang="bn">', `<div lang="${lang}">`)
@@ -173,6 +193,17 @@ test('once built, no tag still draws words in ::before or ::after, in Bangla or 
         if (/^".*[\p{L}\p{N}].*"$/u.test(getComputedStyle(tag, pseudo).content)) drawn.push(`${tag.localName}${pseudo}`)
       }
     }
-    expect([lang, ...new Set(drawn)]).toEqual([lang, 'e-tab::after', 'e-avatar::before', 'e-thumbnail::before'])
+    expect([lang, ...new Set(drawn)].toSorted()).toEqual(
+      [
+        lang,
+        'e-tab::after',
+        'e-avatar::before',
+        'e-thumbnail::before',
+        'e-chart::before',
+        'e-chart::after',
+        'e-chart-bar::before',
+        'e-report-filter::before',
+      ].toSorted(),
+    )
   }
 })

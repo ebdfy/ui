@@ -1,0 +1,134 @@
+/* e-report-builder: the choices' card beside the result's, the choices 320 px at the end from 740 px
+   of the builder's own width, and first, above the result, below it. Its order in the markup is
+   Build it first, so a phone, a screen reader and the form read the choices first. */
+e-report-builder {
+  display: flex;
+  flex-flow: row-reverse wrap;
+  align-items: flex-start;
+  gap: var(--e-space-5);
+}
+e-report-builder > [data-part='build'] {
+  flex: 1 1 320px;
+}
+e-report-builder > [data-part='result'] {
+  flex: 999 1 400px;
+  min-inline-size: 0;
+}
+e-report-builder [data-part='custom'] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: var(--e-space-3);
+}
+/* From and To only for a custom range. */
+e-report-builder:not(:has([name='range'] option[value='CUSTOM']:checked)) [data-part='custom'] {
+  display: none;
+}
+e-report-builder e-report-result {
+  display: block;
+}
+/* A report's chart names every bar, and names side by side run into each other in a narrow step, so
+   each stands upright under its bar, its end at the axis, in room the chart keeps below. */
+e-report-result e-chart:not(:has(> e-chart-bar:not([tick]))) {
+  padding-block-end: 112px;
+}
+/* :is() weighs as the chart's first and last bar rules, so it overrides their placement too. */
+e-report-result e-chart:not(:has(> e-chart-bar:not([tick]))) > e-chart-bar[tick]:is(:first-of-type, *)::before {
+  /* Physical sides, as the label's own sides turn with its writing mode. */
+  inset: calc(100% + 8px) auto auto 50%;
+  translate: -50% 0;
+  max-inline-size: 96px;
+  /* A 16 px line keeps twelve labels apart at 360 px; the clip's margin leaves a Bangla vowel sign whole. */
+  overflow: clip;
+  overflow-clip-margin: 3px;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+}
+/* The filters: a chip a dimension with a ticked value, then Add filter while a dimension is left. A
+   chip's words are drawn from its ticked boxes, "Channel is Facebook, Messenger", so they read with
+   the script off and follow a Discard; the script lays a button over the chip, adds its x, and hides
+   Add filter once every dimension has a chip. */
+e-report-builder [data-part='filters'] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-space-2);
+}
+e-report-filter:not(:has(:checked)),
+e-report-filter > span:not(:has(:checked)) {
+  display: none;
+}
+e-report-filter {
+  position: relative;
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  padding: 6px 32px 6px 12px;
+  border-radius: var(--e-radius-pill);
+  background: var(--e-color-neutral-bg);
+  font-size: var(--e-font-size-meta);
+  line-height: 20px;
+}
+e-report-filter::before {
+  content: attr(label) ' is ';
+}
+e-report-filter:lang(bn)::before {
+  content: attr(label) ': ';
+}
+e-report-filter > span:has(> :checked):has(~ span > :checked)::after {
+  content: ',';
+}
+e-report-filter > button {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  color: var(--e-color-fg2);
+  font: inherit;
+  cursor: pointer;
+}
+e-report-filter > [data-part='remove'] {
+  inset-inline-start: auto;
+  display: grid;
+  place-items: center;
+  inline-size: 32px;
+}
+e-report-filter > button:focus-visible {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 2px;
+}
+/* The picker: the dimensions left as rows, or a dimension's values to tick and Done. */
+e-modal[data-part='picker'] [data-part='list'] {
+  display: grid;
+  gap: var(--e-space-2);
+}
+e-modal[data-part='picker'] [data-part='list'] > button {
+  min-block-size: 44px;
+  padding: 0 var(--e-space-3);
+  border: 0;
+  border-radius: var(--e-radius-1);
+  background: none;
+  color: var(--e-color-fg);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+e-modal[data-part='picker'] [data-part='list'] > button:hover {
+  background: var(--e-color-neutral-bg);
+}
+e-modal[data-part='picker']:not([data-values]) > dialog > footer {
+  display: none;
+}
+/* On a phone a chip and its x are 44 px tall. */
+@media (max-width: 599.98px) {
+  e-report-filter {
+    padding-block: 12px;
+    padding-inline-end: 44px;
+  }
+  e-report-filter > [data-part='remove'] {
+    inline-size: 44px;
+  }
+}

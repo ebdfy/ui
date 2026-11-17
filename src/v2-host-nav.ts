@@ -99,7 +99,8 @@ export function followPage(panel: Element, frame: HTMLIFrameElement): void {
       if (!path.startsWith('/') || !label) return []
       const url = new URL(path, frameUrl)
       if (url.origin !== frameUrl.origin) return []
-      if (!url.search) url.search = frameUrl.search
+      const store = frameUrl.searchParams.get('store')
+      if (!url.search && store) url.searchParams.set('store', store)
       return [{ label, url }]
     })
     draw()

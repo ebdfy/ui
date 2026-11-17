@@ -4,6 +4,7 @@ import { chromium, type Browser, type Frame, type Page } from 'playwright'
 import { afterAll, beforeAll, expect, test } from 'vitest'
 
 import { startSite } from './site.ts'
+import { taps } from './taps.ts'
 
 let site: Awaited<ReturnType<typeof startSite>>
 let browser: Browser
@@ -137,6 +138,12 @@ const pagesToCheck = [
   { what: 'Settings > Store, bn', path: '/playground/settings/store', lang: 'bn' },
   { what: 'order #1042, en', path: '/playground/orders/1042', lang: 'en' },
   { what: 'order #1042, bn', path: '/playground/orders/1042', lang: 'bn' },
+  { what: 'Reports, en', path: '/playground/reports', lang: 'en' },
+  { what: 'Reports, bn', path: '/playground/reports', lang: 'bn' },
+  { what: 'a new report, en', path: '/playground/reports/new', lang: 'en' },
+  { what: 'a new report, bn', path: '/playground/reports/new', lang: 'bn' },
+  { what: 'Content > Delivery, en', path: '/playground/content/pages/delivery', lang: 'en' },
+  { what: 'Content > Delivery, bn', path: '/playground/content/pages/delivery', lang: 'bn' },
 ]
 
 test.for(pagesToCheck)('$what draws every e-* tag before the scripts and moves none after', async ({ path, lang }) => {
@@ -184,7 +191,7 @@ test.for([
     )
     const page = await context.newPage()
     await page.goto(`${site.ui}/components/button`)
-    await page.locator('.sidebar a[href="/components/card"]').click()
+    await taps.cardLink(page).click()
     await page.waitForURL('**/components/card')
     const revealed = await page.waitForFunction(() => (window as unknown as { revealed?: unknown }).revealed)
     const { transition, tags } = (await revealed.jsonValue()) as {

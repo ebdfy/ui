@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content" />
+    <link rel="icon" href="data:," />
+    <title>Reports · Playground · ebdfy design system v2</title>
+    <link
+      rel="preload"
+      href="%EB_CDN%/ui/fonts/geist-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2.css" />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2-host.css" />
+    <script type="module" src="%EB_CDN%/ui/v2-host.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v2.js"></script>
+    <link rel="stylesheet" href="/playground.css" />
+    <script>
+      // The staff member's language, kept by this browser as the Admin keeps it for them, before
+      // anything draws.
+      try {
+        document.documentElement.lang = localStorage.getItem('ebdfy-playground-lang') === 'bn' ? 'bn' : 'en'
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <e-admin-frame>
+      %EB_ADMIN_CHROME%
+      <!-- The Reports overview: the staff member's own cards in their own order, which Customize
+           arranges. The dev server keeps the order a Done posts and draws the page in it. -->
+      <e-admin-panel store="demo">
+        <header><h1 data-bn="রিপোর্ট">Reports</h1></header>
+        <div class="admin-page reports">
+          <div class="reports-bar">
+            <e-text tone="subdued" data-bn="১৫ অক্টোবর – ১৩ নভেম্বর ২০২৬">15 Oct – 13 Nov 2026</e-text>
+            <e-button aria-controls="report-cards"><span data-bn="সাজান">Customize</span></e-button>
+          </div>
+          <form method="post" action="/playground/reports">
+            <e-arranged-cards
+              id="report-cards"
+              name="cards"
+              default="net-sales orders average-order-value return-rate net-sales-chart sales-report products-report"
+              library="card-library"
+            >
+              <e-card card="net-sales" span="1" heading="Net sales" data-bn-heading="নিট বিক্রি">
+                <strong class="figure" data-bn="৳৯,৮৭,১৫৬">৳9,87,156</strong>
+                <e-text tone="subdued" size="meta" data-bn="গত ৩০ দিন">Last 30 days</e-text>
+              </e-card>
+              <e-card card="orders" span="1" heading="Orders" data-bn-heading="অর্ডার">
+                <strong class="figure" data-bn="৪৭৪">474</strong>
+                <e-text tone="subdued" size="meta" data-bn="গত ৩০ দিন">Last 30 days</e-text>
+              </e-card>
+              <e-card
+                card="average-order-value"
+                span="1"
+                heading="Average order value"
+                data-bn-heading="গড় অর্ডার মূল্য"
+              >
+                <strong class="figure" data-bn="৳২,০৮৩">৳2,083</strong>
+                <e-text tone="subdued" size="meta" data-bn="গত ৩০ দিন">Last 30 days</e-text>
+              </e-card>
+              <e-card card="return-rate" span="1" heading="Return rate" data-bn-heading="রিটার্নের হার">
+                <strong class="figure" data-bn="৪.২%">4.2%</strong>
+                <e-text tone="subdued" size="meta" data-bn="৪৭৪টির মধ্যে ২০টি অর্ডার">20 of 474 orders</e-text>
+              </e-card>
+              <e-card card="net-sales-chart" heading="Net sales a day" data-bn-heading="দিনভিত্তিক নিট বিক্রি">
+                <e-chart
+                  label="Net sales a day, 15 Oct to 13 Nov 2026"
+                  data-bn-label="দিনভিত্তিক নিট বিক্রি, ১৫ অক্টোবর থেকে ১৩ নভেম্বর ২০২৬"
+                  total="৳9,87,156"
+                  data-bn-total="৳৯,৮৭,১৫৬"
+                >
+                  <span slot="key" data-bn="নিট বিক্রি">Net sales</span>
+                  <e-chart-step data-bn="৳৪০,০০০">৳40,000</e-chart-step>
+                  <e-chart-step data-bn="৳৩০,০০০">৳30,000</e-chart-step>
+                  <e-chart-step data-bn="৳২০,০০০">৳20,000</e-chart-step>
+                  <e-chart-step data-bn="৳১০,০০০">৳10,000</e-chart-step>
+                  <e-chart-bar label="15 Oct" data-bn-label="১৫ অক্টো" tick style="--e-share: 0.901" data-bn="৳৩৬,০৪০"
+                    >৳36,040</e-chart-bar
+                  >
+                  <e-chart-bar label="16 Oct" data-bn-label="১৬ অক্টো" style="--e-share: 0.9788" data-bn="৳৩৯,১৫০"
+                    >৳39,150</e-chart-bar
+                  >
+                  <e-chart-bar label="17 Oct" data-bn-label="১৭ অক্টো" style="--e-share: 0.9862" data-bn="৳৩৯,৪৫০"
+                    >৳39,450</e-chart-bar
+                  >
+                  <e-chart-bar label="18 Oct" data-bn-label="১৮ অক্টো" style="--e-share: 0.9097" data-bn="৳৩৬,৩৯০"
+                    >৳36,390</e-chart-bar
+                  >
+                  <e-chart-bar label="19 Oct" data-bn-label="১৯ অক্টো" style="--e-share: 0.8705" data-bn="৳৩৪,৮২০"
+                    >৳34,820</e-chart-bar
+                  >
+                  <e-chart-bar label="20 Oct" data-bn-label="২০ অক্টো" style="--e-share: 0.7155" data-bn="৳২৮,৬২০"
+                    >৳28,620</e-chart-bar
+                  >
+                  <e-chart-bar label="21 Oct" data-bn-label="২১ অক্টো" style="--e-share: 0.7155" data-bn="৳২৮,৬২০"
+                    >৳28,620</e-chart-bar
+                  >
+                  <e-chart-bar label="22 Oct" data-bn-label="২২ অক্টো" style="--e-share: 0.7825" data-bn="৳৩১,৩০০"
+                    >৳31,300</e-chart-bar
+                  >
+                  <e-chart-bar label="23 Oct" data-bn-label="২৩ অক্টো" style="--e-share: 0.8555" data-bn="৳৩৪,২২০"
+                    >৳34,220</e-chart-bar
+                  >
+                  <e-chart-bar label="24 Oct" data-bn-label="২৪ অক্টো" style="--e-share: 0.874" data-bn="৳৩৪,৯৬০"
+                    >৳34,960</e-chart-bar
+                  >
+                  <e-chart-bar label="25 Oct" data-bn-label="২৫ অক্টো" style="--e-share: 0.6464" data-bn="৳২৫,৮৫৬"
+                    >৳25,856</e-chart-bar
+                  >
+                  <e-chart-bar label="26 Oct" data-bn-label="২৬ অক্টো" style="--e-share: 0.824" data-bn="৳৩২,৯৬০"
+                    >৳32,960</e-chart-bar
+                  >
+                  <e-chart-bar label="27 Oct" data-bn-label="২৭ অক্টো" style="--e-share: 0.7155" data-bn="৳২৮,৬২০"
+                    >৳28,620</e-chart-bar
+                  >
+                  <e-chart-bar label="28 Oct" data-bn-label="২৮ অক্টো" style="--e-share: 0.7622" data-bn="৳৩০,৪৯০"
+                    >৳30,490</e-chart-bar
+                  >
+                  <e-chart-bar label="29 Oct" data-bn-label="২৯ অক্টো" tick style="--e-share: 0.8688" data-bn="৳৩৪,৭৫০"
+                    >৳34,750</e-chart-bar
+                  >
+                  <e-chart-bar label="30 Oct" data-bn-label="৩০ অক্টো" style="--e-share: 0.9688" data-bn="৳৩৮,৭৫০"
+                    >৳38,750</e-chart-bar
+                  >
+                  <e-chart-bar label="31 Oct" data-bn-label="৩১ অক্টো" style="--e-share: 0.9982" data-bn="৳৩৯,৯৩০"
+                    >৳39,930</e-chart-bar
+                  >
+                  <e-chart-bar label="1 Nov" data-bn-label="১ নভে" style="--e-share: 0.9427" data-bn="৳৩৭,৭১০"
+                    >৳37,710</e-chart-bar
+                  >
+                  <e-chart-bar label="2 Nov" data-bn-label="২ নভে" style="--e-share: 0.9217" data-bn="৳৩৬,৮৭০"
+                    >৳36,870</e-chart-bar
+                  >
+                  <e-chart-bar label="3 Nov" data-bn-label="৩ নভে" style="--e-share: 0.7802" data-bn="৳৩১,২১০"
+                    >৳31,210</e-chart-bar
+                  >
+                  <e-chart-bar label="4 Nov" data-bn-label="৪ নভে" style="--e-share: 0.7857" data-bn="৳৩১,৪৩০"
+                    >৳31,430</e-chart-bar
+                  >
+                  <e-chart-bar label="5 Nov" data-bn-label="৫ নভে" style="--e-share: 0.8468" data-bn="৳৩৩,৮৭০"
+                    >৳33,870</e-chart-bar
+                  >
+                  <e-chart-bar label="6 Nov" data-bn-label="৬ নভে" style="--e-share: 0.903" data-bn="৳৩৬,১২০"
+                    >৳36,120</e-chart-bar
+                  >
+                  <e-chart-bar label="7 Nov" data-bn-label="৭ নভে" style="--e-share: 0.8972" data-bn="৳৩৫,৮৯০"
+                    >৳35,890</e-chart-bar
+                  >
+                  <e-chart-bar label="8 Nov" data-bn-label="৮ নভে" style="--e-share: 0.8205" data-bn="৳৩২,৮২০"
+                    >৳32,820</e-chart-bar
+                  >
+                  <e-chart-bar label="9 Nov" data-bn-label="৯ নভে" style="--e-share: 0.7957" data-bn="৳৩১,৮৩০"
+                    >৳31,830</e-chart-bar
+                  >
+                  <e-chart-bar label="10 Nov" data-bn-label="১০ নভে" style="--e-share: 0.6685" data-bn="৳২৬,৭৪০"
+                    >৳26,740</e-chart-bar
+                  >
+                  <e-chart-bar label="11 Nov" data-bn-label="১১ নভে" style="--e-share: 0.7035" data-bn="৳২৮,১৪০"
+                    >৳28,140</e-chart-bar
+                  >
+                  <e-chart-bar label="12 Nov" data-bn-label="১২ নভে" style="--e-share: 0.8045" data-bn="৳৩২,১৮০"
+                    >৳32,180</e-chart-bar
+                  >
+                  <e-chart-bar
+                    label="13 Nov"
+                    data-bn-label="১৩ নভে"
+                    tick
+                    today
+                    style="--e-share: 0.4355"
+                    data-bn="৳১৭,৪২০"
+                    >৳17,420</e-chart-bar
+                  >
+                </e-chart>
+              </e-card>
+              <e-card card="sales-report" span="2" heading="Sales report" data-bn-heading="বিক্রির রিপোর্ট" flush>
+                <e-button slot="actions" tone="plain" size="sm"><span data-bn="এক্সপোর্ট">Export</span></e-button>
+                <e-table
+                  label="Sales report"
+                  data-bn-label="বিক্রির রিপোর্ট"
+                  style="--e-columns: minmax(0, 1fr) repeat(2, max-content)"
+                >
+                  <e-row head
+                    ><span data-bn="চ্যানেল">Channel</span><span align="end" data-bn="অর্ডার">Orders</span
+                    ><span align="end" data-bn="নিট বিক্রি">Net sales</span></e-row
+                  >
+                  <e-row
+                    ><span data-bn="ফেসবুক">Facebook</span><span align="end" data-bn="২৯১">291</span
+                    ><span align="end" data-bn="৳৬,০২,১৭০">৳6,02,170</span></e-row
+                  >
+                  <e-row
+                    ><span data-bn="ওয়েবসাইট">Website</span><span align="end" data-bn="১২৮">128</span
+                    ><span align="end" data-bn="৳২,৭১,৪৬০">৳2,71,460</span></e-row
+                  >
+                  <e-row
+                    ><span data-bn="ফোন">Phone</span><span align="end" data-bn="৫৫">55</span
+                    ><span align="end" data-bn="৳১,১৩,৫২৬">৳1,13,526</span></e-row
+                  >
+                  <e-row total
+                    ><span data-bn="মোট">Total</span><span align="end" data-bn="৪৭৪">474</span
+                    ><span align="end" data-bn="৳৯,৮৭,১৫৬">৳9,87,156</span></e-row
+                  >
+                </e-table>
+              </e-card>
+              <e-card card="products-report" span="2" heading="Products report" data-bn-heading="পণ্যের রিপোর্ট" flush>
+                <e-button slot="actions" tone="plain" size="sm"><span data-bn="এক্সপোর্ট">Export</span></e-button>
+                <e-table
+                  label="Products report"
+                  data-bn-label="পণ্যের রিপোর্ট"
+                  style="--e-columns: minmax(0, 1fr) repeat(2, max-content)"
+                >
+                  <e-row head
+                    ><span data-bn="পণ্য">Product</span><span align="end" data-bn="বিক্রি">Sold</span
+                    ><span align="end" data-bn="নিট বিক্রি">Net sales</span></e-row
+                  >
+                  <e-row
+                    ><span data-bn="সুতি শাড়ি">Cotton saree</span><span align="end" data-bn="৮৬">86</span
+                    ><span align="end" data-bn="৳১,০৭,৫০০">৳1,07,500</span></e-row
+                  >
+                  <e-row
+                    ><span data-bn="জামদানি শাড়ি">Jamdani saree</span><span align="end" data-bn="৪১">41</span
+                    ><span align="end" data-bn="৳৫৯,৪৫০">৳59,450</span></e-row
+                  >
+                  <e-row
+                    ><span data-bn="থ্রি-পিস">Three-piece</span><span align="end" data-bn="৬৪">64</span
+                    ><span align="end" data-bn="৳৫৭,৬০০">৳57,600</span></e-row
+                  >
+                </e-table>
+              </e-card>
+            </e-arranged-cards>
+          </form>
+          <e-modal id="card-library" heading="Add card" data-bn-heading="কার্ড যোগ করুন" width="560">
+            <div class="card-library">
+              <button type="button" card="top-products" data-bn="সেরা পণ্য">Top products</button>
+              <button type="button" card="sales-by-channel" data-bn="চ্যানেলভিত্তিক বিক্রি">Sales by channel</button>
+              <button type="button" card="low-stock" data-bn="স্টক কম">Low stock</button>
+            </div>
+          </e-modal>
+          <!-- Every other card the playground can draw, which the dev server puts on the page when a
+               layout names it. -->
+          <template id="report-cards-more">
+            <e-card card="top-products" span="2" heading="Top products" data-bn-heading="সেরা পণ্য" flush>
+              <e-table
+                label="Top products"
+                data-bn-label="সেরা পণ্য"
+                style="--e-columns: minmax(0, 1fr) repeat(1, max-content)"
+              >
+                <e-row head><span data-bn="পণ্য">Product</span><span align="end" data-bn="বিক্রি">Sold</span></e-row>
+                <e-row><span data-bn="সুতি শাড়ি">Cotton saree</span><span align="end" data-bn="৮৬">86</span></e-row>
+                <e-row><span data-bn="থ্রি-পিস">Three-piece</span><span align="end" data-bn="৬৪">64</span></e-row>
+                <e-row
+                  ><span data-bn="জামদানি শাড়ি">Jamdani saree</span><span align="end" data-bn="৪১">41</span></e-row
+                >
+                <e-row><span data-bn="পাঞ্জাবি">Panjabi</span><span align="end" data-bn="৩৮">38</span></e-row>
+                <e-row><span data-bn="লুঙ্গি">Lungi</span><span align="end" data-bn="২৭">27</span></e-row>
+              </e-table>
+            </e-card>
+            <e-card
+              card="sales-by-channel"
+              span="2"
+              heading="Sales by channel"
+              data-bn-heading="চ্যানেলভিত্তিক বিক্রি"
+              flush
+            >
+              <e-table
+                label="Sales by channel"
+                data-bn-label="চ্যানেলভিত্তিক বিক্রি"
+                style="--e-columns: minmax(0, 1fr) repeat(1, max-content)"
+              >
+                <e-row head
+                  ><span data-bn="চ্যানেল">Channel</span><span align="end" data-bn="নিট বিক্রি">Net sales</span></e-row
+                >
+                <e-row
+                  ><span data-bn="ফেসবুক">Facebook</span><span align="end" data-bn="৳৬,০২,১৭০">৳6,02,170</span></e-row
+                >
+                <e-row
+                  ><span data-bn="ওয়েবসাইট">Website</span><span align="end" data-bn="৳২,৭১,৪৬০">৳2,71,460</span></e-row
+                >
+                <e-row><span data-bn="ফোন">Phone</span><span align="end" data-bn="৳১,১৩,৫২৬">৳1,13,526</span></e-row>
+                <e-row total
+                  ><span data-bn="মোট">Total</span><span align="end" data-bn="৳৯,৮৭,১৫৬">৳9,87,156</span></e-row
+                >
+              </e-table>
+            </e-card>
+            <e-card card="low-stock" span="2" heading="Low stock" data-bn-heading="স্টক কম" flush>
+              <e-table
+                label="Low stock"
+                data-bn-label="স্টক কম"
+                style="--e-columns: minmax(0, 1fr) repeat(1, max-content)"
+              >
+                <e-row head><span data-bn="পণ্য">Product</span><span align="end" data-bn="বাকি">Left</span></e-row>
+                <e-row
+                  ><span data-bn="জামদানি শাড়ি, লাল">Jamdani saree, red</span
+                  ><span align="end" data-bn="২">2</span></e-row
+                >
+                <e-row
+                  ><span data-bn="পাঞ্জাবি, সাদা, XL">Panjabi, white, XL</span
+                  ><span align="end" data-bn="৩">3</span></e-row
+                >
+                <e-row
+                  ><span data-bn="থ্রি-পিস, নীল">Three-piece, blue</span><span align="end" data-bn="৪">4</span></e-row
+                >
+              </e-table>
+            </e-card>
+          </template>
+        </div>
+      </e-admin-panel>
+    </e-admin-frame>
+    <script src="/playground.js"></script>
+  </body>
+</html>

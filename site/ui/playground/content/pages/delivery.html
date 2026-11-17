@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content" />
+    <link rel="icon" href="data:," />
+    <title>Delivery · Playground · ebdfy design system v2</title>
+    <link
+      rel="preload"
+      href="%EB_CDN%/ui/fonts/geist-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2.css" />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2-host.css" />
+    <script type="module" src="%EB_CDN%/ui/v2-host.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v2.js"></script>
+    <link rel="stylesheet" href="/playground.css" />
+    <script>
+      // The staff member's language, kept by this browser as the Admin keeps it for them, before
+      // anything draws.
+      try {
+        document.documentElement.lang = localStorage.getItem('ebdfy-playground-lang') === 'bn' ? 'bn' : 'en'
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <e-admin-frame>
+      %EB_ADMIN_CHROME%
+      <!-- A page's body, written in the rich text editor and saved with the bar. -->
+      <e-admin-panel store="demo">
+        <header><h1 data-bn="ডেলিভারি">Delivery</h1></header>
+        <div class="admin-page">
+          <form method="post" action="/playground/content/pages/delivery" data-save-bar>
+            <e-card>
+              <e-text-field
+                name="title"
+                label="Title"
+                data-bn-label="শিরোনাম"
+                value="Delivery"
+                maxlength="255"
+                required
+              ></e-text-field>
+              <e-rich-text label="Content" data-bn-label="কনটেন্ট">
+                <textarea name="body">
+&lt;p>We deliver across Bangladesh: inside Dhaka in 1 to 2 days, outside it in 3 to 5.&lt;/p>&lt;p>Not right? Start your returns within &lt;b>7 days&lt;/b> of delivery, unworn and with tags.&lt;/p></textarea>
+              </e-rich-text>
+            </e-card>
+          </form>
+          <!-- The store's Files, which Image in the editor opens; the Admin answers from its own. -->
+          <e-modal id="files" heading="Choose an image" data-bn-heading="একটি ছবি বাছাই করুন" width="560">
+            <div class="files">
+              <button
+                type="button"
+                data-src="/files/jamdani-panjabi-white.jpg"
+                data-alt="White jamdani panjabi"
+                data-bn-data-alt="সাদা জামদানি পাঞ্জাবি"
+              >
+                <e-thumbnail size="large"><img src="/files/jamdani-panjabi-white.jpg" alt="" /></e-thumbnail
+                ><span>jamdani-panjabi-white.jpg</span>
+              </button>
+              <button
+                type="button"
+                data-src="/files/cotton-saree-red.jpg"
+                data-alt="Red cotton saree"
+                data-bn-data-alt="লাল সুতি শাড়ি"
+              >
+                <e-thumbnail size="large"><img src="/files/cotton-saree-red.jpg" alt="" /></e-thumbnail
+                ><span>cotton-saree-red.jpg</span>
+              </button>
+              <button
+                type="button"
+                data-src="/files/silk-hijab-teal.jpg"
+                data-alt="Teal silk hijab"
+                data-bn-data-alt="টিল সিল্ক হিজাব"
+              >
+                <e-thumbnail size="large"><img src="/files/silk-hijab-teal.jpg" alt="" /></e-thumbnail
+                ><span>silk-hijab-teal.jpg</span>
+              </button>
+            </div>
+            <e-button slot="footer" type="button" data-close data-bn="বাতিল">Cancel</e-button>
+          </e-modal>
+        </div>
+      </e-admin-panel>
+    </e-admin-frame>
+    <script src="/playground.js"></script>
+  </body>
+</html>

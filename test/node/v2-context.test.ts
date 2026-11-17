@@ -58,7 +58,7 @@ const kept = (app: Frame) => app.evaluate(() => (globalThis as { mark?: boolean 
 
 test('in the playground the app reads its store, app, language and a desktop', async () => {
   const { app, errors } = await playground('')
-  expect(await app.evaluate(() => ({ ...ebdfy.config }))).toEqual({ store: 'demo', app: 'sample' })
+  expect(await app.evaluate(() => ({ ...ebdfy.config }))).toEqual({ store: 'demo', app: 'sample', placement: '', id: '' })
   expect(await app.evaluate(() => ebdfy.user())).toEqual({ language: 'en' })
   expect(await app.evaluate(() => ({ ...ebdfy.environment }))).toEqual({ embedded: true, mobile: false })
   expect(errors).toEqual([])
@@ -72,6 +72,8 @@ test('switching the Admin to বাংলা tells the app, which turns its whol
     .toEqual({
       store: 'demo',
       app: 'sample',
+      placement: '',
+      id: '',
       language: 'bn',
       embedded: true,
       mobile: false,
@@ -173,7 +175,7 @@ test('a context message from a frame that is not the Admin changes nothing', asy
   })
   await page.waitForTimeout(500)
   expect(await app.evaluate(() => ebdfy.user())).toEqual({ language: 'en' })
-  expect(await app.evaluate(() => ({ ...ebdfy.config }))).toEqual({ store: 'demo', app: 'sample' })
+  expect(await app.evaluate(() => ({ ...ebdfy.config }))).toEqual({ store: 'demo', app: 'sample', placement: '', id: '' })
   expect(await titleBar(page).textContent()).toBe('Orders')
 })
 

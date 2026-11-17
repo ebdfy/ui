@@ -66,6 +66,15 @@ e-row > * {
 e-row:last-child > * {
   border-bottom: 0;
 }
+/* A totals row ends the table: its cells in its columns, at 600 weight under a 1 px rule, which takes the
+   place of the row above's own. */
+e-row[total] > * {
+  border-top: 1px solid var(--e-color-line-2);
+  font-weight: 600;
+}
+e-row:has(+ e-row[total]) > * {
+  border-bottom: 0;
+}
 /* A cell that holds only a checkbox, as a selectable row's first does, gives it the whole cell. */
 e-row > :has(> e-checkbox:only-child) {
   justify-content: center;

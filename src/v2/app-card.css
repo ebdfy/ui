@@ -1,0 +1,109 @@
+/* e-app-card: an app's card in an order's side column, a card whose heading is the app's tile and
+   name over a frame of the app's card page. v2-host.js builds it; the frame takes the height the
+   app reports, from 40 px to 480 px. Before the app answers the frame keeps 120 px under the
+   loading bar, and the same notice as an app page's covers it when the app has not answered. */
+e-app-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--e-space-3);
+  align-content: start;
+  min-width: 0;
+  padding: var(--e-space-4) var(--e-space-5) var(--e-space-5);
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+  border: 1px solid var(--e-color-line);
+  border-radius: var(--e-radius-2);
+  box-shadow: var(--e-shadow-card);
+}
+e-app-card > header {
+  display: flex;
+  align-items: center;
+  gap: var(--e-space-2);
+  min-height: 28px;
+}
+e-app-card > header > h2 {
+  margin: 0;
+  min-width: 0;
+  font-size: var(--e-font-size-title);
+  line-height: var(--e-line-height-body);
+  font-weight: var(--e-font-weight-semibold);
+  overflow-wrap: anywhere;
+}
+e-app-card > iframe {
+  grid-area: 2 / 1;
+  display: block;
+  inline-size: 100%;
+  block-size: 120px;
+  border: 0;
+}
+e-app-card > p {
+  margin: 0;
+  color: var(--e-color-fg2);
+}
+
+/* A 3 px bar along the top of the app's area while the app loads or says it is busy. */
+:is(e-admin-panel, e-app-card) > .e-loading-bar {
+  grid-area: 2 / 1;
+  align-self: start;
+  position: relative;
+  block-size: 3px;
+  overflow: hidden;
+  background: var(--e-color-line);
+}
+:is(e-admin-panel, e-app-card) > :is(.e-loading-bar, .e-notice)[hidden] {
+  display: none;
+}
+.e-loading-bar::after {
+  position: absolute;
+  inset: 0;
+  inline-size: 40%;
+  background: var(--e-color-accent);
+  content: '';
+}
+@media (prefers-reduced-motion: no-preference) {
+  .e-loading-bar::after {
+    animation: e-loading 1.2s ease-in-out infinite;
+  }
+}
+@keyframes e-loading {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+/* The notice covers the app's area, not the title bar or the menu, when the app has not answered. */
+:is(e-admin-panel, e-app-card) > .e-notice {
+  grid-area: 2 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e-space-2);
+  padding: var(--e-space-6);
+  background: var(--e-color-panel);
+  text-align: center;
+}
+e-app-card > .e-notice {
+  padding: var(--e-space-4) 0 0;
+  background: var(--e-color-surface);
+}
+.e-notice > p {
+  margin: 0;
+  max-inline-size: 36em;
+  color: var(--e-color-fg2);
+}
+.e-notice > p:first-child {
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-title);
+  font-weight: var(--e-font-weight-semibold);
+}
+.e-notice > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--e-space-2);
+  margin-top: var(--e-space-2);
+}

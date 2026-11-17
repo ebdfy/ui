@@ -15,10 +15,14 @@ const escape = (text: string) =>
 
 // A start tag with the attribute set, or dropped when value is false. The tag's other attributes
 // keep their place.
-function withAttribute(tag: string, name: string, value: string | boolean): string {
+export function withAttribute(tag: string, name: string, value: string | boolean): string {
   const bare = tag.replace(new RegExp(`\\s${name}(?:="[^"]*")?(?=[\\s>/])`), '')
   if (value === false) return bare
-  return bare.replace(/\s*(\/?)>$/, ` ${value === true ? name : `${name}="${escape(value)}"`}$1>`)
+  // A function, so a $ in the value is not read as a replacement pattern.
+  return bare.replace(
+    /\s*(\/?)>$/,
+    (_, slash: string) => ` ${value === true ? name : `${name}="${escape(value)}"`}${slash}>`,
+  )
 }
 
 // An empty phone is allowed, as the Admin allows a store to have none.

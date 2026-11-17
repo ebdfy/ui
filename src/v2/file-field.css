@@ -1,0 +1,86 @@
+/* e-file-field. Before the script the label attribute draws as ::before over the browser's own file
+   input. The script puts the input, invisible, over one bordered row that holds the Choose file face
+   and the chosen file, so a press anywhere on the row opens the browser's picker. */
+e-file-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 6px;
+  min-width: 0;
+  color: var(--e-color-fg);
+  font-size: var(--e-font-size-body);
+}
+e-file-field:not(:has(> label))::before,
+e-file-field > label {
+  overflow-wrap: anywhere;
+  font-size: var(--e-font-size-meta);
+  font-weight: var(--e-font-weight-medium);
+  line-height: var(--e-line-height-meta);
+}
+e-file-field:not(:has(> label))::before {
+  content: attr(label);
+}
+e-file-field > [data-part='row'] {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--e-space-3);
+  box-sizing: border-box;
+  min-height: var(--e-size-control-md);
+  padding: 4px var(--e-space-3) 4px 4px;
+  border: 1px solid var(--e-color-line-2);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-surface);
+}
+e-file-field > [data-part='row']:has(> input:focus-visible) {
+  outline: 2px solid var(--e-color-focus);
+  outline-offset: 1px;
+}
+e-file-field > [data-part='row'] > input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+e-file-field [data-part='choose'] {
+  flex: none;
+  padding: 2px var(--e-space-3);
+  border: 1px solid var(--e-color-line-2);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-surface-2);
+  font-weight: var(--e-font-weight-medium);
+}
+e-file-field [data-part='chosen'] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--e-space-2);
+  min-width: 0;
+  color: var(--e-color-fg2);
+  overflow-wrap: anywhere;
+}
+e-file-field [data-part='chosen'] > strong {
+  color: var(--e-color-fg);
+  font-weight: var(--e-font-weight-medium);
+}
+e-file-field [data-part='chosen'] > span + span::before {
+  content: '· ';
+}
+e-file-field > [data-part='row']:has(> [aria-invalid='true']) {
+  border-color: var(--e-color-returned-fg);
+  box-shadow: 0 0 0 3px var(--e-color-danger-soft);
+}
+@media (max-width: 599.98px) {
+  e-file-field > [data-part='row'] {
+    min-height: var(--e-size-control-lg);
+  }
+}
+/* An error written in the markup shows under the input before the script builds its line. */
+e-file-field[error]:not([error='']):not(:has(> [data-e-error]))::after {
+  content: attr(error);
+  overflow-wrap: anywhere;
+  color: var(--e-color-returned-fg);
+  font-size: var(--e-font-size-meta);
+  line-height: var(--e-line-height-meta);
+}

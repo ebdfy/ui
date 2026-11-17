@@ -31,6 +31,7 @@ export class ETable extends HTMLElement {
  * @tag e-row
  * @attr {boolean} head - The head row, whose cells name the columns.
  * @attr {boolean} selected - Tints the row's cells lime, as a ticked row of an index table.
+ * @attr {boolean} total - The table's totals row, its last: its cells at 600 weight under a 1 px rule, in the columns of the rows above.
  * @slot - Its cells. A cell may have `align="end"` for numbers, `tone="subdued"`, or `wrap` to let its text run onto several lines with 10 px above and below. A cell holding an `e-stack` starts at the top.
  */
 export class ERow extends HTMLElement {

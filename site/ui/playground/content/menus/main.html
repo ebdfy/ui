@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content" />
+    <link rel="icon" href="data:," />
+    <title>Main menu · Playground · ebdfy design system v2</title>
+    <link
+      rel="preload"
+      href="%EB_CDN%/ui/fonts/geist-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2.css" />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2-host.css" />
+    <script type="module" src="%EB_CDN%/ui/v2-host.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v2.js"></script>
+    <link rel="stylesheet" href="/playground.css" />
+    <script>
+      // The staff member's language, kept by this browser as the Admin keeps it for them, before
+      // anything draws.
+      try {
+        document.documentElement.lang = localStorage.getItem('ebdfy-playground-lang') === 'bn' ? 'bn' : 'en'
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <e-admin-frame>
+      %EB_ADMIN_CHROME%
+      <!-- A menu's items as a tree: drag or move them by keyboard, add and edit them in the page's modal. -->
+      <e-admin-panel store="demo">
+        <header><h1 data-bn="প্রধান মেনু">Main menu</h1></header>
+        <div class="admin-page">
+          <form method="post" action="/playground/content/menus/main" data-save-bar>
+            <e-card>
+              <e-text-field
+                name="title"
+                label="Title"
+                data-bn-label="শিরোনাম"
+                value="Main menu"
+                maxlength="255"
+                required
+              ></e-text-field>
+            </e-card>
+            <e-card heading="Menu items" data-bn-heading="মেনু আইটেম">
+              <e-menu-tree name="items" label="Menu items" data-bn-label="মেনু আইটেম"
+                ><e-menu-tree-item label="Home" url="/"></e-menu-tree-item
+                ><e-menu-tree-item label="Men" resource-id="gid://ebdfy/Collection/11"
+                  ><e-menu-tree-item
+                    label="Men's panjabi"
+                    resource-id="gid://ebdfy/Collection/12"
+                  ></e-menu-tree-item></e-menu-tree-item
+                ><e-menu-tree-item label="Women" resource-id="gid://ebdfy/Collection/21"
+                  ><e-menu-tree-item
+                    label="Sarees under ৳2,000"
+                    resource-id="gid://ebdfy/Collection/22"
+                  ></e-menu-tree-item
+                  ><e-menu-tree-item
+                    label="Silk hijab"
+                    resource-id="gid://ebdfy/Collection/23"
+                  ></e-menu-tree-item></e-menu-tree-item
+                ><e-menu-tree-item label="Kids" resource-id="gid://ebdfy/Collection/31"></e-menu-tree-item
+                ><e-menu-tree-item label="Eid 2026" resource-id="gid://ebdfy/Collection/41"></e-menu-tree-item
+                ><e-menu-tree-item label="About us" url="/pages/about"></e-menu-tree-item
+              ></e-menu-tree>
+            </e-card>
+          </form>
+          <!-- Add and Edit open this modal, outside the form, and hand the item back to the tree. The
+               Admin searches the store for the link; the playground lists a few. -->
+          <e-modal id="menu-item" heading="Add menu item" data-bn-heading="মেনু আইটেম যোগ করুন" width="560">
+            <e-text-field label="Label" data-bn-label="লেবেল" maxlength="255"></e-text-field>
+            <e-select label="Link" data-bn-label="লিংক">
+              <option value="resource:gid://ebdfy/Collection/24" data-bn="কালেকশন: সুতি তাঁতের শাড়ি">
+                Collection: Cotton tant saree
+              </option>
+              <option value="resource:gid://ebdfy/Collection/11" data-bn="কালেকশন: ছেলেদের">Collection: Men</option>
+              <option value="resource:gid://ebdfy/Collection/21" data-bn="কালেকশন: মেয়েদের">Collection: Women</option>
+              <option value="resource:gid://ebdfy/Collection/31" data-bn="কালেকশন: শিশুদের">Collection: Kids</option>
+              <option value="resource:gid://ebdfy/Collection/41" data-bn="কালেকশন: ঈদ ২০২৬">
+                Collection: Eid 2026
+              </option>
+              <option value="resource:gid://ebdfy/Page/3" data-bn="পেজ: ডেলিভারি">Page: Delivery</option>
+              <option value="url:/" data-bn="হোম পেজ">Home page</option>
+              <option value="url:/pages/about" data-bn="পেজ: আমাদের কথা">Page: About us</option>
+            </e-select>
+            <e-button slot="footer" type="button" data-close data-bn="বাতিল">Cancel</e-button>
+            <e-button slot="footer" type="button" tone="primary" data-done data-bn="যোগ করুন">Add</e-button>
+          </e-modal>
+        </div>
+      </e-admin-panel>
+    </e-admin-frame>
+    <script src="/playground.js"></script>
+  </body>
+</html>

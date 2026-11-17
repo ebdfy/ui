@@ -3,7 +3,18 @@
 // draws it for the page's own address, so the menu's current entry and Settings' own menu are in the
 // markup before any script runs. Words are English with their Bangla in data-bn, and an attribute's
 // Bangla in data-bn-<attribute>; the playground's playground.js puts them in place in bn.
-import { type AdminPage, ordersPages, settingsPages } from '../src/playground-admin.ts'
+import {
+  type AdminPage,
+  contentPagePath,
+  contentPages,
+  isContentPage,
+  isReportsPage,
+  ordersPages,
+  productPath,
+  productsImportPath,
+  reportsPath,
+  settingsPages,
+} from '../src/playground-admin.ts'
 
 const words = (en: string, bn: string) => `<span data-bn="${bn}">${en}</span>`
 const icon = (name: string) => `<e-icon name="${name}"></e-icon>`
@@ -16,19 +27,38 @@ function link(href: string, inner: string, current?: 'page' | 'true', extra = ''
 const mainEntries = [
   { href: '/playground/home', en: 'Home', bn: 'হোম', icon: 'home' },
   { href: '/playground/orders', en: 'Orders', bn: 'অর্ডার', icon: 'shopping-bag' },
-  { href: '/playground', en: 'Products', bn: 'পণ্য', icon: 'package' },
+  { href: productsImportPath, en: 'Products', bn: 'পণ্য', icon: 'package' },
   { href: '/playground', en: 'Customers', bn: 'গ্রাহক', icon: 'users' },
+  { href: contentPagePath, en: 'Content', bn: 'কনটেন্ট', icon: 'file-text' },
+  { href: reportsPath, en: 'Reports', bn: 'রিপোর্ট', icon: 'chart-column' },
 ]
+
+// A product's page is the Admin's own too, under Products, which leads to Import.
+const ownArea = (path: string) =>
+  isReportsPage(path) || isContentPage(path) || path === productsImportPath || path === productPath
+
+// An area of the Admin's own, as the frame marks it: its entry is the page itself, or "true" on a
+// page under it. Every other page under /playground is the sample app's, which stands for Orders.
+function areaMark(href: string, path: string): 'page' | 'true' | undefined {
+  if (href === path && ownArea(path)) return 'page'
+  if (href === reportsPath && isReportsPage(path)) return 'true'
+  if (href === contentPagePath && isContentPage(path)) return 'true'
+  if (href === productsImportPath && path === productPath) return 'true'
+  return undefined
+}
 
 function mainMenu(path: string): string {
   const sub = ordersPages.find((page) => page.path === path)
-  // The sample app's pages stand for the Orders area, so Orders is current on all of them.
-  const ordersCurrent = sub ? 'true' : 'page'
+  // The sample app's pages stand for the Orders area, so Orders is current on all of them. Reports,
+  // Products and Content are areas of their own: the page itself, or the area on a page under it.
+  const ordersCurrent = sub ? 'true' : ownArea(path) ? undefined : 'page'
+  const rail = (pages: AdminPage[]) =>
+    `<div class="e-menu-pages">${pages.map((page) => link(page.path, words(page.en, page.bn), page.path === path ? 'page' : undefined)).join('')}</div>`
   const entries = mainEntries.map((entry) => {
     const inner = `${icon(entry.icon)}${words(entry.en, entry.bn)}`
-    if (entry.en !== 'Orders') return link(entry.href, inner)
-    const rail = ordersPages.map((page) => link(page.path, words(page.en, page.bn), page === sub ? 'page' : undefined))
-    return `${link(entry.href, inner, ordersCurrent, ' count="3" data-bn-count="৩"')}<div class="e-menu-pages">${rail.join('')}</div>`
+    if (entry.en === 'Content') return `${link(entry.href, inner, areaMark(entry.href, path))}${rail(contentPages)}`
+    if (entry.en !== 'Orders') return link(entry.href, inner, areaMark(entry.href, path))
+    return `${link(entry.href, inner, ordersCurrent, ' count="3" data-bn-count="৩"')}${rail(ordersPages)}`
   })
   return `<nav slot="menu" aria-label="Main" data-bn-aria-label="প্রধান">${entries.join('')}<p class="e-menu-label">${words('Installed apps', 'ইনস্টল করা অ্যাপ')}</p>${link('/playground', `<span class="e-tile" data-size="20" aria-hidden="true">S</span>${words('Sample app', 'স্যাম্পল অ্যাপ')}`, undefined, ' data-app="sample"')}${link('/playground/settings/store', `${icon('settings')}${words('Settings', 'সেটিংস')}`)}</nav>`
 }
@@ -53,29 +83,35 @@ function tabs(path: string): string {
   const settings = path.startsWith('/playground/settings/')
   // As in the menu, Orders is the page itself on the sample app's pages and the area on its sub-pages.
   const orders = ordersPages.some((page) => page.path === path) ? 'true' : 'page'
+  const mark = (entry: (typeof mainEntries)[number]) =>
+    entry.en === 'Orders' ? (settings || ownArea(path) ? undefined : orders) : areaMark(entry.href, path)
   const entries = mainEntries
     .slice(0, 3)
-    .map((entry) =>
-      link(
-        entry.href,
-        `${icon(entry.icon)}${words(entry.en, entry.bn)}`,
-        entry.en === 'Orders' && !settings ? orders : undefined,
-      ),
-    )
+    .map((entry) => link(entry.href, `${icon(entry.icon)}${words(entry.en, entry.bn)}`, mark(entry)))
   const others = mainEntries
     .slice(3)
-    .map((entry) => link(entry.href, `${icon(entry.icon)}${words(entry.en, entry.bn)}`))
-  const area = settings
-    ? { label: words('Settings', 'সেটিংস'), pages: settingsPages }
-    : { label: words('Orders', 'অর্ডার'), pages: ordersPages }
-  const sub = area.pages.map((page) =>
-    link(
-      page.path,
-      `${page.icon ? icon(page.icon) : ''}${words(page.en, page.bn)}`,
-      page.path === path ? 'page' : undefined,
-    ),
+    .map((entry) => link(entry.href, `${icon(entry.icon)}${words(entry.en, entry.bn)}`, mark(entry)))
+  // The areas' pages, under each area's label: Settings' on a Settings page, else Orders' and
+  // Content's, the same on every page so a swap between them keeps the sheet true.
+  const areas = settings
+    ? [{ label: words('Settings', 'সেটিংস'), pages: settingsPages }]
+    : [
+        { label: words('Orders', 'অর্ডার'), pages: ordersPages },
+        { label: words('Content', 'কনটেন্ট'), pages: contentPages },
+      ]
+  const sub = areas.map(
+    (area) =>
+      `<p class="e-menu-label">${area.label}</p>${area.pages
+        .map((page) =>
+          link(
+            page.path,
+            `${page.icon ? icon(page.icon) : ''}${words(page.en, page.bn)}`,
+            page.path === path ? 'page' : undefined,
+          ),
+        )
+        .join('')}`,
   )
-  const sheet = `<div id="e-more" popover class="e-more">${others.join('')}<p class="e-menu-label">${words('Installed apps', 'ইনস্টল করা অ্যাপ')}</p>${link('/playground', `<span class="e-tile" data-size="20" aria-hidden="true">S</span>${words('Sample app', 'স্যাম্পল অ্যাপ')}`)}<p class="e-menu-label">${area.label}</p>${sub.join('')}${settings ? '' : link('/playground/settings/store', `${icon('settings')}${words('Settings', 'সেটিংস')}`)}<hr />${userItems()}</div>`
+  const sheet = `<div id="e-more" popover class="e-more">${others.join('')}<p class="e-menu-label">${words('Installed apps', 'ইনস্টল করা অ্যাপ')}</p>${link('/playground', `<span class="e-tile" data-size="20" aria-hidden="true">S</span>${words('Sample app', 'স্যাম্পল অ্যাপ')}`)}${sub.join('')}${settings ? '' : link('/playground/settings/store', `${icon('settings')}${words('Settings', 'সেটিংস')}`)}<hr />${userItems()}</div>`
   return `<nav slot="tabs" aria-label="Main" data-bn-aria-label="প্রধান">${entries.join('')}<button type="button" popovertarget="e-more">${icon('more-horizontal')}${words('More', 'আরও')}</button>${sheet}</nav>`
 }
 

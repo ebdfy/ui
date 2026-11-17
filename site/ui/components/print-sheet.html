@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Print sheet · ebdfy design system v2</title>
+  </head>
+  <body>
+    <main>
+      <h1>Print sheet</h1>
+      <p class="lede">
+        <code>e-print-sheet</code> is one order on one A5 page: the invoice above a dashed cut line and the packing slip
+        below it. The page writes the content in plain HTML. In print, a page holding sheets prints them alone, one A5
+        page each, black on white in a dark theme too. Press an example's Print to print it.
+      </p>
+      <docs-example caption="Order #1042" print>
+        <e-print-sheet aria-label="Invoice and packing slip, order #1042">
+          <div>
+            <div>
+              <b slot="shop">Demo shop</b>
+              <small slot="phone">01711-223344</small>
+            </div>
+            <div>
+              <h2>Invoice #1042</h2>
+              <small>16 Nov 2026 · Facebook</small>
+            </div>
+          </div>
+          <div>
+            <div>
+              <h3>Deliver to</h3>
+              <span slot="recipient">Rahima Akter · <span slot="phone">01712-345678</span></span>
+              <span slot="address">House 12, Road 5, Dhanmondi, Dhaka</span>
+            </div>
+            <div slot="due">
+              Cash to collect
+              <b>৳1,930</b>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th align="end">Qty</th>
+                <th align="end">Price</th>
+                <th align="end">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Cotton saree, Red</td>
+                <td align="end">1</td>
+                <td align="end">৳1,250</td>
+                <td align="end">৳1,250</td>
+              </tr>
+              <tr>
+                <td>Silk hijab, Black</td>
+                <td align="end">1</td>
+                <td align="end">৳560</td>
+                <td align="end">৳560</td>
+              </tr>
+              <tr>
+                <td>Delivery</td>
+                <td></td>
+                <td></td>
+                <td align="end">৳120</td>
+              </tr>
+              <tr>
+                <th>Total</th>
+                <td></td>
+                <td align="end">Paid ৳0</td>
+                <th align="end">৳1,930</th>
+              </tr>
+            </tbody>
+          </table>
+          <small
+            >Thank you for your order. Check the parcel before you pay. For a return, call
+            <span slot="phone">01711-223344</span>.</small
+          >
+          <p slot="cut">fold or cut here</p>
+          <div>
+            <div>
+              <h3>Packing slip · #1042</h3>
+              <small>Pathao · PTH-48213 · Dhaka</small>
+            </div>
+            <div>
+              <span>2 items</span>
+              <small>Packed by ______</small>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Item</th>
+                <th>SKU</th>
+                <th align="end">Qty</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span slot="tick"></span></td>
+                <td>Cotton saree, Red</td>
+                <td>SAR-RED</td>
+                <td align="end">1</td>
+              </tr>
+              <tr>
+                <td><span slot="tick"></span></td>
+                <td>Silk hijab, Black</td>
+                <td>HIJ-BLK</td>
+                <td align="end">1</td>
+              </tr>
+            </tbody>
+          </table>
+          <small>Note from the customer: Call before you come.</small>
+        </e-print-sheet>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" print>
+        <e-print-sheet aria-label="ইনভয়েস ও প্যাকিং স্লিপ, অর্ডার #1042">
+          <div>
+            <div>
+              <b slot="shop">ডেমো শপ</b>
+              <small slot="phone">01711-223344</small>
+            </div>
+            <div>
+              <h2>ইনভয়েস #1042</h2>
+              <small>১৬ নভেম্বর ২০২৬ · ফেসবুক</small>
+            </div>
+          </div>
+          <div>
+            <div>
+              <h3>প্রাপক</h3>
+              <span slot="recipient">রহিমা আক্তার · <span slot="phone">01712-345678</span></span>
+              <span slot="address">বাড়ি ১২, রোড ৫, ধানমন্ডি, ঢাকা</span>
+            </div>
+            <div slot="due">
+              আদায় করতে হবে
+              <b>৳১,৯৩০</b>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>পণ্য</th>
+                <th align="end">পরিমাণ</th>
+                <th align="end">দাম</th>
+                <th align="end">মোট</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>সুতি শাড়ি, লাল</td>
+                <td align="end">১</td>
+                <td align="end">৳১,২৫০</td>
+                <td align="end">৳১,২৫০</td>
+              </tr>
+              <tr>
+                <td>সিল্ক হিজাব, কালো</td>
+                <td align="end">১</td>
+                <td align="end">৳৫৬০</td>
+                <td align="end">৳৫৬০</td>
+              </tr>
+              <tr>
+                <td>ডেলিভারি</td>
+                <td></td>
+                <td></td>
+                <td align="end">৳১২০</td>
+              </tr>
+              <tr>
+                <th>মোট</th>
+                <td></td>
+                <td align="end">পরিশোধিত ৳০</td>
+                <th align="end">৳১,৯৩০</th>
+              </tr>
+            </tbody>
+          </table>
+          <small
+            >অর্ডারের জন্য ধন্যবাদ। টাকা দেওয়ার আগে পার্সেলটি দেখে নিন। ফেরত দিতে
+            <span slot="phone">01711-223344</span> নম্বরে ফোন করুন।</small
+          >
+          <p slot="cut">এখানে ভাঁজ করুন বা কাটুন</p>
+          <div>
+            <div>
+              <h3>প্যাকিং স্লিপ · #1042</h3>
+              <small>পাঠাও · PTH-48213 · ঢাকা</small>
+            </div>
+            <div>
+              <span>২টি আইটেম</span>
+              <small>প্যাক করেছেন ______</small>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>পণ্য</th>
+                <th>SKU</th>
+                <th align="end">পরিমাণ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span slot="tick"></span></td>
+                <td>সুতি শাড়ি, লাল</td>
+                <td>SAR-RED</td>
+                <td align="end">১</td>
+              </tr>
+              <tr>
+                <td><span slot="tick"></span></td>
+                <td>সিল্ক হিজাব, কালো</td>
+                <td>HIJ-BLK</td>
+                <td align="end">১</td>
+              </tr>
+            </tbody>
+          </table>
+          <small>গ্রাহকের নোট: আসার আগে ফোন করবেন।</small>
+        </e-print-sheet>
+      </docs-example>
+      <docs-example caption="Two orders, one page each" print>
+        <e-print-sheet aria-label="Invoice and packing slip, order #1042">
+          <div>
+            <div>
+              <b slot="shop">Demo shop</b>
+              <small slot="phone">01711-223344</small>
+            </div>
+            <div>
+              <h2>Invoice #1042</h2>
+              <small>16 Nov 2026 · Facebook</small>
+            </div>
+          </div>
+          <div>
+            <div>
+              <h3>Deliver to</h3>
+              <span slot="recipient">Rahima Akter · <span slot="phone">01712-345678</span></span>
+              <span slot="address">House 12, Road 5, Dhanmondi, Dhaka</span>
+            </div>
+            <div slot="due">
+              Cash to collect
+              <b>৳1,930</b>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th align="end">Qty</th>
+                <th align="end">Price</th>
+                <th align="end">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Cotton saree, Red</td>
+                <td align="end">1</td>
+                <td align="end">৳1,250</td>
+                <td align="end">৳1,250</td>
+              </tr>
+              <tr>
+                <td>Silk hijab, Black</td>
+                <td align="end">1</td>
+                <td align="end">৳560</td>
+                <td align="end">৳560</td>
+              </tr>
+              <tr>
+                <td>Delivery</td>
+                <td></td>
+                <td></td>
+                <td align="end">৳120</td>
+              </tr>
+              <tr>
+                <th>Total</th>
+                <td></td>
+                <td align="end">Paid ৳0</td>
+                <th align="end">৳1,930</th>
+              </tr>
+            </tbody>
+          </table>
+          <small
+            >Thank you for your order. Check the parcel before you pay. For a return, call
+            <span slot="phone">01711-223344</span>.</small
+          >
+          <p slot="cut">fold or cut here</p>
+          <div>
+            <div>
+              <h3>Packing slip · #1042</h3>
+              <small>Pathao · PTH-48213 · Dhaka</small>
+            </div>
+            <div>
+              <span>2 items</span>
+              <small>Packed by ______</small>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Item</th>
+                <th>SKU</th>
+                <th align="end">Qty</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span slot="tick"></span></td>
+                <td>Cotton saree, Red</td>
+                <td>SAR-RED</td>
+                <td align="end">1</td>
+              </tr>
+              <tr>
+                <td><span slot="tick"></span></td>
+                <td>Silk hijab, Black</td>
+                <td>HIJ-BLK</td>
+                <td align="end">1</td>
+              </tr>
+            </tbody>
+          </table>
+          <small>Note from the customer: Call before you come.</small>
+        </e-print-sheet>
+        <e-print-sheet aria-label="Invoice and packing slip, order #1041">
+          <div>
+            <div>
+              <b slot="shop">Demo shop</b>
+              <small slot="phone">01711-223344</small>
+            </div>
+            <div>
+              <h2>Invoice #1041</h2>
+              <small>16 Nov 2026 · Website</small>
+            </div>
+          </div>
+          <div>
+            <div>
+              <h3>Deliver to</h3>
+              <span slot="recipient">Tanvir Hasan · <span slot="phone">01819-556690</span></span>
+              <span slot="address">Flat 4B, 22 Agrabad Road, Chattogram</span>
+            </div>
+            <div slot="due">
+              Cash to collect
+              <b>৳0</b>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th align="end">Qty</th>
+                <th align="end">Price</th>
+                <th align="end">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Panjabi, White, L</td>
+                <td align="end">1</td>
+                <td align="end">৳1,450</td>
+                <td align="end">৳1,450</td>
+              </tr>
+              <tr>
+                <td>Block-print kurti, M</td>
+                <td align="end">2</td>
+                <td align="end">৳800</td>
+                <td align="end">৳1,600</td>
+              </tr>
+              <tr>
+                <td>Delivery</td>
+                <td></td>
+                <td></td>
+                <td align="end">৳150</td>
+              </tr>
+              <tr>
+                <th>Total</th>
+                <td></td>
+                <td align="end">Paid ৳3,200</td>
+                <th align="end">৳3,200</th>
+              </tr>
+            </tbody>
+          </table>
+          <small
+            >Thank you for your order. Check the parcel before you pay. For a return, call
+            <span slot="phone">01711-223344</span>.</small
+          >
+          <p slot="cut">fold or cut here</p>
+          <div>
+            <div>
+              <h3>Packing slip · #1041</h3>
+              <small>Steadfast · SF-77120 · Chattogram</small>
+            </div>
+            <div>
+              <span>3 items</span>
+              <small>Packed by ______</small>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Item</th>
+                <th>SKU</th>
+                <th align="end">Qty</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span slot="tick"></span></td>
+                <td>Panjabi, White, L</td>
+                <td>PAN-WHT-L</td>
+                <td align="end">1</td>
+              </tr>
+              <tr>
+                <td><span slot="tick"></span></td>
+                <td>Block-print kurti, M</td>
+                <td>KUR-BLK-M</td>
+                <td align="end">2</td>
+              </tr>
+            </tbody>
+          </table>
+          <small>Note from the customer: Leave it with the guard.</small>
+        </e-print-sheet>
+      </docs-example>
+    </main>
+  </body>
+</html>

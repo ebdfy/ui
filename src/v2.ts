@@ -5,7 +5,7 @@ import { adminRedirect, createBridge } from './bridge.ts'
 import { digits, phone, taka } from './format.ts'
 import { defineAvatar } from './v2/avatar.ts'
 import { defineBanner } from './v2/banner.ts'
-import { createContext, forwardSearch, keepStore, reportModals, reportPage } from './v2/bridge.ts'
+import { createContext, forwardSearch, keepStore, reportHeight, reportModals, reportPage } from './v2/bridge.ts'
 import { defineButtonGroup } from './v2/button-group.ts'
 import { defineButton } from './v2/button.ts'
 import { defineCard } from './v2/card.ts'
@@ -18,6 +18,7 @@ import { defineDistrictPicker } from './v2/district-picker.ts'
 import { defineEmptyState } from './v2/empty-state.ts'
 import { signFetch } from './v2/fetch.ts'
 import { defineFields } from './v2/field.ts'
+import { defineFileField } from './v2/file-field.ts'
 import { showErrors } from './v2/form-errors.ts'
 import { defineIcon } from './v2/icon.ts'
 import { defineIndexTable } from './v2/index-table.ts'
@@ -30,6 +31,7 @@ import { definePagination } from './v2/pagination.ts'
 import { definePhoneField } from './v2/phone-field.ts'
 import { definePopover } from './v2/popover.ts'
 import { defineProgressBar } from './v2/progress-bar.ts'
+import { defineRichText } from './v2/rich-text.ts'
 import { defineSelect } from './v2/select.ts'
 import { defineSettingsSection } from './v2/settings-section.ts'
 import { defineSetupGuide } from './v2/setup-guide.ts'
@@ -48,6 +50,8 @@ if (redirect) location.replace(redirect)
 defineButton()
 defineIcon()
 defineFields()
+defineFileField()
+defineRichText()
 defineChoiceList()
 defineSwitch()
 defineCard()
@@ -93,6 +97,7 @@ signFetch(window, ebdfy)
 reportPage()
 reportModals()
 forwardSearch()
+reportHeight()
 
 // The page's ebdfy global, typed for an app that imports the package and calls it by name.
 type Ebdfy = typeof ebdfy

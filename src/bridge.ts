@@ -16,7 +16,15 @@ export type BridgeMessage =
   | {
       type: 'title'
       // menus lines up with actions: an action's menu items, or null for a plain button.
-      payload: { title: string; actions: string[]; menus?: (TitleMenuItem[] | null)[]; call: number; back?: string }
+      // primary is the index of the action the Admin draws as its primary, absent when none is.
+      payload: {
+        title: string
+        actions: string[]
+        menus?: (TitleMenuItem[] | null)[]
+        primary?: number
+        call: number
+        back?: string
+      }
     }
   // From 2.1 a refused save also says how many fields need a fix, or the reason that names none.
   | { type: 'saveBar'; payload: { visible: boolean; refused?: { fields: number; message?: string } } }
@@ -49,9 +57,11 @@ export interface NavEntry {
 export const navLimit = 8
 
 // A button in the Admin's title bar. Its handler stays in the app; only the label crosses.
-// With items it opens a menu of them instead, and a pick runs that item's handler.
+// With items it opens a menu of them instead, and a pick runs that item's handler. At most one is
+// primary, drawn as the title bar's primary button.
 export interface TitleAction {
   label: string
+  primary?: boolean
   onAction?: () => void
   items?: { label: string; onAction?: () => void; tone?: 'critical' }[]
 }
@@ -298,6 +308,9 @@ export function createBridge(win: Window = window) {
             ) ?? null,
         )
       }
+      const primaries = titleActions.flatMap((action, index) => (action.primary === true ? [index] : []))
+      if (primaries.length > 1) console.warn('ebdfy: at most one title action is primary; the others draw plain')
+      if (primaries.length) payload.primary = primaries[0]
       if (options.back !== undefined) payload.back = String(options.back)
       post({ type: 'title', payload })
     },

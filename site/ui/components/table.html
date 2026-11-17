@@ -96,6 +96,42 @@
           </e-row>
         </e-table>
       </docs-example>
+      <docs-example caption="A totals row" stack>
+        <e-table label="Sales by day" style="--e-columns: minmax(80px, 1fr) repeat(5, max-content)">
+          <e-row head>
+            <span>Day</span>
+            <span align="end">Orders</span>
+            <span align="end">Gross sales</span>
+            <span align="end">Discounts</span>
+            <span align="end">Returns</span>
+            <span align="end">Net sales</span>
+          </e-row>
+          <e-row>
+            <span>13 Nov</span>
+            <span align="end">9</span>
+            <span align="end">৳18,950</span>
+            <span align="end">−৳730</span>
+            <span align="end">−৳800</span>
+            <span align="end">৳17,420</span>
+          </e-row>
+          <e-row>
+            <span>12 Nov</span>
+            <span align="end">17</span>
+            <span align="end">৳37,640</span>
+            <span align="end">−৳1,210</span>
+            <span align="end">−৳1,600</span>
+            <span align="end">৳34,830</span>
+          </e-row>
+          <e-row total>
+            <span>Total</span>
+            <span align="end">26</span>
+            <span align="end">৳56,590</span>
+            <span align="end">−৳1,940</span>
+            <span align="end">−৳2,400</span>
+            <span align="end">৳52,250</span>
+          </e-row>
+        </e-table>
+      </docs-example>
       <docs-example caption="বাংলায়" lang="bn" stack>
         <e-table label="অর্ডার">
           <e-row head>
@@ -129,6 +165,40 @@
             </div>
             <span clip><span>রহিমা আক্তার, মিরপুর, ঢাকা, পুরনো বাজারের কাছে</span></span>
             <span align="end">৳১,৯৩০</span>
+          </e-row>
+        </e-table>
+        <e-table label="দিনভিত্তিক বিক্রি" style="--e-columns: minmax(80px, 1fr) repeat(5, max-content)">
+          <e-row head>
+            <span>দিন</span>
+            <span align="end">অর্ডার</span>
+            <span align="end">মোট বিক্রি</span>
+            <span align="end">ছাড়</span>
+            <span align="end">রিটার্ন</span>
+            <span align="end">নিট বিক্রি</span>
+          </e-row>
+          <e-row>
+            <span>১৩ নভে</span>
+            <span align="end">৯</span>
+            <span align="end">৳১৮,৯৫০</span>
+            <span align="end">−৳৭৩০</span>
+            <span align="end">−৳৮০০</span>
+            <span align="end">৳১৭,৪২০</span>
+          </e-row>
+          <e-row>
+            <span>১২ নভে</span>
+            <span align="end">১৭</span>
+            <span align="end">৳৩৭,৬৪০</span>
+            <span align="end">−৳১,২১০</span>
+            <span align="end">−৳১,৬০০</span>
+            <span align="end">৳৩৪,৮৩০</span>
+          </e-row>
+          <e-row total>
+            <span>মোট</span>
+            <span align="end">২৬</span>
+            <span align="end">৳৫৬,৫৯০</span>
+            <span align="end">−৳১,৯৪০</span>
+            <span align="end">−৳২,৪০০</span>
+            <span align="end">৳৫২,২৫০</span>
           </e-row>
         </e-table>
       </docs-example>

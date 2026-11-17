@@ -12,6 +12,7 @@ let files: string[] = []
 let packed: Record<string, unknown> & { exports: Record<string, string | Record<string, string>> }
 let packedText = ''
 let license = ''
+let changelog = ''
 let tarball = ''
 
 beforeAll(() => {
@@ -27,6 +28,7 @@ beforeAll(() => {
   packedText = execFileSync('tar', ['-xzOf', filename, 'package/package.json'], { encoding: 'utf8' })
   packed = JSON.parse(packedText)
   license = execFileSync('tar', ['-xzOf', filename, 'package/LICENSE'], { encoding: 'utf8' })
+  changelog = execFileSync('tar', ['-xzOf', filename, 'package/CHANGELOG.md'], { encoding: 'utf8' })
 }, 120_000)
 
 test('the tarball holds the scripts, their fonts, the types, the manifest and the licence', () => {
@@ -39,6 +41,7 @@ test('the tarball holds the scripts, their fonts, the types, the manifest and th
       'dist/types/v2-react.d.ts',
       'dist/custom-elements-v2.json',
       'LICENSE',
+      'CHANGELOG.md',
       'package.json',
     ]),
   )
@@ -47,13 +50,14 @@ test('the tarball holds the scripts, their fonts, the types, the manifest and th
 })
 
 test('the tarball holds nothing else: no source, tests, docs site or playground', () => {
-  const shipped = /^(dist\/site\/cdn\/ui\/|dist\/types\/|dist\/custom-elements-v2\.json$|LICENSE$|package\.json$)/
+  const shipped =
+    /^(dist\/site\/cdn\/ui\/|dist\/types\/|dist\/custom-elements-v2\.json$|LICENSE$|CHANGELOG\.md$|package\.json$)/
   expect(files.filter((file) => !shipped.test(file))).toEqual([])
   expect(files.filter((file) => file.includes('playground'))).toEqual([])
 })
 
-test('the packed package.json is the public 2.1.0, with nothing to install beside it', () => {
-  expect(packed).toMatchObject({ name: '@ebdfy/ui', version: '2.1.0', license: 'MIT' })
+test('the packed package.json is the public 2.2.0, with nothing to install beside it', () => {
+  expect(packed).toMatchObject({ name: '@ebdfy/ui', version: '2.2.0', license: 'MIT' })
   expect(packed).not.toHaveProperty('private')
   expect(packedText).not.toContain('catalog:')
   // v2's scripts bundle no library, so an app installs nothing else with the kit.
@@ -72,6 +76,15 @@ test('each export names a file in the tarball', () => {
   )
   expect(targets.length).toBeGreaterThan(0)
   for (const target of targets) expect(files).toContain(target.replace(/^\.\//, ''))
+})
+
+// An app on the floating v2 files takes 2.2 on its next load, so the notes name what 2.1 changed
+// under such an app's feet: the large thumbnail, and a button group that chooses only once pressed.
+test("the packed CHANGELOG opens on 2.2.0's section, naming the two 2.1 changes an app may meet", () => {
+  const section = changelog.split(/^## /m)[1] ?? ''
+  expect(section).toMatch(/^2\.2\.0\b/)
+  expect(section).toMatch(/e-thumbnail.*size="large".*56.*88 px/)
+  expect(section).toMatch(/e-button-group.*e-button-group-change/s)
 })
 
 test('the licence is MIT', () => {

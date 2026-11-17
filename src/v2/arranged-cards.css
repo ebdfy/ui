@@ -1,0 +1,151 @@
+/* e-arranged-cards: a page's cards in the order the staff member chose, on four columns. It keys on its
+   own width: from 600 px a card takes the columns its span asks for, all four when it asks none;
+   narrower, a one-column card takes half the row and every other card the whole row. */
+e-arranged-cards {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--e-space-4);
+  min-width: 0;
+}
+e-arranged-cards > * {
+  grid-column: 1 / -1;
+}
+e-arranged-cards > [span='1'] {
+  grid-column: span 2;
+}
+@container (min-width: 600px) {
+  e-arranged-cards > [span='1'] {
+    grid-column: span 1;
+  }
+  e-arranged-cards > [span='2'] {
+    grid-column: span 2;
+  }
+  e-arranged-cards > [span='3'] {
+    grid-column: span 3;
+  }
+}
+/* Edit mode. A card the staff member removed stays in the page, hidden. Each card's strip sits above it
+   in the wider gap, so it covers none of the card's own controls, and every card keeps its box. */
+e-arranged-cards > [card][hidden] {
+  display: none;
+}
+e-arranged-cards[editing] {
+  row-gap: calc(var(--e-space-4) + 50px);
+}
+e-arranged-cards[editing] > [card] {
+  position: relative;
+  overflow: visible;
+}
+e-arranged-cards > [data-part='bar'] {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--e-space-2);
+}
+/* The strip is as wide as its card. A grid card places it from its content box, so an e-card's strip
+   reaches out over its padding and border. */
+e-arranged-cards > [card] > [data-part='strip'] {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: calc(100% + 6px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  color: var(--e-color-fg2);
+  font-size: var(--e-font-size-meta);
+}
+e-arranged-cards[editing] > e-card > [data-part='strip'] {
+  inset-inline: calc(-1px - var(--e-space-5));
+}
+e-arranged-cards[editing] > e-card[flush] > [data-part='strip'] {
+  inset-inline: -1px;
+}
+[data-part='strip'] > span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+[data-part='strip'] > button,
+e-arranged-cards > [data-part='add'] {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e-space-2);
+  inline-size: 36px;
+  block-size: 36px;
+  padding: 0;
+  border: 1px solid var(--e-color-line);
+  border-radius: var(--e-radius-2);
+  background: var(--e-color-surface);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+[data-part='strip'] > button:disabled {
+  color: var(--e-color-fg3);
+  opacity: 0.5;
+  cursor: default;
+}
+[data-part='strip'] > [data-part='handle'] {
+  cursor: grab;
+  touch-action: none;
+}
+[data-part='strip'] > [data-part='up'] e-icon {
+  rotate: 180deg;
+}
+e-arranged-cards > [card][data-dragging] {
+  opacity: 0.6;
+}
+/* The tile has no strip, so it takes back the strip's room above it. */
+e-arranged-cards > [data-part='add'] {
+  margin-block-start: -50px;
+  inline-size: auto;
+  block-size: 88px;
+  background: var(--e-color-surface-2);
+  color: var(--e-color-fg2);
+  font-weight: 500;
+}
+/* Below 600 px of its own width a strip moves its card with arrows of 44 px, not the handle. */
+@container (max-width: 599.98px) {
+  [data-part='strip'] > [data-part='handle'] {
+    display: none;
+  }
+  [data-part='strip'] > button {
+    inline-size: 44px;
+    block-size: 44px;
+  }
+  /* A half-row card's strip has room for its three buttons alone. */
+  [data-part='strip'] {
+    gap: 2px;
+  }
+  [span='1'] > [data-part='strip'] > span {
+    display: none;
+  }
+}
+@container (min-width: 600px) {
+  [data-part='strip'] > :is([data-part='up'], [data-part='down']) {
+    display: none;
+  }
+}
+/* The library's entries, one card's heading a row. */
+e-modal button[card] {
+  display: flex;
+  align-items: center;
+  inline-size: 100%;
+  min-block-size: 44px;
+  padding: 0 var(--e-space-3);
+  border: 0;
+  border-bottom: 1px solid var(--e-color-line);
+  background: none;
+  color: var(--e-color-fg);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+e-modal button[card]:hover {
+  background: var(--e-color-surface-2);
+}

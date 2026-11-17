@@ -35,7 +35,7 @@
         token-url="/dev/id-token?app=sample"
         api-url="/dev/graphql"
       >
-        <header><h1>Sample app</h1></header>
+        <header><span class="e-tile" aria-hidden="true">S</span><h1>Sample app</h1></header>
         <iframe title="Sample app" allow="clipboard-write"></iframe>
       </e-admin-panel>
     </e-admin-frame>
@@ -60,6 +60,19 @@
       const named = asked?.startsWith('/') ? new URL(asked, app) : null
       if (named?.origin === app.origin) page = named
       page.searchParams.set('store', panel.getAttribute('store'))
+      // A page opened from a record's More actions names the record by ?id, and the Admin's Worker
+      // names the placement it came from by the id's prefix, as an app has one placement a target.
+      const placements = {
+        prod: 'PRODUCT_MORE_ACTIONS',
+        ord: 'ORDER_MORE_ACTIONS',
+        col: 'COLLECTION_MORE_ACTIONS',
+        cus: 'CUSTOMER_MORE_ACTIONS',
+        page: 'PAGE_MORE_ACTIONS',
+        art: 'ARTICLE_MORE_ACTIONS',
+        menu: 'MENU_MORE_ACTIONS',
+      }
+      const prefix = /^([a-z]+)_/.exec(query.get('id') ?? '')?.[1] ?? ''
+      if (Object.hasOwn(placements, prefix)) panel.setAttribute('placement', placements[prefix])
       panel.querySelector(':scope > iframe').dataset.src = hang ? '%EB_SAMPLE_APP%/hang?store=demo' : page.href
       if (hang) {
         const toggle = document.querySelector('#hang')

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Chart · ebdfy design system v2</title>
+  </head>
+  <body>
+    <main>
+      <h1>Chart</h1>
+      <p class="lede">
+        <code>e-chart</code> is a column chart of one value a bar, such as net sales a day. The page writes every part,
+        so v2.css draws it in the first frame and the script never moves it: the axis's <code>e-chart-step</code>s, top
+        to bottom, each label on its gridline, then an <code>e-chart-bar</code> a value, its height the share of the
+        axis written as <code>style="--e-share: 0.62"</code>. A bar's text is its value, which a screen reader reads
+        after its <code>label</code>; <code>tick</code> shows the label under the axis, and <code>today</code> draws the
+        bar in lime. Put it in an <code>e-card</code>.
+      </p>
+      <docs-example caption="Net sales a day, the last 30 days" stack>
+        <e-card heading="Net sales">
+          <e-chart label="Net sales a day, 15 Oct to 13 Nov 2026" total="৳9,87,156">
+            <span slot="key">Net sales</span>
+            <e-chart-step>৳40,000</e-chart-step>
+            <e-chart-step>৳30,000</e-chart-step>
+            <e-chart-step>৳20,000</e-chart-step>
+            <e-chart-step>৳10,000</e-chart-step>
+            <e-chart-bar label="15 Oct" tick style="--e-share: 0.901">৳36,040</e-chart-bar>
+            <e-chart-bar label="16 Oct" style="--e-share: 0.9788">৳39,150</e-chart-bar>
+            <e-chart-bar label="17 Oct" style="--e-share: 0.9862">৳39,450</e-chart-bar>
+            <e-chart-bar label="18 Oct" style="--e-share: 0.9097">৳36,390</e-chart-bar>
+            <e-chart-bar label="19 Oct" style="--e-share: 0.8705">৳34,820</e-chart-bar>
+            <e-chart-bar label="20 Oct" style="--e-share: 0.7155">৳28,620</e-chart-bar>
+            <e-chart-bar label="21 Oct" style="--e-share: 0.7155">৳28,620</e-chart-bar>
+            <e-chart-bar label="22 Oct" style="--e-share: 0.7825">৳31,300</e-chart-bar>
+            <e-chart-bar label="23 Oct" style="--e-share: 0.8555">৳34,220</e-chart-bar>
+            <e-chart-bar label="24 Oct" style="--e-share: 0.874">৳34,960</e-chart-bar>
+            <e-chart-bar label="25 Oct" style="--e-share: 0.6464">৳25,856</e-chart-bar>
+            <e-chart-bar label="26 Oct" style="--e-share: 0.824">৳32,960</e-chart-bar>
+            <e-chart-bar label="27 Oct" style="--e-share: 0.7155">৳28,620</e-chart-bar>
+            <e-chart-bar label="28 Oct" style="--e-share: 0.7622">৳30,490</e-chart-bar>
+            <e-chart-bar label="29 Oct" tick style="--e-share: 0.8688">৳34,750</e-chart-bar>
+            <e-chart-bar label="30 Oct" style="--e-share: 0.9688">৳38,750</e-chart-bar>
+            <e-chart-bar label="31 Oct" style="--e-share: 0.9982">৳39,930</e-chart-bar>
+            <e-chart-bar label="1 Nov" style="--e-share: 0.9427">৳37,710</e-chart-bar>
+            <e-chart-bar label="2 Nov" style="--e-share: 0.9217">৳36,870</e-chart-bar>
+            <e-chart-bar label="3 Nov" style="--e-share: 0.7802">৳31,210</e-chart-bar>
+            <e-chart-bar label="4 Nov" style="--e-share: 0.7857">৳31,430</e-chart-bar>
+            <e-chart-bar label="5 Nov" style="--e-share: 0.8468">৳33,870</e-chart-bar>
+            <e-chart-bar label="6 Nov" style="--e-share: 0.903">৳36,120</e-chart-bar>
+            <e-chart-bar label="7 Nov" style="--e-share: 0.8972">৳35,890</e-chart-bar>
+            <e-chart-bar label="8 Nov" style="--e-share: 0.8205">৳32,820</e-chart-bar>
+            <e-chart-bar label="9 Nov" style="--e-share: 0.7957">৳31,830</e-chart-bar>
+            <e-chart-bar label="10 Nov" style="--e-share: 0.6685">৳26,740</e-chart-bar>
+            <e-chart-bar label="11 Nov" style="--e-share: 0.7035">৳28,140</e-chart-bar>
+            <e-chart-bar label="12 Nov" style="--e-share: 0.8045">৳32,180</e-chart-bar>
+            <e-chart-bar label="13 Nov" tick today style="--e-share: 0.4355">৳17,420</e-chart-bar>
+          </e-chart>
+        </e-card>
+      </docs-example>
+      <docs-example caption="An empty chart, before the first sale" stack>
+        <e-card heading="Net sales">
+          <e-chart label="Net sales a day" total="৳0">
+            <span slot="key">Net sales</span>
+            <e-chart-step>৳40,000</e-chart-step>
+            <e-chart-step>৳30,000</e-chart-step>
+            <e-chart-step>৳20,000</e-chart-step>
+            <e-chart-step>৳10,000</e-chart-step>
+          </e-chart>
+        </e-card>
+      </docs-example>
+      <docs-example caption="Eight named bars: net sales a month" stack>
+        <e-card heading="Net sales by month">
+          <e-chart label="Net sales a month, April to November 2026" total="৳60,36,680">
+            <span slot="key">Net sales</span>
+            <e-chart-step>৳12L</e-chart-step>
+            <e-chart-step>৳8L</e-chart-step>
+            <e-chart-step>৳4L</e-chart-step>
+            <e-chart-bar label="Apr" tick style="--e-share: 0.5103">৳6,12,400</e-chart-bar>
+            <e-chart-bar label="May" tick style="--e-share: 0.5991">৳7,18,950</e-chart-bar>
+            <e-chart-bar label="Jun" tick style="--e-share: 0.5703">৳6,84,300</e-chart-bar>
+            <e-chart-bar label="Jul" tick style="--e-share: 0.7017">৳8,42,100</e-chart-bar>
+            <e-chart-bar label="Aug" tick style="--e-share: 0.6597">৳7,91,640</e-chart-bar>
+            <e-chart-bar label="Sep" tick style="--e-share: 0.7549">৳9,05,870</e-chart-bar>
+            <e-chart-bar label="Oct" tick style="--e-share: 0.8485">৳10,18,230</e-chart-bar>
+            <e-chart-bar label="Nov" tick style="--e-share: 0.386">৳4,63,190</e-chart-bar>
+          </e-chart>
+        </e-card>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-card heading="নিট বিক্রি">
+          <e-chart label="দিনভিত্তিক নিট বিক্রি, ১৫ অক্টোবর থেকে ১৩ নভেম্বর ২০২৬" total="৳৯,৮৭,১৫৬">
+            <span slot="key">নিট বিক্রি</span>
+            <e-chart-step>৳৪০,০০০</e-chart-step>
+            <e-chart-step>৳৩০,০০০</e-chart-step>
+            <e-chart-step>৳২০,০০০</e-chart-step>
+            <e-chart-step>৳১০,০০০</e-chart-step>
+            <e-chart-bar label="১৫ অক্টো" tick style="--e-share: 0.901">৳৩৬,০৪০</e-chart-bar>
+            <e-chart-bar label="১৬ অক্টো" style="--e-share: 0.9788">৳৩৯,১৫০</e-chart-bar>
+            <e-chart-bar label="১৭ অক্টো" style="--e-share: 0.9862">৳৩৯,৪৫০</e-chart-bar>
+            <e-chart-bar label="১৮ অক্টো" style="--e-share: 0.9097">৳৩৬,৩৯০</e-chart-bar>
+            <e-chart-bar label="১৯ অক্টো" style="--e-share: 0.8705">৳৩৪,৮২০</e-chart-bar>
+            <e-chart-bar label="২০ অক্টো" style="--e-share: 0.7155">৳২৮,৬২০</e-chart-bar>
+            <e-chart-bar label="২১ অক্টো" style="--e-share: 0.7155">৳২৮,৬২০</e-chart-bar>
+            <e-chart-bar label="২২ অক্টো" style="--e-share: 0.7825">৳৩১,৩০০</e-chart-bar>
+            <e-chart-bar label="২৩ অক্টো" style="--e-share: 0.8555">৳৩৪,২২০</e-chart-bar>
+            <e-chart-bar label="২৪ অক্টো" style="--e-share: 0.874">৳৩৪,৯৬০</e-chart-bar>
+            <e-chart-bar label="২৫ অক্টো" style="--e-share: 0.6464">৳২৫,৮৫৬</e-chart-bar>
+            <e-chart-bar label="২৬ অক্টো" style="--e-share: 0.824">৳৩২,৯৬০</e-chart-bar>
+            <e-chart-bar label="২৭ অক্টো" style="--e-share: 0.7155">৳২৮,৬২০</e-chart-bar>
+            <e-chart-bar label="২৮ অক্টো" style="--e-share: 0.7622">৳৩০,৪৯০</e-chart-bar>
+            <e-chart-bar label="২৯ অক্টো" tick style="--e-share: 0.8688">৳৩৪,৭৫০</e-chart-bar>
+            <e-chart-bar label="৩০ অক্টো" style="--e-share: 0.9688">৳৩৮,৭৫০</e-chart-bar>
+            <e-chart-bar label="৩১ অক্টো" style="--e-share: 0.9982">৳৩৯,৯৩০</e-chart-bar>
+            <e-chart-bar label="১ নভে" style="--e-share: 0.9427">৳৩৭,৭১০</e-chart-bar>
+            <e-chart-bar label="২ নভে" style="--e-share: 0.9217">৳৩৬,৮৭০</e-chart-bar>
+            <e-chart-bar label="৩ নভে" style="--e-share: 0.7802">৳৩১,২১০</e-chart-bar>
+            <e-chart-bar label="৪ নভে" style="--e-share: 0.7857">৳৩১,৪৩০</e-chart-bar>
+            <e-chart-bar label="৫ নভে" style="--e-share: 0.8468">৳৩৩,৮৭০</e-chart-bar>
+            <e-chart-bar label="৬ নভে" style="--e-share: 0.903">৳৩৬,১২০</e-chart-bar>
+            <e-chart-bar label="৭ নভে" style="--e-share: 0.8972">৳৩৫,৮৯০</e-chart-bar>
+            <e-chart-bar label="৮ নভে" style="--e-share: 0.8205">৳৩২,৮২০</e-chart-bar>
+            <e-chart-bar label="৯ নভে" style="--e-share: 0.7957">৳৩১,৮৩০</e-chart-bar>
+            <e-chart-bar label="১০ নভে" style="--e-share: 0.6685">৳২৬,৭৪০</e-chart-bar>
+            <e-chart-bar label="১১ নভে" style="--e-share: 0.7035">৳২৮,১৪০</e-chart-bar>
+            <e-chart-bar label="১২ নভে" style="--e-share: 0.8045">৳৩২,১৮০</e-chart-bar>
+            <e-chart-bar label="১৩ নভে" tick today style="--e-share: 0.4355">৳১৭,৪২০</e-chart-bar>
+          </e-chart>
+        </e-card>
+      </docs-example>
+    </main>
+  </body>
+</html>

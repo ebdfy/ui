@@ -1,4 +1,4 @@
-// The icon sprite holds the 45 icons the kit names, and icon.ts and the docs page name the same 45.
+// The icon sprite holds the 52 icons the kit names, and icon.ts and the docs page name the same 52.
 import { readFileSync } from 'node:fs'
 
 import { expect, test } from 'vitest'
@@ -15,11 +15,12 @@ const named = [
   'arrow-left', 'printer', 'phone', 'copy', 'filter', 'arrow-up-down', 'external-link', 'image',
   'circle-alert', 'pencil', 'trash', 'grip-vertical', 'calendar', 'lock', 'cloud-off', 'upload',
   'download', 'eye', 'message-circle', 'percent', 'file-text', 'chart-column', 'layout-grid', 'store',
-  'credit-card', 'map-pin', 'languages', 'database', 'code',
+  'credit-card', 'map-pin', 'languages', 'database', 'code', 'bold', 'italic', 'underline', 'heading',
+  'list', 'text-quote', 'link',
 ] // prettier-ignore
 
-test('the sprite holds exactly the 45 named symbols', () => {
-  expect(symbols).toHaveLength(45)
+test('the sprite holds exactly the 52 named symbols', () => {
+  expect(symbols).toHaveLength(52)
   expect([...names].sort()).toEqual([...named].sort())
 })
 
@@ -36,7 +37,7 @@ test('the names in the icon.ts JSDoc union are the sprite names', () => {
   expect([...listed].sort()).toEqual([...named].sort())
 })
 
-test('the icon docs page names all 45 icons in its text', () => {
+test('the icon docs page names all 52 icons in its text', () => {
   const text = read('../../site/ui/components/icon.html').replace(/<[^>]*>/g, ' ')
   for (const name of named) expect(text).toMatch(new RegExp(`(^|\\s)${name}(\\s|$)`))
 })

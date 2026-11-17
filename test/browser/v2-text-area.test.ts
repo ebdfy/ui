@@ -58,6 +58,31 @@ test('a text area with rows="10" opens ten lines tall, its box at least 220 px, 
   document.body.replaceChildren()
 })
 
+// Safari, Firefox and Chromium before 133 read no typed attr(), so v2.css's rows rule is not there.
+test('where the browser reads no typed attr(), a text area with rows="10" opens ten lines tall after the script', () => {
+  const removed: { list: CSSGroupingRule | CSSStyleSheet; index: number; text: string }[] = []
+  const strip = (list: CSSGroupingRule | CSSStyleSheet) => {
+    for (let index = list.cssRules.length - 1; index >= 0; index--) {
+      const rule = list.cssRules[index]!
+      if (rule instanceof CSSSupportsRule && rule.conditionText.includes('attr(rows')) {
+        removed.push({ list, index, text: rule.cssText })
+        list.deleteRule(index)
+      } else if (rule instanceof CSSGroupingRule) strip(rule)
+    }
+  }
+  for (const sheet of document.styleSheets) strip(sheet)
+  expect(removed).toHaveLength(1)
+  try {
+    defineFields()
+    const field = mount('<e-text-area label="Refund policy" name="refund" rows="10"></e-text-area>').querySelector(
+      'e-text-area',
+    )!
+    expect(field.querySelector('textarea')!.getBoundingClientRect().height).toBeGreaterThanOrEqual(10 * 20 + 20 + 2)
+  } finally {
+    for (const { list, index, text } of removed) list.insertRule(text, index)
+  }
+})
+
 test('the script builds one labelled textarea without moving anything, and it submits by name', async () => {
   const holder = mount(`<form>${note}<button>Save</button></form>`)
   const field = holder.querySelector('e-text-area')!

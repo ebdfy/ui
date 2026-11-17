@@ -9,11 +9,14 @@ import { fileURLToPath } from 'node:url'
 import { bundle } from 'lightningcss'
 import type { Plugin } from 'vite'
 
+import { reportsPath } from '../src/playground-admin.ts'
 import { createPlaygroundApi, type Jwks, verifyIdToken } from '../src/playground-api.ts'
 import { sitePage, siteRedirect } from '../src/site-routes.ts'
 import { panelHeader } from '../src/v2-host-panel.ts'
 import { adminChrome } from './admin-chrome.ts'
+import { contentFake } from './content-fake.ts'
 import { framePage, pathOf } from './docs.ts'
+import { newReportPath, reportFake, reportsFake } from './reports-fake.ts'
 import { storeFake, storePath } from './store-fake.ts'
 
 export interface Origins {
@@ -118,15 +121,18 @@ export function pagesPlugin(origins: Origins): Plugin {
           }
         })
       }
-      // The playground's Store page answers a save, as the Admin's Worker will.
+      // The playground's Store page answers a save, as the Admin's Worker will, its Reports page
+      // keeps the cards a staff member arranged, its reports answer and save, and so do its Content
+      // pages and Products' import.
       if (folder === 'ui') {
-        const file = `${server.config.root}${storePath}.html`
-        server.middlewares.use(
-          storeFake(
-            () => server.transformIndexHtml(file.slice(server.config.root.length), readFileSync(file, 'utf8')),
-            panelOf,
-          ),
-        )
+        const served = (path: string) => () => {
+          const file = `${server.config.root}${path}.html`
+          return server.transformIndexHtml(file.slice(server.config.root.length), readFileSync(file, 'utf8'))
+        }
+        server.middlewares.use(storeFake(served(storePath), panelOf))
+        server.middlewares.use(reportsFake(served(reportsPath), panelOf, panelHeader))
+        server.middlewares.use(reportFake(served(newReportPath), panelOf, panelHeader))
+        server.middlewares.use(contentFake((path) => served(path)(), panelOf))
       }
       server.middlewares.use((req, res, next) => {
         const [path = '', query] = (req.url ?? '').split('?')

@@ -106,8 +106,16 @@ test('ebdfy.title posts the title to the parent, from the app origin', async () 
 })
 
 test('a framed app first tells the Admin its save bar is down', async () => {
-  const message = new Promise<MessageEvent>((resolve) => window.addEventListener('message', resolve, { once: true }))
   const frame = document.createElement('iframe')
+  // The first message from this frame: an earlier test's frame may still have one on its way.
+  const message = new Promise<MessageEvent>((resolve) => {
+    const hear = (event: MessageEvent) => {
+      if (event.source !== frame.contentWindow) return
+      window.removeEventListener('message', hear)
+      resolve(event)
+    }
+    window.addEventListener('message', hear)
+  })
   frame.src = '/test/browser/fixtures/app.html'
   document.body.append(frame)
   expect((await message).data).toEqual({ type: 'saveBar', payload: { visible: false } })
@@ -151,6 +159,33 @@ test('a third title action is dropped and the app is warned', () => {
   const title = posts.messages().find((message) => message.type === 'title')
   posts.restore()
   expect(title?.payload?.actions).toEqual(['A', 'B'])
+})
+
+test('an action marked primary names its index, and with none marked the title names none', () => {
+  const posts = spyOnPosts()
+  const bridge = createBridge(window)
+  bridge.title('Orders', { actions: [{ label: 'Export' }, { label: 'Create order', primary: true }] })
+  bridge.title('Orders', { actions: [{ label: 'Export' }, { label: 'Print' }] })
+  const [marked, plain] = posts.messages().filter((message) => message.type === 'title')
+  posts.restore()
+  expect(marked?.payload).toMatchObject({ actions: ['Export', 'Create order'], primary: 1 })
+  expect(plain?.payload).not.toHaveProperty('primary')
+})
+
+test('a second action marked primary is sent plain, and the app is warned once', () => {
+  const posts = spyOnPosts()
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+  createBridge(window).title('Orders', {
+    actions: [
+      { label: 'Export', primary: true },
+      { label: 'Create order', primary: true },
+    ],
+  })
+  expect(warn.mock.calls).toEqual([['ebdfy: at most one title action is primary; the others draw plain']])
+  warn.mockRestore()
+  const title = posts.messages().find((message) => message.type === 'title')
+  posts.restore()
+  expect(title?.payload?.primary).toBe(0)
 })
 
 test('a press on a title action runs its handler once, and a press meant for an earlier title runs nothing', () => {

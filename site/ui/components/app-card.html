@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>App card · ebdfy design system v2</title>
+    <!-- The card is the Admin's, which v2-host.js builds, so this page loads it beside the kit. -->
+    <script type="module" src="%EB_CDN%/ui/v2-host.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>App card</h1>
+      <p class="lede">
+        <code>e-app-card</code> shows an app's card in an order's side column: the app's tile and name, then a frame of
+        the app's card page, opened with the store and the order's id. It is the Admin's, so <code>v2-host.js</code>
+        builds it, not <code>v2.js</code>. An app's page in the Admin wears the same tile in its title bar, below.
+      </p>
+      <docs-example caption="Order #1042 with the sample app's card in its side column" stack>
+        <e-page heading="#1042">
+          <e-card heading="Items">
+            <e-text>Jamdani saree, hand-woven · 1 × ৳1,450</e-text>
+          </e-card>
+          <e-stack slot="aside" gap="4">
+            <e-card heading="Customer"><e-text>Rahima Akter</e-text></e-card>
+            <e-app-card
+              src="%EB_SAMPLE_APP%/card?store=demo&amp;id=ord_1042"
+              app="Sample app"
+              tile="S"
+              store="demo"
+              token-url="/dev/id-token?app=sample"
+              api-url="/dev/graphql"
+            ></e-app-card>
+          </e-stack>
+        </e-page>
+      </docs-example>
+      <p>
+        The card answers its frame as an app page is answered: an ID token from <code>token-url</code>, the Admin's
+        theme, and where it runs, which <code>ebdfy.config</code> holds as <code>placement</code> (<code>ORDER_CARD</code>)
+        and <code>id</code>. The app's bridge reports its page's height each time it changes, and the frame takes it,
+        from 40 px up to 480 px, past which the card scrolls inside, so a long card never pushes the order's other cards
+        away. Until the app answers, the frame keeps 120 px under the loading bar; after 15 s with no answer it says the
+        app isn't responding, with Reload. A title, nav entries, the save bar, toasts and modals belong to the page, so a
+        card ignores them, and it hears only its own frame.
+      </p>
+      <p>
+        The tile shows the app's icon when <code>icon</code> names one, and its letter from <code>tile</code> when it
+        names none or the icon fails to load.
+      </p>
+      <docs-example caption="A staff member who shares no access with the app: no frame, and no ID token asked for">
+        <div style="inline-size: 328px; max-inline-size: 100%">
+          <e-app-card app="Sample app" tile="S" no-access></e-app-card>
+        </div>
+      </docs-example>
+
+      <h2 id="title-bar">The app page's title bar</h2>
+      <p>
+        Above an app's page the Admin draws the record header of <code>e-page</code> in a 64 px row: the app's 28 px
+        tile, the title the app sets with <code>ebdfy.title(title, { actions })</code>, the app's name until it sets one,
+        then up to 2 actions. The action marked <code>primary: true</code> draws as the primary; with none marked both
+        draw as plain buttons, and a second one marked draws plain while the bridge warns in the app's console. An action
+        with <code>items</code> opens a menu of them, a <code>tone: 'critical'</code> item in the danger colour. The row
+        keeps its 64 px while the app loads, once it answers and when it has not answered, so the app's area never
+        moves. These pictures show the row's states; the Admin draws it, not the app.
+      </p>
+      <docs-example caption="Answered: Export, and Create order marked primary" stack>
+        <div class="title-bar">
+          <span class="e-tile" aria-hidden="true">S</span>
+          <h2>Orders</h2>
+          <e-button>Export</e-button>
+          <e-button tone="primary">Create order</e-button>
+        </div>
+      </docs-example>
+      <docs-example caption="Loading, before the app sets a title: the app's name" stack>
+        <div class="title-bar">
+          <span class="e-tile" aria-hidden="true">S</span>
+          <h2>Sample app</h2>
+        </div>
+      </docs-example>
+      <docs-example caption="On a phone: the primary stays, and ⋯ holds the other action" stack>
+        <div class="title-bar" style="inline-size: 328px; max-inline-size: 100%">
+          <span class="e-tile" aria-hidden="true">S</span>
+          <h2>Orders</h2>
+          <e-button tone="primary">Create order</e-button>
+          <e-menu>
+            <e-button slot="trigger" icon aria-label="More actions"><e-icon name="more-horizontal"></e-icon></e-button>
+            <e-menu-item>Export</e-menu-item>
+          </e-menu>
+        </div>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <div class="title-bar" style="inline-size: 328px; max-inline-size: 100%">
+          <span class="e-tile" aria-hidden="true">S</span>
+          <h2>অর্ডার</h2>
+          <e-button tone="primary">অর্ডার তৈরি করুন</e-button>
+          <e-menu>
+            <e-button slot="trigger" icon aria-label="আরও অ্যাকশন"><e-icon name="more-horizontal"></e-icon></e-button>
+            <e-menu-item>এক্সপোর্ট</e-menu-item>
+          </e-menu>
+        </div>
+        <div style="inline-size: 328px; max-inline-size: 100%">
+          <e-app-card app="Sample app" tile="S" no-access></e-app-card>
+        </div>
+      </docs-example>
+    </main>
+  </body>
+</html>

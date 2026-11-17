@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <meta name="ebdfy-app" content="sample" />
+    <meta name="ebdfy-home" content="%EB_UI%/playground" />
+    <title>Card · Sample app · ebdfy</title>
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2.css" />
+    <style>
+      /* The card's frame sits in the Admin's card, which draws the border and padding. */
+      body {
+        margin: 0;
+        background: var(--e-color-surface);
+      }
+    </style>
+    <script>
+      {
+        let lang = new URLSearchParams(location.search).get('lang')
+        if (lang !== 'bn' && lang !== 'en') {
+          try {
+            lang = localStorage.getItem('ebdfy-sample-lang')
+          } catch {
+            lang = 'en'
+          }
+        }
+        document.documentElement.lang = lang === 'bn' ? 'bn' : 'en'
+      }
+    </script>
+    <script type="module" src="%EB_CDN%/ui/v2.js"></script>
+  </head>
+  <body>
+    <!-- The sample app's card in an order's side column. The Admin frames it with the order's id,
+         which the page reads from ebdfy.config, and its backend reads the ID token the fetch carries. -->
+    <e-stack gap="2">
+      <e-text id="card"></e-text>
+      <e-text id="signed" tone="subdued" size="meta"></e-text>
+    </e-stack>
+    <script type="module">
+      const bn = () => document.documentElement.lang === 'bn'
+      let store = ''
+      const draw = () => {
+        const { id } = ebdfy.config
+        document.querySelector('#card').textContent = bn() ? `${id}-এর কার্ড` : `Card for ${id}`
+        document.querySelector('#signed').textContent = store ? (bn() ? `${store} স্টোরে সাইন ইন` : `Signed in to ${store}`) : ''
+      }
+      draw()
+      addEventListener('ebdfy:context', ({ detail }) => {
+        document.documentElement.lang = detail.language
+        draw()
+      })
+      fetch('/api/orders').then(
+        async (response) => {
+          if (response.ok) store = (await response.json()).store
+          draw()
+        },
+        () => {},
+      )
+    </script>
+  </body>
+</html>

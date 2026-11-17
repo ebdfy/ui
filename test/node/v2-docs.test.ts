@@ -33,7 +33,7 @@ const unstyled = (page: Page) =>
       .map(({ name, display, height }) => `${name}: ${display}, ${height} px tall`),
   )
 
-test('the sidebar lists the 53 components in the spec’s groups, the current one marked', async () => {
+test('the sidebar lists the 61 components in the spec’s groups, the current one marked', async () => {
   expect(v2Groups.map((group) => group.name)).toEqual([
     'Actions',
     'Layout',
@@ -45,7 +45,7 @@ test('the sidebar lists the 53 components in the spec’s groups, the current on
     'Bangladesh',
   ])
   const all = v2Groups.flatMap((group) => group.pages)
-  expect(all).toHaveLength(53)
+  expect(all).toHaveLength(61)
   expect(all.map((page) => page.title)).toEqual(
     expect.arrayContaining(['Index table', 'Metrics', 'Settings section', 'Setup guide', 'Modal', 'Table']),
   )

@@ -17,6 +17,17 @@ document.addEventListener('click', async (event) => {
   button.reset = setTimeout(() => (button.textContent = 'Copy'), 2000)
 })
 
+// An example's Print prints that example alone: docs.css hides every other example in print while the
+// one pressed is marked, until the print dialog closes.
+for (const button of document.querySelectorAll('button.print')) button.hidden = false
+document.addEventListener('click', (event) => {
+  const example = event.target instanceof Element ? event.target.closest('button.print')?.closest('.example') : null
+  if (!example) return
+  example.toggleAttribute('data-printing', true)
+  addEventListener('afterprint', () => example.removeAttribute('data-printing'), { once: true })
+  print()
+})
+
 // The search: Search, or ⌘K on an Apple device and Ctrl K elsewhere, opens it over the pages' titles.
 // A title that starts with the words comes before one that only holds them, and Enter opens the
 // first. The K key counts wherever it sits, so a Bangla keyboard layout opens it too.
@@ -100,3 +111,13 @@ if (languages) {
     }
   })
 }
+
+// An example's form with no action of its own posts nowhere: its submit shows what the form would post
+// in the example's output.
+document.addEventListener('submit', (event) => {
+  const form = event.target instanceof HTMLFormElement && event.target.closest('.example') ? event.target : null
+  if (!form || form.hasAttribute('action')) return
+  event.preventDefault()
+  const output = form.querySelector('output')
+  if (output) output.value = [...new FormData(form)].map(([name, value]) => `${name}: ${value}`).join('\n')
+})

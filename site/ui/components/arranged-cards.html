@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Arranged cards · ebdfy design system v2</title>
+    <!-- Edit mode is the Admin's, which v2-host.js builds, so this page loads it beside the kit. -->
+    <script type="module" src="%EB_CDN%/ui/v2-host.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>Arranged cards</h1>
+      <p class="lede">
+        <code>e-arranged-cards</code> holds a page's cards in the order the staff member chose, such as Home's and
+        Reports'. It lays them on four columns from 600 px of its own width: a card takes the columns its
+        <code>span</code> asks for, all four when it asks none, and below 600 px a one-column card takes half the row.
+        Each card carries its id in <code>card</code>.
+      </p>
+      <p>
+        A button whose <code>aria-controls</code> names the part, such as Customize, turns on edit mode, which
+        <code>v2-host.js</code> builds in the Admin: Reset to default and Done above the cards, a strip above each card
+        with a drag handle and Remove, or Move up and Move down when the part is narrower than 600 px, and an Add card
+        tile at the end. Add card opens the <code>e-modal</code> that <code>library</code> names, whose buttons carry
+        each card's id in <code>card</code> and its heading; it offers only the cards the page does not show. A picked
+        card the page does not hold shows as a placeholder until the page draws it. Done writes the card ids, in order,
+        to the field <code>name</code> names and submits the form around the part, so the page saves them and draws its
+        cards in that order. Try it below: Done shows what the form posts.
+      </p>
+      <docs-example caption="Four figures, then two cards side by side" stack>
+        <e-arranged-cards
+          name="cards"
+          default="net-sales orders average-order-value return-rate sales-report products-report"
+        >
+          <e-card card="net-sales" span="1" heading="Net sales"><e-text>৳9,87,156</e-text></e-card>
+          <e-card card="orders" span="1" heading="Orders"><e-text>474</e-text></e-card>
+          <e-card card="average-order-value" span="1" heading="Average order value"><e-text>৳2,083</e-text></e-card>
+          <e-card card="return-rate" span="1" heading="Return rate"><e-text>4.2%</e-text></e-card>
+          <e-card card="sales-report" span="2" heading="Sales report"><e-text>474 orders</e-text></e-card>
+          <e-card card="products-report" span="2" heading="Products report"><e-text>191 sold</e-text></e-card>
+        </e-arranged-cards>
+      </docs-example>
+      <docs-example caption="Customize, arrange and Done" stack>
+        <form>
+          <e-button aria-controls="cards-en">Customize</e-button>
+          <e-arranged-cards id="cards-en" name="cards" default="net-sales orders sales-report" library="library-en">
+            <e-card card="net-sales" span="1" heading="Net sales"><e-text>৳9,87,156</e-text></e-card>
+            <e-card card="orders" span="1" heading="Orders"><e-text>474</e-text></e-card>
+            <e-card card="sales-report" span="2" heading="Sales report"><e-text>474 orders</e-text></e-card>
+          </e-arranged-cards>
+          <output name="posted"></output>
+        </form>
+        <e-modal id="library-en" heading="Add card" width="560">
+          <button type="button" card="top-products">Top products</button>
+          <button type="button" card="low-stock">Low stock</button>
+        </e-modal>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn" stack>
+        <e-arranged-cards name="cards" default="net-sales orders sales-report">
+          <e-card card="net-sales" span="1" heading="নিট বিক্রি"><e-text>৳৯,৮৭,১৫৬</e-text></e-card>
+          <e-card card="orders" span="1" heading="অর্ডার"><e-text>৪৭৪</e-text></e-card>
+          <e-card card="sales-report" span="2" heading="বিক্রির রিপোর্ট"><e-text>৪৭৪টি অর্ডার</e-text></e-card>
+        </e-arranged-cards>
+      </docs-example>
+      <docs-example caption="বাংলায়: সাজান, সরান, সম্পন্ন" lang="bn" stack>
+        <form>
+          <e-button aria-controls="cards-bn">সাজান</e-button>
+          <e-arranged-cards id="cards-bn" name="cards" default="net-sales orders sales-report" library="library-bn">
+            <e-card card="net-sales" span="1" heading="নিট বিক্রি"><e-text>৳৯,৮৭,১৫৬</e-text></e-card>
+            <e-card card="orders" span="1" heading="অর্ডার"><e-text>৪৭৪</e-text></e-card>
+            <e-card card="sales-report" span="2" heading="বিক্রির রিপোর্ট"><e-text>৪৭৪টি অর্ডার</e-text></e-card>
+          </e-arranged-cards>
+          <output name="posted"></output>
+        </form>
+        <e-modal id="library-bn" heading="কার্ড যোগ করুন" width="560">
+          <button type="button" card="top-products">সেরা পণ্য</button>
+          <button type="button" card="low-stock">স্টক কম</button>
+        </e-modal>
+      </docs-example>
+    </main>
+  </body>
+</html>

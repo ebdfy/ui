@@ -10,6 +10,7 @@ import { afterAll, beforeAll, expect, test } from 'vitest'
 
 import { budgets, over, report, type Line } from './budgets.ts'
 import { startSite } from './site.ts'
+import { taps } from './taps.ts'
 
 const webVitalsBuild = join(import.meta.dirname, '../../node_modules/web-vitals/dist/web-vitals.iife.js')
 const roundTrip = 150
@@ -248,16 +249,16 @@ async function orderAndBack(lang: string, broken?: 'slow order' | 'moved chrome'
     })
   const rounds: Line[][] = []
   for (let round = 0; round < 3; round++) {
-    await app.getByRole('link', { name: '#1042' }).tap()
+    await taps.orderLink(app).tap()
     if (broken === 'moved chrome')
       await page.evaluate(() => {
         document.querySelector<HTMLElement>('e-admin-panel')!.style.marginTop = '80px'
       })
-    await app.locator('#items-card').waitFor()
+    await taps.itemsCard(app).waitFor()
     expect(await app.locator('e-page').getAttribute('heading')).toContain('#1042')
     const there = await moveLines(`order, ${where}`, page, app)
-    await app.locator('e-page > a[slot="back"]').tap()
-    await app.getByRole('link', { name: '#1042' }).waitFor()
+    await taps.orderBack(app).tap()
+    await taps.orderLink(app).waitFor()
     rounds.push([...there, ...(await moveLines(`orders list, ${where}`, page, app))])
   }
   await context.close()
@@ -314,15 +315,12 @@ async function storeToStaff(lang: string, width = 360, broken?: 'slow panel'): P
   const names =
     lang === 'bn' ? { store: 'স্টোর', staff: 'স্টাফ', more: 'আরও' } : { store: 'Store', staff: 'Staff', more: 'More' }
   const where = `Staff, ${width === 360 ? lang : `${lang}, ${width} px`}`
-  const staff = () =>
-    width >= 1040
-      ? page.locator('[slot="menu"] > a').filter({ hasText: new RegExp(`^${names.staff}$`) })
-      : page.locator('#e-more > a').filter({ hasText: new RegExp(`^${names.staff}$`) })
+  const staff = () => (width >= 1040 ? taps.inMenu(page, names.staff) : taps.inMore(page, names.staff))
   await page.evaluate(() => Object.assign(globalThis, { stayed: true }))
   const rounds: Line[][] = []
   for (let round = 0; round < 3; round++) {
     if (width < 1040) {
-      await page.locator('[slot="tabs"] > button').tap()
+      await taps.more(page).tap()
       await staff().waitFor()
     }
     // The time the next page's heading is first painted: two frames after the panel holding it goes in.
@@ -355,7 +353,7 @@ async function storeToStaff(lang: string, width = 360, broken?: 'slow panel'): P
       { what: `chrome shift, to ${where}`, value: chrome, budget: budgets.cls, unit: '' },
     ])
     await page.goBack()
-    await expect.poll(() => page.locator('e-admin-panel > header h1').textContent()).toBe(names.store)
+    await expect.poll(() => taps.heading(page).textContent()).toBe(names.store)
   }
   // Every move swapped the panel: the page that loaded first is the one still here.
   expect(await page.evaluate(() => (globalThis as { stayed?: boolean }).stayed)).toBe(true)

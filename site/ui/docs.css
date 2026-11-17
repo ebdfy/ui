@@ -284,9 +284,37 @@ main > section a {
   font-weight: var(--e-font-weight-semibold);
   cursor: pointer;
 }
+/* Print sits left of Copy, on the examples of a printed part. */
+.code .print {
+  position: absolute;
+  top: var(--e-space-1);
+  right: calc(var(--e-space-1) + 80px);
+  min-width: 72px;
+  min-height: 36px;
+  border: 1px solid var(--e-color-line-2);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+  font: inherit;
+  font-size: var(--e-font-size-meta);
+  font-weight: var(--e-font-weight-semibold);
+  cursor: pointer;
+}
+.code:has(.print:not([hidden])) pre {
+  padding-right: 168px;
+}
 @media (max-width: 599.98px) {
-  .code .copy {
+  .code :is(.copy, .print) {
     min-height: 44px;
+  }
+}
+/* While an example's Print is pressed, the other examples do not print. The kit's print rules are
+   important in layer e, so this rule joins that layer, later and more specific, to outrank them. */
+@layer e {
+  @media print {
+    html:has(.example[data-printing]) .example:not([data-printing]) {
+      display: none !important;
+    }
   }
 }
 .code .tag {
@@ -452,4 +480,37 @@ main > section a {
   margin: 0;
   padding: var(--e-space-4);
   color: var(--e-color-fg2);
+}
+
+/* An example's form, such as the arranged cards', stacks its parts with the kit's gap. */
+.example form {
+  display: grid;
+  gap: var(--e-space-4);
+}
+.example form > e-button {
+  justify-self: start;
+}
+
+/* The app page's title bar as the Admin draws it, for App card's pictures of its states: the tile,
+   the title and the actions in a 64 px row on the panel's ground. */
+.title-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  block-size: 64px;
+  padding-inline: var(--e-space-4);
+  border-radius: var(--e-radius-2);
+  background: var(--e-color-panel);
+}
+.title-bar > h2 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--e-font-size-heading);
+  line-height: var(--e-line-height-heading);
+  font-weight: var(--e-font-weight-bold);
 }

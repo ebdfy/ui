@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Rich text · ebdfy design system v2</title>
+  </head>
+  <body>
+    <main>
+      <h1>Rich text</h1>
+      <p class="lede">
+        <code>e-rich-text</code> writes a body of formatted text, such as a page's content or a product's description.
+        The body's HTML is the value of the <code>&lt;textarea&gt;</code> written inside the tag, which joins the form,
+        so the form posts the HTML before the script and with it off, when the text area shows it to edit by hand.
+      </p>
+      <p>
+        The script draws one bordered box under the label: a toolbar of Bold, Italic, Underline, Heading, List, Quote,
+        Link, Image and Show HTML, then a body that grows from 240 px. Each button reads pressed where the caret sits.
+        Every edit writes the body's HTML to the text area and fires <code>input</code>, so the save bar counts it;
+        undoing back to the opening body leaves the opening HTML, as written, so nothing is left to save. On a phone the
+        toolbar scrolls sideways rather than wrap.
+      </p>
+      <p>
+        The body keeps only the toolbar's own formatting: paragraphs, <code>strong</code>, <code>em</code>,
+        <code>u</code>, <code>h2</code>, a <code>ul</code> list, <code>blockquote</code>, links and images. A paste from
+        a web page loses its styles, classes and scripts, and a link or image address must be http or https, or a path
+        on the store. The API cleans the HTML again as it saves it.
+      </p>
+      <docs-example caption="A page's content, in a form that posts it" stack>
+        <form method="post" action="/pages/delivery">
+          <e-rich-text label="Content">
+            <textarea name="body">
+&lt;p&gt;We deliver across Bangladesh: inside Dhaka in 1 to 2 days, outside it in 3 to 5.&lt;/p&gt;&lt;p&gt;Start your returns within &lt;b&gt;7 days&lt;/b&gt; of delivery.&lt;/p&gt;</textarea>
+          </e-rich-text>
+          <e-button type="submit" tone="primary"><button type="submit">Save</button></e-button>
+        </form>
+      </docs-example>
+      <docs-example caption="Empty">
+        <e-rich-text label="Description"><textarea name="description"></textarea></e-rich-text>
+      </docs-example>
+      <docs-example caption="With an error">
+        <e-rich-text label="Content" error="Write at most 512 KB of content.">
+          <textarea name="body">&lt;p&gt;Free delivery on orders over ৳2,000.&lt;/p&gt;</textarea>
+        </e-rich-text>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-rich-text label="কনটেন্ট">
+          <textarea name="body">
+&lt;p&gt;ঢাকার ভেতরে &lt;strong&gt;১ থেকে ২ দিনে&lt;/strong&gt; ডেলিভারি।&lt;/p&gt;</textarea>
+        </e-rich-text>
+      </docs-example>
+    </main>
+  </body>
+</html>

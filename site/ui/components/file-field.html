@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>File field · ebdfy design system v2</title>
+  </head>
+  <body>
+    <main>
+      <h1>File field</h1>
+      <p class="lede">
+        <code>e-file-field</code> picks one file to upload, such as a CSV of products to import. Write its
+        <code>&lt;input type="file"&gt;</code> inside the tag, so the form posts the file before the script and with it
+        off. The script puts the input in one bordered row with Choose file, then shows the chosen file's name, its size
+        and, for a CSV, how many rows it holds under its header line.
+      </p>
+      <p>
+        <code>accept</code> and <code>max-size</code>, in bytes, say what the page takes: another kind or a larger file
+        is refused under the field, and the input is emptied, so the form never posts it. The row count is read in the
+        browser; a line break inside quotes stays in its row, and a byte order mark is no data.
+      </p>
+      <docs-example caption="A CSV of at most 5 MB, as Products › Import takes">
+        <e-file-field label="Products CSV" accept=".csv" max-size="5242880"
+          ><label>Products CSV</label><input type="file" name="file" accept=".csv"
+        /></e-file-field>
+      </docs-example>
+      <docs-example caption="Any file, with the label from its attribute">
+        <e-file-field label="Attachment"><input type="file" name="attachment" /></e-file-field>
+      </docs-example>
+      <docs-example caption="With an error">
+        <e-file-field label="Products CSV" accept=".csv" error="Pick a .csv file"
+          ><label>Products CSV</label><input type="file" name="file" accept=".csv"
+        /></e-file-field>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-file-field label="পণ্যের CSV" accept=".csv" max-size="5242880"
+          ><label>পণ্যের CSV</label><input type="file" name="file" accept=".csv"
+        /></e-file-field>
+      </docs-example>
+    </main>
+  </body>
+</html>

@@ -109,3 +109,65 @@ test('with two dirty bar forms, Save submits both in page order and Discard rest
   // Both stay as saved, the second form too.
   expect(await page.locator('e-text-field[name="note"] input').inputValue()).toBe('second')
 })
+
+// A report not saved yet, as the Admin's New report page draws it: the bar shows before any change.
+async function newReport(page: Page) {
+  await page.evaluate(() => {
+    const old = document.querySelector<HTMLFormElement>('form[data-save-bar]')!
+    const form = document.createElement('form')
+    form.method = 'post'
+    form.action = '/dev/nowhere'
+    form.dataset.saveBar = ''
+    form.dataset.saveNew = ''
+    form.dataset.saveMessage = 'Not saved yet'
+    form.dataset.saveLabel = 'Save report'
+    form.innerHTML = '<e-text-field name="name" label="Name" value="Facebook by district"></e-text-field>'
+    old.replaceWith(form)
+  })
+}
+
+test('a form not saved yet shows its bar before any change, and Save sends it untouched', async () => {
+  const { page, posts } = await open()
+  await page.route('**/dev/nowhere', (route) => route.fulfill({ status: 409, body: '' }))
+  await newReport(page)
+  await expect.poll(() => bar(page).isVisible()).toBe(true)
+  expect(await said(page)).toBe('Not saved yet')
+  await bar(page).getByRole('button', { name: 'Save report' }).click()
+  await expect.poll(() => posts.length).toBe(1)
+  expect(posts[0]).toContain('Facebook by district')
+})
+
+test('Discard on a form not saved yet puts its values back, tells the form, and the bar stays', async () => {
+  const { page } = await open()
+  await newReport(page)
+  await page.evaluate(() =>
+    document.querySelector('form[data-save-bar]')!.addEventListener('e-save-discarded', () => {
+      document.body.dataset.discarded = 'yes'
+    }),
+  )
+  await page.locator('e-text-field[name="name"] input').fill('Something else')
+  await bar(page).getByRole('button', { name: 'Discard' }).click()
+  expect(await page.locator('e-text-field[name="name"] input').inputValue()).toBe('Facebook by district')
+  expect(await page.locator('body').getAttribute('data-discarded')).toBe('yes')
+  // Past the bar's 200 ms fade, so a hidden bar would read as hidden.
+  await page.waitForTimeout(400)
+  expect(await bar(page).isVisible()).toBe(true)
+  expect(await said(page)).toBe('Not saved yet')
+  // A later edit still saves from the bar.
+  await page.locator('e-text-field[name="name"] input').fill('Facebook by district')
+  expect(await bar(page).getByRole('button', { name: 'Save report' }).isVisible()).toBe(true)
+})
+
+test('leaving an untouched form not saved yet asks nothing, and an edited one asks', async () => {
+  const { page } = await open()
+  await newReport(page)
+  await expect.poll(() => bar(page).isVisible()).toBe(true)
+  await page.locator('nav[slot="menu"] a', { hasText: 'Staff' }).click()
+  await expect.poll(() => page.locator('e-admin-panel > header h1').textContent()).toBe('Staff')
+  await page.goBack()
+  await expect.poll(() => page.locator('e-admin-panel > header h1').textContent()).toBe('Store')
+  await newReport(page)
+  await page.locator('e-text-field[name="name"] input').fill('Something else')
+  await page.locator('nav[slot="menu"] a', { hasText: 'Staff' }).click()
+  await expect.poll(() => page.locator('dialog.e-leave').isVisible()).toBe(true)
+})

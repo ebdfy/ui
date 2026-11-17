@@ -8,7 +8,7 @@ import type { Lang } from '../format.ts'
 import { langOf } from '../lang.ts'
 import { onLangChange } from './speech.ts'
 
-const passed = ['name', 'value', 'placeholder', 'type', 'inputmode', 'required', 'autocomplete', 'rows']
+const passed = ['name', 'value', 'placeholder', 'type', 'inputmode', 'required', 'autocomplete', 'rows', 'maxlength']
 
 let count = 0
 
@@ -43,6 +43,7 @@ type Control = HTMLInputElement | HTMLTextAreaElement
  * @attr placeholder - A hint shown while the field is empty.
  * @attr {boolean} required - The form will not submit while the field is empty.
  * @attr autocomplete - What the browser may fill in, as a native input's autocomplete.
+ * @attr {number} maxlength - The most letters the field takes, as a native input's maxlength.
  * @attr error - A message shown under the field, which then reads invalid. Typing in the field clears it.
  * @slot - Optional: the field's own `<input>` (or `<textarea>`), written inside so the form works before
  *   the script. The script adopts it; the tag's attributes fill only what it leaves out.
@@ -230,6 +231,14 @@ export class EDateField extends ETextField {
 export class ETextArea extends ETextField {
   protected override create(): Control {
     return document.createElement('textarea')
+  }
+
+  // Where the browser reads no typed attr(), v2.css cannot read rows, so the box takes them here, as
+  // e-table takes its columns.
+  override connectedCallback(): void {
+    super.connectedCallback()
+    const rows = this.getAttribute('rows')
+    if (Number(rows) > 0 && !this.style.getPropertyValue('--e-rows')) this.style.setProperty('--e-rows', rows)
   }
 }
 

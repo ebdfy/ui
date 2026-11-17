@@ -14,6 +14,7 @@ const sheets = [
   'v2.css',
   'v2-host.css',
   'v2-host.ts',
+  'v2-host-app.ts',
 ]
 
 test('a colour literal outside the tokens is caught', () => {

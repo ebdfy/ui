@@ -70,7 +70,8 @@ test.for(v2Pages)(
   '$title: drawn whole before v2.js, with a Bangla example and its API',
   async ({ path, title, tags }) => {
     const { page, errors } = await pages.open('', 360)
-    await page.route('**/ui/v2.js', (route) => route.abort())
+    // The page's own v2.js; an app's card page framed on its origin loads its own.
+    await page.route(`${pages.ui}/ui/v2.js`, (route) => route.abort())
     await page.goto(`${pages.ui}${path}`)
     expect(await page.locator('h1').textContent()).toBe(title)
     expect(await page.locator('figure.example').count()).toBeGreaterThanOrEqual(2)

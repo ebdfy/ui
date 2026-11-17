@@ -36,7 +36,7 @@ async function fetchSprite(): Promise<SVGSVGElement | null> {
 /**
  * A small icon from the kit's sprite. It is decorative: name the button or link it sits in.
  * @tag e-icon
- * @attr {'truck' | 'search' | 'plus' | 'x' | 'check' | 'chevron-left' | 'chevron-right' | 'chevron-down' | 'more-horizontal' | 'home' | 'shopping-bag' | 'package' | 'users' | 'settings' | 'bell' | 'help' | 'arrow-left' | 'printer' | 'phone' | 'copy' | 'filter' | 'arrow-up-down' | 'external-link' | 'image' | 'circle-alert' | 'pencil' | 'trash' | 'grip-vertical' | 'calendar' | 'lock' | 'cloud-off' | 'upload' | 'download' | 'eye' | 'message-circle' | 'percent' | 'file-text' | 'chart-column' | 'layout-grid' | 'store' | 'credit-card' | 'map-pin' | 'languages' | 'database' | 'code'} name - Which icon to draw.
+ * @attr {'truck' | 'search' | 'plus' | 'x' | 'check' | 'chevron-left' | 'chevron-right' | 'chevron-down' | 'more-horizontal' | 'home' | 'shopping-bag' | 'package' | 'users' | 'settings' | 'bell' | 'help' | 'arrow-left' | 'printer' | 'phone' | 'copy' | 'filter' | 'arrow-up-down' | 'external-link' | 'image' | 'circle-alert' | 'pencil' | 'trash' | 'grip-vertical' | 'calendar' | 'lock' | 'cloud-off' | 'upload' | 'download' | 'eye' | 'message-circle' | 'percent' | 'file-text' | 'chart-column' | 'layout-grid' | 'store' | 'credit-card' | 'map-pin' | 'languages' | 'database' | 'code' | 'bold' | 'italic' | 'underline' | 'heading' | 'list' | 'text-quote' | 'link'} name - Which icon to draw.
  * @attr {'20'} size - 20 px; 16 px when absent.
  */
 export class EIcon extends HTMLElement {

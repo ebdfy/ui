@@ -26,3 +26,67 @@ e-admin-panel > .admin-page {
     padding: 4px 16px 32px;
   }
 }
+
+/* Reports: the date range and Customize above the cards, and each figure card's number. */
+.reports {
+  display: grid;
+  align-content: start;
+  gap: var(--e-space-4);
+}
+.reports > form,
+.report > form {
+  max-inline-size: none;
+}
+.reports-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-space-3);
+}
+.reports .figure {
+  font-size: var(--e-font-size-display);
+  font-weight: 600;
+  line-height: 36px;
+  font-variant-numeric: tabular-nums;
+}
+/* In a half-row card, below 600 px, a figure takes the heading size so ৳9,87,156 keeps one line. */
+@container (max-width: 599.98px) {
+  .reports .figure {
+    font-size: var(--e-font-size-heading);
+    line-height: 32px;
+  }
+}
+
+/* The Files modal: each image a button of its thumbnail and file name, two or three a row. */
+.files {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--e-space-3);
+}
+.files > button {
+  display: grid;
+  justify-items: center;
+  gap: var(--e-space-2);
+  min-height: 44px;
+  padding: var(--e-space-2);
+  border: 1px solid var(--e-color-line);
+  border-radius: var(--e-radius-1);
+  background: var(--e-color-surface);
+  color: var(--e-color-fg);
+  font: inherit;
+  font-size: var(--e-font-size-meta);
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.files > button:hover {
+  background: var(--e-color-surface-2);
+}
+
+/* A record's page: its name, then its More actions at the end of the title bar. */
+e-admin-panel > .record-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-space-3);
+}

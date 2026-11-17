@@ -1,12 +1,13 @@
 {
   "name": "@ebdfy/ui",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "The ebdfy design system: custom elements, one stylesheet and the bridge for apps in the ebdfy Admin.",
   "license": "MIT",
   "files": [
     "dist/site/cdn",
     "dist/types",
-    "dist/custom-elements-v2.json"
+    "dist/custom-elements-v2.json",
+    "CHANGELOG.md"
   ],
   "type": "module",
   "exports": {

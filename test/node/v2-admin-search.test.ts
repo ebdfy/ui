@@ -123,3 +123,25 @@ test('in Bangla the modal groups its rows in Bangla', async () => {
   await expect.poll(() => dialog(page).locator('.e-search-group').allTextContents()).toEqual(['অর্ডার'])
   expect(await field(page).getAttribute('placeholder')).toBe('অর্ডার, পণ্য, গ্রাহক খুঁজুন')
 })
+
+test.for([
+  { lang: 'en', staff: 'Staff', group: 'Settings', asked: 'staff' },
+  { lang: 'bn', staff: 'স্টাফ', group: 'সেটিংস', asked: 'স্টাফ' },
+])(
+  'in $lang, "$asked" finds Staff under Settings, and picking it closes the search and swaps in Staff',
+  async (names) => {
+    const { page, errors } = await open('/playground/settings/store', { lang: names.lang })
+    await page.locator('e-phone-field input').waitFor()
+    await page.evaluate(() => Object.assign(globalThis, { stayed: true }))
+    await page.keyboard.press('Control+k')
+    await field(page).fill(names.asked)
+    await expect.poll(() => dialog(page).locator('.e-search-group', { hasText: names.group }).count()).toBe(1)
+    await dialog(page).getByRole('link', { name: names.staff, exact: true }).click()
+    await expect.poll(() => page.locator('e-admin-panel > header h1').textContent()).toBe(names.staff)
+    expect(await dialog(page).isVisible()).toBe(false)
+    expect(new URL(page.url()).pathname).toBe('/playground/settings/staff')
+    // The panel swapped under the frame: the page that loaded first is still here.
+    expect(await page.evaluate(() => (globalThis as { stayed?: boolean }).stayed)).toBe(true)
+    expect(errors).toEqual([])
+  },
+)

@@ -42,37 +42,6 @@
     padding: 0 18px;
     font-weight: var(--e-font-weight-semibold);
   }
-  /* A store's or an app's tile: its initial on lime, 28 px by default, 20 px in the menu and 40 px
-     where a page lists stores or apps. */
-  .e-tile {
-    display: inline-grid;
-    place-items: center;
-    box-sizing: border-box;
-    inline-size: 28px;
-    block-size: 28px;
-    flex: none;
-    border-radius: var(--e-radius-1);
-    background: var(--e-color-side-on-bg);
-    color: var(--e-color-side-on-fg);
-    font-size: var(--e-font-size-meta);
-    font-weight: var(--e-font-weight-bold);
-    line-height: 1;
-  }
-  .e-tile[data-size='20'] {
-    inline-size: 20px;
-    block-size: 20px;
-    border-radius: var(--e-radius-0);
-    font-size: 11px;
-  }
-  .e-tile[data-size='40'] {
-    inline-size: 40px;
-    block-size: 40px;
-    border-radius: var(--e-radius-2);
-    font-size: 16px;
-  }
-  :lang(bn) .e-tile[data-size='20'] {
-    font-size: var(--e-font-size-meta);
-  }
   e-admin-frame > [slot='store'] > :last-child {
     min-width: 0;
     overflow: hidden;
@@ -449,6 +418,37 @@
     font-weight: var(--e-font-weight-bold);
     letter-spacing: -0.01em;
   }
+  /* An app page's title bar, built as e-page's record header: the app's tile, the title the app
+     sets and its actions on one row of 64 px, whether the app is loading, answered or silent, so the
+     app's area never moves. */
+  e-admin-panel[app] > header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-sizing: border-box;
+    block-size: 64px;
+    padding-block: 0;
+  }
+  e-admin-panel[app] > header h1 {
+    flex: 1;
+    min-width: 0;
+  }
+  .e-title-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--e-space-2);
+  }
+  .e-title-more {
+    display: none;
+  }
+  @media (width < 600px) {
+    .e-title-actions > [data-folds] {
+      display: none;
+    }
+    .e-title-more {
+      display: inline-flex;
+    }
+  }
   /* A grid places a replaced element at its start, so the iframe is stretched by name. */
   e-admin-panel > iframe {
     grid-area: 2 / 1;
@@ -458,70 +458,6 @@
     min-height: 0;
     inline-size: 100%;
     border: 0;
-  }
-
-  /* A 3 px bar along the top of the app's area while the app loads or says it is busy. */
-  e-admin-panel > .e-loading-bar {
-    grid-area: 2 / 1;
-    align-self: start;
-    position: relative;
-    block-size: 3px;
-    overflow: hidden;
-    background: var(--e-color-line);
-  }
-  e-admin-panel > .e-loading-bar[hidden],
-  e-admin-panel > .e-notice[hidden] {
-    display: none;
-  }
-  .e-loading-bar::after {
-    position: absolute;
-    inset: 0;
-    inline-size: 40%;
-    background: var(--e-color-accent);
-    content: '';
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .e-loading-bar::after {
-      animation: e-loading 1.2s ease-in-out infinite;
-    }
-  }
-  @keyframes e-loading {
-    from {
-      transform: translateX(-100%);
-    }
-    to {
-      transform: translateX(250%);
-    }
-  }
-
-  /* The notice covers the app's area, not the title bar or the menu, when the app has not answered. */
-  e-admin-panel > .e-notice {
-    grid-area: 2 / 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--e-space-2);
-    padding: var(--e-space-6);
-    background: var(--e-color-panel);
-    text-align: center;
-  }
-  .e-notice > p {
-    margin: 0;
-    max-inline-size: 36em;
-    color: var(--e-color-fg2);
-  }
-  .e-notice > p:first-child {
-    color: var(--e-color-fg);
-    font-size: var(--e-font-size-title);
-    font-weight: var(--e-font-weight-semibold);
-  }
-  .e-notice > div {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--e-space-2);
-    margin-top: var(--e-space-2);
   }
 
   /* The toast: an inverse pill at the foot of the app's area, over the app. The panel's text colour
@@ -768,8 +704,8 @@
     display: none;
   }
 
-  /* Below 1040 px the bar is the whole band: a 44 px × that discards, the message, and Save with its
-     word. The store and the icons keep their room unseen. */
+  /* Below 1040 px the bar is the whole band: a 44 px × that discards, the message, and a 44 px Save
+     with its word. The store and the icons keep their room unseen. */
   @media (width < 1040px) {
     e-admin-frame > .e-save-bar {
       grid-column: 1 / -1;
@@ -810,7 +746,7 @@
       white-space: nowrap;
     }
     .e-save-bar > .e-save-bar-save {
-      block-size: 40px;
+      block-size: 44px;
       padding: 0 16px;
     }
     .e-save-bar-full,
@@ -873,6 +809,13 @@
     }
     e-admin-panel > header h1 {
       padding-inline-end: 40px;
+    }
+    /* On an app page the actions sit before the chevron, which keeps its room at the row's end. */
+    e-admin-panel[app] > header {
+      padding-inline-end: 56px;
+    }
+    e-admin-panel[app] > header h1 {
+      padding-inline-end: 0;
     }
     e-admin-panel > header > .e-app-pages-button {
       position: absolute;

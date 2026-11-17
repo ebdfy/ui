@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Menu tree · ebdfy design system v2</title>
+    <!-- The tree is the Admin's, which v2-host.js builds, so this page loads it beside the kit. -->
+    <script type="module" src="%EB_CDN%/ui/v2-host.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>Menu tree</h1>
+      <p class="lede">
+        <code>e-menu-tree</code> arranges a menu's items, up to 3 levels deep. Each <code>e-menu-tree-item</code> is one
+        row: a drag handle, its label, and Edit and Delete. Children sit indented under their item, and each group ends
+        in Add menu item to that item. It is the Admin's, so <code>v2-host.js</code> builds it, not <code>v2.js</code>.
+      </p>
+      <p>
+        Drag a row by its handle to put it before or after another row, or onto the middle of one to put it under it;
+        its children go with it. On the handle, Up and Down move it among its siblings, Right puts it under the item
+        above, and Left lifts it out of its parent. A move that would make a fourth level is refused, and the row says
+        so; a drop onto the item's own children does nothing.
+      </p>
+      <p>
+        Inside a form, the tree keeps a hidden field named <code>name</code> holding its items as the API takes them,
+        <code>[{"title":"Home","url":"/","items":[]}, …]</code>, so the save bar counts every change and Discard puts
+        the items back. Add and Edit fire <code>e-menu-tree-add</code> and <code>e-menu-tree-edit</code>: the page opens
+        its own modal, with the store's link search, and calls <code>detail.done</code> with the item.
+      </p>
+      <docs-example caption="A store's main menu, in a form" stack>
+        <form method="post" action="/menus/main">
+          <e-menu-tree name="items" label="Menu items"
+            ><e-menu-tree-item label="Home" url="/"></e-menu-tree-item
+            ><e-menu-tree-item label="Men" resource-id="gid://ebdfy/Collection/11"
+              ><e-menu-tree-item
+                label="Men's panjabi"
+                resource-id="gid://ebdfy/Collection/12"
+              ></e-menu-tree-item></e-menu-tree-item
+            ><e-menu-tree-item label="Women" resource-id="gid://ebdfy/Collection/21"
+              ><e-menu-tree-item label="Sarees under ৳2,000" resource-id="gid://ebdfy/Collection/22"
+                ><e-menu-tree-item
+                  label="Jamdani"
+                  resource-id="gid://ebdfy/Collection/25"
+                ></e-menu-tree-item></e-menu-tree-item
+              ><e-menu-tree-item
+                label="Silk hijab"
+                resource-id="gid://ebdfy/Collection/23"
+              ></e-menu-tree-item></e-menu-tree-item
+            ><e-menu-tree-item label="About us" url="/pages/about"></e-menu-tree-item
+          ></e-menu-tree>
+        </form>
+      </docs-example>
+      <docs-example caption="A refused save's error">
+        <e-menu-tree label="Footer menu" error="These menu items could not be saved."
+          ><e-menu-tree-item label="Delivery" url="/pages/delivery"></e-menu-tree-item
+          ><e-menu-tree-item label="Returns" url="/pages/returns"></e-menu-tree-item
+        ></e-menu-tree>
+      </docs-example>
+      <docs-example caption="বাংলায়" lang="bn">
+        <e-menu-tree label="মেনু আইটেম"
+          ><e-menu-tree-item label="হোম" url="/"></e-menu-tree-item
+          ><e-menu-tree-item label="মেয়েদের" resource-id="gid://ebdfy/Collection/21"
+            ><e-menu-tree-item
+              label="৳২,০০০-এর নিচে শাড়ি"
+              resource-id="gid://ebdfy/Collection/22"
+            ></e-menu-tree-item></e-menu-tree-item
+          ><e-menu-tree-item label="ঈদ ২০২৬" resource-id="gid://ebdfy/Collection/41"></e-menu-tree-item
+        ></e-menu-tree>
+      </docs-example>
+    </main>
+  </body>
+</html>

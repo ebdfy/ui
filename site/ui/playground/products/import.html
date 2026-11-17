@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content" />
+    <link rel="icon" href="data:," />
+    <title>Import products · Playground · ebdfy design system v2</title>
+    <link
+      rel="preload"
+      href="%EB_CDN%/ui/fonts/geist-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2.css" />
+    <link rel="stylesheet" href="%EB_CDN%/ui/v2-host.css" />
+    <script type="module" src="%EB_CDN%/ui/v2-host.js"></script>
+    <script type="module" src="%EB_CDN%/ui/v2.js"></script>
+    <link rel="stylesheet" href="/playground.css" />
+    <script>
+      // The staff member's language, kept by this browser as the Admin keeps it for them, before
+      // anything draws.
+      try {
+        document.documentElement.lang = localStorage.getItem('ebdfy-playground-lang') === 'bn' ? 'bn' : 'en'
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <e-admin-frame>
+      %EB_ADMIN_CHROME%
+      <!-- Products' import: a CSV of products to add, read in the browser for its rows before it posts. -->
+      <e-admin-panel store="demo">
+        <header><h1 data-bn="পণ্য ইমপোর্ট করুন">Import products</h1></header>
+        <div class="admin-page">
+          <form
+            method="post"
+            action="/playground/products/import"
+            enctype="multipart/form-data"
+            data-save-bar
+            data-save-label="Import products"
+            data-bn-data-save-label="পণ্য ইমপোর্ট করুন"
+          >
+            <e-card>
+              <e-file-field label="Products CSV" data-bn-label="পণ্যের CSV" accept=".csv" max-size="5242880"
+                ><input type="file" name="file" accept=".csv"
+              /></e-file-field>
+              <e-text tone="subdued" data-bn="UTF-8 CSV, সর্বোচ্চ ৫ MB ও ৫,০০০ সারি।"
+                >A UTF-8 CSV of at most 5 MB and 5,000 rows.</e-text
+              >
+            </e-card>
+          </form>
+        </div>
+      </e-admin-panel>
+    </e-admin-frame>
+    <script src="/playground.js"></script>
+  </body>
+</html>

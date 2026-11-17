@@ -73,6 +73,45 @@ test('after a save, Discard goes back to the saved values', async () => {
   expect(input('note').value).toBe('Call first!')
 })
 
+// A file input takes no value from a script but '', so Discard after a save that held a chosen file
+// must leave it be, and still put every other field back.
+test('after a save holding a chosen file, Discard puts the other fields back and lowers the bar', async () => {
+  const { form, bar, shown, input } = mount(`<input type="file" name="csv" />
+    <e-text-field label="Note" name="note" value="Call first"></e-text-field>`)
+  const chosen = new DataTransfer()
+  chosen.items.add(new File(['sku,price\n'], 'products.csv', { type: 'text/csv' }))
+  input('csv').files = chosen.files
+  input('csv').dispatchEvent(new Event('change', { bubbles: true }))
+  bar.act('save')
+  await userEvent.fill(input('note'), 'Call first!')
+  const discarded: Event[] = []
+  form.addEventListener('e-save-discarded', (event) => discarded.push(event))
+  expect(() => bar.act('discard')).not.toThrow()
+  expect(input('note').value).toBe('Call first')
+  expect(input('csv').files?.[0]?.name).toBe('products.csv')
+  expect(discarded).toHaveLength(1)
+  expect(shown.at(-1)).toBe(false)
+})
+
+// Discard cannot put the saved file back, so the file now chosen becomes the saved one and the bar
+// does not stay up for good.
+test('after a save holding a chosen file, choosing another and pressing Discard lowers the bar', async () => {
+  const { bar, shown, input } = mount('<input type="file" name="csv" />')
+  const choose = (name: string) => {
+    const chosen = new DataTransfer()
+    chosen.items.add(new File(['sku,price\n'], name, { type: 'text/csv' }))
+    input('csv').files = chosen.files
+    input('csv').dispatchEvent(new Event('change', { bubbles: true }))
+  }
+  choose('products.csv')
+  bar.act('save')
+  choose('other.csv')
+  expect(shown.at(-1)).toBe(true)
+  bar.act('discard')
+  expect(shown.at(-1)).toBe(false)
+  expect(bar.edited()).toBe(false)
+})
+
 test('a form added after the page loaded is watched from the moment it appears', async () => {
   const { shown } = mount('')
   const late = document.createElement('form')

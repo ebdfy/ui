@@ -1,0 +1,165 @@
+/* e-print-sheet: one order on one A5 page, an invoice above a dashed cut line and a packing slip
+   below it. CSS alone draws it, and the page writes the content in plain HTML: each child is a
+   block, and a div of two parts is a row with one at each end. The sheet is paper, so it stays
+   black on white in a dark theme. It prints on a page of its own name, so a page that holds no sheet
+   keeps the browser's own paper size; a sheet's page has a 10 mm margin, so a long order's second
+   page starts clear of the paper's edge too. */
+@page e-print-sheet {
+  size: A5;
+  margin: 10mm;
+}
+e-print-sheet {
+  page: e-print-sheet;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-sizing: border-box;
+  inline-size: 148mm;
+  max-inline-size: 100%;
+  min-block-size: 210mm;
+  padding: 40px;
+  background: var(--e-color-paper);
+  color: var(--e-color-paper-ink);
+  color-scheme: light;
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+/* Bangla is 13 px and up in every part of the kit. */
+e-print-sheet:lang(bn) {
+  font-size: 13px;
+}
+/* Every sheet starts a page, whether or not the one before it sits beside it. */
+e-print-sheet {
+  break-before: page;
+}
+e-print-sheet :is(h1, h2, h3, p) {
+  margin: 0;
+}
+e-print-sheet :is(h1, h2, h3) {
+  font-size: 14px;
+  font-weight: var(--e-font-weight-bold);
+}
+e-print-sheet > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+e-print-sheet > div > div {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+e-print-sheet > div > :last-child:not(:first-child) {
+  text-align: end;
+}
+e-print-sheet small {
+  font-size: inherit;
+  color: var(--e-color-paper-ink-2);
+}
+e-print-sheet [slot='shop'] {
+  font-size: 14px;
+  font-weight: var(--e-font-weight-bold);
+}
+/* The recipient reads first, larger than the shop, and the phone keeps its digits on one line. */
+e-print-sheet [slot='recipient'] {
+  font-size: 15px;
+  font-weight: var(--e-font-weight-bold);
+}
+e-print-sheet [slot='phone'] {
+  white-space: nowrap;
+}
+e-print-sheet [slot='address'] {
+  font-size: 13px;
+}
+e-print-sheet [slot='due'] {
+  flex: none;
+  padding: 8px 10px;
+  border: 1px solid var(--e-color-paper-ink);
+  border-radius: 6px;
+}
+e-print-sheet [slot='due'] > b {
+  display: block;
+  font-size: 20px;
+  white-space: nowrap;
+}
+e-print-sheet [slot='cut'] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--e-color-paper-ink-2);
+}
+e-print-sheet [slot='cut']::before,
+e-print-sheet [slot='cut']::after {
+  content: '';
+  flex: 1;
+  border-top: 1.5px dashed;
+}
+e-print-sheet table {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+e-print-sheet tr {
+  break-inside: avoid;
+}
+e-print-sheet :is(th, td) {
+  padding: 4px 0;
+  border-bottom: 1px solid var(--e-color-paper-line);
+  text-align: start;
+  vertical-align: top;
+}
+/* Columns keep 8 px between their words, so two amounts side by side never read as one. */
+e-print-sheet :is(th, td) + :is(th, td) {
+  padding-inline-start: 8px;
+}
+e-print-sheet th {
+  font-weight: var(--e-font-weight-semibold);
+}
+e-print-sheet [align='end'] {
+  text-align: end;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+e-print-sheet [slot='tick'] {
+  display: inline-block;
+  inline-size: 14px;
+  block-size: 14px;
+  border: 1px solid var(--e-color-paper-ink);
+  border-radius: 3px;
+  vertical-align: -3px;
+}
+
+/* On screen the sheet is a sheet of paper on the page, edged so it shows on a white panel too. */
+@media screen {
+  e-print-sheet {
+    box-shadow: 0 0 0 1px var(--e-color-line);
+  }
+}
+
+/* In print a page holding a sheet prints its sheets alone: no frame, menu, save bar or toast, and
+   no box of the page around them. Important, so an app's own unlayered rules cannot keep its chrome
+   in. */
+@media print {
+  e-print-sheet {
+    inline-size: auto;
+    max-inline-size: none;
+    min-block-size: 0;
+    padding: 0;
+  }
+  :root:has(e-print-sheet),
+  :root:has(e-print-sheet) body {
+    margin: 0 !important;
+    padding: 0 !important;
+    /* With the browser's background graphics on, the margin and the space under a sheet are paper
+       in a dark theme too. */
+    background: var(--e-color-paper) !important;
+    color-scheme: light;
+  }
+  :root:has(e-print-sheet) body :not(e-print-sheet, e-print-sheet *, :has(e-print-sheet)) {
+    display: none !important;
+  }
+  :root:has(e-print-sheet) body :has(e-print-sheet) {
+    display: contents !important;
+  }
+}
